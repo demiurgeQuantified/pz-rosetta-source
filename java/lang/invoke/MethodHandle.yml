@@ -4,21 +4,358 @@ languages:
     packages:
       java.lang.invoke:
         MethodHandle:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A method handle is a typed, directly executable reference to an\
+            \ underlying method,\n constructor, field, or similar low-level operation,\
+            \ with optional\n transformations of arguments or return values.\n These\
+            \ transformations are quite general, and include such patterns as\n conversion,\n\
+            \ insertion,\n deletion,\n and substitution.\n\n Method handle contents\n\
+            \ Method handles are dynamically and strongly typed according to their\
+            \ parameter and return types.\n They are not distinguished by the name\
+            \ or the defining class of their underlying methods.\n A method handle\
+            \ must be invoked using a symbolic type descriptor which matches\n the\
+            \ method handle's own type descriptor.\n \n Every method handle reports\
+            \ its type descriptor via the type accessor.\n This type descriptor is\
+            \ a MethodType object,\n whose structure is a series of classes, one of\
+            \ which is\n the return type of the method (or void.class if none).\n\
+            \ \n A method handle's type controls the types of invocations it accepts,\n\
+            \ and the kinds of transformations that apply to it.\n \n A method handle\
+            \ contains a pair of special invoker methods\n called invokeExact and\
+            \ invoke.\n Both invoker methods provide direct access to the method handle's\n\
+            \ underlying method, constructor, field, or other operation,\n as modified\
+            \ by transformations of arguments and return values.\n Both invokers accept\
+            \ calls which exactly match the method handle's own type.\n The plain,\
+            \ inexact invoker also accepts a range of other call types.\n \n Method\
+            \ handles are immutable and have no visible state.\n Of course, they can\
+            \ be bound to underlying methods or data which exhibit state.\n With respect\
+            \ to the Java Memory Model, any method handle will behave\n as if all\
+            \ of its (internal) fields are final variables.  This means that any method\n\
+            \ handle made visible to the application will always be fully formed.\n\
+            \ This is true even if the method handle is published through a shared\n\
+            \ variable in a data race.\n \n Method handles cannot be subclassed by\
+            \ the user.\n Implementations may (or may not) create internal subclasses\
+            \ of MethodHandle\n which may be visible via the Object.getClass\n operation.\
+            \  The programmer should not draw conclusions about a method handle\n\
+            \ from its specific class, as the method handle class hierarchy (if any)\n\
+            \ may change from time to time or across implementations from different\
+            \ vendors.\n\n Method handle compilation\n A Java method call expression\
+            \ naming invokeExact or invoke\n can invoke a method handle from Java\
+            \ source code.\n From the viewpoint of source code, these methods can\
+            \ take any arguments\n and their result can be cast to any return type.\n\
+            \ Formally this is accomplished by giving the invoker methods\n Object\
+            \ return types and variable arity Object arguments,\n but they have an\
+            \ additional quality called signature polymorphism\n which connects this\
+            \ freedom of invocation directly to the JVM execution stack.\n \n As is\
+            \ usual with virtual methods, source-level calls to invokeExact\n and\
+            \ invoke compile to an invokevirtual instruction.\n More unusually, the\
+            \ compiler must record the actual argument types,\n and may not perform\
+            \ method invocation conversions on the arguments.\n Instead, it must generate\
+            \ instructions that push them on the stack according\n to their own unconverted\
+            \ types.  The method handle object itself is pushed on\n the stack before\
+            \ the arguments.\n The compiler then generates an invokevirtual instruction\
+            \ that invokes\n the method handle with a symbolic type descriptor which\
+            \ describes the argument\n and return types.\n \n To issue a complete\
+            \ symbolic type descriptor, the compiler must also determine\n the return\
+            \ type.  This is based on a cast on the method invocation expression,\n\
+            \ if there is one, or else Object if the invocation is an expression,\n\
+            \ or else void if the invocation is a statement.\n The cast may be to\
+            \ a primitive type (but not void).\n \n As a corner case, an uncasted\
+            \ null argument is given\n a symbolic type descriptor of java.lang.Void.\n\
+            \ The ambiguity with the type Void is harmless, since there are no references\
+            \ of type\n Void except the null reference.\n\n Method handle invocation\n\
+            \ The first time an invokevirtual instruction is executed\n it is linked\
+            \ by symbolically resolving the names in the instruction\n and verifying\
+            \ that the method call is statically legal.\n This also holds for calls\
+            \ to invokeExact and invoke.\n In this case, the symbolic type descriptor\
+            \ emitted by the compiler is checked for\n correct syntax, and names it\
+            \ contains are resolved.\n Thus, an invokevirtual instruction which invokes\n\
+            \ a method handle will always link, as long\n as the symbolic type descriptor\
+            \ is syntactically well-formed\n and the types exist.\n \n When the invokevirtual\
+            \ is executed after linking,\n the receiving method handle's type is first\
+            \ checked by the JVM\n to ensure that it matches the symbolic type descriptor.\n\
+            \ If the type match fails, it means that the method which the\n caller\
+            \ is invoking is not present on the individual\n method handle being invoked.\n\
+            \ \n In the case of invokeExact, the type descriptor of the invocation\n\
+            \ (after resolving symbolic type names) must exactly match the method\
+            \ type\n of the receiving method handle.\n In the case of plain, inexact\
+            \ invoke, the resolved type descriptor\n must be a valid argument to the\
+            \ receiver's asType method.\n Thus, plain invoke is more permissive than\
+            \ invokeExact.\n \n After type matching, a call to invokeExact directly\n\
+            \ and immediately invoke the method handle's underlying method\n (or other\
+            \ behavior, as the case may be).\n \n A call to plain invoke works the\
+            \ same as a call to\n invokeExact, if the symbolic type descriptor specified\
+            \ by the caller\n exactly matches the method handle's own type.\n If there\
+            \ is a type mismatch, invoke attempts\n to adjust the type of the receiving\
+            \ method handle,\n as if by a call to asType,\n to obtain an exactly invokable\
+            \ method handle M2.\n This allows a more powerful negotiation of method\
+            \ type\n between caller and callee.\n \n (Note: The adjusted method handle\
+            \ M2 is not directly observable,\n and implementations are therefore not\
+            \ required to materialize it.)\n\n Invocation checking\n In typical programs,\
+            \ method handle type matching will usually succeed.\n But if a match fails,\
+            \ the JVM will throw a WrongMethodTypeException,\n either directly (in\
+            \ the case of invokeExact) or indirectly as if\n by a failed call to asType\
+            \ (in the case of invoke).\n \n Thus, a method type mismatch which might\
+            \ show up as a linkage error\n in a statically typed program can show\
+            \ up as\n a dynamic WrongMethodTypeException\n in a program which uses\
+            \ method handles.\n \n Because method types contain \"live\" Class objects,\n\
+            \ method type matching takes into account both type names and class loaders.\n\
+            \ Thus, even if a method handle M is created in one\n class loader L1\
+            \ and used in another L2,\n method handle calls are type-safe, because\
+            \ the caller's symbolic type\n descriptor, as resolved in L2,\n is matched\
+            \ against the original callee method's symbolic type descriptor,\n as\
+            \ resolved in L1.\n The resolution in L1 happens when M is created\n and\
+            \ its type is assigned, while the resolution in L2 happens\n when the\
+            \ invokevirtual instruction is linked.\n \n Apart from type descriptor\
+            \ checks,\n a method handle's capability to call its underlying method\
+            \ is unrestricted.\n If a method handle is formed on a non-public method\
+            \ by a class\n that has access to that method, the resulting handle can\
+            \ be used\n in any place by any caller who receives a reference to it.\n\
+            \ \n Unlike with the Core Reflection API, where access is checked every\
+            \ time\n a reflective method is invoked,\n method handle access checking\
+            \ is performed\n when the method handle is created.\n In the case of ldc\
+            \ (see below), access checking is performed as part of linking\n the constant\
+            \ pool entry underlying the constant method handle.\n \n Thus, handles\
+            \ to non-public methods, or to methods in non-public classes,\n should\
+            \ generally be kept secret.\n They should not be passed to untrusted code\
+            \ unless their use from\n the untrusted code would be harmless.\n\n Method\
+            \ handle creation\n Java code can create a method handle that directly\
+            \ accesses\n any method, constructor, or field that is accessible to that\
+            \ code.\n This is done via a reflective, capability-based API called\n\
+            \ MethodHandles.Lookup.\n For example, a static method handle can be obtained\n\
+            \ from Lookup.findStatic.\n There are also conversion methods from Core\
+            \ Reflection API objects,\n such as Lookup.unreflect.\n \n Like classes\
+            \ and strings, method handles that correspond to accessible\n fields,\
+            \ methods, and constructors can also be represented directly\n in a class\
+            \ file's constant pool as constants to be loaded by ldc bytecodes.\n A\
+            \ new type of constant pool entry, CONSTANT_MethodHandle,\n refers directly\
+            \ to an associated CONSTANT_Methodref,\n CONSTANT_InterfaceMethodref,\
+            \ or CONSTANT_Fieldref\n constant pool entry.\n (For full details on method\
+            \ handle constants, see sections 4.4.8 and 5.4.3.5 of the Java Virtual\
+            \ Machine\n Specification.)\n \n Method handles produced by lookups or\
+            \ constant loads from methods or\n constructors with the variable arity\
+            \ modifier bit (0x0080)\n have a corresponding variable arity, as if they\
+            \ were defined with\n the help of asVarargsCollector\n or withVarargs.\n\
+            \ \n A method reference may refer either to a static or non-static method.\n\
+            \ In the non-static case, the method handle type includes an explicit\n\
+            \ receiver argument, prepended before any other arguments.\n In the method\
+            \ handle's type, the initial receiver argument is typed\n according to\
+            \ the class under which the method was initially requested.\n (E.g., if\
+            \ a non-static method handle is obtained via ldc,\n the type of the receiver\
+            \ is the class named in the constant pool entry.)\n \n Method handle constants\
+            \ are subject to the same link-time access checks\n their corresponding\
+            \ bytecode instructions, and the ldc instruction\n will throw corresponding\
+            \ linkage errors if the bytecode behaviors would\n throw such errors.\n\
+            \ \n As a corollary of this, access to protected members is restricted\n\
+            \ to receivers only of the accessing class, or one of its subclasses,\n\
+            \ and the accessing class must in turn be a subclass (or package sibling)\n\
+            \ of the protected member's defining class.\n If a method reference refers\
+            \ to a protected non-static method or field\n of a class outside the current\
+            \ package, the receiver argument will\n be narrowed to the type of the\
+            \ accessing class.\n \n When a method handle to a virtual method is invoked,\
+            \ the method is\n always looked up in the receiver (that is, the first\
+            \ argument).\n \n A non-virtual method handle to a specific virtual method\
+            \ implementation\n can also be created.  These do not perform virtual\
+            \ lookup based on\n receiver type.  Such a method handle simulates the\
+            \ effect of\n an invokespecial instruction to the same method.\n A non-virtual\
+            \ method handle can also be created to simulate the effect\n of an invokevirtual\
+            \ or invokeinterface instruction on\n a private method (as applicable).\n\
+            \n Usage examples\n Here are some examples of usage:\n <code>\nObject\
+            \ x, y; String s; int i;\nMethodType mt; MethodHandle mh;\nMethodHandles.Lookup\
+            \ lookup = MethodHandles.lookup();\n// mt is (char,char)String\nmt = MethodType.methodType(String.class,\
+            \ char.class, char.class);\nmh = lookup.findVirtual(String.class, \"replace\"\
+            , mt);\ns = (String) mh.invokeExact(\"daddy\",'d','n');\n// invokeExact(Ljava/lang/String;CC)Ljava/lang/String;\n\
+            assertEquals(s, \"nanny\");\n// weakly typed invocation (using MHs.invoke)\n\
+            s = (String) mh.invokeWithArguments(\"sappy\", 'p', 'v');\nassertEquals(s,\
+            \ \"savvy\");\n// mt is (Object[])List\nmt = MethodType.methodType(java.util.List.class,\
+            \ Object[].class);\nmh = lookup.findStatic(java.util.Arrays.class, \"\
+            asList\", mt);\nassert(mh.isVarargsCollector());\nx = mh.invoke(\"one\"\
+            , \"two\");\n// invoke(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;\n\
+            assertEquals(x, java.util.Arrays.asList(\"one\",\"two\"));\n// mt is (Object,Object,Object)Object\n\
+            mt = MethodType.genericMethodType(3);\nmh = mh.asType(mt);\nx = mh.invokeExact((Object)1,\
+            \ (Object)2, (Object)3);\n// invokeExact(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;\n\
+            assertEquals(x, java.util.Arrays.asList(1,2,3));\n// mt is ()int\nmt =\
+            \ MethodType.methodType(int.class);\nmh = lookup.findVirtual(java.util.List.class,\
+            \ \"size\", mt);\ni = (int) mh.invokeExact(java.util.Arrays.asList(1,2,3));\n\
+            // invokeExact(Ljava/util/List;)I\nassert(i == 3);\nmt = MethodType.methodType(void.class,\
+            \ String.class);\nmh = lookup.findVirtual(java.io.PrintStream.class, \"\
+            println\", mt);\nmh.invokeExact(System.out, \"Hello, world.\");\n// invokeExact(Ljava/io/PrintStream;Ljava/lang/String;)V\n\
+            \ </code>\n Each of the above calls to invokeExact or plain invoke\n generates\
+            \ a single invokevirtual instruction with\n the symbolic type descriptor\
+            \ indicated in the following comment.\n In these examples, the helper\
+            \ method assertEquals is assumed to\n be a method which calls Objects.equals\n\
+            \ on its arguments, and asserts that the result is true.\n\n Exceptions\n\
+            \ The methods invokeExact and invoke are declared\n to throw Throwable,\n\
+            \ which is to say that there is no static restriction on what a method\
+            \ handle\n can throw.  Since the JVM does not distinguish between checked\n\
+            \ and unchecked exceptions (other than by their class, of course),\n there\
+            \ is no particular effect on bytecode shape from ascribing\n checked exceptions\
+            \ to method handle invocations.  But in Java source\n code, methods which\
+            \ perform method handle calls must either explicitly\n throw Throwable,\
+            \ or else must catch all\n throwables locally, rethrowing only those which\
+            \ are legal in the context,\n and wrapping ones which are illegal.\n\n\
+            \ Signature polymorphism\n The unusual compilation and linkage behavior\
+            \ of\n invokeExact and plain invoke\n is referenced by the term signature\
+            \ polymorphism.\n As defined in the Java Language Specification,\n a signature\
+            \ polymorphic method is one which can operate with\n any of a wide range\
+            \ of call signatures and return types.\n \n In source code, a call to\
+            \ a signature polymorphic method will\n compile, regardless of the requested\
+            \ symbolic type descriptor.\n As usual, the Java compiler emits an invokevirtual\n\
+            \ instruction with the given symbolic type descriptor against the named\
+            \ method.\n The unusual part is that the symbolic type descriptor is derived\
+            \ from\n the actual argument and return types, not from the method declaration.\n\
+            \ \n When the JVM processes bytecode containing signature polymorphic\
+            \ calls,\n it will successfully link any such call, regardless of its\
+            \ symbolic type descriptor.\n (In order to retain type safety, the JVM\
+            \ will guard such calls with suitable\n dynamic type checks, as described\
+            \ elsewhere.)\n \n Bytecode generators, including the compiler back end,\
+            \ are required to emit\n untransformed symbolic type descriptors for these\
+            \ methods.\n Tools which determine symbolic linkage are required to accept\
+            \ such\n untransformed descriptors, without reporting linkage errors.\n\
+            \n Interoperation between method handles and the Core Reflection API\n\
+            \ Using factory methods in the Lookup API,\n any class member represented\
+            \ by a Core Reflection API object\n can be converted to a behaviorally\
+            \ equivalent method handle.\n For example, a reflective Method can\n be\
+            \ converted to a method handle using\n Lookup.unreflect.\n The resulting\
+            \ method handles generally provide more direct and efficient\n access\
+            \ to the underlying class members.\n \n As a special case,\n when the\
+            \ Core Reflection API is used to view the signature polymorphic\n methods\
+            \ invokeExact or plain invoke in this class,\n they appear as ordinary\
+            \ non-polymorphic methods.\n Their reflective appearance, as viewed by\n\
+            \ Class.getDeclaredMethod,\n is unaffected by their special status in\
+            \ this API.\n For example, Method.getModifiers\n will report exactly those\
+            \ modifier bits required for any similarly\n declared method, including\
+            \ in this case native and varargs bits.\n \n As with any reflected method,\
+            \ these methods (when reflected) may be\n invoked via java.lang.reflect.Method.invoke.\n\
+            \ However, such reflective calls do not result in method handle invocations.\n\
+            \ Such a call, if passed the required argument\n (a single one, of type\
+            \ Object[]), will ignore the argument and\n will throw an UnsupportedOperationException.\n\
+            \ \n Since invokevirtual instructions can natively\n invoke method handles\
+            \ under any symbolic type descriptor, this reflective view conflicts\n\
+            \ with the normal presentation of these methods via bytecodes.\n Thus,\
+            \ these two native methods, when reflectively viewed by\n Class.getDeclaredMethod,\
+            \ may be regarded as placeholders only.\n \n In order to obtain an invoker\
+            \ method for a particular type descriptor,\n use MethodHandles.exactInvoker,\n\
+            \ or MethodHandles.invoker.\n The Lookup.findVirtual\n API is also able\
+            \ to return a method handle\n to call invokeExact or plain invoke,\n for\
+            \ any specified type descriptor .\n\n Interoperation between method handles\
+            \ and Java generics\n A method handle can be obtained on a method, constructor,\
+            \ or field\n which is declared with Java generic types.\n As with the\
+            \ Core Reflection API, the type of the method handle\n will be constructed\
+            \ from the erasure of the source-level type.\n When a method handle is\
+            \ invoked, the types of its arguments\n or the return value cast type\
+            \ may be generic types or type instances.\n If this occurs, the compiler\
+            \ will replace those\n types by their erasures when it constructs the\
+            \ symbolic type descriptor\n for the invokevirtual instruction.\n \n Method\
+            \ handles do not represent\n their function-like types in terms of Java\
+            \ parameterized (generic) types,\n because there are three mismatches\
+            \ between function-like types and parameterized\n Java types.\n \n Method\
+            \ types range over all possible arities,\n from no arguments to up to\
+            \ the  maximum number of allowed arguments.\n Generics are not variadic,\
+            \ and so cannot represent this.\n Method types can specify arguments of\
+            \ primitive types,\n which Java generic types cannot range over.\n Higher\
+            \ order functions over method handles (combinators) are\n often generic\
+            \ across a wide range of function types, including\n those of multiple\
+            \ arities.  It is impossible to represent such\n genericity with a Java\
+            \ type parameter.\n \n\n Arity limits\n The JVM imposes on all methods\
+            \ and constructors of any kind an absolute\n limit of 255 stacked arguments.\
+            \  This limit can appear more restrictive\n in certain cases:\n \n A long\
+            \ or double argument counts (for purposes of arity limits) as two argument\
+            \ slots.\n A non-static method consumes an extra argument for the object\
+            \ on which the method is called.\n A constructor consumes an extra argument\
+            \ for the object which is being constructed.\n Since a method handle&rsquo;s\
+            \ invoke method (or other signature-polymorphic method) is non-virtual,\n\
+            \     it consumes an extra argument for the method handle itself, in addition\
+            \ to any non-virtual receiver object.\n \n These limits imply that certain\
+            \ method handles cannot be created, solely because of the JVM limit on\
+            \ stacked arguments.\n For example, if a static JVM method accepts exactly\
+            \ 255 arguments, a method handle cannot be created for it.\n Attempts\
+            \ to create method handles with impossible method types lead to an IllegalArgumentException.\n\
+            \ In particular, a method handle&rsquo;s type must not have an arity of\
+            \ the exact maximum 255."
+          fields:
+            asTypeCache:
+              name: asTypeCache
+              modifiers:
+              - package
               type:
-                basic: String
-                full: java.lang.String
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            customizationCount:
+              name: customizationCount
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte
+            form:
+              name: form
+              modifiers:
+              - package
+              type:
+                basic: LambdaForm
+                full: java.lang.invoke.LambdaForm
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            updateInProgress:
+              name: updateInProgress
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            FORM_OFFSET:
+              name: FORM_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            UPDATE_OFFSET:
+              name: UPDATE_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg1
+              type:
+                basic: LambdaForm
+                full: java.lang.invoke.LambdaForm
+          methods:
           - name: asCollector
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg1
               type:
@@ -38,7 +375,7 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg2
               type:
@@ -48,6 +385,26 @@ languages:
               type:
                 basic: MethodHandle
                 full: java.lang.invoke.MethodHandle
+          - name: asCollectorChecks
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: asFixedArity
             modifiers:
             - public
@@ -61,7 +418,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg1
               type:
@@ -81,7 +438,7 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg2
               type:
@@ -91,9 +448,53 @@ languages:
               type:
                 basic: MethodHandle
                 full: java.lang.invoke.MethodHandle
+          - name: asSpreaderChecks
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
           - name: asType
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: asTypeCached
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: asTypeUncached
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -109,12 +510,28 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             return:
               type:
                 basic: MethodHandle
                 full: java.lang.invoke.MethodHandle
+          - name: bindArgumentL
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: BoundMethodHandle
+                full: java.lang.invoke.BoundMethodHandle
           - name: bindTo
             modifiers:
             - public
@@ -127,20 +544,93 @@ languages:
               type:
                 basic: MethodHandle
                 full: java.lang.invoke.MethodHandle
+          - name: copyWith
+            modifiers:
+            - package
+            - abstract
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg1
+              type:
+                basic: LambdaForm
+                full: java.lang.invoke.LambdaForm
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: customize
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: debugString
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: describeConstable
             modifiers:
             - public
             return:
               type:
-                basic: Optional<MethodHandleDesc>
+                basic: Optional
                 full: java.util.Optional<java.lang.constant.MethodHandleDesc>
-          - name: describeConstable
+          - name: internalCallerClass
             modifiers:
-            - public
+            - package
             return:
               type:
-                basic: Optional<MethodHandleDesc>
-                full: java.util.Optional<java.lang.constant.MethodHandleDesc>
+                basic: Class
+                full: java.lang.Class<?>
+          - name: internalForm
+            modifiers:
+            - package
+            return:
+              type:
+                basic: LambdaForm
+                full: java.lang.invoke.LambdaForm
+          - name: internalMemberName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: MemberName
+                full: java.lang.invoke.MemberName
+          - name: internalProperties
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: internalValues
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: intrinsicData
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: intrinsicName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: MethodHandleImpl.Intrinsic
+                full: java.lang.invoke.MethodHandleImpl$Intrinsic
           - name: invoke
             modifiers:
             - public
@@ -148,7 +638,20 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: invokeBasic
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -161,7 +664,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -173,7 +676,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -185,12 +688,26 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: List<?>
+                basic: List
                 full: java.util.List<?>
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+          - name: isCrackable
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isInvokeSpecial
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isVarargsCollector
             modifiers:
             - public
@@ -198,6 +715,63 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: maybeCustomize
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: rebind
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: BoundMethodHandle
+                full: java.lang.invoke.BoundMethodHandle
+          - name: setVarargs
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MemberName
+                full: java.lang.invoke.MemberName
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: spreadArrayChecks
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: standardString
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: type
             modifiers:
             - public
@@ -205,6 +779,66 @@ languages:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+          - name: updateForm
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.invoke.LambdaForm, java.lang.invoke.LambdaForm>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: viewAsType
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: viewAsTypeChecks
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: withInternalMemberName
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MemberName
+                full: java.lang.invoke.MemberName
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
           - name: withVarargs
             modifiers:
             - public
@@ -217,5 +851,69 @@ languages:
               type:
                 basic: MethodHandle
                 full: java.lang.invoke.MethodHandle
-          javaType: class
-          extends: Object
+          staticMethods:
+          - name: linkToInterface
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: linkToNative
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: linkToSpecial
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: linkToStatic
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: linkToVirtual
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object

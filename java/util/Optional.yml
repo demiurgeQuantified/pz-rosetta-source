@@ -4,64 +4,107 @@ languages:
     packages:
       java.util:
         Optional:
-          methods:
-          - name: __or__
-            modifiers:
-            - public
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A container object which may or may not contain a non-null value.\n\
+            \ If a value is present, isPresent() returns true. If no\n value is present,\
+            \ the object is considered empty and\n isPresent() returns false.\n\n\
+            \ Additional methods that depend on the presence or absence of a contained\n\
+            \ value are provided, such as orElse()\n (returns a default value if no\
+            \ value is present) and\n ifPresent() (performs an\n action if a value\
+            \ is present).\n\n This is a value-based\n class; programmers should treat\
+            \ instances that are\n equal as interchangeable and should not\n use instances\
+            \ for synchronization, or unpredictable behavior may\n occur. For example,\
+            \ in a future release, synchronization may fail."
+          fields:
+            value:
+              name: value
+              modifiers:
+              - private
+              type:
+                basic: T
+                full: T
+          staticFields:
+            EMPTY:
+              name: EMPTY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Optional
+                full: java.util.Optional<?>
+          constructors:
+          - modifiers:
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Supplier<? extends Optional<? extends T>>
-                full: java.util.function.Supplier<? extends java.util.Optional<? extends
-                  T>>
-            return:
-              type:
-                basic: Optional<T>
-                full: java.util.Optional<T>
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+                basic: T
+                full: T
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: an object to be tested for equality
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the other object is \"equal to\" this object\n     \
+                \    otherwise false"
+            notes: "Indicates whether some other object is \"equal to\" this Optional.\n\
+              \ The other object is considered equal if:\n \n it is also an Optional\
+              \ and;\n both instances have no value present or;\n the present values\
+              \ are \"equal to\" each other via equals()."
           - name: filter
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: predicate
               type:
-                basic: Predicate<? super T>
+                basic: Predicate
                 full: java.util.function.Predicate<? super T>
+              notes: the predicate to apply to a value, if present
             return:
               type:
-                basic: Optional<T>
+                basic: Optional
                 full: java.util.Optional<T>
+              notes: "an Optional describing the value of this\n         Optional,\
+                \ if a value is present and the value matches the\n         given\
+                \ predicate, otherwise an empty Optional"
+            notes: "If a value is present, and the value matches the given predicate,\n\
+              \ returns an Optional describing the value, otherwise returns an\n empty\
+              \ Optional."
           - name: flatMap
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: mapper
               type:
-                basic: Function<? super T, ? extends Optional<? extends U>>
+                basic: Function
                 full: java.util.function.Function<? super T, ? extends java.util.Optional<?
                   extends U>>
+              notes: the mapping function to apply to a value, if present
             return:
               type:
-                basic: Optional<U>
+                basic: Optional
                 full: java.util.Optional<U>
+              notes: "the result of applying an Optional-bearing mapping\n       \
+                \  function to the value of this Optional, if a value is\n       \
+                \  present, otherwise an empty Optional"
+            notes: "If a value is present, returns the result of applying the given\n\
+              \ Optional-bearing mapping function to the value, otherwise returns\n\
+              \ an empty Optional.\n\n This method is similar to map(Function), but\
+              \ the mapping\n function is one whose result is already an Optional,\
+              \ and if\n invoked, flatMap does not wrap it within an additional\n\
+              \ Optional."
           - name: get
             modifiers:
             - public
@@ -69,6 +112,8 @@ languages:
               type:
                 basic: T
                 full: T
+              notes: the non-null value described by this Optional
+            notes: "If a value is present, returns the value, otherwise throws\n NoSuchElementException."
           - name: hashCode
             modifiers:
             - public
@@ -76,34 +121,46 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "hash code value of the present value or 0 if no value is\n \
+                \        present"
+            notes: "Returns the hash code of the value, if present, otherwise 0\n\
+              \ (zero) if no value is present."
           - name: ifPresent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
-                basic: Consumer<? super T>
+                basic: Consumer
                 full: java.util.function.Consumer<? super T>
+              notes: the action to be performed, if a value is present
             return:
               type:
                 basic: void
                 full: void
+            notes: "If a value is present, performs the given action with the value,\n\
+              \ otherwise does nothing."
           - name: ifPresentOrElse
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
-                basic: Consumer<? super T>
+                basic: Consumer
                 full: java.util.function.Consumer<? super T>
-            - name: arg1
+              notes: the action to be performed, if a value is present
+            - name: emptyAction
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: "the empty-based action to be performed, if no value is\n   \
+                \     present"
             return:
               type:
                 basic: void
                 full: void
+            notes: "If a value is present, performs the given action with the value,\n\
+              \ otherwise performs the given empty-based action."
           - name: isEmpty
             modifiers:
             - public
@@ -111,6 +168,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if a value is not present, otherwise false
+            notes: "If a value is  not present, returns true, otherwise\n false."
           - name: isPresent
             modifiers:
             - public
@@ -118,42 +177,83 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if a value is present, otherwise false
+            notes: If a value is present, returns true, otherwise false.
           - name: map
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: mapper
               type:
-                basic: Function<? super T, ? extends U>
+                basic: Function
                 full: java.util.function.Function<? super T, ? extends U>
+              notes: the mapping function to apply to a value, if present
             return:
               type:
-                basic: Optional<U>
+                basic: Optional
                 full: java.util.Optional<U>
+              notes: "an Optional describing the result of applying a mapping\n  \
+                \       function to the value of this Optional, if a value is\n  \
+                \       present, otherwise an empty Optional"
+            notes: "If a value is present, returns an Optional describing (as if by\n\
+              \ ofNullable(T)) the result of applying the given mapping function to\n\
+              \ the value, otherwise returns an empty Optional.\n\n If the mapping\
+              \ function returns a null result then this method\n returns an empty\
+              \ Optional."
+          - name: or
+            modifiers:
+            - public
+            parameters:
+            - name: supplier
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<? extends java.util.Optional<? extends
+                  T>>
+              notes: "the supplying function that produces an Optional\n        to\
+                \ be returned"
+            return:
+              type:
+                basic: Optional
+                full: java.util.Optional<T>
+              notes: "returns an Optional describing the value of this\n         Optional,\
+                \ if a value is present, otherwise an\n         Optional produced\
+                \ by the supplying function."
+            notes: "If a value is present, returns an Optional describing the value,\n\
+              \ otherwise returns an Optional produced by the supplying function."
           - name: orElse
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: T
                 full: T
+              notes: "the value to be returned, if no value is present.\n        May\
+                \ be null."
             return:
               type:
                 basic: T
                 full: T
+              notes: the value, if present, otherwise other
+            notes: "If a value is present, returns the value, otherwise returns\n\
+              \ other."
           - name: orElseGet
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: supplier
               type:
-                basic: Supplier<? extends T>
+                basic: Supplier
                 full: java.util.function.Supplier<? extends T>
+              notes: the supplying function that produces a value to be returned
             return:
               type:
                 basic: T
                 full: T
+              notes: "the value, if present, otherwise the result produced by the\n\
+                \         supplying function"
+            notes: "If a value is present, returns the value, otherwise returns the\
+              \ result\n produced by the supplying function."
           - name: orElseThrow
             modifiers:
             - public
@@ -161,25 +261,42 @@ languages:
               type:
                 basic: T
                 full: T
+              notes: the non-null value described by this Optional
+            notes: "If a value is present, returns the value, otherwise throws\n NoSuchElementException."
           - name: orElseThrow
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: exceptionSupplier
               type:
-                basic: Supplier<? extends X>
+                basic: Supplier
                 full: java.util.function.Supplier<? extends X>
+              notes: "the supplying function that produces an\n        exception to\
+                \ be thrown"
             return:
               type:
                 basic: T
                 full: T
+              notes: the value, if present
+            notes: "If a value is present, returns the value, otherwise throws an\
+              \ exception\n produced by the exception supplying function."
           - name: stream
             modifiers:
             - public
             return:
               type:
-                basic: Stream<T>
+                basic: Stream
                 full: java.util.stream.Stream<T>
+              notes: the optional value as a Stream
+            notes: "If a value is present, returns a sequential Stream containing\n\
+              \ only that value, otherwise returns an empty Stream."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: empty
             modifiers:
@@ -187,33 +304,42 @@ languages:
             - static
             return:
               type:
-                basic: Optional<T>
+                basic: Optional
                 full: java.util.Optional<T>
+              notes: an empty Optional
+            notes: "Returns an empty Optional instance.  No value is present for this\n\
+              \ Optional."
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: T
                 full: T
+              notes: the value to describe, which must be non-null
             return:
               type:
-                basic: Optional<T>
+                basic: Optional
                 full: java.util.Optional<T>
+              notes: an Optional with the value present
+            notes: "Returns an Optional describing the given non-null\n value."
           - name: ofNullable
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: T
                 full: T
+              notes: the possibly-null value to describe
             return:
               type:
-                basic: Optional<T>
+                basic: Optional
                 full: java.util.Optional<T>
-          javaType: class
-          extends: Object
+              notes: "an Optional with a present value if the specified value\n  \
+                \       is non-null, otherwise an empty Optional"
+            notes: "Returns an Optional describing the given value, if\n non-null,\
+              \ otherwise returns an empty Optional."

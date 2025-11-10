@@ -4,65 +4,153 @@ languages:
     packages:
       java.awt.datatransfer:
         Clipboard:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A class that implements a mechanism to transfer data using cut/copy/paste\n\
+            \ operations.\n \n FlavorListeners may be registered on an instance of\
+            \ the Clipboard\n class to be notified about changes to the set of DataFlavors\n\
+            \ available on this clipboard (see addFlavorListener(java.awt.datatransfer.FlavorListener))."
+          fields:
+            contents:
+              name: contents
+              modifiers:
+              - protected
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: Contents of the clipboard.
+            currentDataFlavors:
+              name: currentDataFlavors
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.awt.datatransfer.DataFlavor>
+            flavorListeners:
+              name: flavorListeners
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.awt.datatransfer.FlavorListener>
+            name:
+              name: name
+              modifiers:
+              - package
+              type:
+                basic: String
+                full: java.lang.String
+            owner:
+              name: owner
+              modifiers:
+              - protected
+              type:
+                basic: ClipboardOwner
+                full: java.awt.datatransfer.ClipboardOwner
+              notes: The owner of the clipboard.
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: for the clipboard
+            notes: Creates a clipboard object.
           methods:
           - name: addFlavorListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: listener
               type:
                 basic: FlavorListener
                 full: java.awt.datatransfer.FlavorListener
+              notes: the listener to be added
             return:
               type:
                 basic: void
                 full: void
+            notes: "Registers the specified FlavorListener to receive\n FlavorEvents\
+              \ from this clipboard. If listener is\n null, no exception is thrown\
+              \ and no action is performed."
+          - name: fireFlavorsChanged
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getAvailableDataFlavorSet
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.awt.datatransfer.DataFlavor>
           - name: getAvailableDataFlavors
             modifiers:
             - public
             return:
               type:
-                basic: DataFlavor[]
+                basic: DataFlavor
                 full: java.awt.datatransfer.DataFlavor[]
+              notes: "an array of DataFlavors in which the current contents of\n \
+                \        this clipboard can be provided"
+            notes: "Returns an array of DataFlavors in which the current contents\
+              \ of\n this clipboard can be provided. If there are no DataFlavors\n\
+              \ available, this method returns a zero-length array."
           - name: getContents
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: requestor
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object requesting the clip data (not used)
             return:
               type:
                 basic: Transferable
                 full: java.awt.datatransfer.Transferable
+              notes: the current transferable object on the clipboard
+            notes: "Returns a transferable object representing the current contents\
+              \ of the\n clipboard. If the clipboard currently has no contents, it\
+              \ returns\n null. The parameter Object requestor is not currently used.\
+              \ The\n method throws IllegalStateException if the clipboard is currently\n\
+              \ unavailable. For example, on some platforms, the system clipboard\
+              \ is\n unavailable while it is accessed by another application."
           - name: getData
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: flavor
               type:
                 basic: DataFlavor
                 full: java.awt.datatransfer.DataFlavor
+              notes: the requested DataFlavor for the contents
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "an object representing the current contents of this clipboard\
+                \ in\n         the specified DataFlavor"
+            notes: "Returns an object representing the current contents of this clipboard\
+              \ in\n the specified DataFlavor. The class of the object returned is\n\
+              \ defined by the representation class of flavor."
           - name: getFlavorListeners
             modifiers:
             - public
             return:
               type:
-                basic: FlavorListener[]
+                basic: FlavorListener
                 full: java.awt.datatransfer.FlavorListener[]
+              notes: "all of this clipboard's FlavorListeners or an empty array\n\
+                \         if no listeners are currently registered"
+            notes: "Returns an array of all the FlavorListeners currently registered\n\
+              \ on this Clipboard."
           - name: getName
             modifiers:
             - public
@@ -70,21 +158,28 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of this clipboard object
+            notes: Returns the name of this clipboard object.
           - name: isDataFlavorAvailable
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: flavor
               type:
                 basic: DataFlavor
                 full: java.awt.datatransfer.DataFlavor
+              notes: the requested DataFlavor for the contents
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: removeFlavorListener
+              notes: "true if the current contents of this clipboard can be\n    \
+                \     provided in the specified DataFlavor; false\n         otherwise"
+            notes: "Returns whether or not the current contents of this clipboard\
+              \ can be\n provided in the specified DataFlavor."
+          - name: lambda$fireFlavorsChanged$1
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -94,21 +189,80 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: setContents
+          - name: lambda$fireFlavorsChanged$2
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Transferable
-                full: java.awt.datatransfer.Transferable
-            - name: arg1
-              type:
-                basic: ClipboardOwner
-                full: java.awt.datatransfer.ClipboardOwner
+                basic: FlavorListener
+                full: java.awt.datatransfer.FlavorListener
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+          - name: lambda$setContents$0
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClipboardOwner
+                full: java.awt.datatransfer.ClipboardOwner
+            - name: arg1
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeFlavorListener
+            modifiers:
+            - public
+            parameters:
+            - name: listener
+              type:
+                basic: FlavorListener
+                full: java.awt.datatransfer.FlavorListener
+              notes: the listener to be removed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Removes the specified FlavorListener so that it no longer\n receives\
+              \ FlavorEvents from this Clipboard. This method\n performs no function,\
+              \ nor does it throw an exception, if the listener\n specified by the\
+              \ argument was not previously added to this\n Clipboard. If listener\
+              \ is null, no exception is\n thrown and no action is performed."
+          - name: setContents
+            modifiers:
+            - public
+            parameters:
+            - name: contents
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: "the transferable object representing the clipboard\n       \
+                \  content"
+            - name: owner
+              type:
+                basic: ClipboardOwner
+                full: java.awt.datatransfer.ClipboardOwner
+              notes: the object which owns the clipboard content
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the current contents of the clipboard to the specified transferable\n\
+              \ object and registers the specified clipboard owner as the owner of\
+              \ the\n new contents.\n \n If there is an existing owner different from\
+              \ the argument owner,\n that owner is notified that it no longer holds\
+              \ ownership of the clipboard\n contents via an invocation of ClipboardOwner.lostOwnership()\
+              \ on\n that owner. An implementation of setContents() is free not to\n\
+              \ invoke lostOwnership() directly from this method. For example,\n lostOwnership()\
+              \ may be invoked later on a different thread. The\n same applies to\
+              \ FlavorListeners registered on this clipboard.\n \n The method throws\
+              \ IllegalStateException if the clipboard is\n currently unavailable.\
+              \ For example, on some platforms, the system\n clipboard is unavailable\
+              \ while it is accessed by another application."

@@ -1,0 +1,960 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent.locks:
+        AbstractQueuedSynchronizer:
+          extends: java.util.concurrent.locks.AbstractOwnableSynchronizer
+          modifiers:
+          - public
+          - abstract
+          notes: "Provides a framework for implementing blocking locks and related\n\
+            \ synchronizers (semaphores, events, etc) that rely on\n first-in-first-out\
+            \ (FIFO) wait queues.  This class is designed to\n be a useful basis for\
+            \ most kinds of synchronizers that rely on a\n single atomic int value\
+            \ to represent state. Subclasses\n must define the protected methods that\
+            \ change this state, and which\n define what that state means in terms\
+            \ of this object being acquired\n or released.  Given these, the other\
+            \ methods in this class carry\n out all queuing and blocking mechanics.\
+            \ Subclasses can maintain\n other state fields, but only the atomically\
+            \ updated int\n value manipulated using methods getState(), setState(int)\
+            \ and compareAndSetState(int, int) is tracked with respect\n to synchronization.\n\
+            \n Subclasses should be defined as non-public internal helper\n classes\
+            \ that are used to implement the synchronization properties\n of their\
+            \ enclosing class.  Class\n AbstractQueuedSynchronizer does not implement\
+            \ any\n synchronization interface.  Instead it defines methods such as\n\
+            \ acquireInterruptibly(int) that can be invoked as\n appropriate by concrete\
+            \ locks and related synchronizers to\n implement their public methods.\n\
+            \n This class supports either or both a default exclusive\n mode and a\
+            \ shared mode. When acquired in exclusive mode,\n attempted acquires by\
+            \ other threads cannot succeed. Shared mode\n acquires by multiple threads\
+            \ may (but need not) succeed. This class\n does not &quot;understand&quot;\
+            \ these differences except in the\n mechanical sense that when a shared\
+            \ mode acquire succeeds, the next\n waiting thread (if one exists) must\
+            \ also determine whether it can\n acquire as well. Threads waiting in\
+            \ the different modes share the\n same FIFO queue. Usually, implementation\
+            \ subclasses support only\n one of these modes, but both can come into\
+            \ play for example in a\n ReadWriteLock. Subclasses that support only\
+            \ exclusive or\n only shared modes need not define the methods supporting\
+            \ the unused mode.\n\n This class defines a nested AbstractQueuedSynchronizer.ConditionObject\
+            \ class that\n can be used as a Condition implementation by subclasses\n\
+            \ supporting exclusive mode for which method isHeldExclusively() reports\
+            \ whether synchronization is exclusively\n held with respect to the current\
+            \ thread, method release(int)\n invoked with the current getState() value\
+            \ fully releases\n this object, and acquire(java.util.concurrent.locks.AbstractQueuedSynchronizer.Node,\
+            \ int, boolean, boolean, boolean, long), given this saved state value,\n\
+            \ eventually restores this object to its previous acquired state.  No\n\
+            \ AbstractQueuedSynchronizer method otherwise creates such a\n condition,\
+            \ so if this constraint cannot be met, do not use it.  The\n behavior\
+            \ of AbstractQueuedSynchronizer.ConditionObject depends of course on the\n\
+            \ semantics of its synchronizer implementation.\n\n This class provides\
+            \ inspection, instrumentation, and monitoring\n methods for the internal\
+            \ queue, as well as similar methods for\n condition objects. These can\
+            \ be exported as desired into classes\n using an AbstractQueuedSynchronizer\
+            \ for their\n synchronization mechanics.\n\n Serialization of this class\
+            \ stores only the underlying atomic\n integer maintaining state, so deserialized\
+            \ objects have empty\n thread queues. Typical subclasses requiring serializability\
+            \ will\n define a readObject method that restores this to a known\n initial\
+            \ state upon deserialization.\n\n Usage\n\n To use this class as the basis\
+            \ of a synchronizer, redefine the\n following methods, as applicable,\
+            \ by inspecting and/or modifying\n the synchronization state using getState(),\
+            \ setState(int) and/or compareAndSetState(int, int):\n\n \n tryAcquire(int)\n\
+            \ tryRelease(int)\n tryAcquireShared(int)\n tryReleaseShared(int)\n isHeldExclusively()\n\
+            \ \n\n Each of these methods by default throws UnsupportedOperationException.\
+            \  Implementations of these methods\n must be internally thread-safe,\
+            \ and should in general be short and\n not block. Defining these methods\
+            \ is the only supported\n means of using this class. All other methods\
+            \ are declared\n final because they cannot be independently varied.\n\n\
+            \ You may also find the inherited methods from AbstractOwnableSynchronizer\
+            \ useful to keep track of the thread\n owning an exclusive synchronizer.\
+            \  You are encouraged to use them\n -- this enables monitoring and diagnostic\
+            \ tools to assist users in\n determining which threads hold locks.\n\n\
+            \ Even though this class is based on an internal FIFO queue, it\n does\
+            \ not automatically enforce FIFO acquisition policies.  The core\n of\
+            \ exclusive synchronization takes the form:\n\n \n <em>Acquire:</em>\n\
+            \     while (!tryAcquire(arg)) {\n        <em>enqueue thread if it is\
+            \ not already queued</em>;\n        <em>possibly block current thread</em>;\n\
+            \     }\n\n <em>Release:</em>\n     if (tryRelease(arg))\n        <em>unblock\
+            \ the first queued thread</em>;\n \n\n (Shared mode is similar but may\
+            \ involve cascading signals.)\n\n Because checks in acquire are invoked\
+            \ before\n enqueuing, a newly acquiring thread may barge ahead of\n others\
+            \ that are blocked and queued.  However, you can, if desired,\n define\
+            \ tryAcquire and/or tryAcquireShared to\n disable barging by internally\
+            \ invoking one or more of the inspection\n methods, thereby providing\
+            \ a fair FIFO acquisition order.\n In particular, most fair synchronizers\
+            \ can define tryAcquire\n to return false if hasQueuedPredecessors() (a\
+            \ method\n specifically designed to be used by fair synchronizers) returns\n\
+            \ true.  Other variations are possible.\n\n Throughput and scalability\
+            \ are generally highest for the\n default barging (also known as greedy,\n\
+            \ renouncement, and convoy-avoidance) strategy.\n While this is not guaranteed\
+            \ to be fair or starvation-free, earlier\n queued threads are allowed\
+            \ to recontend before later queued\n threads, and each recontention has\
+            \ an unbiased chance to succeed\n against incoming threads.  Also, while\
+            \ acquires do not\n &quot;spin&quot; in the usual sense, they may perform\
+            \ multiple\n invocations of tryAcquire interspersed with other\n computations\
+            \ before blocking.  This gives most of the benefits of\n spins when exclusive\
+            \ synchronization is only briefly held, without\n most of the liabilities\
+            \ when it isn't. If so desired, you can\n augment this by preceding calls\
+            \ to acquire methods with\n \"fast-path\" checks, possibly prechecking\
+            \ hasContended()\n and/or hasQueuedThreads() to only do so if the synchronizer\n\
+            \ is likely not to be contended.\n\n This class provides an efficient\
+            \ and scalable basis for\n synchronization in part by specializing its\
+            \ range of use to\n synchronizers that can rely on int state, acquire,\
+            \ and\n release parameters, and an internal FIFO wait queue. When this\
+            \ does\n not suffice, you can build synchronizers from a lower level using\n\
+            \ atomic classes, your own custom\n Queue classes, and LockSupport blocking\n\
+            \ support.\n\n Usage Examples\n\n Here is a non-reentrant mutual exclusion\
+            \ lock class that uses\n the value zero to represent the unlocked state,\
+            \ and one to\n represent the locked state. While a non-reentrant lock\n\
+            \ does not strictly require recording of the current owner\n thread, this\
+            \ class does so anyway to make usage easier to monitor.\n It also supports\
+            \ conditions and exposes some instrumentation methods:\n\n  <code>\n class\
+            \ Mutex implements Lock, java.io.Serializable {\n\n   // Our internal\
+            \ helper class\n   private static class Sync extends AbstractQueuedSynchronizer\
+            \ {\n     // Acquires the lock if state is zero\n     public boolean tryAcquire(int\
+            \ acquires) {\n       assert acquires == 1; // Otherwise unused\n    \
+            \   if (compareAndSetState(0, 1)) {\n         setExclusiveOwnerThread(Thread.currentThread());\n\
+            \         return true;\n       }\n       return false;\n     }\n\n   \
+            \  // Releases the lock by setting state to zero\n     protected boolean\
+            \ tryRelease(int releases) {\n       assert releases == 1; // Otherwise\
+            \ unused\n       if (!isHeldExclusively())\n         throw new IllegalMonitorStateException();\n\
+            \       setExclusiveOwnerThread(null);\n       setState(0);\n       return\
+            \ true;\n     }\n\n     // Reports whether in locked state\n     public\
+            \ boolean isLocked() {\n       return getState() != 0;\n     }\n\n   \
+            \  public boolean isHeldExclusively() {\n       // a data race, but safe\
+            \ due to out-of-thin-air guarantees\n       return getExclusiveOwnerThread()\
+            \ == Thread.currentThread();\n     }\n\n     // Provides a Condition\n\
+            \     public Condition newCondition() {\n       return new ConditionObject();\n\
+            \     }\n\n     // Deserializes properly\n     private void readObject(ObjectInputStream\
+            \ s)\n         throws IOException, ClassNotFoundException {\n       s.defaultReadObject();\n\
+            \       setState(0); // reset to unlocked state\n     }\n   }\n\n   //\
+            \ The sync object does all the hard work. We just forward to it.\n   private\
+            \ final Sync sync = new Sync();\n\n   public void lock()             \
+            \ { sync.acquire(1); }\n   public boolean tryLock()        { return sync.tryAcquire(1);\
+            \ }\n   public void unlock()            { sync.release(1); }\n   public\
+            \ Condition newCondition() { return sync.newCondition(); }\n   public\
+            \ boolean isLocked()       { return sync.isLocked(); }\n   public boolean\
+            \ isHeldByCurrentThread() {\n     return sync.isHeldExclusively();\n \
+            \  }\n   public boolean hasQueuedThreads() {\n     return sync.hasQueuedThreads();\n\
+            \   }\n   public void lockInterruptibly() throws InterruptedException\
+            \ {\n     sync.acquireInterruptibly(1);\n   }\n   public boolean tryLock(long\
+            \ timeout, TimeUnit unit)\n       throws InterruptedException {\n    \
+            \ return sync.tryAcquireNanos(1, unit.toNanos(timeout));\n   }\n }</code>\n\
+            \n Here is a latch class that is like a\n CountDownLatch\n except that\
+            \ it only requires a single signal to\n fire. Because a latch is non-exclusive,\
+            \ it uses the shared\n acquire and release methods.\n\n  <code>\n class\
+            \ BooleanLatch {\n\n   private static class Sync extends AbstractQueuedSynchronizer\
+            \ {\n     boolean isSignalled() { return getState() != 0; }\n\n     protected\
+            \ int tryAcquireShared(int ignore) {\n       return isSignalled() ? 1\
+            \ : -1;\n     }\n\n     protected boolean tryReleaseShared(int ignore)\
+            \ {\n       setState(1);\n       return true;\n     }\n   }\n\n   private\
+            \ final Sync sync = new Sync();\n   public boolean isSignalled() { return\
+            \ sync.isSignalled(); }\n   public void signal()         { sync.releaseShared(1);\
+            \ }\n   public void await() throws InterruptedException {\n     sync.acquireSharedInterruptibly(1);\n\
+            \   }\n }</code>"
+          fields:
+            head:
+              name: head
+              modifiers:
+              - private
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            state:
+              name: state
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            tail:
+              name: tail
+              modifiers:
+              - private
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+          staticFields:
+            CANCELLED:
+              name: CANCELLED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            COND:
+              name: COND
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            HEAD:
+              name: HEAD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            STATE:
+              name: STATE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            TAIL:
+              name: TAIL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            U:
+              name: U
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            WAITING:
+              name: WAITING
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Creates a new AbstractQueuedSynchronizer instance\n with initial\
+              \ synchronization state of zero."
+          methods:
+          - name: acquire
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg5
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int
+          - name: acquire
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument.  This value is conveyed to\n        tryAcquire(int)\
+                \ but is otherwise uninterpreted and\n        can represent anything\
+                \ you like."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Acquires in exclusive mode, ignoring interrupts.  Implemented\n\
+              \ by invoking at least once tryAcquire(int),\n returning on success.\
+              \  Otherwise the thread is queued, possibly\n repeatedly blocking and\
+              \ unblocking, invoking tryAcquire(int) until success.  This method can\
+              \ be used\n to implement method Lock.lock()."
+          - name: acquireInterruptibly
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument.  This value is conveyed to\n        tryAcquire(int)\
+                \ but is otherwise uninterpreted and\n        can represent anything\
+                \ you like."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Acquires in exclusive mode, aborting if interrupted.\n Implemented\
+              \ by first checking interrupt status, then invoking\n at least once\
+              \ tryAcquire(int), returning on\n success.  Otherwise the thread is\
+              \ queued, possibly repeatedly\n blocking and unblocking, invoking tryAcquire(int)\n\
+              \ until success or the thread is interrupted.  This method can be\n\
+              \ used to implement method Lock.lockInterruptibly()."
+          - name: acquireShared
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument.  This value is conveyed to\n        tryAcquireShared(int)\
+                \ but is otherwise uninterpreted\n        and can represent anything\
+                \ you like."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Acquires in shared mode, ignoring interrupts.  Implemented by\n\
+              \ first invoking at least once tryAcquireShared(int),\n returning on\
+              \ success.  Otherwise the thread is queued, possibly\n repeatedly blocking\
+              \ and unblocking, invoking tryAcquireShared(int) until success."
+          - name: acquireSharedInterruptibly
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument.\n This value is conveyed to tryAcquireShared(int)\
+                \ but is\n otherwise uninterpreted and can represent anything\n you\
+                \ like."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Acquires in shared mode, aborting if interrupted.  Implemented\n\
+              \ by first checking interrupt status, then invoking at least once\n\
+              \ tryAcquireShared(int), returning on success.  Otherwise the\n thread\
+              \ is queued, possibly repeatedly blocking and unblocking,\n invoking\
+              \ tryAcquireShared(int) until success or the thread\n is interrupted."
+          - name: apparentlyFirstQueuedIsExclusive
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: cancelAcquire
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
+          - name: casTail
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            - name: arg1
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: cleanQueue
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: compareAndSetState
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: expect
+              type:
+                basic: int
+                full: int
+              notes: the expected value
+            - name: update
+              type:
+                basic: int
+                full: int
+              notes: the new value
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if successful. False return indicates that the actual\n\
+                \         value was not equal to the expected value."
+            notes: "Atomically sets synchronization state to the given updated\n value\
+              \ if the current state value equals the expected value.\n This operation\
+              \ has memory semantics of a volatile read\n and write."
+          - name: enqueue
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getExclusiveQueuedThreads
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire in exclusive mode. This has the same properties\n as getQueuedThreads()\
+              \ except that it only returns\n those threads waiting due to an exclusive\
+              \ acquire."
+          - name: getFirstQueuedThread
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: "the first (longest-waiting) thread in the queue, or\n      \
+                \   null if no threads are currently queued"
+            notes: "Returns the first (longest-waiting) thread in the queue, or\n\
+              \ null if no threads are currently queued.\n\n In this implementation,\
+              \ this operation normally returns in\n constant time, but may iterate\
+              \ upon contention if other threads are\n concurrently modifying the\
+              \ queue."
+          - name: getQueueLength
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the estimated number of threads waiting to acquire
+            notes: "Returns an estimate of the number of threads waiting to\n acquire.\
+              \  The value is only an estimate because the number of\n threads may\
+              \ change dynamically while this method traverses\n internal data structures.\
+              \  This method is designed for use in\n monitoring system state, not\
+              \ for synchronization control."
+          - name: getQueuedThreads
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire.  Because the actual set of threads may change\n dynamically\
+              \ while constructing this result, the returned\n collection is only\
+              \ a best-effort estimate.  The elements of the\n returned collection\
+              \ are in no particular order.  This method is\n designed to facilitate\
+              \ construction of subclasses that provide\n more extensive monitoring\
+              \ facilities."
+          - name: getSharedQueuedThreads
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire in shared mode. This has the same properties\n as getQueuedThreads()\
+              \ except that it only returns\n those threads waiting due to a shared\
+              \ acquire."
+          - name: getState
+            modifiers:
+            - protected
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: current state value
+            notes: "Returns the current value of synchronization state.\n This operation\
+              \ has memory semantics of a volatile read."
+          - name: getWaitQueueLength
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: condition
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionObject
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject
+              notes: the condition
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the estimated number of waiting threads
+            notes: "Returns an estimate of the number of threads waiting on the\n\
+              \ given condition associated with this synchronizer. Note that\n because\
+              \ timeouts and interrupts may occur at any time, the\n estimate serves\
+              \ only as an upper bound on the actual number of\n waiters.  This method\
+              \ is designed for use in monitoring system\n state, not for synchronization\
+              \ control."
+          - name: getWaitingThreads
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionObject
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+          - name: hasContended
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there has ever been contention
+            notes: "Queries whether any threads have ever contended to acquire this\n\
+              \ synchronizer; that is, if an acquire method has ever blocked.\n\n\
+              \ In this implementation, this operation returns in\n constant time."
+          - name: hasQueuedPredecessors
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if there is a queued thread preceding the\n         current\
+                \ thread, and false if the current thread\n         is at the head\
+                \ of the queue or the queue is empty"
+            notes: "Queries whether any threads have been waiting to acquire longer\n\
+              \ than the current thread.\n\n An invocation of this method is equivalent\
+              \ to (but may be\n more efficient than):\n  <code>\n getFirstQueuedThread()\
+              \ != Thread.currentThread()\n   && hasQueuedThreads()</code>\n\n Note\
+              \ that because cancellations due to interrupts and\n timeouts may occur\
+              \ at any time, a true return does not\n guarantee that some other thread\
+              \ will acquire before the current\n thread.  Likewise, it is possible\
+              \ for another thread to win a\n race to enqueue after this method has\
+              \ returned false,\n due to the queue being empty.\n\n This method is\
+              \ designed to be used by a fair synchronizer to\n avoid barging.\n Such\
+              \ a synchronizer's tryAcquire(int) method should return\n false, and\
+              \ its tryAcquireShared(int) method should\n return a negative value,\
+              \ if this method returns true\n (unless this is a reentrant acquire).\
+              \  For example, the \n tryAcquire method for a fair, reentrant, exclusive\
+              \ mode\n synchronizer might look like this:\n\n  <code>\n protected\
+              \ boolean tryAcquire(int arg) {\n   if (isHeldExclusively()) {\n   \
+              \  // A reentrant acquire; increment hold count\n     return true;\n\
+              \   } else if (hasQueuedPredecessors()) {\n     return false;\n   }\
+              \ else {\n     // try to acquire normally\n   }\n }</code>"
+          - name: hasQueuedThreads
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there may be other threads waiting to acquire
+            notes: "Queries whether any threads are waiting to acquire. Note that\n\
+              \ because cancellations due to interrupts and timeouts may occur\n at\
+              \ any time, a true return does not guarantee that any\n other thread\
+              \ will ever acquire."
+          - name: hasWaiters
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: condition
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionObject
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject
+              notes: the condition
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there are any waiting threads
+            notes: "Queries whether any threads are waiting on the given condition\n\
+              \ associated with this synchronizer. Note that because timeouts\n and\
+              \ interrupts may occur at any time, a true return\n does not guarantee\
+              \ that a future signal will awaken\n any threads.  This method is designed\
+              \ primarily for use in\n monitoring of the system state."
+          - name: isEnqueued
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isHeldExclusively
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if synchronization is held exclusively;\n         false\
+                \ otherwise"
+            notes: "Returns true if synchronization is held exclusively with\n respect\
+              \ to the current (calling) thread.  This method is invoked\n upon each\
+              \ call to a AbstractQueuedSynchronizer.ConditionObject method.\n\n The\
+              \ default implementation throws UnsupportedOperationException. This\
+              \ method is invoked\n internally only within AbstractQueuedSynchronizer.ConditionObject\
+              \ methods, so need\n not be defined if conditions are not used."
+          - name: isQueued
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: thread
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: the thread
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the given thread is on the queue
+            notes: "Returns true if the given thread is currently queued.\n\n This\
+              \ implementation traverses the queue to determine\n presence of the\
+              \ given thread."
+          - name: owns
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: condition
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionObject
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject
+              notes: the condition
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if owned
+            notes: "Queries whether the given ConditionObject\n uses this synchronizer\
+              \ as its lock."
+          - name: release
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the release argument.  This value is conveyed to\n        tryRelease(int)\
+                \ but is otherwise uninterpreted and\n        can represent anything\
+                \ you like."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: the value returned from tryRelease(int)
+            notes: "Releases in exclusive mode.  Implemented by unblocking one or\n\
+              \ more threads if tryRelease(int) returns true.\n This method can be\
+              \ used to implement method Lock.unlock()."
+          - name: releaseShared
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the release argument.  This value is conveyed to\n        tryReleaseShared(int)\
+                \ but is otherwise uninterpreted\n        and can represent anything\
+                \ you like."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: the value returned from tryReleaseShared(int)
+            notes: "Releases in shared mode.  Implemented by unblocking one or more\n\
+              \ threads if tryReleaseShared(int) returns true."
+          - name: setState
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: newState
+              type:
+                basic: int
+                full: int
+              notes: the new state value
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the value of synchronization state.\n This operation has\
+              \ memory semantics of a volatile write."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: tryAcquire
+            modifiers:
+            - protected
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument. This value is always the one\n       \
+                \ passed to an acquire method, or is the value saved on entry\n  \
+                \      to a condition wait.  The value is otherwise uninterpreted\n\
+                \        and can represent anything you like."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if successful. Upon success, this object has\n        \
+                \ been acquired."
+            notes: "Attempts to acquire in exclusive mode. This method should query\n\
+              \ if the state of the object permits it to be acquired in the\n exclusive\
+              \ mode, and if so to acquire it.\n\n This method is always invoked by\
+              \ the thread performing\n acquire.  If this method reports failure,\
+              \ the acquire method\n may queue the thread, if it is not already queued,\
+              \ until it is\n signalled by a release from some other thread. This\
+              \ can be used\n to implement method Lock.tryLock().\n\n The default\n\
+              \ implementation throws UnsupportedOperationException."
+          - name: tryAcquireNanos
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument.  This value is conveyed to\n        tryAcquire(int)\
+                \ but is otherwise uninterpreted and\n        can represent anything\
+                \ you like."
+            - name: nanosTimeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum number of nanoseconds to wait
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if acquired; false if timed out
+            notes: "Attempts to acquire in exclusive mode, aborting if interrupted,\n\
+              \ and failing if the given timeout elapses.  Implemented by first\n\
+              \ checking interrupt status, then invoking at least once tryAcquire(int),\
+              \ returning on success.  Otherwise, the thread is\n queued, possibly\
+              \ repeatedly blocking and unblocking, invoking\n tryAcquire(int) until\
+              \ success or the thread is interrupted\n or the timeout elapses.  This\
+              \ method can be used to implement\n method Lock.tryLock(long, TimeUnit)."
+          - name: tryAcquireShared
+            modifiers:
+            - protected
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument. This value is always the one\n       \
+                \ passed to an acquire method, or is the value saved on entry\n  \
+                \      to a condition wait.  The value is otherwise uninterpreted\n\
+                \        and can represent anything you like."
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "a negative value on failure; zero if acquisition in shared\n\
+                \         mode succeeded but no subsequent shared-mode acquire can\n\
+                \         succeed; and a positive value if acquisition in shared\n\
+                \         mode succeeded and subsequent shared-mode acquires might\n\
+                \         also succeed, in which case a subsequent waiting thread\n\
+                \         must check availability. (Support for three different\n\
+                \         return values enables this method to be used in contexts\n\
+                \         where acquires only sometimes act exclusively.)  Upon\n\
+                \         success, this object has been acquired."
+            notes: "Attempts to acquire in shared mode. This method should query if\n\
+              \ the state of the object permits it to be acquired in the shared\n\
+              \ mode, and if so to acquire it.\n\n This method is always invoked by\
+              \ the thread performing\n acquire.  If this method reports failure,\
+              \ the acquire method\n may queue the thread, if it is not already queued,\
+              \ until it is\n signalled by a release from some other thread.\n\n The\
+              \ default implementation throws UnsupportedOperationException."
+          - name: tryAcquireSharedNanos
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the acquire argument.  This value is conveyed to\n        tryAcquireShared(int)\
+                \ but is otherwise uninterpreted\n        and can represent anything\
+                \ you like."
+            - name: nanosTimeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum number of nanoseconds to wait
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if acquired; false if timed out
+            notes: "Attempts to acquire in shared mode, aborting if interrupted, and\n\
+              \ failing if the given timeout elapses.  Implemented by first\n checking\
+              \ interrupt status, then invoking at least once tryAcquireShared(int),\
+              \ returning on success.  Otherwise, the\n thread is queued, possibly\
+              \ repeatedly blocking and unblocking,\n invoking tryAcquireShared(int)\
+              \ until success or the thread\n is interrupted or the timeout elapses."
+          - name: tryInitializeHead
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: tryRelease
+            modifiers:
+            - protected
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the release argument. This value is always the one\n       \
+                \ passed to a release method, or the current state value upon\n  \
+                \      entry to a condition wait.  The value is otherwise\n      \
+                \  uninterpreted and can represent anything you like."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this object is now in a fully released\n         state,\
+                \ so that any waiting threads may attempt to acquire;\n         and\
+                \ false otherwise."
+            notes: "Attempts to set the state to reflect a release in exclusive\n\
+              \ mode.\n\n This method is always invoked by the thread performing release.\n\
+              \n The default implementation throws\n UnsupportedOperationException."
+          - name: tryReleaseShared
+            modifiers:
+            - protected
+            parameters:
+            - name: arg
+              type:
+                basic: int
+                full: int
+              notes: "the release argument. This value is always the one\n       \
+                \ passed to a release method, or the current state value upon\n  \
+                \      entry to a condition wait.  The value is otherwise\n      \
+                \  uninterpreted and can represent anything you like."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this release of shared mode may permit a\n         waiting\
+                \ acquire (shared or exclusive) to succeed; and\n         false otherwise"
+            notes: "Attempts to set the state to reflect a release in shared mode.\n\
+              \n This method is always invoked by the thread performing release.\n\
+              \n The default implementation throws\n UnsupportedOperationException."
+          staticMethods:
+          - name: signalNext
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            return:
+              type:
+                basic: void
+                full: void
+          - name: signalNextIfShared
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.Node
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+            return:
+              type:
+                basic: void
+                full: void

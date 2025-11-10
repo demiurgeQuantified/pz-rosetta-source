@@ -4,19 +4,121 @@ languages:
     packages:
       java.awt.dnd:
         DropTargetContext:
-          methods:
-          - name: dropComplete
-            modifiers:
-            - public
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A DropTargetContext is created\n whenever the logical cursor associated\n\
+            \ with a Drag and Drop operation coincides with the visible geometry of\n\
+            \ a Component associated with a DropTarget.\n The DropTargetContext provides\n\
+            \ the mechanism for a potential receiver\n of a drop operation to both\
+            \ provide the end user with the appropriate\n drag under feedback, but\
+            \ also to effect the subsequent data transfer\n if appropriate."
+          fields:
+            dropTarget:
+              name: dropTarget
+              modifiers:
+              - private
+              type:
+                basic: DropTarget
+                full: java.awt.dnd.DropTarget
+            dropTargetContextPeer:
+              name: dropTargetContextPeer
+              modifiers:
+              - private
+              type:
+                basic: DropTargetContextPeer
+                full: java.awt.dnd.peer.DropTargetContextPeer
+            transferable:
+              name: transferable
+              modifiers:
+              - private
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
-                basic: boolean
-                full: boolean
+                basic: DropTarget
+                full: java.awt.dnd.DropTarget
+          methods:
+          - name: acceptDrag
+            modifiers:
+            - protected
+            parameters:
+            - name: dragOperation
+              type:
+                basic: int
+                full: int
+              notes: the supported action(s)
             return:
               type:
                 basic: void
                 full: void
+            notes: accept the Drag.
+          - name: acceptDrop
+            modifiers:
+            - protected
+            parameters:
+            - name: dropOperation
+              type:
+                basic: int
+                full: int
+              notes: the supported action(s)
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "called to signal that the drop is acceptable\n using the specified\
+              \ operation.\n must be called during DropTargetListener.drop method\
+              \ invocation."
+          - name: createTransferableProxy
+            modifiers:
+            - protected
+            parameters:
+            - name: t
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: the Transferable to be proxied
+            - name: local
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if t represents\n        the result of a local drag-n-drop\
+                \ operation."
+            return:
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: the new TransferableProxy instance.
+            notes: "Creates a TransferableProxy to proxy for the specified\n Transferable."
+          - name: dropComplete
+            modifiers:
+            - public
+            parameters:
+            - name: success
+              type:
+                basic: boolean
+                full: boolean
+              notes: true for success, false if not
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "This method signals that the drop is completed and\n if it was\
+              \ successful or not."
           - name: getComponent
             modifiers:
             - public
@@ -24,6 +126,29 @@ languages:
               type:
                 basic: Component
                 full: java.awt.Component
+              notes: the Component associated with this Context
+            notes: "This method returns the Component associated with\n this DropTargetContext."
+          - name: getCurrentDataFlavors
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: DataFlavor
+                full: java.awt.datatransfer.DataFlavor[]
+              notes: "a DataFlavor[] containing the\n supported DataFlavors of the\n\
+                \ Transferable operand."
+            notes: "get the available DataFlavors of the\n Transferable operand of\
+              \ this operation."
+          - name: getCurrentDataFlavorsAsList
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.awt.datatransfer.DataFlavor>
+              notes: "the currently available\n DataFlavors as a java.util.List"
+            notes: "This method returns a the currently available DataFlavors\n of\
+              \ the Transferable operand\n as a java.util.List."
           - name: getDropTarget
             modifiers:
             - public
@@ -31,5 +156,97 @@ languages:
               type:
                 basic: DropTarget
                 full: java.awt.dnd.DropTarget
-          javaType: class
-          extends: Object
+              notes: the DropTarget associated with this DropTargetContext
+            notes: "This method returns the DropTarget associated with this\n DropTargetContext."
+          - name: getDropTargetContextPeer
+            modifiers:
+            - package
+            return:
+              type:
+                basic: DropTargetContextPeer
+                full: java.awt.dnd.peer.DropTargetContextPeer
+          - name: getTargetActions
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the current actions acceptable to this DropTarget
+            notes: "This method returns an int representing the\n current actions\
+              \ this DropTarget will accept."
+          - name: getTransferable
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: the Transferable
+            notes: get the Transferable (proxy) operand of this operation
+          - name: isDataFlavorSupported
+            modifiers:
+            - protected
+            parameters:
+            - name: df
+              type:
+                basic: DataFlavor
+                full: java.awt.datatransfer.DataFlavor
+              notes: the DataFlavor
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: if the DataFlavor specified is supported
+            notes: "This method returns a boolean\n indicating if the given DataFlavor\
+              \ is\n supported by this DropTargetContext."
+          - name: rejectDrag
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: reject the Drag.
+          - name: rejectDrop
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "called to signal that the drop is unacceptable.\n must be called\
+              \ during DropTargetListener.drop method invocation."
+          - name: reset
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setDropTargetContextPeer
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DropTargetContextPeer
+                full: java.awt.dnd.peer.DropTargetContextPeer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setTargetActions
+            modifiers:
+            - protected
+            parameters:
+            - name: actions
+              type:
+                basic: int
+                full: int
+              notes: an int representing the supported action(s)
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "This method sets the current actions acceptable to\n this DropTarget."

@@ -4,67 +4,177 @@ languages:
     packages:
       java.time:
         ZoneId:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A time-zone ID, such as Europe/Paris.\n \n A ZoneId is used to identify\
+            \ the rules used to convert between\n an Instant and a LocalDateTime.\n\
+            \ There are two distinct types of ID:\n \n Fixed offsets - a fully resolved\
+            \ offset from UTC/Greenwich, that uses\n  the same offset for all local\
+            \ date-times\n Geographical regions - an area where a specific set of\
+            \ rules for finding\n  the offset from UTC/Greenwich apply\n \n Most fixed\
+            \ offsets are represented by ZoneOffset.\n Calling normalized() on any\
+            \ ZoneId will ensure that a\n fixed offset ID will be represented as a\
+            \ ZoneOffset.\n \n The actual rules, describing when and how the offset\
+            \ changes, are defined by ZoneRules.\n This class is simply an ID used\
+            \ to obtain the underlying rules.\n This approach is taken because rules\
+            \ are defined by governments and change\n frequently, whereas the ID is\
+            \ stable.\n \n The distinction has other effects. Serializing the ZoneId\
+            \ will only send\n the ID, whereas serializing the rules sends the entire\
+            \ data set.\n Similarly, a comparison of two IDs only examines the ID,\
+            \ whereas\n a comparison of two rules examines the entire data set.\n\n\
+            \ Time-zone IDs\n The ID is unique within the system.\n There are three\
+            \ types of ID.\n \n The simplest type of ID is that from ZoneOffset.\n\
+            \ This consists of 'Z' and IDs starting with '+' or '-'.\n \n The next\
+            \ type of ID are offset-style IDs with some form of prefix,\n such as\
+            \ 'GMT+2' or 'UTC+01:00'.\n The recognised prefixes are 'UTC', 'GMT' and\
+            \ 'UT'.\n The offset is the suffix and will be normalized during creation.\n\
+            \ These IDs can be normalized to a ZoneOffset using normalized().\n \n\
+            \ The third type of ID are region-based IDs. A region-based ID must be\
+            \ of\n two or more characters, and not start with 'UTC', 'GMT', 'UT' '+'\
+            \ or '-'.\n Region-based IDs are defined by configuration, see ZoneRulesProvider.\n\
+            \ The configuration focuses on providing the lookup from the ID to the\n\
+            \ underlying ZoneRules.\n \n Time-zone rules are defined by governments\
+            \ and change frequently.\n There are a number of organizations, known\
+            \ here as groups, that monitor\n time-zone changes and collate them.\n\
+            \ The default group is the IANA Time Zone Database (TZDB).\n Other organizations\
+            \ include IATA (the airline industry body) and Microsoft.\n \n Each group\
+            \ defines its own format for the region ID it provides.\n The TZDB group\
+            \ defines IDs such as 'Europe/London' or 'America/New_York'.\n TZDB IDs\
+            \ take precedence over other groups.\n \n It is strongly recommended that\
+            \ the group name is included in all IDs supplied by\n groups other than\
+            \ TZDB to avoid conflicts. For example, IATA airline time-zone\n region\
+            \ IDs are typically the same as the three letter airport code.\n However,\
+            \ the airport of Utrecht has the code 'UTC', which is obviously a conflict.\n\
+            \ The recommended format for region IDs from groups other than TZDB is\
+            \ 'group~region'.\n Thus if IATA data were defined, Utrecht airport would\
+            \ be 'IATA~UTC'.\n\n Serialization\n This class can be serialized and\
+            \ stores the string zone ID in the external form.\n The ZoneOffset subclass\
+            \ uses a dedicated format that only stores the\n offset from UTC/Greenwich.\n\
+            \ \n A ZoneId can be deserialized in a Java Runtime where the ID is unknown.\n\
+            \ For example, if a server-side Java Runtime has been updated with a new\
+            \ zone ID, but\n the client-side Java Runtime has not been updated. In\
+            \ this case, the ZoneId\n object will exist, and can be queried using\
+            \ getId, equals,\n hashCode, toString, getDisplayName and normalized.\n\
+            \ However, any call to getRules will fail with ZoneRulesException.\n This\
+            \ approach is designed to allow a ZonedDateTime to be loaded and\n queried,\
+            \ but not modified, on a Java Runtime with incomplete time-zone information.\n\
+            \ \n This is a value-based\n class; programmers should treat instances\
+            \ that are\n equal as interchangeable and should not\n use instances for\
+            \ synchronization, or unpredictable behavior may\n occur. For example,\
+            \ in a future release, synchronization may fail.\n The equals method should\
+            \ be used for comparisons."
           staticFields:
             SHORT_IDS:
               name: SHORT_IDS
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Map<String, String>
+                basic: Map
                 full: java.util.Map<java.lang.String, java.lang.String>
-                nullable: true
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+              notes: "A map of zone overrides to enable the short time-zone names\
+                \ to be used.\n \n Use of short zone IDs has been deprecated in java.util.TimeZone.\n\
+                \ This map allows the IDs to continue to be used via the\n of(String,\
+                \ Map) factory method.\n \n This map contains a mapping of the IDs\
+                \ that is in line with TZDB 2005r and\n later, where 'EST', 'MST'\
+                \ and 'HST' map to IDs which do not include daylight\n savings.\n\
+                \ \n This maps as follows:\n \n EST - -05:00\n HST - -10:00\n MST\
+                \ - -07:00\n ACT - Australia/Darwin\n AET - Australia/Sydney\n AGT\
+                \ - America/Argentina/Buenos_Aires\n ART - Africa/Cairo\n AST - America/Anchorage\n\
+                \ BET - America/Sao_Paulo\n BST - Asia/Dhaka\n CAT - Africa/Harare\n\
+                \ CNT - America/St_Johns\n CST - America/Chicago\n CTT - Asia/Shanghai\n\
+                \ EAT - Africa/Addis_Ababa\n ECT - Europe/Paris\n IET - America/Indiana/Indianapolis\n\
+                \ IST - Asia/Kolkata\n JST - Asia/Tokyo\n MIT - Pacific/Apia\n NET\
+                \ - Asia/Yerevan\n NST - Pacific/Auckland\n PLT - Asia/Karachi\n PNT\
+                \ - America/Phoenix\n PRT - America/Puerto_Rico\n PST - America/Los_Angeles\n\
+                \ SST - Pacific/Guadalcanal\n VST - Asia/Ho_Chi_Minh\n \n The map\
+                \ is unmodifiable."
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
               type:
-                basic: String
-                full: java.lang.String
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this is equal to the other time-zone ID
+            notes: "Checks if this time-zone ID is equal to another time-zone ID.\n\
+              \ \n The comparison is based on the ID."
           - name: getDisplayName
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: style
               type:
                 basic: TextStyle
                 full: java.time.format.TextStyle
-            - name: arg1
+              notes: the length of the text required, not null
+            - name: locale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: the locale to use, not null
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the text value of the zone, not null
+            notes: "Gets the textual representation of the zone, such as 'British\
+              \ Time' or\n '+02:00'.\n \n This returns the textual name used to identify\
+              \ the time-zone ID,\n suitable for presentation to the user.\n The parameters\
+              \ control the style of the returned text and the locale.\n \n If no\
+              \ textual mapping is found then the full ID is returned."
           - name: getId
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the time-zone unique ID, not null
+            notes: "Gets the unique time-zone ID.\n \n This ID uniquely defines this\
+              \ object.\n The format of an offset based ID is defined by ZoneOffset.getId()."
           - name: getRules
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: ZoneRules
                 full: java.time.zone.ZoneRules
+              notes: the rules, not null
+            notes: "Gets the time-zone rules for this ID allowing calculations to\
+              \ be performed.\n \n The rules provide the functionality associated\
+              \ with a time-zone,\n such as finding the offset for a given instant\
+              \ or local date-time.\n \n A time-zone can be invalid if it is deserialized\
+              \ in a Java Runtime which\n does not have the same rules loaded as the\
+              \ Java Runtime that stored it.\n In this case, calling this method will\
+              \ throw a ZoneRulesException.\n \n The rules are supplied by ZoneRulesProvider.\
+              \ An advanced provider may\n support dynamic updates to the rules without\
+              \ restarting the Java Runtime.\n If so, then the result of this method\
+              \ may change over time.\n Each individual call will be still remain\
+              \ thread-safe.\n \n ZoneOffset will always return a set of rules where\
+              \ the offset never changes."
           - name: hashCode
             modifiers:
             - public
@@ -72,6 +182,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a suitable hash code
+            notes: A hash code for this time-zone ID.
           - name: normalized
             modifiers:
             - public
@@ -79,44 +191,172 @@ languages:
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone unique ID, not null
+            notes: "Normalizes the time-zone ID, returning a ZoneOffset where possible.\n\
+              \ \n The returns a normalized ZoneId that can be used in place of this\
+              \ ID.\n The result will have ZoneRules equivalent to those returned\
+              \ by this object,\n however the ID returned by getId() may be different.\n\
+              \ \n The normalization checks if the rules of this ZoneId have a fixed\
+              \ offset.\n If they do, then the ZoneOffset equal to that offset is\
+              \ returned.\n Otherwise this is returned."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: toTemporal
+            modifiers:
+            - private
+            return:
+              type:
+                basic: TemporalAccessor
+                full: java.time.temporal.TemporalAccessor
+          - name: write
+            modifiers:
+            - package
+            - abstract
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           staticMethods:
           - name: from
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: TemporalAccessor
                 full: java.time.temporal.TemporalAccessor
+              notes: the temporal object to convert, not null
             return:
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the zone ID, not null
+            notes: "Obtains an instance of ZoneId from a temporal object.\n \n This\
+              \ obtains a zone based on the specified temporal.\n A TemporalAccessor\
+              \ represents an arbitrary set of date and time information,\n which\
+              \ this factory converts to an instance of ZoneId.\n \n A TemporalAccessor\
+              \ represents some form of date and time information.\n This factory\
+              \ converts the arbitrary temporal object to an instance of ZoneId.\n\
+              \ \n The conversion will try to obtain the zone in a way that favours\
+              \ region-based\n zones over offset-based zones using TemporalQueries.zone().\n\
+              \ \n This method matches the signature of the functional interface TemporalQuery\n\
+              \ allowing it to be used as a query via method reference, ZoneId::from."
           - name: getAvailableZoneIds
             modifiers:
             - public
             - static
             return:
               type:
-                basic: Set<String>
+                basic: Set
                 full: java.util.Set<java.lang.String>
+              notes: a modifiable copy of the set of zone IDs, not null
+            notes: "Gets the set of available zone IDs.\n \n This set includes the\
+              \ string form of all available region-based IDs.\n Offset-based zone\
+              \ IDs are not included in the returned set.\n The ID can be passed to\
+              \ of(String) to create a ZoneId.\n \n The set of zone IDs can increase\
+              \ over time, although in a typical application\n the set of IDs is fixed.\
+              \ Each call to this method is thread-safe."
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: zoneId
               type:
                 basic: String
                 full: java.lang.String
+              notes: the time-zone ID, not null
+            - name: aliasMap
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.String>
+              notes: a map of alias zone IDs (typically abbreviations) to real zone
+                IDs, not null
             return:
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the zone ID, not null
+            notes: "Obtains an instance of ZoneId using its ID using a map\n of aliases\
+              \ to supplement the standard zone IDs.\n \n Many users of time-zones\
+              \ use short abbreviations, such as PST for\n 'Pacific Standard Time'\
+              \ and PDT for 'Pacific Daylight Time'.\n These abbreviations are not\
+              \ unique, and so cannot be used as IDs.\n This method allows a map of\
+              \ string to time-zone to be setup and reused\n within an application."
           - name: of
             modifiers:
             - public
+            - static
+            parameters:
+            - name: zoneId
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the time-zone ID, not null
+            return:
+              type:
+                basic: ZoneId
+                full: java.time.ZoneId
+              notes: the zone ID, not null
+            notes: "Obtains an instance of ZoneId from an ID ensuring that the\n ID\
+              \ is valid and available for use.\n \n This method parses the ID producing\
+              \ a ZoneId or ZoneOffset.\n A ZoneOffset is returned if the ID is 'Z',\
+              \ or starts with '+' or '-'.\n The result will always be a valid ID\
+              \ for which ZoneRules can be obtained.\n \n Parsing matches the zone\
+              \ ID step by step as follows.\n \n If the zone ID equals 'Z', the result\
+              \ is ZoneOffset.UTC.\n If the zone ID consists of a single letter, the\
+              \ zone ID is invalid\n  and DateTimeException is thrown.\n If the zone\
+              \ ID starts with '+' or '-', the ID is parsed as a\n  ZoneOffset using\
+              \ ZoneOffset.of(String).\n If the zone ID equals 'GMT', 'UTC' or 'UT'\
+              \ then the result is a ZoneId\n  with the same ID and rules equivalent\
+              \ to ZoneOffset.UTC.\n If the zone ID starts with 'UTC+', 'UTC-', 'GMT+',\
+              \ 'GMT-', 'UT+' or 'UT-'\n  then the ID is a prefixed offset-based ID.\
+              \ The ID is split in two, with\n  a two or three letter prefix and a\
+              \ suffix starting with the sign.\n  The suffix is parsed as a ZoneOffset.\n\
+              \  The result will be a ZoneId with the specified UTC/GMT/UT prefix\n\
+              \  and the normalized offset ID as per ZoneOffset.getId().\n  The rules\
+              \ of the returned ZoneId will be equivalent to the\n  parsed ZoneOffset.\n\
+              \ All other IDs are parsed as region-based zone IDs. Region IDs must\n\
+              \  match the regular expression [A-Za-z][A-Za-z0-9~/._+-]+\n  otherwise\
+              \ a DateTimeException is thrown. If the zone ID is not\n  in the configured\
+              \ set of IDs, ZoneRulesException is thrown.\n  The detailed format of\
+              \ the region ID depends on the group supplying the data.\n  The default\
+              \ set of data is supplied by the IANA Time Zone Database (TZDB).\n \
+              \ This has region IDs of the form '{area}/{city}', such as 'Europe/Paris'\
+              \ or 'America/New_York'.\n  This is compatible with most IDs from TimeZone."
+          - name: of
+            modifiers:
+            - package
             - static
             parameters:
             - name: arg0
@@ -125,8 +365,8 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
-                basic: Map<String, String>
-                full: java.util.Map<java.lang.String, java.lang.String>
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: ZoneId
@@ -136,14 +376,42 @@ languages:
             - public
             - static
             parameters:
+            - name: prefix
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the time-zone ID, not null
+            - name: offset
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset, not null
+            return:
+              type:
+                basic: ZoneId
+                full: java.time.ZoneId
+              notes: the zone ID, not null
+            notes: "Obtains an instance of ZoneId wrapping an offset.\n \n If the\
+              \ prefix is \"GMT\", \"UTC\", or \"UT\" a ZoneId\n with the prefix and\
+              \ the non-zero offset is returned.\n If the prefix is empty \"\" the\
+              \ ZoneOffset is returned."
+          - name: ofWithPrefix
+            modifiers:
+            - private
+            - static
+            parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
             - name: arg1
               type:
-                basic: ZoneOffset
-                full: java.time.ZoneOffset
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: ZoneId
@@ -156,5 +424,8 @@ languages:
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
-          javaType: class
-          extends: Object
+              notes: the zone ID, not null
+            notes: "Gets the system default time-zone.\n \n This queries TimeZone.getDefault()\
+              \ to find the default time-zone\n and converts it to a ZoneId. If the\
+              \ system default time-zone is changed,\n then the result of this method\
+              \ will also change."

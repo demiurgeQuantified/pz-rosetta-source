@@ -4,57 +4,172 @@ languages:
     packages:
       java.util:
         ResourceBundle.Control:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "ResourceBundle.Control defines a set of callback methods\n that\
+            \ are invoked by the ResourceBundle.getBundle factory\n methods during\
+            \ the bundle loading process. In other words, a\n ResourceBundle.Control\
+            \ collaborates with the factory\n methods for loading resource bundles.\
+            \ The default implementation of\n the callback methods provides the information\
+            \ necessary for the\n factory methods to perform the default behavior.\n\
+            \n  ResourceBundle.Control is designed for an application deployed\n in\
+            \ an unnamed module, for example to support resource bundles in\n non-standard\
+            \ formats or package localized resources in a non-traditional\n convention.\
+            \ ResourceBundleProvider is the replacement for\n ResourceBundle.Control\
+            \ when migrating to modules.\n UnsupportedOperationException will be thrown\
+            \ when a factory\n method that takes the ResourceBundle.Control parameter\
+            \ is called.\n\n In addition to the callback methods, the toBundleName\
+            \ and toResourceName methods are defined\n primarily for convenience in\
+            \ implementing the callback\n methods. However, the toBundleName method\
+            \ could be\n overridden to provide different conventions in the organization\
+            \ and\n packaging of localized resources.  The toResourceName\n method\
+            \ is final to avoid use of wrong resource and class\n name separators.\n\
+            \n Two factory methods, getControl(List) and getNoFallbackControl(List),\
+            \ provide\n ResourceBundle.Control instances that implement common\n variations\
+            \ of the default bundle loading process.\n\n The formats returned by the\
+            \ getFormats method and candidate locales returned by the getCandidateLocales\
+            \ method must be consistent in all\n ResourceBundle.getBundle invocations\
+            \ for the same base\n bundle. Otherwise, the ResourceBundle.getBundle\
+            \ methods\n may return unintended bundles. For example, if only\n \"java.class\"\
+            \ is returned by the getFormats\n method for the first call to ResourceBundle.getBundle\n\
+            \ and only \"java.properties\" for the second call, then the\n second\
+            \ call will return the class-based one that has been cached\n during the\
+            \ first call.\n\n A ResourceBundle.Control instance must be thread-safe\n\
+            \ if it's simultaneously used by multiple threads.\n ResourceBundle.getBundle\
+            \ does not synchronize to call\n the ResourceBundle.Control methods. The\
+            \ default\n implementations of the methods are thread-safe.\n\n Applications\
+            \ can specify ResourceBundle.Control\n instances returned by the getControl\
+            \ factory methods or\n created from a subclass of ResourceBundle.Control\
+            \ to\n customize the bundle loading process. The following are examples\
+            \ of\n changing the default bundle loading process.\n\n Example 1\n\n\
+            \ The following code lets ResourceBundle.getBundle look\n up only properties-based\
+            \ resources.\n\n \n import java.util.*;\n import static java.util.ResourceBundle.Control.*;\n\
+            \ ...\n ResourceBundle bundle =\n   ResourceBundle.getBundle(\"MyResources\"\
+            , new Locale(\"fr\", \"CH\"),\n                            ResourceBundle.Control.getControl(FORMAT_PROPERTIES));\n\
+            \ \n\n Given the resource bundles in the example in\n the ResourceBundle.getBundle\
+            \ description, this\n ResourceBundle.getBundle call loads\n MyResources_fr_CH.properties\
+            \ whose parent is\n MyResources_fr.properties whose parent is\n MyResources.properties.\
+            \ (MyResources_fr_CH.properties\n is not hidden, but MyResources_fr_CH.class\
+            \ is.)\n\n Example 2\n\n The following is an example of loading XML-based\
+            \ bundles\n using Properties.loadFromXML.\n\n \n ResourceBundle rb = ResourceBundle.getBundle(\"\
+            Messages\",\n     new ResourceBundle.Control() {\n         public List<String>\
+            \ getFormats(String baseName) {\n             if (baseName == null)\n\
+            \                 throw new NullPointerException();\n             return\
+            \ Arrays.asList(\"xml\");\n         }\n         public ResourceBundle\
+            \ newBundle(String baseName,\n                                       \
+            \  Locale locale,\n                                         String format,\n\
+            \                                         ClassLoader loader,\n      \
+            \                                   boolean reload)\n                \
+            \          throws IllegalAccessException,\n                          \
+            \       InstantiationException,\n                                 IOException\
+            \ {\n             if (baseName == null || locale == null\n           \
+            \        || format == null || loader == null)\n                 throw\
+            \ new NullPointerException();\n             ResourceBundle bundle = null;\n\
+            \             if (format.equals(\"xml\")) {\n                 String bundleName\
+            \ = toBundleName(baseName, locale);\n                 String resourceName\
+            \ = toResourceName(bundleName, format);\n                 InputStream\
+            \ stream = null;\n                 if (reload) {\n                   \
+            \  URL url = loader.getResource(resourceName);\n                     if\
+            \ (url != null) {\n                         URLConnection connection =\
+            \ url.openConnection();\n                         if (connection != null)\
+            \ {\n                             // Disable caches to get fresh data\
+            \ for\n                             // reloading.\n                  \
+            \           connection.setUseCaches(false);\n                        \
+            \     stream = connection.getInputStream();\n                        \
+            \ }\n                     }\n                 } else {\n             \
+            \        stream = loader.getResourceAsStream(resourceName);\n        \
+            \         }\n                 if (stream != null) {\n                \
+            \     BufferedInputStream bis = new BufferedInputStream(stream);\n   \
+            \                  bundle = new XMLResourceBundle(bis);\n            \
+            \         bis.close();\n                 }\n             }\n         \
+            \    return bundle;\n         }\n     });\n\n ...\n\n private static class\
+            \ XMLResourceBundle extends ResourceBundle {\n     private Properties\
+            \ props;\n     XMLResourceBundle(InputStream stream) throws IOException\
+            \ {\n         props = new Properties();\n         props.loadFromXML(stream);\n\
+            \     }\n     protected Object handleGetObject(String key) {\n       \
+            \  return props.getProperty(key);\n     }\n     public Enumeration<String>\
+            \ getKeys() {\n         ...\n     }\n }"
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            CANDIDATES_CACHE:
+              name: CANDIDATES_CACHE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ResourceBundle.Control.CandidateListCache
+                full: java.util.ResourceBundle$Control$CandidateListCache
             FORMAT_CLASS:
               name: FORMAT_CLASS
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: List<String>
+                basic: List
                 full: java.util.List<java.lang.String>
-                nullable: true
+              notes: "The class-only format List containing\n \"java.class\". This\
+                \ List is unmodifiable."
             FORMAT_DEFAULT:
               name: FORMAT_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: List<String>
+                basic: List
                 full: java.util.List<java.lang.String>
-                nullable: true
+              notes: "The default format List, which contains the strings\n \"java.class\"\
+                \ and \"java.properties\", in\n this order. This List is unmodifiable."
             FORMAT_PROPERTIES:
               name: FORMAT_PROPERTIES
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: List<String>
+                basic: List
                 full: java.util.List<java.lang.String>
-                nullable: true
+              notes: "The properties-only format List containing\n \"java.properties\"\
+                . This List is unmodifiable."
+            INSTANCE:
+              name: INSTANCE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
             TTL_DONT_CACHE:
               name: TTL_DONT_CACHE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: long
                 full: long
-                nullable: true
+              notes: "The time-to-live constant for not caching loaded resource bundle\n\
+                \ instances."
             TTL_NO_EXPIRATION_CONTROL:
               name: TTL_NO_EXPIRATION_CONTROL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: long
                 full: long
-                nullable: true
+              notes: "The time-to-live constant for disabling the expiration control\n\
+                \ for loaded resource bundle instances in the cache."
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Sole constructor. (For invocation by subclass constructors,\n\
+              \ typically implicit.)"
           methods:
           - name: getCandidateLocales
             modifiers:
@@ -70,7 +185,7 @@ languages:
                 full: java.util.Locale
             return:
               type:
-                basic: List<Locale>
+                basic: List
                 full: java.util.List<java.util.Locale>
           - name: getFallbackLocale
             modifiers:
@@ -98,7 +213,7 @@ languages:
                 full: java.lang.String
             return:
               type:
-                basic: List<String>
+                basic: List
                 full: java.util.List<java.lang.String>
           - name: getTimeToLive
             modifiers:
@@ -176,6 +291,30 @@ languages:
               type:
                 basic: ResourceBundle
                 full: java.util.ResourceBundle
+          - name: newBundle0
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
           - name: toBundleName
             modifiers:
             - public
@@ -209,34 +348,61 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+          - name: toResourceName0
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: getControl
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
             - name: arg0
               type:
-                basic: List<String>
+                basic: List
                 full: java.util.List<java.lang.String>
             return:
               type:
-                basic: Control
+                basic: ResourceBundle.Control
                 full: java.util.ResourceBundle$Control
           - name: getNoFallbackControl
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
             - name: arg0
               type:
-                basic: List<String>
+                basic: List
                 full: java.util.List<java.lang.String>
             return:
               type:
-                basic: Control
+                basic: ResourceBundle.Control
                 full: java.util.ResourceBundle$Control
-          javaType: class
-          extends: Object
+          - name: lambda$newBundle0$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Constructor
+                full: java.lang.reflect.Constructor
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void

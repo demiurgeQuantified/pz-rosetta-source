@@ -4,26 +4,63 @@ languages:
     packages:
       java.time:
         Clock:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          staticFields:
+            OFFSET_SEED:
+              name: OFFSET_SEED
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            offset:
+              name: offset
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructor accessible by subclasses.
           methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this is equal to the other clock
+            notes: "Checks if this clock is equal to another clock.\n \n Clocks should\
+              \ override this method to compare equals based on\n their state and\
+              \ to meet the contract of Object.equals(java.lang.Object).\n If not\
+              \ overridden, the behavior is defined by Object.equals(java.lang.Object)"
           - name: getZone
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone being used to interpret instants, not null
+            notes: "Gets the time-zone being used to create dates and times.\n \n\
+              \ A clock will typically obtain the current instant and then convert\
+              \ that\n to a date or time using a time-zone. This method returns the\
+              \ time-zone used."
           - name: hashCode
             modifiers:
             - public
@@ -31,20 +68,21 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a suitable hash code
+            notes: "A hash code for this clock.\n \n Clocks should override this method\
+              \ based on\n their state and to meet the contract of Object.hashCode().\n\
+              \ If not overridden, the behavior is defined by Object.hashCode()"
           - name: instant
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
-          - name: instant
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
+              notes: the current instant from this clock, not null
+            notes: "Gets the current instant of the clock.\n \n This returns an instant\
+              \ representing the current instant as defined by the clock."
           - name: millis
             modifiers:
             - public
@@ -52,123 +90,125 @@ languages:
               type:
                 basic: long
                 full: long
-          - name: millis
-            modifiers:
-            - public
-            return:
-              type:
-                basic: long
-                full: long
+              notes: "the current millisecond instant from this clock, measured from\n\
+                \  the Java epoch of 1970-01-01T00:00Z (UTC), not null"
+            notes: "Gets the current millisecond instant of the clock.\n \n This returns\
+              \ the millisecond-based instant, measured from 1970-01-01T00:00Z (UTC).\n\
+              \ This is equivalent to the definition of System.currentTimeMillis().\n\
+              \ \n Most applications should avoid this method and use Instant to represent\n\
+              \ an instant on the time-line rather than a raw millisecond value.\n\
+              \ This method is provided to allow the use of the clock in high performance\
+              \ use cases\n where the creation of an object would be unacceptable.\n\
+              \ \n The default implementation currently calls instant()."
           - name: withZone
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to change to, not null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
-          - name: withZone
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ZoneId
-                full: java.time.ZoneId
-            return:
-              type:
-                basic: Clock
-                full: java.time.Clock
+              notes: a clock based on this clock with the specified time-zone, not
+                null
+            notes: "Returns a copy of this clock with a different time-zone.\n \n\
+              \ A clock will typically obtain the current instant and then convert\
+              \ that\n to a date or time using a time-zone. This method returns a\
+              \ clock with\n similar properties but using a different time-zone."
           staticMethods:
+          - name: currentInstant
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant
           - name: fixed
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: fixedInstant
               type:
                 basic: Instant
                 full: java.time.Instant
-            return:
-              type:
-                basic: InstantSource
-                full: java.time.InstantSource
-          - name: fixed
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Instant
-                full: java.time.Instant
-            - name: arg1
+              notes: the instant to use as the clock, not null
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to use to convert the instant to date-time, not
+                null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock that always returns the same instant, not null
+            notes: "Obtains a clock that always returns the same instant.\n \n This\
+              \ clock simply returns the specified instant.\n As such, it is not a\
+              \ clock in the conventional sense.\n The main use case for this is in\
+              \ testing, where the fixed clock ensures\n tests are not dependent on\
+              \ the current clock.\n \n The returned implementation is immutable,\
+              \ thread-safe and Serializable."
           - name: offset
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: baseClock
               type:
                 basic: Clock
                 full: java.time.Clock
-            - name: arg1
+              notes: the base clock to add the duration to, not null
+            - name: offsetDuration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the duration to add, not null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
-          - name: offset
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: InstantSource
-                full: java.time.InstantSource
-            - name: arg1
-              type:
-                basic: Duration
-                full: java.time.Duration
-            return:
-              type:
-                basic: InstantSource
-                full: java.time.InstantSource
-          - name: system
-            modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Clock
-                full: java.time.Clock
+              notes: a clock based on the base clock with the duration added, not
+                null
+            notes: "Obtains a clock that returns instants from the specified clock\
+              \ with the\n specified duration added.\n \n This clock wraps another\
+              \ clock, returning instants that are later by the\n specified duration.\
+              \ If the duration is negative, the instants will be\n earlier than the\
+              \ current date and time.\n The main use case for this is to simulate\
+              \ running in the future or in the past.\n \n A duration of zero would\
+              \ have no offsetting effect.\n Passing zero will return the underlying\
+              \ clock.\n \n The returned implementation is immutable, thread-safe\
+              \ and Serializable\n providing that the base clock is."
           - name: system
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to use to convert the instant to date-time, not
+                null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock that uses the best available system clock in the specified
+                zone, not null
+            notes: "Obtains a clock that returns the current instant using the best\
+              \ available\n system clock.\n \n This clock is based on the best available\
+              \ system clock.\n This may use System.currentTimeMillis(), or a higher\
+              \ resolution\n clock if one is available.\n \n Conversion from instant\
+              \ to date or time uses the specified time-zone.\n \n The returned implementation\
+              \ is immutable, thread-safe and Serializable."
           - name: systemDefaultZone
             modifiers:
             - public
@@ -177,6 +217,18 @@ languages:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock that uses the best available system clock in the default
+                zone, not null
+            notes: "Obtains a clock that returns the current instant using the best\
+              \ available\n system clock, converting to date and time using the default\
+              \ time-zone.\n \n This clock is based on the best available system clock.\n\
+              \ This may use System.currentTimeMillis(), or a higher resolution\n\
+              \ clock if one is available.\n \n Using this method hard codes a dependency\
+              \ to the default time-zone into your application.\n It is recommended\
+              \ to avoid this and use a specific time-zone whenever possible.\n The\
+              \ UTC clock should be used when you need the current instant\n without\
+              \ the date or time.\n \n The returned implementation is immutable, thread-safe\
+              \ and Serializable.\n It is equivalent to system(ZoneId.systemDefault())."
           - name: systemUTC
             modifiers:
             - public
@@ -185,78 +237,134 @@ languages:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock that uses the best available system clock in the UTC
+                zone, not null
+            notes: "Obtains a clock that returns the current instant using the best\
+              \ available\n system clock, converting to date and time using the UTC\
+              \ time-zone.\n \n This clock, rather than systemDefaultZone(), should\
+              \ be used when\n you need the current instant without the date or time.\n\
+              \ \n This clock is based on the best available system clock.\n This\
+              \ may use System.currentTimeMillis(), or a higher resolution\n clock\
+              \ if one is available.\n \n Conversion from instant to date or time\
+              \ uses the UTC time-zone.\n \n The returned implementation is immutable,\
+              \ thread-safe and Serializable.\n It is equivalent to system(ZoneOffset.UTC)."
           - name: tick
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: baseClock
               type:
                 basic: Clock
                 full: java.time.Clock
-            - name: arg1
+              notes: the base clock to base the ticking clock on, not null
+            - name: tickDuration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the duration of each visible tick, not negative, not null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
-          - name: tick
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: InstantSource
-                full: java.time.InstantSource
-            - name: arg1
-              type:
-                basic: Duration
-                full: java.time.Duration
-            return:
-              type:
-                basic: InstantSource
-                full: java.time.InstantSource
+              notes: a clock that ticks in whole units of the duration, not null
+            notes: "Obtains a clock that returns instants from the specified clock\
+              \ truncated\n to the nearest occurrence of the specified duration.\n\
+              \ \n This clock will only tick as per the specified duration. Thus,\
+              \ if the duration\n is half a second, the clock will return instants\
+              \ truncated to the half second.\n \n The tick duration must be positive.\
+              \ If it has a part smaller than a whole\n millisecond, then the whole\
+              \ duration must divide into one second without\n leaving a remainder.\
+              \ All normal tick durations will match these criteria,\n including any\
+              \ multiple of hours, minutes, seconds and milliseconds, and\n sensible\
+              \ nanosecond durations, such as 20ns, 250,000ns and 500,000ns.\n \n\
+              \ A duration of zero or one nanosecond would have no truncation effect.\n\
+              \ Passing one of these will return the underlying clock.\n \n Implementations\
+              \ may use a caching strategy for performance reasons.\n As such, it\
+              \ is possible that the start of the requested duration observed\n via\
+              \ this clock will be later than that observed directly via the underlying\
+              \ clock.\n \n The returned implementation is immutable, thread-safe\
+              \ and Serializable\n providing that the base clock is."
           - name: tickMillis
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to use to convert the instant to date-time, not
+                null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock that ticks in whole milliseconds using the specified
+                zone, not null
+            notes: "Obtains a clock that returns the current instant ticking in whole\
+              \ milliseconds\n using the best available system clock.\n \n This clock\
+              \ will always have the nano-of-second field truncated to milliseconds.\n\
+              \ This ensures that the visible time ticks in whole milliseconds.\n\
+              \ The underlying clock is the best available system clock, equivalent\
+              \ to\n using system(ZoneId).\n \n Implementations may use a caching\
+              \ strategy for performance reasons.\n As such, it is possible that the\
+              \ start of the millisecond observed via this\n clock will be later than\
+              \ that observed directly via the underlying clock.\n \n The returned\
+              \ implementation is immutable, thread-safe and Serializable.\n It is\
+              \ equivalent to tick(system(zone), Duration.ofMillis(1))."
           - name: tickMinutes
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to use to convert the instant to date-time, not
+                null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock that ticks in whole minutes using the specified zone,
+                not null
+            notes: "Obtains a clock that returns the current instant ticking in whole\
+              \ minutes\n using the best available system clock.\n \n This clock will\
+              \ always have the nano-of-second and second-of-minute fields set to\
+              \ zero.\n This ensures that the visible time ticks in whole minutes.\n\
+              \ The underlying clock is the best available system clock, equivalent\
+              \ to\n using system(ZoneId).\n \n Implementations may use a caching\
+              \ strategy for performance reasons.\n As such, it is possible that the\
+              \ start of the minute observed via this\n clock will be later than that\
+              \ observed directly via the underlying clock.\n \n The returned implementation\
+              \ is immutable, thread-safe and Serializable.\n It is equivalent to\
+              \ tick(system(zone), Duration.ofMinutes(1))."
           - name: tickSeconds
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to use to convert the instant to date-time, not
+                null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
-          javaType: class
-          extends: Object
+              notes: a clock that ticks in whole seconds using the specified zone,
+                not null
+            notes: "Obtains a clock that returns the current instant ticking in whole\
+              \ seconds\n using the best available system clock.\n \n This clock will\
+              \ always have the nano-of-second field set to zero.\n This ensures that\
+              \ the visible time ticks in whole seconds.\n The underlying clock is\
+              \ the best available system clock, equivalent to\n using system(ZoneId).\n\
+              \ \n Implementations may use a caching strategy for performance reasons.\n\
+              \ As such, it is possible that the start of the second observed via\
+              \ this\n clock will be later than that observed directly via the underlying\
+              \ clock.\n \n The returned implementation is immutable, thread-safe\
+              \ and Serializable.\n It is equivalent to tick(system(zone), Duration.ofSeconds(1))."

@@ -4,6 +4,7 @@ languages:
     packages:
       zombie.core.stash:
         StashSystem:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
@@ -15,6 +16,15 @@ languages:
               - static
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.core.stash.Stash>
+            alreadyReadMap:
+              name: alreadyReadMap
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.String>
             buildingsToDo:
               name: buildingsToDo
               modifiers:
@@ -22,6 +32,7 @@ languages:
               - static
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.core.stash.StashBuilding>
             possibleStashes:
               name: possibleStashes
               modifiers:
@@ -29,6 +40,15 @@ languages:
               - static
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.core.stash.StashBuilding>
+            possibleTrap:
+              name: possibleTrap
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.String>
           constructors:
           - modifiers:
             - public
@@ -40,6 +60,24 @@ languages:
             return:
               type:
                 basic: void
+                full: void
+          - name: checkSpecificSpawnProperties
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Stash
+                full: zombie.core.stash.Stash
+            - name: arg1
+              type:
+                basic: InventoryItem
+                full: zombie.inventory.InventoryItem
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: checkStashItem
             modifiers:
             - public
@@ -48,9 +86,11 @@ languages:
             - name: item
               type:
                 basic: InventoryItem
+                full: zombie.inventory.InventoryItem
             return:
               type:
                 basic: void
+                full: void
             notes: check if the spawned item could be a stash item (map or note...)
           - name: doBuildingStash
             modifiers:
@@ -60,11 +100,30 @@ languages:
             - name: def
               type:
                 basic: BuildingDef
+                full: zombie.iso.BuildingDef
             return:
               type:
                 basic: void
+                full: void
             notes: Fetch our list of building in which we'll spawn stash, if this
               building correspond, we do the necessary stuff
+          - name: doSpecificBuildingProperties
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Stash
+                full: zombie.core.stash.Stash
+            - name: arg1
+              type:
+                basic: BuildingDef
+                full: zombie.iso.BuildingDef
+            return:
+              type:
+                basic: void
+                full: void
           - name: doStashItem
             modifiers:
             - public
@@ -73,13 +132,32 @@ languages:
             - name: stash
               type:
                 basic: Stash
+                full: zombie.core.stash.Stash
             - name: item
               type:
                 basic: InventoryItem
+                full: zombie.inventory.InventoryItem
             return:
               type:
                 basic: void
+                full: void
             notes: Public for lua debug stash map
+          - name: getAllStashes
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.core.stash.Stash>
+          - name: getAlreadyReadMap
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.String>
           - name: getPossibleStashes
             modifiers:
             - public
@@ -87,6 +165,7 @@ languages:
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.core.stash.StashBuilding>
           - name: getStash
             modifiers:
             - public
@@ -95,9 +174,11 @@ languages:
             - name: stashName
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: Stash
+                full: zombie.core.stash.Stash
           - name: init
             modifiers:
             - public
@@ -105,6 +186,7 @@ languages:
             return:
               type:
                 basic: void
+                full: void
           - name: initAllStashes
             modifiers:
             - public
@@ -112,7 +194,21 @@ languages:
             return:
               type:
                 basic: void
+                full: void
             notes: Load our different stashes description from lua files in "media/lua/shared/StashDescriptions"
+          - name: isStashBuilding
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: BuildingDef
+                full: zombie.iso.BuildingDef
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: load
             modifiers:
             - public
@@ -121,12 +217,15 @@ languages:
             - name: input
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: WorldVersion
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: prepareBuildingStash
             modifiers:
             - public
@@ -135,9 +234,11 @@ languages:
             - name: stashName
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
             notes: Used when you read an annoted map
           - name: reinit
             modifiers:
@@ -146,6 +247,20 @@ languages:
             return:
               type:
                 basic: void
+                full: void
+          - name: removeFromPossibleStash
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Stash
+                full: zombie.core.stash.Stash
+            return:
+              type:
+                basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -154,9 +269,11 @@ languages:
             - name: output
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             return:
               type:
                 basic: void
+                full: void
           - name: visitedBuilding
             modifiers:
             - public
@@ -165,10 +282,10 @@ languages:
             - name: def
               type:
                 basic: BuildingDef
+                full: zombie.iso.BuildingDef
             return:
               type:
                 basic: void
+                full: void
             notes: Check if the visited building is in one of our random stash, in
               that case we won't spawn any stash for this building
-          javaType: class
-          extends: Object

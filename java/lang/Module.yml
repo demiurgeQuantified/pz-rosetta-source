@@ -4,144 +4,353 @@ languages:
     packages:
       java.lang:
         Module:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "Represents a run-time module, either named or unnamed.\n\n  Named\
+            \ modules have a name and are constructed by the\n Java Virtual Machine\
+            \ when a graph of modules is defined to the Java virtual\n machine to\
+            \ create a module layer. \n\n  An unnamed module does not have a name.\
+            \ There is an unnamed module for\n each ClassLoader, obtained by invoking\
+            \ its getUnnamedModule method. All types that are\n not in a named module\
+            \ are members of their defining class loader's unnamed\n module. \n\n\
+            \  The package names that are parameters or returned by methods defined\
+            \ in\n this class are the fully-qualified names of the packages as defined\
+            \ in\n section 6.5.3 of The Java Language Specification, for\n example,\
+            \ \"java.lang\". \n\n  Unless otherwise specified, passing a null argument\
+            \ to a method\n in this class causes a NullPointerException to\n be thrown."
+          fields:
+            descriptor:
+              name: descriptor
+              modifiers:
+              - private
+              type:
+                basic: ModuleDescriptor
+                full: java.lang.module.ModuleDescriptor
+            enableNativeAccess:
+              name: enableNativeAccess
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            exportedPackages:
+              name: exportedPackages
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.util.Set<java.lang.Module>>
+            layer:
+              name: layer
+              modifiers:
+              - private
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            loader:
+              name: loader
+              modifiers:
+              - private
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            moduleInfoClass:
+              name: moduleInfoClass
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            name:
+              name: name
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            openPackages:
+              name: openPackages
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.util.Set<java.lang.Module>>
+            reads:
+              name: reads
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Module>
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ALL_UNNAMED_MODULE:
+              name: ALL_UNNAMED_MODULE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Module
+                full: java.lang.Module
+            ALL_UNNAMED_MODULE_SET:
+              name: ALL_UNNAMED_MODULE_SET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Module>
+            EVERYONE_MODULE:
+              name: EVERYONE_MODULE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Module
+                full: java.lang.Module
+            EVERYONE_SET:
+              name: EVERYONE_SET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Module>
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            - name: arg1
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            - name: arg2
+              type:
+                basic: ModuleDescriptor
+                full: java.lang.module.ModuleDescriptor
+            - name: arg3
+              type:
+                basic: URI
+                full: java.net.URI
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            - name: arg1
+              type:
+                basic: ModuleDescriptor
+                full: java.lang.module.ModuleDescriptor
+          methods:
           - name: addExports
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pn
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: The package name
+            - name: other
               type:
                 basic: Module
                 full: java.lang.Module
+              notes: The module
             return:
               type:
                 basic: Module
                 full: java.lang.Module
+              notes: this module
+            notes: "If the caller's module is this module then update this module\
+              \ to export\n the given package to the given module.\n\n  This method\
+              \ has no effect if the package is already exported (or\n open) to the\
+              \ given module."
           - name: addOpens
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pn
               type:
                 basic: String
                 full: java.lang.String
+              notes: The package name
+            - name: other
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: The module
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: this module
+            notes: "If this module has opened a package to at least the caller\n module\
+              \ then update this module to open the package to the given module.\n\
+              \ Opening a package with this method allows all types in the package,\n\
+              \ and all their members, not just public types and their public members,\n\
+              \ to be reflected on by the given module when using APIs that support\n\
+              \ private access or a way to bypass or suppress default Java language\n\
+              \ access control checks.\n\n  This method has no effect if the package\
+              \ is already open\n to the given module."
+          - name: addReads
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: The other module
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: this module
+            notes: "If the caller's module is this module then update this module\
+              \ to read\n the given module.\n\n This method is a no-op if other is\
+              \ this module (all modules read\n themselves), this module is an unnamed\
+              \ module (as unnamed modules read\n all modules), or this module already\
+              \ reads other."
+          - name: addUses
+            modifiers:
+            - public
+            parameters:
+            - name: service
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: The service type
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: this module
+            notes: "If the caller's module is this module then update this module\
+              \ to add a\n service dependence on the given service type. This method\
+              \ is intended\n for use by frameworks that invoke ServiceLoader on behalf\
+              \ of other modules or where the framework is\n passed a reference to\
+              \ the service type by other code. This method is\n a no-op when invoked\
+              \ on an unnamed module or an automatic module.\n\n  This method does\
+              \ not cause resolveAndBind to be re-run."
+          - name: allows
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Module>
             - name: arg1
               type:
                 basic: Module
                 full: java.lang.Module
             return:
               type:
-                basic: Module
-                full: java.lang.Module
-          - name: addReads
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Module
-                full: java.lang.Module
-            return:
-              type:
-                basic: Module
-                full: java.lang.Module
-          - name: addUses
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-            return:
-              type:
-                basic: Module
-                full: java.lang.Module
+                basic: boolean
+                full: boolean
           - name: canRead
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Module
                 full: java.lang.Module
+              notes: The other module
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this module reads other
+            notes: "Indicates if this module reads the given module. This method returns\n\
+              \ true if invoked to test if this module reads itself. It also\n returns\
+              \ true if invoked on an unnamed module (as unnamed\n modules read all\
+              \ modules)."
           - name: canUse
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: service
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
+              notes: The service type
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this module uses service type st
+            notes: "Indicates if this module has a service dependence on the given\
+              \ service\n type. This method always returns true when invoked on an\
+              \ unnamed\n module or an automatic module."
           - name: getAnnotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: annotationClass
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the Class object corresponding to the\n        annotation type"
             return:
               type:
                 basic: T
                 full: T
-          - name: getAnnotation
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: T
-                full: T
+              notes: "this element's annotation for the specified annotation type\
+                \ if\n     present on this element, else null"
+            notes: "Returns this element's annotation for the specified type if\n\
+              \ such an annotation is present, else null.\n This method returns null\
+              \ when invoked on an unnamed module.\n\n  Note that any annotation returned\
+              \ by this method is a\n declaration annotation."
           - name: getAnnotations
             modifiers:
             - public
             return:
               type:
-                basic: Annotation[]
+                basic: Annotation
                 full: java.lang.annotation.Annotation[]
-          - name: getAnnotations
+              notes: annotations present on this element
+            notes: "Returns annotations that are present on this element.\n\n If there\
+              \ are no annotations present on this element, the return\n value is\
+              \ an array of length 0.\n\n The caller of this method is free to modify\
+              \ the returned array; it will\n have no effect on the arrays returned\
+              \ to other callers.\n This method returns an empty array when invoked\
+              \ on an unnamed module.\n\n  Note that any annotations returned by this\
+              \ method are\n declaration annotations."
+          - name: getCallerModule
             modifiers:
-            - public
-            return:
-              type:
-                basic: Annotation[]
-                full: java.lang.annotation.Annotation[]
-          - name: getAnnotationsByType
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Class<T>
-                full: java.lang.Class<T>
+                basic: Class
+                full: java.lang.Class<?>
             return:
               type:
-                basic: T[]
-                full: T[]
+                basic: Module
+                full: java.lang.Module
           - name: getClassLoader
             modifiers:
             - public
@@ -149,44 +358,27 @@ languages:
               type:
                 basic: ClassLoader
                 full: java.lang.ClassLoader
-          - name: getDeclaredAnnotation
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: T
-                full: T
+              notes: The class loader for this module
+            notes: "Returns the ClassLoader for this module.\n\n  If there is a security\
+              \ manager then its checkPermission\n method if first called with a RuntimePermission(\"\
+              getClassLoader\")\n permission to check that the caller is allowed to\
+              \ get access to the\n class loader."
           - name: getDeclaredAnnotations
             modifiers:
             - public
             return:
               type:
-                basic: Annotation[]
+                basic: Annotation
                 full: java.lang.annotation.Annotation[]
-          - name: getDeclaredAnnotations
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Annotation[]
-                full: java.lang.annotation.Annotation[]
-          - name: getDeclaredAnnotationsByType
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: T[]
-                full: T[]
+              notes: annotations directly present on this element
+            notes: "Returns annotations that are directly present on this element.\n\
+              \ This method ignores inherited annotations.\n\n If there are no annotations\
+              \ directly present on this element,\n the return value is an array of\
+              \ length 0.\n\n The caller of this method is free to modify the returned\
+              \ array; it will\n have no effect on the arrays returned to other callers.\n\
+              \ This method returns an empty array when invoked on an unnamed module.\n\
+              \n  Note that any annotations returned by this method are\n declaration\
+              \ annotations."
           - name: getDescriptor
             modifiers:
             - public
@@ -194,6 +386,9 @@ languages:
               type:
                 basic: ModuleDescriptor
                 full: java.lang.module.ModuleDescriptor
+              notes: The module descriptor for this module
+            notes: "Returns the module descriptor for this module or null if this\n\
+              \ module is an unnamed module."
           - name: getLayer
             modifiers:
             - public
@@ -201,6 +396,13 @@ languages:
               type:
                 basic: ModuleLayer
                 full: java.lang.ModuleLayer
+              notes: The module layer that contains this module
+            notes: "Returns the module layer that contains this module or null if\n\
+              \ this module is not in a module layer.\n\n A module layer contains\
+              \ named modules and therefore this method always\n returns null when\
+              \ invoked on an unnamed module.\n\n  Dynamic modules are\n named modules\
+              \ that are generated at runtime. A dynamic module may or may\n not be\
+              \ in a module layer."
           - name: getName
             modifiers:
             - public
@@ -208,40 +410,73 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The module name
+            notes: "Returns the module name or null if this module is an unnamed\n\
+              \ module."
           - name: getPackages
             modifiers:
             - public
             return:
               type:
-                basic: Set<String>
+                basic: Set
                 full: java.util.Set<java.lang.String>
+              notes: the set of the package names of the packages in this module
+            notes: "Returns the set of package names for the packages in this module.\n\
+              \n  For named modules, the returned set contains an element for each\n\
+              \ package in the module. \n\n  For unnamed modules, the returned set\
+              \ contains an element for\n each package that has been defined\n in\
+              \ the unnamed module."
           - name: getResourceAsStream
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The resource name
             return:
               type:
                 basic: InputStream
                 full: java.io.InputStream
-          - name: isAnnotationPresent
+              notes: An input stream for reading the resource or null
+            notes: "Returns an input stream for reading a resource in this module.\n\
+              \ The name parameter is a '/'-separated path name that\n identifies\
+              \ the resource. As with Class.getResourceAsStream, this method delegates\
+              \ to the module's class\n loader findResource(String,String) method,\
+              \ invoking it with the module name\n (or null when the module is unnamed)\
+              \ and the name of the\n resource. If the resource name has a leading\
+              \ slash then it is dropped\n before delegation.\n\n  A resource in a\
+              \ named module may be encapsulated so that\n it cannot be located by\
+              \ code in other modules. Whether a resource can be\n located or not\
+              \ is determined as follows: \n\n \n      If the resource name ends with\
+              \  \".class\" then it is not\n     encapsulated. \n\n      A package\
+              \ name is derived from the resource name. If\n     the package name\
+              \ is a package in the\n     module then the resource can only be located\
+              \ by the caller of this\n     method when the package is open\n    \
+              \ to at least the caller's module. If the resource is not in a\n   \
+              \  package in the module then the resource is not encapsulated. \n \n\
+              \n  In the above, the package name for a resource is derived\n from\
+              \ the subsequence of characters that precedes the last '/' in\n the\
+              \ name and then replacing each '/' character in the subsequence\n with\
+              \ '.'. A leading slash is ignored when deriving the package\n name.\
+              \ As an example, the package name derived for a resource named\n \"\
+              a/b/c/foo.properties\" is \"a.b.c\". A resource name\n with the name\
+              \ \"META-INF/MANIFEST.MF\" is never encapsulated\n because \"META-INF\"\
+              \ is not a legal package name. \n\n  This method returns null if the\
+              \ resource is not in this\n module, the resource is encapsulated and\
+              \ cannot be located by the caller,\n or access to the resource is denied\
+              \ by the security manager."
+          - name: implAddEnableNativeAccess
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<? extends Annotation>
-                full: java.lang.Class<? extends java.lang.annotation.Annotation>
+            - package
             return:
               type:
-                basic: boolean
-                full: boolean
-          - name: isExported
+                basic: Module
+                full: java.lang.Module
+          - name: implAddExports
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
@@ -249,11 +484,11 @@ languages:
                 full: java.lang.String
             return:
               type:
-                basic: boolean
-                full: boolean
-          - name: isExported
+                basic: void
+                full: void
+          - name: implAddExports
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
@@ -265,8 +500,278 @@ languages:
                 full: java.lang.Module
             return:
               type:
+                basic: void
+                full: void
+          - name: implAddExportsNoSync
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddExportsNoSync
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddExportsOrOpens
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg2
+              type:
                 basic: boolean
                 full: boolean
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddExportsToAllUnnamed
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddOpens
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddOpens
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddOpensToAllUnnamed
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddOpensToAllUnnamed
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+            - name: arg1
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddOpensToAllUnnamed
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+            - name: arg1
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.util.Set<java.lang.Module>>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddReads
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddReads
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddReadsAllUnnamed
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddReadsNoSync
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implAddUses
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implIsEnableNativeAccess
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: implIsExportedOrOpen
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isExported
+            modifiers:
+            - public
+            parameters:
+            - name: pn
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The package name
+            - name: other
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: The other module
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this module exports the package to at least the\n  \
+                \       given module"
+            notes: "Returns true if this module exports the given package to at\n\
+              \ least the given module.\n\n  This method returns true if invoked to\
+              \ test if a package in\n this module is exported to itself. It always\
+              \ returns true when\n invoked on an unnamed module. A package that is\
+              \ open to\n the given module is considered exported to that module at\
+              \ run-time and\n so this method returns true if the package is open\
+              \ to the given\n module. \n\n  This method does not check if the given\
+              \ module reads this module."
+          - name: isExported
+            modifiers:
+            - public
+            parameters:
+            - name: pn
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The package name
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this module exports the package unconditionally
+            notes: "Returns true if this module exports the given package\n unconditionally.\n\
+              \n  This method always returns true when invoked on an unnamed\n module.\
+              \ A package that is opened unconditionally\n is considered exported\
+              \ unconditionally at run-time and so this method\n returns true if the\
+              \ package is opened unconditionally. \n\n  This method does not check\
+              \ if the given module reads this module."
           - name: isNamed
             modifiers:
             - public
@@ -274,21 +779,56 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this is a named module
+            notes: Returns true if this module is a named module.
           - name: isOpen
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pn
               type:
                 basic: String
                 full: java.lang.String
+              notes: The package name
+            - name: other
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: The other module
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this module has opened the package\n         to at least\
+                \ the given module"
+            notes: "Returns true if this module has opened a package to at\n least\
+              \ the given module.\n\n  This method returns true if invoked to test\
+              \ if a package in\n this module is open to itself. It returns true when\
+              \ invoked on an\n open module with a package in the module.\n It always\
+              \ returns true when invoked on an unnamed module. \n\n  This method\
+              \ does not check if the given module reads this module."
           - name: isOpen
             modifiers:
             - public
+            parameters:
+            - name: pn
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The package name
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this module has opened the package\n         unconditionally"
+            notes: "Returns true if this module has opened a package\n unconditionally.\n\
+              \n  This method always returns true when invoked on an unnamed\n module.\
+              \ Additionally, it always returns true when invoked on an\n open module\
+              \ with a package in the\n module. \n\n  This method does not check if\
+              \ the given module reads this module."
+          - name: isReflectivelyExported
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -302,5 +842,370 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+          - name: isReflectivelyExportedOrOpen
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isReflectivelyOpened
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isStaticallyExportedOrOpen
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$getPackages$1
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Package
+                full: java.lang.Package
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: loadModuleInfoClass
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+          - name: loadModuleInfoClass
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+          - name: moduleInfoClass
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          staticMethods:
+          - name: addExports0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addExportsToAll0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addExportsToAllUnnamed0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addReads0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: void
+                full: void
+          - name: defineModule0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg3
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg4
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: defineModules
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.String, java.lang.ClassLoader>
+            - name: arg2
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            return:
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+          - name: findModule
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            - name: arg1
+              type:
+                basic: ResolvedModule
+                full: java.lang.module.ResolvedModule
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+          - name: findModule
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+            - name: arg2
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+            - name: arg3
+              type:
+                basic: List
+                full: java.util.List<java.lang.ModuleLayer>
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+          - name: implAddEnableNativeAccessAllUnnamed
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: initExports
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: initExportsAndOpens
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+            - name: arg2
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+            - name: arg3
+              type:
+                basic: List
+                full: java.util.List<java.lang.ModuleLayer>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$findModule$2
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            - name: arg1
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$findModule$3
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+          - name: lambda$implAddExportsOrOpens$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: Map
+                full: java.util.Map

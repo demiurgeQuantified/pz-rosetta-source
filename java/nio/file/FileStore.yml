@@ -4,19 +4,46 @@ languages:
     packages:
       java.nio.file:
         FileStore:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Storage for files. A FileStore represents a storage pool, device,\n\
+            \ partition, volume, concrete file system or other implementation specific\
+            \ means\n of file storage. The FileStore for where a file is stored is\
+            \ obtained\n by invoking the getFileStore method, or all file\n stores\
+            \ can be enumerated by invoking the getFileStores method.\n\n  In addition\
+            \ to the methods defined by this class, a file store may support\n one\
+            \ or more FileStoreAttributeView classes\n that provide a read-only or\
+            \ updatable view of a set of file store attributes."
+          constructors:
+          - modifiers:
+            - protected
+            notes: Initializes a new instance of this class.
           methods:
           - name: getAttribute
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: attribute
               type:
                 basic: String
                 full: java.lang.String
+              notes: the attribute to read
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the attribute value; null may be valid for some\n          attributes"
+            notes: "Reads the value of a file store attribute.\n\n  The attribute\
+              \ parameter identifies the attribute to be read\n and takes the form:\n\
+              \ \n view-name:attribute-name\n \n where the character ':' stands for\
+              \ itself.\n\n  view-name is the name of\n a AttributeView that identifies\
+              \ a set of file attributes.\n attribute-name is the name of the attribute.\n\
+              \n  Usage Example:\n Suppose we want to know if ZFS compression is enabled\
+              \ (assuming the \"zfs\"\n view is supported):\n \n    boolean compression\
+              \ = (Boolean)fs.getAttribute(\"zfs:compression\");"
           - name: getBlockSize
             modifiers:
             - public
@@ -24,83 +51,163 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: "a positive value representing the block size of this file store,\n\
+                \          in bytes"
+            notes: "Returns the number of bytes per block in this file store.\n\n\
+              \  File storage is typically organized into discrete sequences of bytes\n\
+              \ called blocks. A block is the smallest storage unit of a file store.\n\
+              \ Every read and write operation is performed on a multiple of blocks."
           - name: getFileStoreAttributeView
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: type
               type:
-                basic: Class<V>
+                basic: Class
                 full: java.lang.Class<V>
+              notes: the Class object corresponding to the attribute view
             return:
               type:
                 basic: V
                 full: V
+              notes: "a file store attribute view of the specified type or\n     \
+                \     null if the attribute view is not available"
+            notes: "Returns a FileStoreAttributeView of the given type.\n\n  This\
+              \ method is intended to be used where the file store attribute\n view\
+              \ defines type-safe methods to read or update the file store attributes.\n\
+              \ The type parameter is the type of the attribute view required and\n\
+              \ the method returns an instance of that type if supported."
           - name: getTotalSpace
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: long
                 full: long
+              notes: the size of the file store, in bytes
+            notes: "Returns the size, in bytes, of the file store. If the total number\
+              \ of\n bytes in the file store is greater than Long.MAX_VALUE, then\n\
+              \ Long.MAX_VALUE will be returned."
           - name: getUnallocatedSpace
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: long
                 full: long
+              notes: the number of unallocated bytes
+            notes: "Returns the number of unallocated bytes in the file store.\n If\
+              \ the number of unallocated bytes is greater than\n Long.MAX_VALUE,\
+              \ then Long.MAX_VALUE will be returned.\n\n  The returned number of\
+              \ unallocated bytes is a hint, but not a\n guarantee, that it is possible\
+              \ to use most or any of these bytes.  The\n number of unallocated bytes\
+              \ is most likely to be accurate immediately\n after the space attributes\
+              \ are obtained. It is likely to be\n made inaccurate by any external\
+              \ I/O operations including those made on\n the system outside of this\
+              \ virtual machine."
           - name: getUsableSpace
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: long
                 full: long
+              notes: the number of bytes available
+            notes: "Returns the number of bytes available to this Java virtual machine\
+              \ on the\n file store.  If the number of bytes available is greater\
+              \ than\n Long.MAX_VALUE, then Long.MAX_VALUE will be returned.\n\n \
+              \ The returned number of available bytes is a hint, but not a\n guarantee,\
+              \ that it is possible to use most or any of these bytes.  The\n number\
+              \ of usable bytes is most likely to be accurate immediately\n after\
+              \ the space attributes are obtained. It is likely to be made inaccurate\n\
+              \ by any external I/O operations including those made on the system\
+              \ outside\n of this Java virtual machine."
           - name: isReadOnly
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, this file store is read-only
+            notes: "Tells whether this file store is read-only. A file store is read-only\
+              \ if\n it does not support write operations or other changes to files.\
+              \ Any\n attempt to create a file, open an existing file for writing\
+              \ etc. causes\n an IOException to be thrown."
           - name: name
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of this file store
+            notes: "Returns the name of this file store. The format of the name is\
+              \ highly\n implementation specific. It will typically be the name of\
+              \ the storage\n pool or volume.\n\n  The string returned by this method\
+              \ may differ from the string\n returned by the toString method."
           - name: supportsFileAttributeView
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: type
               type:
-                basic: Class<? extends FileAttributeView>
+                basic: Class
                 full: java.lang.Class<? extends java.nio.file.attribute.FileAttributeView>
+              notes: the file attribute view type
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the file attribute view is\n         \
+                \ supported"
+            notes: "Tells whether or not this file store supports the file attributes\n\
+              \ identified by the given file attribute view.\n\n  Invoking this method\
+              \ to test if the file store supports BasicFileAttributeView will always\
+              \ return true. In the case of\n the default provider, this method cannot\
+              \ guarantee to give the correct\n result when the file store is not\
+              \ a local storage device. The reasons for\n this are implementation\
+              \ specific and therefore unspecified."
           - name: supportsFileAttributeView
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of file attribute view
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the file attribute view is\n         \
+                \ supported"
+            notes: "Tells whether or not this file store supports the file attributes\n\
+              \ identified by the given file attribute view.\n\n  Invoking this method\
+              \ to test if the file store supports BasicFileAttributeView, identified\
+              \ by the name \"basic\" will\n always return true. In the case of the\
+              \ default provider, this\n method cannot guarantee to give the correct\
+              \ result when the file store is\n not a local storage device. The reasons\
+              \ for this are implementation\n specific and therefore unspecified."
           - name: type
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
-          javaType: class
-          extends: Object
+              notes: a string representing the type of this file store
+            notes: "Returns the type of this file store. The format of the string\n\
+              \ returned by this method is highly implementation specific. It may\n\
+              \ indicate, for example, the format used or if the file store is local\n\
+              \ or remote."

@@ -4,14 +4,257 @@ languages:
     packages:
       java.security:
         Provider:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.util.Properties
+          modifiers:
+          - public
+          - abstract
+          fields:
+            entrySet:
+              name: entrySet
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.util.Map$Entry<java.lang.Object, java.lang.Object>>
+            entrySetCallCount:
+              name: entrySetCallCount
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            info:
+              name: info
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            initialized:
+              name: initialized
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            legacyChanged:
+              name: legacyChanged
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            legacyMap:
+              name: legacyMap
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.security.Provider$ServiceKey, java.security.Provider$Service>
+            legacyStrings:
+              name: legacyStrings
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.String>
+            name:
+              name: name
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            prngAlgos:
+              name: prngAlgos
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+            serviceMap:
+              name: serviceMap
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.security.Provider$ServiceKey, java.security.Provider$Service>
+            serviceSet:
+              name: serviceSet
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.security.Provider$Service>
+            servicesChanged:
+              name: servicesChanged
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            version:
+              name: version
+              modifiers:
+              - private
+              type:
+                basic: double
+                full: double
+            versionStr:
+              name: versionStr
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            ALIAS_LENGTH:
+              name: ALIAS_LENGTH
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ALIAS_PREFIX:
+              name: ALIAS_PREFIX
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            ALIAS_PREFIX_LOWER:
+              name: ALIAS_PREFIX_LOWER
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            EMPTY:
+              name: EMPTY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            debug:
+              name: debug
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Debug
+                full: sun.security.util.Debug
+            knownEngines:
+              name: knownEngines
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.security.Provider$EngineDescription>
+            previousKey:
+              name: previousKey
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Provider.ServiceKey
+                full: java.security.Provider$ServiceKey
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the provider name.
+            - name: version
+              type:
+                basic: double
+                full: double
+              notes: the provider version number.
+            - name: info
+              type:
+                basic: String
+                full: java.lang.String
+              notes: a description of the provider and its services.
+            notes: "Constructs a provider with the specified name, version number,\n\
+              \ and information. Calling this constructor is equivalent to call the\n\
+              \ Provider(String, String, String) with name\n name, Double.toString(version),\
+              \ and info."
+          - modifiers:
+            - protected
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the provider name.
+            - name: versionStr
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the provider version string.
+            - name: info
+              type:
+                basic: String
+                full: java.lang.String
+              notes: a description of the provider and its services.
+            notes: "Constructs a provider with the specified name, version string,\n\
+              \ and information.\n\n The version string contains a version number\
+              \ optionally followed\n by other information separated by one of the\
+              \ characters of '+', '-'.\n\n The format for the version number is:\n\
+              \n \n     ^[0-9]+(\\.[0-9]+)*\n \n\n In order to return the version\
+              \ number in a double, when there are\n more than two components (separated\
+              \ by '.' as defined above), only\n the first two components are retained.\
+              \ The resulting string is then\n passed to Double.valueOf(String) to\
+              \ generate version number,\n i.e. getVersion().\n If the conversion\
+              \ failed, value 0 will be used."
+          methods:
+          - name: check
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkInitialized
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkLegacy
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: clear
             modifiers:
             - public
@@ -19,95 +262,148 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Clears this provider so that it no longer contains the properties\n\
+              \ used to look up facilities implemented by the provider.\n\n If a security\
+              \ manager is enabled, its checkSecurityAccess\n method is called with\
+              \ the string \"clearProviderProperties.\"+name\n (where name is the\
+              \ provider name) to see if it's ok to clear\n this provider."
           - name: compute
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: remappingFunction
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
-                  java.lang.Object, ?>
+                  java.lang.Object, ? extends java.lang.Object>
+              notes: the remapping function to compute a value
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the new value associated with the specified key, or null if none
+            notes: "Attempts to compute a mapping for the specified key and its\n\
+              \ current mapped value (or null if there is no current\n mapping).\n\
+              \n If a security manager is enabled, its checkSecurityAccess\n method\
+              \ is called with the strings \"putProviderProperty.\"+name\n and \"\
+              removeProviderProperty.\"+name, where name is the\n provider name, to\
+              \ see if it's ok to set this provider's property values\n and remove\
+              \ this provider's properties."
           - name: computeIfAbsent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: mappingFunction
               type:
-                basic: Function<Object, ?>
-                full: java.util.function.Function<? super java.lang.Object, ?>
+                basic: Function
+                full: java.util.function.Function<? super java.lang.Object, ? extends
+                  java.lang.Object>
+              notes: the mapping function to compute a value
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the current (existing or computed) value associated with\n \
+                \        the specified key, or null if the computed value is null"
+            notes: "If the specified key is not already associated with a value (or\n\
+              \ is mapped to null), attempts to compute its value using\n the given\
+              \ mapping function and enters it into this map unless\n null.\n\n If\
+              \ a security manager is enabled, its checkSecurityAccess\n method is\
+              \ called with the strings \"putProviderProperty.\"+name\n and \"removeProviderProperty.\"\
+              +name, where name is the\n provider name, to see if it's ok to set this\
+              \ provider's property values\n and remove this provider's properties."
           - name: computeIfPresent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: remappingFunction
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
-                  java.lang.Object, ?>
+                  java.lang.Object, ? extends java.lang.Object>
+              notes: the remapping function to compute a value
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the new value associated with the specified key, or null if none
+            notes: "If the value for the specified key is present and non-null, attempts\
+              \ to\n compute a new mapping given the key and its current mapped value.\n\
+              \n If a security manager is enabled, its checkSecurityAccess\n method\
+              \ is called with the strings \"putProviderProperty.\"+name\n and \"\
+              removeProviderProperty.\"+name, where name is the\n provider name, to\
+              \ see if it's ok to set this provider's property values\n and remove\
+              \ this provider's properties."
           - name: configure
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: configArg
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the configuration information for configuring this\n       \
+                \  provider."
             return:
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: a provider configured with the supplied configuration argument.
+            notes: "Apply the supplied configuration argument to this provider instance\n\
+              \ and return the configured provider. Note that if this provider cannot\n\
+              \ be configured in-place, a new provider will be created and returned.\n\
+              \ Therefore, callers should always use the returned provider."
           - name: elements
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<Object>
+                basic: Enumeration
                 full: java.util.Enumeration<java.lang.Object>
+          - name: ensureLegacyParsed
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<Object, Object>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<java.lang.Object, java.lang.Object>>
           - name: forEach
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
-                basic: BiConsumer<Object, Object>
+                basic: BiConsumer
                 full: java.util.function.BiConsumer<? super java.lang.Object, ? super
                   java.lang.Object>
+              notes: The action to be performed for each entry
             return:
               type:
                 basic: void
                 full: void
+            notes: 'Description copied from interface: Map'
           - name: get
             modifiers:
             - public
@@ -120,6 +416,13 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+          - name: getDefaultSecureRandomService
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Provider.Service
+                full: java.security.Provider$Service
           - name: getInfo
             modifiers:
             - public
@@ -127,6 +430,9 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: a description of the provider and its services.
+            notes: "Returns a human-readable description of the provider and its\n\
+              \ services.  This may return an HTML page, with relevant links."
           - name: getName
             modifiers:
             - public
@@ -134,22 +440,29 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of this provider.
+            notes: Returns the name of this provider.
           - name: getOrDefault
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the key whose associated value is to be returned
+            - name: defaultValue
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the default mapping of the key
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the value to which the specified key is mapped, or\n defaultValue\
+                \ if this map contains no mapping for the key"
+            notes: 'Description copied from interface: Map'
           - name: getProperty
             modifiers:
             - public
@@ -166,24 +479,34 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: type
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the type of service requested\n (for example, MessageDigest)"
+            - name: algorithm
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the case insensitive algorithm name (or alternate\n alias) of\
+                \ the service requested (for example, SHA-1)"
             return:
               type:
-                basic: Service
+                basic: Provider.Service
                 full: java.security.Provider$Service
+              notes: "the service describing this Provider's matching service\n or\
+                \ null if no such service exists"
+            notes: "Get the service describing this Provider's implementation of the\n\
+              \ specified type of this algorithm or alias. If no such\n implementation\
+              \ exists, this method returns null. If there are two\n matching services,\
+              \ one added to this provider using\n putService() and one added via\
+              \ put(),\n the service added via putService() is returned."
           - name: getServices
             modifiers:
             - public
             return:
               type:
-                basic: Service>
+                basic: Set
                 full: java.util.Set<java.security.Provider$Service>
           - name: getVersion
             modifiers:
@@ -192,7 +515,8 @@ languages:
               type:
                 basic: double
                 full: double
-            deprecated: true
+              notes: the version number for this provider.
+            notes: Returns the version number for this provider.
           - name: getVersionStr
             modifiers:
             - public
@@ -200,42 +524,69 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: isConfigured
+              notes: the version string for this provider.
+            notes: Returns the version string for this provider.
+          - name: implClear
             modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: keySet
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Set<Object>
-                full: java.util.Set<java.lang.Object>
-          - name: keys
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Enumeration<Object>
-                full: java.util.Enumeration<java.lang.Object>
-          - name: load
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: InputStream
-                full: java.io.InputStream
+            - private
             return:
               type:
                 basic: void
                 full: void
-          - name: merge
+          - name: implCompute
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super java.lang.Object, ? super
+                  java.lang.Object, ? extends java.lang.Object>
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: implComputeIfAbsent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<? super java.lang.Object, ? extends
+                  java.lang.Object>
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: implComputeIfPresent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super java.lang.Object, ? super
+                  java.lang.Object, ? extends java.lang.Object>
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: implMerge
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -247,16 +598,16 @@ languages:
                 full: java.lang.Object
             - name: arg2
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
-                  java.lang.Object, ?>
+                  java.lang.Object, ? extends java.lang.Object>
             return:
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: put
+          - name: implPut
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -270,14 +621,261 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+          - name: implPutAll
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<?, ?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implPutIfAbsent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: implRemove
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: implRemove
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: implRemoveService
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Provider.Service
+                full: java.security.Provider$Service
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implReplace
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: implReplace
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: implReplaceAll
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super java.lang.Object, ? super
+                  java.lang.Object, ? extends java.lang.Object>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: isConfigured
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if no further configuration is needed, false otherwise.
+            notes: Check if this provider instance has been configured.
+          - name: keySet
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Object>
+              notes: a set view of the keys contained in this map
+            notes: "Returns an unmodifiable Set view of the property keys contained\
+              \ in\n this provider."
+          - name: keys
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Enumeration
+                full: java.util.Enumeration<java.lang.Object>
+          - name: load
+            modifiers:
+            - public
+            parameters:
+            - name: inStream
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+              notes: the input stream.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Reads a property list (key and element pairs) from the input stream.
+          - name: merge
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: key with which the resulting value is to be associated
+            - name: value
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "the non-null value to be merged with the existing value\n  \
+                \      associated with the key or, if no existing value or a null\
+                \ value\n        is associated with the key, to be associated with\
+                \ the key"
+            - name: remappingFunction
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super java.lang.Object, ? super
+                  java.lang.Object, ? extends java.lang.Object>
+              notes: "the remapping function to recompute a value if\n        present"
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "the new value associated with the specified key, or null if\
+                \ no\n         value is associated with the key"
+            notes: "If the specified key is not already associated with a value or\
+              \ is\n associated with null, associates it with the given value. Otherwise,\n\
+              \ replaces the value with the results of the given remapping function,\n\
+              \ or removes if the result is null. This method may be of use when\n\
+              \ combining multiple mapped values for a key.\n\n If a security manager\
+              \ is enabled, its checkSecurityAccess\n method is called with the strings\
+              \ \"putProviderProperty.\"+name\n and \"removeProviderProperty.\"+name,\
+              \ where name is the\n provider name, to see if it's ok to set this provider's\
+              \ property values\n and remove this provider's properties."
+          - name: parseLegacyPut
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the hashtable key
+            - name: value
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the value
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "the previous value of the specified key in this hashtable,\n\
+                \             or null if it did not have one"
+            notes: "Sets the key property to have the specified\n value.\n\n If a\
+              \ security manager is enabled, its checkSecurityAccess\n method is called\
+              \ with the string \"putProviderProperty.\"+name,\n where name is the\
+              \ provider name, to see if it's ok to set this\n provider's property\
+              \ values."
           - name: putAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: t
               type:
-                basic: Map<?, ?>
+                basic: Map
                 full: java.util.Map<?, ?>
+              notes: mappings to be stored in this map
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Copies all of the mappings from the specified Map to this provider.\n\
+              \ These mappings will replace any properties that this provider had\n\
+              \ for any of the keys currently in the specified Map."
+          - name: putId
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -286,91 +884,268 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value to be associated with the specified key
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the previous value associated with the specified key, or\n \
+                \        null if there was no mapping for the key.\n         (A null\
+                \ return can also indicate that the map\n         previously associated\
+                \ null with the key,\n         if the implementation supports null\
+                \ values.)"
+            notes: "If the specified key is not already associated with a value (or\
+              \ is mapped\n to null) associates it with the given value and returns\n\
+              \ null, else returns the current value.\n\n If a security manager is\
+              \ enabled, its checkSecurityAccess\n method is called with the string\
+              \ \"putProviderProperty.\"+name,\n where name is the provider name,\
+              \ to see if it's ok to set this\n provider's property values."
+          - name: putPropertyStrings
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Provider.Service
+                full: java.security.Provider$Service
+            return:
+              type:
+                basic: void
+                full: void
+          - name: putService
+            modifiers:
+            - protected
+            parameters:
+            - name: s
+              type:
+                basic: Provider.Service
+                full: java.security.Provider$Service
+              notes: the Service to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Add a service. If a service of the same type with the same algorithm\n\
+              \ name exists and it was added using putService(),\n it is replaced\
+              \ by the new service.\n This method also places information about this\
+              \ service\n in the provider's Hashtable values in the format described\
+              \ in the\n Java Cryptography Architecture (JCA) Reference Guide.\n\n\
+              \ Also, if there is a security manager, its\n checkSecurityAccess method\
+              \ is called with the string\n \"putProviderProperty.\"+name, where name\
+              \ is\n the provider name, to see if it's ok to set this provider's property\n\
+              \ values. If the default implementation of checkSecurityAccess\n is\
+              \ used (that is, that method is not overridden), then this results in\n\
+              \ a call to the security manager's checkPermission method with\n a SecurityPermission(\"\
+              putProviderProperty.\"+name)\n permission."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the key that needs to be removed
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the value to which the key had been mapped in this hashtable,\n\
+                \          or null if the key did not have a mapping"
+            notes: "Removes the key property (and its corresponding\n value).\n\n\
+              \ If a security manager is enabled, its checkSecurityAccess\n method\
+              \ is called with the string \"removeProviderProperty.\"+name,\n where\
+              \ name is the provider name, to see if it's ok to remove this\n provider's\
+              \ properties."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is associated
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value expected to be associated with the specified key
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: replace
+              notes: true if the value was removed
+            notes: "Removes the entry for the specified key only if it is currently\n\
+              \ mapped to the specified value.\n\n If a security manager is enabled,\
+              \ its checkSecurityAccess\n method is called with the string \"removeProviderProperty.\"\
+              +name,\n where name is the provider name, to see if it's ok to remove\
+              \ this\n provider's properties."
+          - name: removeInvalidServices
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
+                basic: Map
+                full: java.util.Map<java.security.Provider$ServiceKey, java.security.Provider$Service>
             return:
               type:
-                basic: Object
-                full: java.lang.Object
+                basic: void
+                full: void
+          - name: removePropertyStrings
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Provider.Service
+                full: java.security.Provider$Service
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeService
+            modifiers:
+            - protected
+            parameters:
+            - name: s
+              type:
+                basic: Provider.Service
+                full: java.security.Provider$Service
+              notes: the Service to be removed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Remove a service previously added using\n putService(). The specified\
+              \ service is removed from\n this provider. It will no longer be returned\
+              \ by\n getService() and its information will be removed\n from this\
+              \ provider's Hashtable.\n\n Also, if there is a security manager, its\n\
+              \ checkSecurityAccess method is called with the string\n \"removeProviderProperty.\"\
+              +name, where name is\n the provider name, to see if it's ok to remove\
+              \ this provider's\n properties. If the default implementation of\n checkSecurityAccess\
+              \ is used (that is, that method is not\n overridden), then this results\
+              \ in a call to the security manager's\n checkPermission method with\
+              \ a\n SecurityPermission(\"removeProviderProperty.\"+name)\n permission."
           - name: replace
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is associated
+            - name: oldValue
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg2
+              notes: value expected to be associated with the specified key
+            - name: newValue
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value to be associated with the specified key
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the value was replaced
+            notes: "Replaces the entry for the specified key only if currently\n mapped\
+              \ to the specified value.\n\n If a security manager is enabled, its\
+              \ checkSecurityAccess\n method is called with the string \"putProviderProperty.\"\
+              +name,\n where name is the provider name, to see if it's ok to set this\n\
+              \ provider's property values."
+          - name: replace
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: key with which the specified value is associated
+            - name: value
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: value to be associated with the specified key
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "the previous value associated with the specified key, or\n \
+                \        null if there was no mapping for the key.\n         (A null\
+                \ return can also indicate that the map\n         previously associated\
+                \ null with the key,\n         if the implementation supports null\
+                \ values.)"
+            notes: "Replaces the entry for the specified key only if it is\n currently\
+              \ mapped to some value.\n\n If a security manager is enabled, its checkSecurityAccess\n\
+              \ method is called with the string \"putProviderProperty.\"+name,\n\
+              \ where name is the provider name, to see if it's ok to set this\n provider's\
+              \ property values."
           - name: replaceAll
             modifiers:
             - public
             parameters:
+            - name: function
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super java.lang.Object, ? super
+                  java.lang.Object, ? extends java.lang.Object>
+              notes: the function to apply to each entry
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Replaces each entry's value with the result of invoking the given\n\
+              \ function on that entry, in the order entries are returned by an entry\n\
+              \ set iterator, until all entries have been processed or the function\n\
+              \ throws an exception.\n\n If a security manager is enabled, its checkSecurityAccess\n\
+              \ method is called with the string \"putProviderProperty.\"+name,\n\
+              \ where name is the provider name, to see if it's ok to set this\n provider's\
+              \ property values."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: updateSecureRandomEntries
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: BiFunction<Object, Object, ?>
-                full: java.util.function.BiFunction<? super java.lang.Object, ? super
-                  java.lang.Object, ?>
+                basic: boolean
+                full: boolean
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
@@ -380,7 +1155,69 @@ languages:
             - public
             return:
               type:
-                basic: Collection<Object>
+                basic: Collection
                 full: java.util.Collection<java.lang.Object>
-          javaType: class
-          extends: Properties
+              notes: a collection view of the values contained in this map
+            notes: "Returns an unmodifiable Collection view of the property values\n\
+              \ contained in this provider."
+          staticMethods:
+          - name: addEngine
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getEngineName
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getTypeAndAlgorithm
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String[]
+          - name: parseVersionStr
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: double
+                full: double

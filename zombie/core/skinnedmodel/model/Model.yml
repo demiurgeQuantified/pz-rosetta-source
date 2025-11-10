@@ -4,6 +4,7 @@ languages:
     packages:
       zombie.core.skinnedmodel.model:
         Model:
+          extends: zombie.asset.Asset
           modifiers:
           - public
           - final
@@ -14,74 +15,105 @@ languages:
               - public
               type:
                 basic: Shader
+                full: zombie.core.skinnedmodel.shader.Shader
             Mesh:
               name: Mesh
               modifiers:
               - public
-              - final
               type:
                 basic: ModelMesh
+                full: zombie.core.skinnedmodel.model.ModelMesh
             Name:
               name: Name
               modifiers:
               - public
               type:
                 basic: String
+                full: java.lang.String
             Tag:
               name: Tag
               modifiers:
               - public
               type:
                 basic: Object
+                full: java.lang.Object
             assetParams:
               name: assetParams
               modifiers:
               - public
               type:
-                basic: ModelAssetParams
+                basic: Model.ModelAssetParams
+                full: zombie.core.skinnedmodel.model.Model$ModelAssetParams
             bStatic:
               name: bStatic
               modifiers:
               - public
               type:
                 basic: boolean
+                full: boolean
             softwareMesh:
               name: softwareMesh
               modifiers:
               - public
               type:
                 basic: SoftwareModelMesh
+                full: zombie.core.skinnedmodel.model.SoftwareModelMesh
             tex:
               name: tex
               modifiers:
               - public
               type:
                 basic: Texture
+                full: zombie.core.textures.Texture
           staticFields:
             ASSET_TYPE:
               name: ASSET_TYPE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: AssetType
+                full: zombie.asset.AssetType
+            IDENTITY:
+              name: IDENTITY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
+            InstancingThreshold:
+              name: InstancingThreshold
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+            ModelDrawCounts:
+              name: ModelDrawCounts
+              modifiers:
+              - public
+              - static
+              type:
+                basic: TObjectIntHashMap
+                full: gnu.trove.map.hash.TObjectIntHashMap<zombie.core.skinnedmodel.model.Model>
             debugDrawColours:
               name: debugDrawColours
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Color
+                full: zombie.core.Color[]
             m_staticReusableFloatBuffer:
               name: m_staticReusableFloatBuffer
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: FloatBuffer
+                full: java.nio.FloatBuffer
           constructors:
           - modifiers:
             - public
@@ -89,12 +121,15 @@ languages:
             - name: path
               type:
                 basic: AssetPath
+                full: zombie.asset.AssetPath
             - name: manager
               type:
                 basic: AssetManager
+                full: zombie.asset.AssetManager
             - name: params
               type:
-                basic: ModelAssetParams
+                basic: Model.ModelAssetParams
+                full: zombie.core.skinnedmodel.model.Model$ModelAssetParams
           methods:
           - name: CreateShader
             modifiers:
@@ -103,9 +138,11 @@ languages:
             - name: name
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: DrawChar
             modifiers:
             - public
@@ -113,12 +150,31 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             - name: instData
               type:
                 basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
             return:
               type:
                 basic: void
+                full: void
+          - name: DrawSolid
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
+            - name: arg1
+              type:
+                basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
+            return:
+              type:
+                basic: void
+                full: void
           - name: DrawVehicle
             modifiers:
             - public
@@ -126,12 +182,38 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             - name: instData
               type:
                 basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
             return:
               type:
                 basic: void
+                full: void
+          - name: DrawWireframe
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
+            - name: arg1
+              type:
+                basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
+            return:
+              type:
+                basic: void
+                full: void
+          - name: EnsureEffect
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: debugDrawLightSource
             modifiers:
             - public
@@ -139,28 +221,123 @@ languages:
             - name: ls
               type:
                 basic: IsoLightSource
+                full: zombie.iso.IsoLightSource
             - name: cx
               type:
                 basic: float
+                full: float
             - name: cy
               type:
                 basic: float
+                full: float
             - name: cz
               type:
                 basic: float
+                full: float
             - name: radians
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
+          - name: drawVehicleLights
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
+            return:
+              type:
+                basic: void
+                full: void
           - name: getType
             modifiers:
             - public
             return:
               type:
                 basic: AssetType
+                full: zombie.asset.AssetType
+          - name: onBeforeReady
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setLights
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setLightsInst
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
+          - name: BoneToWorldCoords
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationPlayer
+                full: zombie.core.skinnedmodel.animation.AnimationPlayer
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: float
+                full: float
+            - name: arg4
+              type:
+                basic: float
+                full: float
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            return:
+              type:
+                basic: void
+                full: void
           - name: BoneToWorldCoords
             modifiers:
             - public
@@ -169,15 +346,19 @@ languages:
             - name: character
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             - name: boneIndex
               type:
                 basic: int
+                full: int
             - name: vec
               type:
                 basic: Vector3
+                full: zombie.iso.Vector3
             return:
               type:
                 basic: void
+                full: void
           - name: BoneToWorldCoords
             modifiers:
             - public
@@ -186,15 +367,19 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             - name: boneIndex
               type:
                 basic: int
+                full: int
             - name: vec
               type:
                 basic: Vector3
+                full: zombie.iso.Vector3
             return:
               type:
                 basic: void
+                full: void
           - name: BoneYDirectionToWorldCoords
             modifiers:
             - public
@@ -203,18 +388,48 @@ languages:
             - name: character
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             - name: boneIndex
               type:
                 basic: int
+                full: int
             - name: vec
               type:
                 basic: Vector3
+                full: zombie.iso.Vector3
             - name: length
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
+          - name: BoneZDirectionToWorldCoords
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            - name: arg3
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: CharacterModelCameraBegin
             modifiers:
             - public
@@ -223,9 +438,11 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             return:
               type:
                 basic: void
+                full: void
           - name: CharacterModelCameraEnd
             modifiers:
             - public
@@ -233,6 +450,61 @@ languages:
             return:
               type:
                 basic: void
+                full: void
+          - name: SwapInstancedBasic
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: SwapInstancedBasic
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Model
+                full: zombie.core.skinnedmodel.model.Model
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: VectorToWorldCoords
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: float
+                full: float
+            - name: arg4
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            return:
+              type:
+                basic: void
+                full: void
           - name: VectorToWorldCoords
             modifiers:
             - public
@@ -241,12 +513,15 @@ languages:
             - name: character
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             - name: vec
               type:
                 basic: Vector3
+                full: zombie.iso.Vector3
             return:
               type:
                 basic: void
+                full: void
           - name: VectorToWorldCoords
             modifiers:
             - public
@@ -255,12 +530,73 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             - name: vec
               type:
                 basic: Vector3
+                full: zombie.iso.Vector3
             return:
               type:
                 basic: void
+                full: void
+          - name: WorldToModel
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            - name: arg1
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            return:
+              type:
+                basic: void
+                full: void
+          - name: debugDrawAxis
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg5
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg6
+              type:
+                basic: float
+                full: float
+            - name: arg7
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: debugDrawAxis
             modifiers:
             - public
@@ -269,21 +605,27 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: z
               type:
                 basic: float
+                full: float
             - name: length
               type:
                 basic: float
+                full: float
             - name: thickness
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           - name: debugDrawLightSource
             modifiers:
             - public
@@ -292,27 +634,104 @@ languages:
             - name: lx
               type:
                 basic: float
+                full: float
             - name: ly
               type:
                 basic: float
+                full: float
             - name: lz
               type:
                 basic: float
+                full: float
             - name: cx
               type:
                 basic: float
+                full: float
             - name: cy
               type:
                 basic: float
+                full: float
             - name: cz
               type:
                 basic: float
+                full: float
             - name: radians
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
+          - name: drawArrowInternal
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: float
+                full: float
+            - name: arg4
+              type:
+                basic: float
+                full: float
+            - name: arg5
+              type:
+                basic: float
+                full: float
+            - name: arg6
+              type:
+                basic: float
+                full: float
+            - name: arg7
+              type:
+                basic: float
+                full: float
+            - name: arg8
+              type:
+                basic: float
+                full: float
+            - name: arg9
+              type:
+                basic: float
+                full: float
+            - name: arg10
+              type:
+                basic: float
+                full: float
+            - name: arg11
+              type:
+                basic: float
+                full: float
+            - name: arg12
+              type:
+                basic: float
+                full: float
+            - name: arg13
+              type:
+                basic: float
+                full: float
+            - name: arg14
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: drawBoneMtx
             modifiers:
             - public
@@ -321,8 +740,38 @@ languages:
             - name: boneMtx
               type:
                 basic: Matrix4f
+                full: org.lwjgl.util.vector.Matrix4f
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Asset
+                full: void
+          - name: drawBoneMtxInternal
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Matrix4f
+                full: org.lwjgl.util.vector.Matrix4f
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$CreateShader$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Model
+                full: zombie.core.skinnedmodel.model.Model
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void

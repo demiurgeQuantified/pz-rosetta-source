@@ -4,26 +4,133 @@ languages:
     packages:
       java.net:
         NetworkInterface:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "This class represents a Network Interface made up of a name,\n and\
+            \ a list of IP addresses assigned to this interface.\n It is used to identify\
+            \ the local interface on which a multicast group\n is joined.\n\n Interfaces\
+            \ are normally known by names such as \"le0\"."
+          fields:
+            addrs:
+              name: addrs
+              modifiers:
+              - private
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+            bindings:
+              name: bindings
+              modifiers:
+              - private
+              type:
+                basic: InterfaceAddress
+                full: java.net.InterfaceAddress[]
+            childs:
+              name: childs
+              modifiers:
+              - private
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface[]
+            displayName:
+              name: displayName
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            index:
+              name: index
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            name:
+              name: name
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            parent:
+              name: parent
+              modifiers:
+              - private
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface
+            virtual:
+              name: virtual
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            defaultIndex:
+              name: defaultIndex
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            defaultInterface:
+              name: defaultInterface
+              modifiers:
+              - private
+              - static
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface
+          constructors:
+          - modifiers:
+            - package
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare against.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the objects are the same;\n          false otherwise."
+            notes: "Compares this object against the specified object.\n The result\
+              \ is true if and only if the argument is\n not null and it represents\
+              \ the same NetworkInterface\n as this object.\n \n Two instances of\
+              \ NetworkInterface represent the same\n NetworkInterface if both the\
+              \ name and the set of InetAddresses\n bound to the interfaces are equal."
+          - name: getCheckedInetAddresses
+            modifiers:
+            - private
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
           - name: getDisplayName
             modifiers:
             - public
@@ -31,13 +138,25 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "a non-empty string representing the display name of this network\n\
+                \         interface, or null if no display name is available."
+            notes: "Get the display name of this network interface.\n A display name\
+              \ is a human readable String describing the network\n device."
           - name: getHardwareAddress
             modifiers:
             - public
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "a byte array containing the address, or null if\n          the\
+                \ address doesn't exist, is not accessible or a security\n       \
+                \   manager is set and the caller does not have the permission\n \
+                \         NetPermission(\"getNetworkInformation\")"
+            notes: "Returns the hardware address (usually MAC) of the interface if\
+              \ it\n has one and if it can be accessed given the current privileges.\n\
+              \ If a security manager is set, then the caller must have\n the permission\
+              \ NetPermission(\"getNetworkInformation\")."
           - name: getIndex
             modifiers:
             - public
@@ -45,20 +164,41 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the index of this network interface or -1 if the index is\n\
+                \         unknown"
+            notes: "Returns the index of this network interface. The index is an integer\
+              \ greater\n or equal to zero, or -1 for unknown. This is a system specific\
+              \ value\n and interfaces with the same name can have different indexes\
+              \ on different\n machines."
           - name: getInetAddresses
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<InetAddress>
+                basic: Enumeration
                 full: java.util.Enumeration<java.net.InetAddress>
+              notes: "an Enumeration object with all or a subset of the InetAddresses\n\
+                \ bound to this network interface"
+            notes: "Get an Enumeration with all or a subset of the InetAddresses bound\
+              \ to\n this network interface.\n \n If there is a security manager,\
+              \ its checkConnect\n method is called for each InetAddress. Only InetAddresses\
+              \ where\n the checkConnect doesn't throw a SecurityException\n will\
+              \ be returned in the Enumeration. However, if the caller has the\n NetPermission(\"\
+              getNetworkInformation\") permission, then all\n InetAddresses are returned."
           - name: getInterfaceAddresses
             modifiers:
             - public
             return:
               type:
-                basic: List<InterfaceAddress>
+                basic: List
                 full: java.util.List<java.net.InterfaceAddress>
+              notes: "a List object with all or a subset of the\n         InterfaceAddress\
+                \ of this network interface"
+            notes: "Get a List of all or a subset of the InterfaceAddresses\n of this\
+              \ network interface.\n \n If there is a security manager, its checkConnect\n\
+              \ method is called with the InetAddress for each InterfaceAddress.\n\
+              \ Only InterfaceAddresses where the checkConnect doesn't throw\n a SecurityException\
+              \ will be returned in the List."
           - name: getMTU
             modifiers:
             - public
@@ -66,6 +206,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the value of the MTU for that interface.
+            notes: Returns the Maximum Transmission Unit (MTU) of this interface.
           - name: getName
             modifiers:
             - public
@@ -73,6 +215,8 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of this network interface
+            notes: Get the name of this network interface.
           - name: getParent
             modifiers:
             - public
@@ -80,13 +224,22 @@ languages:
               type:
                 basic: NetworkInterface
                 full: java.net.NetworkInterface
+              notes: The NetworkInterface this interface is attached to.
+            notes: "Returns the parent NetworkInterface of this interface if this\
+              \ is\n a subinterface, or null if it is a physical\n (non virtual) interface\
+              \ or has no parent."
           - name: getSubInterfaces
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<NetworkInterface>
+                basic: Enumeration
                 full: java.util.Enumeration<java.net.NetworkInterface>
+              notes: "an Enumeration object with all of the subinterfaces\n of this\
+                \ network interface"
+            notes: "Get an Enumeration with all the subinterfaces (also known as virtual\n\
+              \ interfaces) attached to this network interface.\n \n For instance\
+              \ eth0:1 will be a subinterface to eth0."
           - name: hashCode
             modifiers:
             - public
@@ -99,8 +252,16 @@ languages:
             - public
             return:
               type:
-                basic: Stream<InetAddress>
+                basic: Stream
                 full: java.util.stream.Stream<java.net.InetAddress>
+              notes: "a Stream object with all or a subset of the InetAddresses\n\
+                \ bound to this network interface"
+            notes: "Get a Stream of all or a subset of the InetAddresses bound to\
+              \ this\n network interface.\n \n If there is a security manager, its\
+              \ checkConnect\n method is called for each InetAddress. Only InetAddresses\
+              \ where\n the checkConnect doesn't throw a SecurityException will be\n\
+              \ returned in the Stream. However, if the caller has the\n NetPermission(\"\
+              getNetworkInformation\") permission, then all\n InetAddresses are returned."
           - name: isLoopback
             modifiers:
             - public
@@ -108,6 +269,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the interface is a loopback interface.
+            notes: Returns whether a network interface is a loopback interface.
           - name: isPointToPoint
             modifiers:
             - public
@@ -115,6 +278,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the interface is a point to point\n          interface."
+            notes: "Returns whether a network interface is a point to point interface.\n\
+              \ A typical point to point interface would be a PPP connection through\n\
+              \ a modem."
           - name: isUp
             modifiers:
             - public
@@ -122,6 +289,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the interface is up and running.
+            notes: Returns whether a network interface is up and running.
           - name: isVirtual
             modifiers:
             - public
@@ -129,13 +298,25 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this interface is a virtual interface.
+            notes: "Returns whether this interface is a virtual interface (also called\n\
+              \ subinterface).\n Virtual interfaces are, on some systems, interfaces\
+              \ created as a child\n of a physical interface and given different settings\
+              \ (like address or\n MTU). Usually the name of the interface will the\
+              \ name of the parent\n followed by a colon (:) and a number identifying\
+              \ the child since there\n can be several virtual interfaces attached\
+              \ to a single physical\n interface."
           - name: subInterfaces
             modifiers:
             - public
             return:
               type:
-                basic: Stream<NetworkInterface>
+                basic: Stream
                 full: java.util.stream.Stream<java.net.NetworkInterface>
+              notes: "a Stream object with all of the subinterfaces\n of this network\
+                \ interface"
+            notes: "Get a Stream of all subinterfaces (also known as virtual\n interfaces)\
+              \ attached to this network interface."
           - name: supportsMulticast
             modifiers:
             - public
@@ -143,10 +324,70 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the interface supports Multicasting.
+            notes: Returns whether a network interface supports multicasting or not.
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
+          - name: boundInetAddress0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: enumerationFromArray
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T[]
+            return:
+              type:
+                basic: Enumeration
+                full: java.util.Enumeration<T>
+          - name: getAll
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface[]
           - name: getByIndex
             modifiers:
             - public
+            - static
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: an integer, the index of the interface
+            return:
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface
+              notes: "the NetworkInterface obtained from its index, or null if\n \
+                \        there is no interface with such an index on the system"
+            notes: Get a network interface given its index.
+          - name: getByIndex0
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -162,6 +403,26 @@ languages:
             - public
             - static
             parameters:
+            - name: addr
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: The InetAddress to search with.
+            return:
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface
+              notes: "A NetworkInterface\n          or null if there is no network\
+                \ interface\n          with the specified IP address."
+            notes: "Convenience method to search for a network interface that\n has\
+              \ the specified Internet Protocol (IP) address bound to\n it.\n \n If\
+              \ the specified IP address is bound to multiple network\n interfaces\
+              \ it is not defined which network interface is\n returned."
+          - name: getByInetAddress0
+            modifiers:
+            - private
+            - static
+            parameters:
             - name: arg0
               type:
                 basic: InetAddress
@@ -175,6 +436,23 @@ languages:
             - public
             - static
             parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The name of the network interface.
+            return:
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface
+              notes: "A NetworkInterface with the specified name,\n          or null\
+                \ if there is no network interface\n          with the specified name."
+            notes: Searches for the network interface with the specified name.
+          - name: getByName0
+            modifiers:
+            - private
+            - static
+            parameters:
             - name: arg0
               type:
                 basic: String
@@ -183,21 +461,177 @@ languages:
               type:
                 basic: NetworkInterface
                 full: java.net.NetworkInterface
+          - name: getDefault
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: NetworkInterface
+                full: java.net.NetworkInterface
+          - name: getMTU0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getMacAddr0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: byte
+                full: byte[]
           - name: getNetworkInterfaces
             modifiers:
             - public
             - static
             return:
               type:
-                basic: Enumeration<NetworkInterface>
+                basic: Enumeration
                 full: java.util.Enumeration<java.net.NetworkInterface>
+              notes: an Enumeration of NetworkInterfaces found on this machine
+            notes: "Returns an Enumeration of all the interfaces on this machine.\
+              \ The\n Enumeration contains at least one element, possibly representing\n\
+              \ a loopback interface that only supports communication between entities\
+              \ on\n this machine."
+          - name: init
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: isBoundInetAddress
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isLoopback0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isP2P0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isUp0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: networkInterfaces
             modifiers:
             - public
             - static
             return:
               type:
-                basic: Stream<NetworkInterface>
+                basic: Stream
                 full: java.util.stream.Stream<java.net.NetworkInterface>
-          javaType: class
-          extends: Object
+              notes: a Stream of NetworkInterfaces found on this machine
+            notes: "Returns a Stream of all the interfaces on this machine.  The\n\
+              \ Stream contains at least one interface, possibly representing a\n\
+              \ loopback interface that only supports communication between entities\
+              \ on\n this machine."
+          - name: streamFromArray
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T[]
+            return:
+              type:
+                basic: Stream
+                full: java.util.stream.Stream<T>
+          - name: supportsMulticast0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean

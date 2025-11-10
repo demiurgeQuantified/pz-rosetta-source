@@ -4,24 +4,44 @@ languages:
     packages:
       java.lang.ref:
         WeakReference:
+          extends: java.lang.ref.Reference<T>
+          modifiers:
+          - public
+          notes: "Weak reference objects, which do not prevent their referents from\
+            \ being\n made finalizable, finalized, and then reclaimed.  Weak references\
+            \ are most\n often used to implement canonicalizing mappings.\n\n  Suppose\
+            \ that the garbage collector determines at a certain point in time\n that\
+            \ an object is weakly\n reachable.  At that time it will atomically clear\
+            \ all weak references to\n that object and all weak references to any\
+            \ other weakly-reachable objects\n from which that object is reachable\
+            \ through a chain of strong and soft\n references.  At the same time it\
+            \ will declare all of the formerly\n weakly-reachable objects to be finalizable.\
+            \  At the same time or at some\n later time it will enqueue those newly-cleared\
+            \ weak references that are\n registered with reference queues."
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: referent
               type:
                 basic: T
                 full: T
+              notes: object the new weak reference will refer to
+            notes: "Creates a new weak reference that refers to the given object.\
+              \  The new\n reference is not registered with any queue."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: referent
               type:
                 basic: T
                 full: T
-            - name: arg1
+              notes: object the new weak reference will refer to
+            - name: q
               type:
-                basic: ReferenceQueue<? super T>
+                basic: ReferenceQueue
                 full: java.lang.ref.ReferenceQueue<? super T>
-          javaType: class
-          extends: Reference<T>
+              notes: "the queue with which the reference is to be registered,\n  \
+                \        or null if registration is not required"
+            notes: "Creates a new weak reference that refers to the given object and\
+              \ is\n registered with the given queue."

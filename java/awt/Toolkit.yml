@@ -4,39 +4,194 @@ languages:
     packages:
       java.awt:
         Toolkit:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class is the abstract superclass of all actual\n implementations\
+            \ of the Abstract Window Toolkit. Subclasses of\n the Toolkit class are\
+            \ used to bind the various components\n to particular native toolkit implementations.\n\
+            \ \n Many GUI events may be delivered to user\n asynchronously, if the\
+            \ opposite is not specified explicitly.\n As well as\n many GUI operations\
+            \ may be performed asynchronously.\n This fact means that if the state\
+            \ of a component is set, and then\n the state immediately queried, the\
+            \ returned value may not yet\n reflect the requested change.  This behavior\
+            \ includes, but is not\n limited to:\n \n Scrolling to a specified position.\n\
+            \ For example, calling ScrollPane.setScrollPosition\n     and then getScrollPosition\
+            \ may return an incorrect\n     value if the original request has not\
+            \ yet been processed.\n\n Moving the focus from one component to another.\n\
+            \ For more information, see\n Timing\n Focus Transfers, a section in\n\
+            \ The Swing\n Tutorial.\n\n Making a top-level container visible.\n Calling\
+            \ setVisible(true) on a Window,\n     Frame or Dialog may occur\n    \
+            \ asynchronously.\n\n Setting the size or location of a top-level container.\n\
+            \ Calls to setSize, setBounds or\n     setLocation on a Window,\n    \
+            \ Frame or Dialog are forwarded\n     to the underlying window management\
+            \ system and may be\n     ignored or modified.  See Window for\n     more\
+            \ information.\n \n \n Most applications should not call any of the methods\
+            \ in this\n class directly. The methods defined by Toolkit are\n the \"\
+            glue\" that joins the platform-independent classes in the\n java.awt package\
+            \ with their counterparts in\n java.awt.peer. Some methods defined by\n\
+            \ Toolkit query the native operating system directly."
+          fields:
+            calls:
+              name: calls
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            desktopProperties:
+              name: desktopProperties
+              modifiers:
+              - protected
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Object>
+              notes: The desktop properties.
+            desktopPropsSupport:
+              name: desktopPropsSupport
+              modifiers:
+              - protected
+              type:
+                basic: PropertyChangeSupport
+                full: java.beans.PropertyChangeSupport
+              notes: The desktop properties change support.
+            eventListener:
+              name: eventListener
+              modifiers:
+              - private
+              type:
+                basic: AWTEventListener
+                full: java.awt.event.AWTEventListener
+            listener2SelectiveListener:
+              name: listener2SelectiveListener
+              modifiers:
+              - private
+              type:
+                basic: WeakHashMap
+                full: java.util.WeakHashMap<java.awt.event.AWTEventListener, java.awt.Toolkit$SelectiveAWTEventListener>
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            LONG_BITS:
+              name: LONG_BITS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            atNames:
+              name: atNames
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            enabledOnToolkitMask:
+              name: enabledOnToolkitMask
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            loaded:
+              name: loaded
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            platformResources:
+              name: platformResources
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            resources:
+              name: resources
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            toolkit:
+              name: toolkit
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Toolkit
+                full: java.awt.Toolkit
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructs a Toolkit.
           methods:
           - name: addAWTEventListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: listener
               type:
                 basic: AWTEventListener
                 full: java.awt.event.AWTEventListener
-            - name: arg1
+              notes: the event listener.
+            - name: eventMask
               type:
                 basic: long
                 full: long
+              notes: the bitmask of event types to receive
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds an AWTEventListener to receive all AWTEvents dispatched\n\
+              \ system-wide that conform to the given eventMask.\n \n First, if there\
+              \ is a security manager, its checkPermission\n method is called with\
+              \ an\n AWTPermission(\"listenToAllAWTEvents\") permission.\n This may\
+              \ result in a SecurityException.\n \n eventMask is a bitmask of event\
+              \ types to receive.\n It is constructed by bitwise OR-ing together the\
+              \ event masks\n defined in AWTEvent.\n \n Note:  event listener use\
+              \ is not recommended for normal\n application use, but are intended\
+              \ solely to support special\n purpose facilities including support for\
+              \ accessibility,\n event record/playback, and diagnostic tracing.\n\n\
+              \ If listener is null, no exception is thrown and no action is performed."
           - name: addPropertyChangeListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: The name of the property to listen for
+            - name: pcl
               type:
                 basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener
+              notes: The property change listener
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds the specified property change listener for the named desktop\n\
+              \ property. When a PropertyChangeListenerProxy object is added,\n its\
+              \ property name is ignored, and the wrapped listener is added.\n If\
+              \ name is null or pcl is null,\n no exception is thrown and no action\
+              \ is performed."
           - name: areExtraMouseButtonsEnabled
             modifiers:
             - public
@@ -44,33 +199,83 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if events from extra mouse buttons are allowed to be processed\
+                \ and posted;\n         false otherwise"
+            notes: "Reports whether events from extra mouse buttons are allowed to\
+              \ be processed and posted into\n EventQueue.\n \n To change the returned\
+              \ value it is necessary to set the sun.awt.enableExtraMouseButtons\n\
+              \ property before the Toolkit class initialization. This setting could\
+              \ be done on the application\n startup by the following command:\n \n\
+              \ java -Dsun.awt.enableExtraMouseButtons=false Application\n \n Alternatively,\
+              \ the property could be set in the application by using the following\
+              \ code:\n \n System.setProperty(\"sun.awt.enableExtraMouseButtons\"\
+              , \"true\");\n \n before the Toolkit class initialization.\n If not\
+              \ set by the time of the Toolkit class initialization, this property\
+              \ will be\n initialized with true.\n Changing this value after the Toolkit\
+              \ class initialization will have no effect."
           - name: beep
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
+            notes: "Emits an audio beep depending on native system settings and hardware\n\
+              \ capabilities."
           - name: checkImage
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: image
               type:
                 basic: Image
                 full: java.awt.Image
-            - name: arg1
+              notes: the image whose status is being checked.
+            - name: width
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the width of the scaled version whose status is\n          \
+                \       being checked, or"
+            - name: height
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: "the height of the scaled version whose status\n            \
+                \     is being checked, or"
+            - name: observer
               type:
                 basic: ImageObserver
                 full: java.awt.image.ImageObserver
+              notes: "the ImageObserver object to be\n                 notified as\
+                \ the image is being prepared."
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the bitwise inclusive OR of the\n                 ImageObserver\
+                \ flags for the\n                 image data that is currently available."
+            notes: "Indicates the construction status of a specified image that is\n\
+              \ being prepared for display.\n \n If the values of the width and height\
+              \ arguments are both\n -1, this method returns the construction status\
+              \ of\n a screen representation of the specified image in this toolkit.\n\
+              \ Otherwise, this method returns the construction status of a\n scaled\
+              \ representation of the image at the specified width\n and height.\n\
+              \ \n This method does not cause the image to begin loading.\n An application\
+              \ must call prepareImage to force\n the loading of an image.\n \n This\
+              \ method is called by the component's checkImage\n methods.\n \n Information\
+              \ on the flags returned by this method can be found\n with the definition\
+              \ of the ImageObserver interface."
+          - name: countAWTEventListeners
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
             return:
               type:
                 basic: int
@@ -79,230 +284,406 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cursor
               type:
                 basic: Image
                 full: java.awt.Image
-            - name: arg1
+              notes: the image to display when the cursor is activated
+            - name: hotSpot
               type:
                 basic: Point
                 full: java.awt.Point
-            - name: arg2
+              notes: "the X and Y of the large cursor's hot spot; the\n   hotSpot\
+                \ values must be less than the Dimension returned by\n   getBestCursorSize"
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: a localized description of the cursor, for Java Accessibility
+                use
             return:
               type:
                 basic: Cursor
                 full: java.awt.Cursor
+              notes: the cursor created
+            notes: "Creates a new custom cursor object.\n If the image to display\
+              \ is invalid, the cursor will be hidden (made\n completely transparent),\
+              \ and the hotspot will be set to (0, 0).\n\n Note that multi-frame images\
+              \ are invalid and may cause this\n method to hang."
           - name: createDragGestureRecognizer
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: abstractRecognizerClass
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
-            - name: arg1
+              notes: The abstract class of the required recognizer
+            - name: ds
               type:
                 basic: DragSource
                 full: java.awt.dnd.DragSource
-            - name: arg2
+              notes: The DragSource
+            - name: c
               type:
                 basic: Component
                 full: java.awt.Component
-            - name: arg3
+              notes: The Component target for the DragGestureRecognizer
+            - name: srcActions
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The actions permitted for the gesture
+            - name: dgl
               type:
                 basic: DragGestureListener
                 full: java.awt.dnd.DragGestureListener
+              notes: The DragGestureListener
             return:
               type:
                 basic: T
                 full: T
+              notes: "the new object or null.  Always returns null if\n GraphicsEnvironment.isHeadless()\
+                \ returns true."
+            notes: "Creates a concrete, platform dependent, subclass of the abstract\n\
+              \ DragGestureRecognizer class requested, and associates it with the\n\
+              \ DragSource, Component and DragGestureListener specified.\n\n subclasses\
+              \ should override this to provide their own implementation"
           - name: createImage
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: Image
-                full: java.awt.Image
-          - name: createImage
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ImageProducer
-                full: java.awt.image.ImageProducer
-            return:
-              type:
-                basic: Image
-                full: java.awt.Image
-          - name: createImage
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: filename
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the name of a file containing pixel data\n                 \
+                \        in a recognized file format."
             return:
               type:
                 basic: Image
                 full: java.awt.Image
+              notes: "an image which gets its pixel data from\n                  \
+                \       the specified file."
+            notes: "Returns an image which gets pixel data from the specified file.\n\
+              \ The returned Image is a new object which will not be shared\n with\
+              \ any other caller of this method or its getImage variant.\n \n This\
+              \ method first checks if there is a security manager installed.\n If\
+              \ so, the method calls the security manager's\n checkRead method with\
+              \ the specified file to ensure\n that the image creation is allowed."
           - name: createImage
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: url
               type:
                 basic: URL
                 full: java.net.URL
+              notes: the URL to use in fetching the pixel data.
             return:
               type:
                 basic: Image
                 full: java.awt.Image
+              notes: "an image which gets its pixel data from\n                  \
+                \       the specified URL."
+            notes: "Returns an image which gets pixel data from the specified URL.\n\
+              \ The returned Image is a new object which will not be shared\n with\
+              \ any other caller of this method or its getImage variant.\n \n This\
+              \ method first checks if there is a security manager installed.\n If\
+              \ so, the method calls the security manager's\n checkPermission method\
+              \ with the corresponding\n permission to ensure that the image creation\
+              \ is allowed.\n If the connection to the specified URL requires\n either\
+              \ URLPermission or SocketPermission,\n then URLPermission is used for\
+              \ security checks."
+          - name: createImage
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: producer
+              type:
+                basic: ImageProducer
+                full: java.awt.image.ImageProducer
+              notes: the image producer to be used.
+            return:
+              type:
+                basic: Image
+                full: java.awt.Image
+              notes: an image with the specified image producer.
+            notes: Creates an image with the specified image producer.
           - name: createImage
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: imagedata
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+              notes: "an array of bytes, representing\n                         image\
+                \ data in a supported image format."
             return:
               type:
                 basic: Image
                 full: java.awt.Image
+              notes: an image.
+            notes: "Creates an image which decodes the image stored in the specified\n\
+              \ byte array.\n \n The data must be in some image format, such as GIF\
+              \ or JPEG,\n that is supported by this toolkit."
+          - name: createImage
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: imagedata
+              type:
+                basic: byte
+                full: byte[]
+              notes: "an array of bytes, representing\n                         image\
+                \ data in a supported image format."
+            - name: imageoffset
+              type:
+                basic: int
+                full: int
+              notes: "the offset of the beginning\n                         of the\
+                \ data in the array."
+            - name: imagelength
+              type:
+                basic: int
+                full: int
+              notes: the length of the data in the array.
+            return:
+              type:
+                basic: Image
+                full: java.awt.Image
+              notes: an image.
+            notes: "Creates an image which decodes the image stored in the specified\n\
+              \ byte array, and at the specified offset and length.\n The data must\
+              \ be in some image format, such as GIF or JPEG,\n that is supported\
+              \ by this toolkit."
           - name: getAWTEventListeners
             modifiers:
             - public
             return:
               type:
-                basic: AWTEventListener[]
+                basic: AWTEventListener
                 full: java.awt.event.AWTEventListener[]
+              notes: "all of the AWTEventListeners or an empty\n         array if\
+                \ no listeners are currently registered"
+            notes: "Returns an array of all the AWTEventListeners\n registered on\
+              \ this toolkit.\n If there is a security manager, its checkPermission\n\
+              \ method is called with an\n AWTPermission(\"listenToAllAWTEvents\"\
+              ) permission.\n This may result in a SecurityException.\n Listeners\
+              \ can be returned\n within AWTEventListenerProxy objects, which also\
+              \ contain\n the event mask for the given listener.\n Note that listener\
+              \ objects\n added multiple times appear only once in the returned array."
           - name: getAWTEventListeners
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: eventMask
               type:
                 basic: long
                 full: long
+              notes: the bitmask of event types to listen for
             return:
               type:
-                basic: AWTEventListener[]
+                basic: AWTEventListener
                 full: java.awt.event.AWTEventListener[]
+              notes: "all of the AWTEventListeners registered\n         on this toolkit\
+                \ for the specified\n         event types, or an empty array if no\
+                \ such listeners\n         are currently registered"
+            notes: "Returns an array of all the AWTEventListeners\n registered on\
+              \ this toolkit which listen to all of the event\n types specified in\
+              \ the eventMask argument.\n If there is a security manager, its checkPermission\n\
+              \ method is called with an\n AWTPermission(\"listenToAllAWTEvents\"\
+              ) permission.\n This may result in a SecurityException.\n Listeners\
+              \ can be returned\n within AWTEventListenerProxy objects, which also\
+              \ contain\n the event mask for the given listener.\n Note that listener\
+              \ objects\n added multiple times appear only once in the returned array."
           - name: getBestCursorSize
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: preferredWidth
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the preferred cursor width the component would like\n to use."
+            - name: preferredHeight
               type:
                 basic: int
                 full: int
+              notes: "the preferred cursor height the component would like\n to use."
             return:
               type:
                 basic: Dimension
                 full: java.awt.Dimension
+              notes: "the closest matching supported cursor size, or a dimension of\
+                \ 0,0 if\n the Toolkit implementation doesn't support custom cursors."
+            notes: "Returns the supported cursor dimension which is closest to the\
+              \ desired\n sizes.  Systems which only support a single cursor size\
+              \ will return that\n size regardless of the desired sizes.  Systems\
+              \ which don't support custom\n cursors will return a dimension of 0,\
+              \ 0. \n Note:  if an image is used whose dimensions don't match a supported\
+              \ size\n (as returned by this method), the Toolkit implementation will\
+              \ attempt to\n resize the image to a supported size.\n Since converting\
+              \ low-resolution images is difficult,\n no guarantees are made as to\
+              \ the quality of a cursor image which isn't a\n supported size.  It\
+              \ is therefore recommended that this method\n be called and an appropriate\
+              \ image used so no image conversion is made."
           - name: getColorModel
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: ColorModel
                 full: java.awt.image.ColorModel
+              notes: the color model of this toolkit's screen.
+            notes: "Determines the color model of this toolkit's screen.\n \n ColorModel\
+              \ is an abstract class that\n encapsulates the ability to translate\
+              \ between the\n pixel values of an image and its red, green, blue,\n\
+              \ and alpha components.\n \n This toolkit method is called by the\n\
+              \ getColorModel method\n of the Component class."
           - name: getDesktopProperty
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: propertyName
               type:
                 basic: String
                 full: java.lang.String
+              notes: the property name
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the value for the specified desktop property
+            notes: "Obtains a value for the specified desktop property.\n\n A desktop\
+              \ property is a uniquely named value for a resource that\n is Toolkit\
+              \ global in nature. Usually it also is an abstract\n representation\
+              \ for an underlying platform dependent desktop setting.\n For more information\
+              \ on desktop properties supported by the AWT see\n AWT Desktop Properties."
           - name: getFontList
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: String[]
+                basic: String
                 full: java.lang.String[]
-            deprecated: true
+              notes: the names of the available fonts in this toolkit.
+            notes: "Returns the names of the available fonts in this toolkit.\n For\
+              \ 1.1, the following font names are deprecated (the replacement\n name\
+              \ follows):\n \n TimesRoman (use Serif)\n Helvetica (use SansSerif)\n\
+              \ Courier (use Monospaced)\n \n The ZapfDingbats fontname is also deprecated\
+              \ in 1.1 but the characters\n are defined in Unicode starting at 0x2700,\
+              \ and as of 1.1 Java supports\n those characters."
           - name: getFontMetrics
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: font
               type:
                 basic: Font
                 full: java.awt.Font
+              notes: a font
             return:
               type:
                 basic: FontMetrics
                 full: java.awt.FontMetrics
-            deprecated: true
+              notes: the screen metrics of the specified font in this toolkit
+            notes: Gets the screen device metrics for rendering of the font.
           - name: getImage
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: filename
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the name of a file containing pixel data\n                 \
+                \        in a recognized file format."
             return:
               type:
                 basic: Image
                 full: java.awt.Image
+              notes: "an image which gets its pixel data from\n                  \
+                \       the specified file."
+            notes: "Returns an image which gets pixel data from the specified file,\n\
+              \ whose format can be either GIF, JPEG or PNG.\n The underlying toolkit\
+              \ attempts to resolve multiple requests\n with the same filename to\
+              \ the same returned Image.\n \n Since the mechanism required to facilitate\
+              \ this sharing of\n Image objects may continue to hold onto images\n\
+              \ that are no longer in use for an indefinite period of time,\n developers\
+              \ are encouraged to implement their own caching of\n images by using\
+              \ the createImage\n variant wherever available.\n If the image data\
+              \ contained in the specified file changes,\n the Image object returned\
+              \ from this method may\n still contain stale information which was loaded\
+              \ from the\n file after a prior call.\n Previously loaded image data\
+              \ can be manually discarded by\n calling the flush method on the\n returned\
+              \ Image.\n \n This method first checks if there is a security manager\
+              \ installed.\n If so, the method calls the security manager's\n checkRead\
+              \ method with the file specified to ensure\n that the access to the\
+              \ image is allowed."
           - name: getImage
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: url
               type:
                 basic: URL
                 full: java.net.URL
+              notes: the URL to use in fetching the pixel data.
             return:
               type:
                 basic: Image
                 full: java.awt.Image
+              notes: "an image which gets its pixel data from\n                  \
+                \       the specified URL."
+            notes: "Returns an image which gets pixel data from the specified URL.\n\
+              \ The pixel data referenced by the specified URL must be in one\n of\
+              \ the following formats: GIF, JPEG or PNG.\n The underlying toolkit\
+              \ attempts to resolve multiple requests\n with the same URL to the same\
+              \ returned Image.\n \n Since the mechanism required to facilitate this\
+              \ sharing of\n Image objects may continue to hold onto images\n that\
+              \ are no longer in use for an indefinite period of time,\n developers\
+              \ are encouraged to implement their own caching of\n images by using\
+              \ the createImage\n variant wherever available.\n If the image data\
+              \ stored at the specified URL changes,\n the Image object returned from\
+              \ this method may\n still contain stale information which was fetched\
+              \ from the\n URL after a prior call.\n Previously loaded image data\
+              \ can be manually discarded by\n calling the flush method on the\n returned\
+              \ Image.\n \n This method first checks if there is a security manager\
+              \ installed.\n If so, the method calls the security manager's\n checkPermission\
+              \ method with the corresponding\n permission to ensure that the access\
+              \ to the image is allowed.\n If the connection to the specified URL\
+              \ requires\n either URLPermission or SocketPermission,\n then URLPermission\
+              \ is used for security checks."
           - name: getLockingKeyState
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyCode
               type:
                 basic: int
                 full: int
+              notes: the key code
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the given key is currently in its \"on\" state;\n  \
+                \        otherwise false"
+            notes: "Returns whether the given locking key on the keyboard is currently\
+              \ in\n its \"on\" state.\n Valid key codes are\n VK_CAPS_LOCK,\n VK_NUM_LOCK,\n\
+              \ VK_SCROLL_LOCK, and\n VK_KANA_LOCK."
           - name: getMaximumCursorColors
             modifiers:
             - public
@@ -310,6 +691,16 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the maximum number of colors, or zero if custom cursors are\
+                \ not\n supported by this Toolkit implementation."
+            notes: "Returns the maximum number of colors the Toolkit supports in a\
+              \ custom cursor\n palette.\n Note: if an image is used which has more\
+              \ colors in its palette than\n the supported maximum, the Toolkit implementation\
+              \ will attempt to flatten the\n palette to the maximum.  Since converting\
+              \ low-resolution images is difficult,\n no guarantees are made as to\
+              \ the quality of a cursor image which has more\n colors than the system\
+              \ supports.  It is therefore recommended that this method\n be called\
+              \ and an appropriate image used so no image conversion is made."
           - name: getMenuShortcutKeyMask
             modifiers:
             - public
@@ -317,7 +708,14 @@ languages:
               type:
                 basic: int
                 full: int
-            deprecated: true
+              notes: "the modifier mask on the Event class\n                 that\
+                \ is used for menu shortcuts on this toolkit."
+            notes: "Determines which modifier key is the appropriate accelerator\n\
+              \ key for menu shortcuts.\n \n Menu shortcuts, which are embodied in\
+              \ the\n MenuShortcut class, are handled by the\n MenuBar class.\n \n\
+              \ By default, this method returns Event.CTRL_MASK.\n Toolkit implementations\
+              \ should override this method if the\n Control key isn't the correct\
+              \ key for accelerators."
           - name: getMenuShortcutKeyMaskEx
             modifiers:
             - public
@@ -325,102 +723,197 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the modifier mask on the InputEvent class that is used\n   \
+                \      for menu shortcuts on this toolkit"
+            notes: "Determines which extended modifier key is the appropriate accelerator\n\
+              \ key for menu shortcuts.\n \n Menu shortcuts, which are embodied in\
+              \ the MenuShortcut class, are\n handled by the MenuBar class.\n \n By\
+              \ default, this method returns InputEvent.CTRL_DOWN_MASK.\n Toolkit\
+              \ implementations should override this method if the\n Control key isn't\
+              \ the correct key for accelerators."
           - name: getPrintJob
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: frame
               type:
                 basic: Frame
                 full: java.awt.Frame
-            - name: arg1
+              notes: the parent of the print dialog. May not be null.
+            - name: jobtitle
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "the title of the PrintJob. A null title is equivalent\n    \
+                \      to \"\"."
+            - name: props
               type:
                 basic: Properties
                 full: java.util.Properties
+              notes: "a Properties object containing zero or more properties.\n  \
+                \        Properties are not standardized and are not consistent across\n\
+                \          implementations. Because of this, PrintJobs which require\
+                \ job\n          and page control should use the version of this function\
+                \ which\n          takes JobAttributes and PageAttributes objects.\
+                \ This object\n          may be updated to reflect the user's job\
+                \ choices on exit. May\n          be null."
             return:
               type:
                 basic: PrintJob
                 full: java.awt.PrintJob
+              notes: "a PrintJob object, or null if the\n          user cancelled\
+                \ the print job."
+            notes: "Gets a PrintJob object which is the result of initiating\n a print\
+              \ operation on the toolkit's platform.\n \n Each actual implementation\
+              \ of this method should first check if there\n is a security manager\
+              \ installed. If there is, the method should call\n the security manager's\
+              \ checkPrintJobAccess method to\n ensure initiation of a print operation\
+              \ is allowed. If the default\n implementation of checkPrintJobAccess\
+              \ is used (that is,\n that method is not overriden), then this results\
+              \ in a call to the\n security manager's checkPermission method with\
+              \ a\n RuntimePermission(\"queuePrintJob\") permission."
           - name: getPrintJob
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: frame
               type:
                 basic: Frame
                 full: java.awt.Frame
-            - name: arg1
+              notes: the parent of the print dialog. May not be null.
+            - name: jobtitle
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "the title of the PrintJob. A null title is equivalent\n    \
+                \      to \"\"."
+            - name: jobAttributes
               type:
                 basic: JobAttributes
                 full: java.awt.JobAttributes
-            - name: arg3
+              notes: "a set of job attributes which will control the\n          PrintJob.\
+                \ The attributes will be updated to reflect the user's\n         \
+                \ choices as outlined in the JobAttributes documentation. May be\n\
+                \          null."
+            - name: pageAttributes
               type:
                 basic: PageAttributes
                 full: java.awt.PageAttributes
+              notes: "a set of page attributes which will control the\n          PrintJob.\
+                \ The attributes will be applied to every page in the\n          job.\
+                \ The attributes will be updated to reflect the user's\n         \
+                \ choices as outlined in the PageAttributes documentation. May be\n\
+                \          null."
             return:
               type:
                 basic: PrintJob
                 full: java.awt.PrintJob
+              notes: "a PrintJob object, or null if the\n          user cancelled\
+                \ the print job."
+            notes: "Gets a PrintJob object which is the result of initiating\n a print\
+              \ operation on the toolkit's platform.\n \n Each actual implementation\
+              \ of this method should first check if there\n is a security manager\
+              \ installed. If there is, the method should call\n the security manager's\
+              \ checkPrintJobAccess method to\n ensure initiation of a print operation\
+              \ is allowed. If the default\n implementation of checkPrintJobAccess\
+              \ is used (that is,\n that method is not overriden), then this results\
+              \ in a call to the\n security manager's checkPermission method with\
+              \ a\n RuntimePermission(\"queuePrintJob\") permission."
           - name: getPropertyChangeListeners
             modifiers:
             - public
             return:
               type:
-                basic: PropertyChangeListener[]
+                basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener[]
+              notes: "all of this toolkit's PropertyChangeListener\n         objects\
+                \ wrapped in java.beans.PropertyChangeListenerProxy objects\n    \
+                \     or an empty array  if no listeners are added"
+            notes: "Returns an array of all the property change listeners\n registered\
+              \ on this toolkit. The returned array\n contains PropertyChangeListenerProxy\
+              \ objects\n that associate listeners with the names of desktop properties."
           - name: getPropertyChangeListeners
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: propertyName
               type:
                 basic: String
                 full: java.lang.String
+              notes: the named property
             return:
               type:
-                basic: PropertyChangeListener[]
+                basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener[]
+              notes: "all of the PropertyChangeListener objects\n         associated\
+                \ with the specified name of a desktop property\n         or an empty\
+                \ array if no such listeners are added"
+            notes: "Returns an array of all property change listeners\n associated\
+              \ with the specified name of a desktop property."
           - name: getScreenInsets
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: gc
               type:
                 basic: GraphicsConfiguration
                 full: java.awt.GraphicsConfiguration
+              notes: a GraphicsConfiguration
             return:
               type:
                 basic: Insets
                 full: java.awt.Insets
+              notes: the insets of this toolkit's screen, in pixels.
+            notes: Gets the insets of the screen.
           - name: getScreenResolution
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: this toolkit's screen resolution, in dots-per-inch.
+            notes: Returns the screen resolution in dots-per-inch.
           - name: getScreenSize
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Dimension
                 full: java.awt.Dimension
+              notes: the size of this toolkit's screen, in pixels.
+            notes: "Gets the size of the screen.  On systems with multiple displays,\
+              \ the\n primary display is used.  Multi-screen aware display dimensions\
+              \ are\n available from GraphicsConfiguration and\n GraphicsDevice."
           - name: getSystemClipboard
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Clipboard
                 full: java.awt.datatransfer.Clipboard
+              notes: the system Clipboard
+            notes: "Gets the singleton instance of the system Clipboard which interfaces\n\
+              \ with clipboard facilities provided by the native platform. This\n\
+              \ clipboard enables data transfer between Java programs and native\n\
+              \ applications which use native clipboard facilities.\n \n In addition\
+              \ to any and all default formats text returned by the system\n Clipboard's\
+              \ getTransferData() method is available in the\n following flavors:\n\
+              \ \n DataFlavor.stringFlavor\n DataFlavor.plainTextFlavor (deprecated)\n\
+              \ \n As with java.awt.datatransfer.StringSelection, if the\n requested\
+              \ flavor is DataFlavor.plainTextFlavor, or an\n equivalent flavor, a\
+              \ Reader is returned. Note: The behavior of\n the system Clipboard's\
+              \ getTransferData() method for\n DataFlavor.plainTextFlavor, and equivalent\
+              \ DataFlavors, is\n inconsistent with the definition of DataFlavor.plainTextFlavor.\n\
+              \ Because of this, support for\n DataFlavor.plainTextFlavor, and equivalent\
+              \ flavors, is\n deprecated.\n \n Each actual implementation of this\
+              \ method should first check if there\n is a security manager installed.\
+              \ If there is, the method should call\n the security manager's checkPermission\
+              \ method to check AWTPermission(\"accessClipboard\")."
           - name: getSystemEventQueue
             modifiers:
             - public
@@ -429,6 +922,26 @@ languages:
               type:
                 basic: EventQueue
                 full: java.awt.EventQueue
+              notes: the EventQueue object
+            notes: "Get the application's or applet's EventQueue instance.\n Depending\
+              \ on the Toolkit implementation, different EventQueues\n may be returned\
+              \ for different applets.  Applets should\n therefore not assume that\
+              \ the EventQueue instance returned\n by this method will be shared by\
+              \ other applets or the system.\n\n  If there is a security manager then\
+              \ its\n checkPermission method\n is called to check AWTPermission(\"\
+              accessEventQueue\")."
+          - name: getSystemEventQueueImpl
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: EventQueue
+                full: java.awt.EventQueue
+              notes: the EventQueue object
+            notes: "Gets the application's or applet's EventQueue\n instance, without\
+              \ checking access.  For security reasons,\n this can only be called\
+              \ from a Toolkit subclass."
           - name: getSystemSelection
             modifiers:
             - public
@@ -436,6 +949,37 @@ languages:
               type:
                 basic: Clipboard
                 full: java.awt.datatransfer.Clipboard
+              notes: "the system selection as a Clipboard, or\n         null if the\
+                \ native platform does not support a\n         system selection Clipboard"
+            notes: "Gets the singleton instance of the system selection as a\n Clipboard\
+              \ object. This allows an application to read and\n modify the current,\
+              \ system-wide selection.\n \n An application is responsible for updating\
+              \ the system selection whenever\n the user selects text, using either\
+              \ the mouse or the keyboard.\n Typically, this is implemented by installing\
+              \ a\n FocusListener on all Components which support\n text selection,\
+              \ and, between FOCUS_GAINED and\n FOCUS_LOST events delivered to that\
+              \ Component,\n updating the system selection Clipboard when the selection\n\
+              \ changes inside the Component. Properly updating the system\n selection\
+              \ ensures that a Java application will interact correctly with\n native\
+              \ applications and other Java applications running simultaneously\n\
+              \ on the system. Note that java.awt.TextComponent and\n javax.swing.text.JTextComponent\
+              \ already adhere to this\n policy. When using these classes, and their\
+              \ subclasses, developers need\n not write any additional code.\n \n\
+              \ Some platforms do not support a system selection Clipboard.\n On those\
+              \ platforms, this method will return null. In such a\n case, an application\
+              \ is absolved from its responsibility to update the\n system selection\
+              \ Clipboard as described above.\n \n Each actual implementation of this\
+              \ method should first check if there\n is a security manager installed.\
+              \ If there is, the method should call\n the security manager's checkPermission\
+              \ method to check AWTPermission(\"accessClipboard\")."
+          - name: initializeDesktopProperties
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: initializeDesktopProperties
           - name: isAlwaysOnTopSupported
             modifiers:
             - public
@@ -443,6 +987,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true, if current toolkit supports the always-on-top mode,\n\
+                \     otherwise returns false"
+            notes: "Returns whether the always-on-top mode is supported by this toolkit.\n\
+              \ To detect whether the always-on-top mode is supported for a\n particular\
+              \ Window, use Window.isAlwaysOnTopSupported()."
           - name: isDynamicLayoutActive
             modifiers:
             - public
@@ -450,81 +999,367 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if dynamic layout of Containers on resize is currently\n\
+                \         active, false otherwise."
+            notes: "Returns whether dynamic layout of Containers on resize is currently\n\
+              \ enabled on the underlying operating system and/or window manager.\
+              \ If the\n platform supports it, setDynamicLayout(boolean) may be used\
+              \ to\n programmatically enable or disable platform dynamic layout. Regardless\
+              \ of\n whether that toggling is supported, or whether true or \n false\
+              \ is specified as an argument, or has never been called at all, this\n\
+              \ method will return the active current platform behavior and which\
+              \ will be\n followed by the JDK in determining layout policy during\
+              \ resizing.\n \n If dynamic layout is currently inactive then Containers\
+              \ re-layout their\n components when resizing is completed. As a result\
+              \ the\n Component.validate() method will be invoked only once per resize.\n\
+              \ If dynamic layout is currently active then Containers re-layout their\n\
+              \ components on every native resize event and the validate() method\n\
+              \ will be invoked each time. The OS/WM support can be queried using\
+              \ the\n getDesktopProperty(\"awt.dynamicLayoutSupported\") method. This\
+              \ property\n will reflect the platform capability but is not sufficient\
+              \ to tell if it\n is presently enabled."
+          - name: isDynamicLayoutSet
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if validation of Containers is done dynamically,\n    \
+                \        false if validation is done after resizing is finished."
+            notes: "Returns whether the layout of Containers is validated dynamically\n\
+              \ during resizing, or statically, after resizing is complete.\n Note:\
+              \ this method returns the value that was set programmatically;\n it\
+              \ does not reflect support at the level of the operating system\n or\
+              \ window manager for dynamic layout on resizing, or the current\n operating\
+              \ system or window manager settings.  The OS/WM support can\n be queried\
+              \ using getDesktopProperty(\"awt.dynamicLayoutSupported\")."
           - name: isFrameStateSupported
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: state
               type:
                 basic: int
                 full: int
+              notes: one of named frame state constants.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true is this frame state is supported by\n     this Toolkit\
+                \ implementation, false otherwise."
+            notes: "Returns whether Toolkit supports this state for\n Frames.  This\
+              \ method tells whether the UI\n concept of, say, maximization or iconification\
+              \ is\n supported.  It will always return false for \"compound\" states\n\
+              \ like Frame.ICONIFIED|Frame.MAXIMIZED_VERT.\n In other words, the rule\
+              \ of thumb is that only queries with a\n single frame state constant\
+              \ as an argument are meaningful.\n Note that supporting a given concept\
+              \ is a platform-\n dependent feature. Due to native limitations the\
+              \ Toolkit\n object may report a particular state as supported, however\
+              \ at\n the same time the Toolkit object will be unable to apply the\n\
+              \ state to a given frame.  This circumstance has two following\n consequences:\n\
+              \ \n Only the return value of false for the present\n method actually\
+              \ indicates that the given state is not\n supported. If the method returns\
+              \ true the given state\n may still be unsupported and/or unavailable\
+              \ for a particular\n frame.\n The developer should consider examining\
+              \ the value of the\n WindowEvent.getNewState() method of the\n WindowEvent\
+              \ received through the WindowStateListener, rather than assuming\n that\
+              \ the state given to the setExtendedState() method\n will be definitely\
+              \ applied. For more information see the\n documentation for the Frame.setExtendedState(int)\
+              \ method."
           - name: isModalExclusionTypeSupported
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: modalExclusionType
               type:
-                basic: ModalExclusionType
+                basic: Dialog.ModalExclusionType
                 full: java.awt.Dialog$ModalExclusionType
+              notes: modal exclusion type to be checked for support by this toolkit
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true, if current toolkit supports given modal exclusion\n  \
+                \   type, false otherwise"
+            notes: "Returns whether the given modal exclusion type is supported by\
+              \ this\n toolkit. If an unsupported modal exclusion type property is\
+              \ set on a window,\n then Dialog.ModalExclusionType.NO_EXCLUDE is used\
+              \ instead."
           - name: isModalityTypeSupported
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: modalityType
               type:
-                basic: ModalityType
+                basic: Dialog.ModalityType
                 full: java.awt.Dialog$ModalityType
+              notes: modality type to be checked for support by this toolkit
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true, if current toolkit supports given modality\n     type,\
+                \ false otherwise"
+            notes: "Returns whether the given modality type is supported by this toolkit.\
+              \ If\n a dialog with unsupported modality type is created, then\n Dialog.ModalityType.MODELESS\
+              \ is used instead."
+          - name: lazilyLoadDesktopProperty
+            modifiers:
+            - protected
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the desktop property or null
+            notes: An opportunity to lazily evaluate desktop property values.
+          - name: loadSystemColors
+            modifiers:
+            - protected
+            parameters:
+            - name: systemColors
+              type:
+                basic: int
+                full: int[]
+              notes: an integer array.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Fills in the integer array that is supplied as an argument\n with\
+              \ the current system color values."
           - name: mapInputMethodHighlight
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: highlight
               type:
                 basic: InputMethodHighlight
                 full: java.awt.im.InputMethodHighlight
+              notes: input method highlight
             return:
               type:
-                basic: Map<TextAttribute, ?>
+                basic: Map
                 full: java.util.Map<java.awt.font.TextAttribute, ?>
-          - name: prepareImage
+              notes: style attribute map, or null
+            notes: "Returns a map of visual attributes for the abstract level description\n\
+              \ of the given input method highlight, or null if no mapping is found.\n\
+              \ The style field of the input method highlight is ignored. The map\n\
+              \ returned is unmodifiable."
+          - name: notifyAWTEventListeners
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
+                basic: AWTEvent
+                full: java.awt.AWTEvent
+            return:
+              type:
+                basic: void
+                full: void
+          - name: prepareImage
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: image
+              type:
                 basic: Image
                 full: java.awt.Image
-            - name: arg1
+              notes: "the image for which to prepare a\n                         \
+                \  screen representation."
+            - name: width
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the width of the desired screen\n                          \
+                \ representation, or"
+            - name: height
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: "the height of the desired screen\n                         \
+                \  representation, or"
+            - name: observer
               type:
                 basic: ImageObserver
                 full: java.awt.image.ImageObserver
+              notes: "the ImageObserver\n                           object to be notified\
+                \ as the\n                           image is being prepared."
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the image has already been\n                 fully prepared;\
+                \ false otherwise."
+            notes: "Prepares an image for rendering.\n \n If the values of the width\
+              \ and height arguments are both\n -1, this method prepares the image\
+              \ for rendering\n on the default screen; otherwise, this method prepares\
+              \ an image\n for rendering on the default screen at the specified width\
+              \ and height.\n \n The image data is downloaded asynchronously in another\
+              \ thread,\n and an appropriately scaled screen representation of the\
+              \ image is\n generated.\n \n This method is called by components prepareImage\n\
+              \ methods.\n \n Information on the flags returned by this method can\
+              \ be found\n with the definition of the ImageObserver interface."
           - name: removeAWTEventListener
             modifiers:
             - public
+            parameters:
+            - name: listener
+              type:
+                basic: AWTEventListener
+                full: java.awt.event.AWTEventListener
+              notes: the event listener.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Removes an AWTEventListener from receiving dispatched AWTEvents.\n\
+              \ \n First, if there is a security manager, its checkPermission\n method\
+              \ is called with an\n AWTPermission(\"listenToAllAWTEvents\") permission.\n\
+              \ This may result in a SecurityException.\n \n Note:  event listener\
+              \ use is not recommended for normal\n application use, but are intended\
+              \ solely to support special\n purpose facilities including support for\
+              \ accessibility,\n event record/playback, and diagnostic tracing.\n\n\
+              \ If listener is null, no exception is thrown and no action is performed."
+          - name: removePropertyChangeListener
+            modifiers:
+            - public
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The name of the property to remove
+            - name: pcl
+              type:
+                basic: PropertyChangeListener
+                full: java.beans.PropertyChangeListener
+              notes: The property change listener
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Removes the specified property change listener for the named\n\
+              \ desktop property. When a PropertyChangeListenerProxy object\n is removed,\
+              \ its property name is ignored, and\n the wrapped listener is removed.\n\
+              \ If name is null or pcl is null,\n no exception is thrown and no action\
+              \ is performed."
+          - name: setDesktopProperty
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the property name
+            - name: newValue
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the new property value
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the named desktop property to the specified value and fires\
+              \ a\n property change event to notify any listeners that the value has\
+              \ changed."
+          - name: setDynamicLayout
+            modifiers:
+            - public
+            parameters:
+            - name: dynamic
+              type:
+                basic: boolean
+                full: boolean
+              notes: "If true, Containers should re-layout their\n            components\
+                \ as the Container is being resized.  If false,\n            the layout\
+                \ will be validated after resizing is completed."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Controls whether the layout of Containers is validated dynamically\n\
+              \ during resizing, or statically, after resizing is complete.\n Use\
+              \ isDynamicLayoutActive() to detect if this feature enabled\n in this\
+              \ program and is supported by this operating system\n and/or window\
+              \ manager.\n Note that this feature is supported not on all platforms,\
+              \ and\n conversely, that this feature cannot be turned off on some platforms.\n\
+              \ On these platforms where dynamic layout during resizing is not supported\n\
+              \ (or is always supported), setting this property has no effect.\n Note\
+              \ that this feature can be set or unset as a property of the\n operating\
+              \ system or window manager on some platforms.  On such\n platforms,\
+              \ the dynamic resize property must be set at the operating\n system\
+              \ or window manager level before this method can take effect.\n This\
+              \ method does not change support or settings of the underlying\n operating\
+              \ system or\n window manager.  The OS/WM support can be\n queried using\
+              \ getDesktopProperty(\"awt.dynamicLayoutSupported\") method."
+          - name: setLockingKeyState
+            modifiers:
+            - public
+            parameters:
+            - name: keyCode
+              type:
+                basic: int
+                full: int
+              notes: the key code
+            - name: on
+              type:
+                basic: boolean
+                full: boolean
+              notes: the state of the key
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the state of the given locking key on the keyboard.\n Valid\
+              \ key codes are\n VK_CAPS_LOCK,\n VK_NUM_LOCK,\n VK_SCROLL_LOCK, and\n\
+              \ VK_KANA_LOCK.\n \n Depending on the platform, setting the state of\
+              \ a locking key may\n involve event processing and therefore may not\
+              \ be immediately\n observable through getLockingKeyState."
+          - name: sync
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Synchronizes this toolkit's graphics state. Some window systems\n\
+              \ may do buffering of graphics events.\n \n This method ensures that\
+              \ the display is up-to-date. It is useful\n for animation."
+          staticMethods:
+          - name: createPropertyChangeSupport
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Toolkit
+                full: java.awt.Toolkit
+            return:
+              type:
+                basic: PropertyChangeSupport
+                full: java.beans.PropertyChangeSupport
+          - name: deProxyAWTEventListener
+            modifiers:
+            - private
+            - static
             parameters:
             - name: arg0
               type:
@@ -532,60 +1367,34 @@ languages:
                 full: java.awt.event.AWTEventListener
             return:
               type:
-                basic: void
-                full: void
-          - name: removePropertyChangeListener
+                basic: AWTEventListener
+                full: java.awt.event.AWTEventListener
+          - name: enabledOnToolkit
             modifiers:
-            - public
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: fallbackToLoadClassForAT
+            modifiers:
+            - private
+            - static
             parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
-              type:
-                basic: PropertyChangeListener
-                full: java.beans.PropertyChangeListener
             return:
               type:
                 basic: void
                 full: void
-          - name: setDynamicLayout
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setLockingKeyState
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: sync
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
-          staticMethods:
           - name: getDefaultToolkit
             modifiers:
             - public
@@ -594,22 +1403,177 @@ languages:
               type:
                 basic: Toolkit
                 full: java.awt.Toolkit
+              notes: the default toolkit.
+            notes: "Gets the default toolkit.\n \n If a system property named \"java.awt.headless\"\
+              \ is set\n to true then the headless implementation\n of Toolkit is\
+              \ used,\n otherwise the default platform-specific implementation of\n\
+              \ Toolkit is used.\n \n If this Toolkit is not a headless implementation\
+              \ and if they exist, service\n providers of AccessibilityProvider will\
+              \ be loaded\n if specified by the system property\n javax.accessibility.assistive_technologies.\n\
+              \ \n An example of setting this property is to invoke Java with\n -Djavax.accessibility.assistive_technologies=MyServiceProvider.\n\
+              \ In addition to MyServiceProvider other service providers can be specified\n\
+              \ using a comma separated list.  Service providers are loaded after\
+              \ the AWT\n toolkit is created.\n \n If the list of assistive technology\
+              \ providers as provided through system\n property \"javax.accessibility.assistive_technologies\"\
+              \n is the empty string or contains only\n white space characters it\
+              \ is\n ignored. All other errors are handled via an AWTError exception.\n\
+              \ \n The names specified in the assistive_technologies property are\
+              \ used to query\n each service provider implementation.  If the requested\
+              \ name matches the\n name of the service provider, the\n AccessibilityProvider.activate()\
+              \ method will be invoked to activate the\n matching service provider."
+          - name: getEventQueue
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: EventQueue
+                full: java.awt.EventQueue
+          - name: getNativeContainer
+            modifiers:
+            - protected
+            - static
+            parameters:
+            - name: c
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: the component to fetch the container for
+            return:
+              type:
+                basic: Container
+                full: java.awt.Container
+              notes: the native container object for the component
+            notes: "Give native peers the ability to query the native container\n\
+              \ given a native component (eg the direct parent may be lightweight)."
           - name: getProperty
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
+              notes: the key
+            - name: defaultValue
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the default value
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the value of the property or the default value\n         if\
+                \ the property was not found"
+            notes: "Gets a property with the specified key and default.\n This method\
+              \ returns defaultValue if the property is not found."
+          - name: initAssistiveTechnologies
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: initStatic
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$loadAssistiveTechnologies$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            - name: arg1
+              type:
+                basic: Set
+                full: java.util.Set
+            - name: arg2
+              type:
+                basic: Map
+                full: java.util.Map
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void
+          - name: lambda$loadAssistiveTechnologies$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map
             - name: arg1
               type:
                 basic: String
                 full: java.lang.String
             return:
               type:
+                basic: boolean
+                full: boolean
+          - name: loadAssistiveTechnologies
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadLibraries
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: newAWTError
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            - name: arg1
+              type:
                 basic: String
                 full: java.lang.String
-          javaType: class
-          extends: Object
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setPlatformResources
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            return:
+              type:
+                basic: void
+                full: void

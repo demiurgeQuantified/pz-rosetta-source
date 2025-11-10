@@ -4,59 +4,162 @@ languages:
     packages:
       java.security.cert:
         CertPath:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "An immutable sequence of certificates (a certification path).\n\
+            \ \n This is an abstract class that defines the methods common to all\n\
+            \ CertPaths. Subclasses can handle different kinds of\n certificates (X.509,\
+            \ PGP, etc.).\n \n All CertPath objects have a type, a list of\n Certificates,\
+            \ and one or more supported encodings. Because the\n CertPath class is\
+            \ immutable, a CertPath cannot\n change in any externally visible way\
+            \ after being constructed. This\n stipulation applies to all public fields\
+            \ and methods of this class and any\n added or overridden by subclasses.\n\
+            \ \n The type is a String that identifies the type of\n Certificates in\
+            \ the certification path. For each\n certificate cert in a certification\
+            \ path certPath,\n cert.getType().equals(certPath.getType()) must be\n\
+            \ true.\n \n The list of Certificates is an ordered List of\n zero or\
+            \ more Certificates. This List and all\n of the Certificates contained\
+            \ in it must be immutable.\n \n Each CertPath object must support one\
+            \ or more encodings\n so that the object can be translated into a byte\
+            \ array for storage or\n transmission to other parties. Preferably, these\
+            \ encodings should be\n well-documented standards (such as PKCS#7). One\
+            \ of the encodings supported\n by a CertPath is considered the default\
+            \ encoding. This\n encoding is used if no encoding is explicitly requested\
+            \ (for the\n getEncoded() method, for instance).\n \n All CertPath objects\
+            \ are also Serializable.\n CertPath objects are resolved into an alternate\n\
+            \ CertPathRep object during serialization. This allows\n a CertPath object\
+            \ to be serialized into an equivalent\n representation regardless of its\
+            \ underlying implementation.\n \n CertPath objects can be created with\
+            \ a\n CertificateFactory or they can be returned by other classes,\n such\
+            \ as a CertPathBuilder.\n \n By convention, X.509 CertPaths (consisting\
+            \ of\n X509Certificates), are ordered starting with the target\n certificate\
+            \ and ending with a certificate issued by the trust anchor. That\n is,\
+            \ the issuer of one certificate is the subject of the following one. The\n\
+            \ certificate representing the TrustAnchor should not be\n included in\
+            \ the certification path. Unvalidated X.509 CertPaths\n may not follow\
+            \ these conventions. PKIX CertPathValidators will\n detect any departure\
+            \ from these conventions that cause the certification\n path to be invalid\
+            \ and throw a CertPathValidatorException.\n\n  Every implementation of\
+            \ the Java platform is required to support the\n following standard CertPath\
+            \ encodings:\n \n PKCS7\n PkiPath\n \n These encodings are described in\
+            \ the \n CertPath Encodings section of the\n Java Security Standard Algorithm\
+            \ Names Specification.\n Consult the release documentation for your implementation\
+            \ to see if any\n other encodings are supported.\n \n Concurrent Access\n\
+            \ \n All CertPath objects must be thread-safe. That is, multiple\n threads\
+            \ may concurrently invoke the methods defined in this class on a\n single\
+            \ CertPath object (or more than one) with no\n ill effects. This is also\
+            \ true for the List returned by\n CertPath.getCertificates.\n \n Requiring\
+            \ CertPath objects to be immutable and thread-safe\n allows them to be\
+            \ passed around to various pieces of code without worrying\n about coordinating\
+            \ access.  Providing this thread-safety is\n generally not difficult,\
+            \ since the CertPath and\n List objects in question are immutable."
+          fields:
+            type:
+              name: type
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: type
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the standard name of the type of\n Certificates in this path"
+            notes: "Creates a CertPath of the specified type.\n \n This constructor\
+              \ is protected because most users should use a\n CertificateFactory\
+              \ to create CertPaths."
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to test for equality with this certification path
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified object is equal to this certification\
+                \ path,\n false otherwise"
+            notes: "Compares this certification path for equality with the specified\n\
+              \ object. Two CertPaths are equal if and only if their\n types are equal\
+              \ and their certificate Lists (and by\n implication the Certificates\
+              \ in those Lists)\n are equal. A CertPath is never equal to an object\
+              \ that is\n not a CertPath.\n \n This algorithm is implemented by this\
+              \ method. If it is overridden,\n the behavior specified here must be\
+              \ maintained."
           - name: getCertificates
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: List<? extends Certificate>
+                basic: List
                 full: java.util.List<? extends java.security.cert.Certificate>
+              notes: "an immutable List of Certificates\n         (may be empty, but\
+                \ not null)"
+            notes: "Returns the list of certificates in this certification path.\n\
+              \ The List returned must be immutable and thread-safe."
           - name: getEncoded
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the encoded bytes
+            notes: "Returns the encoded form of this certification path, using the\
+              \ default\n encoding."
           - name: getEncoded
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: encoding
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the encoding to use
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the encoded bytes
+            notes: "Returns the encoded form of this certification path, using the\n\
+              \ specified encoding."
           - name: getEncodings
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Iterator<String>
+                basic: Iterator
                 full: java.util.Iterator<java.lang.String>
+              notes: "an Iterator over the names of the supported\n         encodings\
+                \ (as Strings)"
+            notes: "Returns an iteration of the encodings supported by this certification\n\
+              \ path, with the default encoding first. Attempts to modify the returned\n\
+              \ Iterator via its remove method result in an\n UnsupportedOperationException."
           - name: getType
             modifiers:
             - public
@@ -64,6 +167,11 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the type of Certificates in this certification\n path (never\
+                \ null)"
+            notes: "Returns the type of Certificates in this certification\n path.\
+              \ This is the same string that would be returned by\n cert.getType()\n\
+              \ for all Certificates in the certification path."
           - name: hashCode
             modifiers:
             - public
@@ -71,5 +179,27 @@ languages:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Object
+              notes: the hashcode value for this certification path
+            notes: "Returns the hashcode for this certification path. The hash code\
+              \ of\n a certification path is defined to be the result of the following\n\
+              \ calculation:\n <code>\n  hashCode = path.getType().hashCode();\n \
+              \ hashCode = 31*hashCode + path.getCertificates().hashCode();\n </code>\n\
+              \ This ensures that path1.equals(path2) implies that\n path1.hashCode()==path2.hashCode()\
+              \ for any two certification\n paths, path1 and path2, as required by\
+              \ the\n general contract of Object.hashCode."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeReplace
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the CertPathRep to be serialized
+            notes: "Replaces the CertPath to be serialized with a\n CertPathRep object."

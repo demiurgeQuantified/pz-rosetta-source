@@ -4,10 +4,89 @@ languages:
     packages:
       java.lang:
         ThreadLocal:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class provides thread-local variables.  These variables differ\
+            \ from\n their normal counterparts in that each thread that accesses one\
+            \ (via its\n get or set method) has its own, independently initialized\n\
+            \ copy of the variable.  ThreadLocal instances are typically private\n\
+            \ static fields in classes that wish to associate state with a thread\
+            \ (e.g.,\n a user ID or Transaction ID).\n\n For example, the class below\
+            \ generates unique identifiers local to each\n thread.\n A thread's id\
+            \ is assigned the first time it invokes ThreadId.get()\n and remains unchanged\
+            \ on subsequent calls.\n \n import java.util.concurrent.atomic.AtomicInteger;\n\
+            \n public class ThreadId {\n     // Atomic integer containing the next\
+            \ thread ID to be assigned\n     private static final AtomicInteger nextId\
+            \ = new AtomicInteger(0);\n\n     // Thread local variable containing\
+            \ each thread's ID\n     private static final ThreadLocal<Integer> threadId\
+            \ =\n         new ThreadLocal<Integer>() {\n             &#64;Override\
+            \ protected Integer initialValue() {\n                 return nextId.getAndIncrement();\n\
+            \         }\n     };\n\n     // Returns the current thread's unique ID,\
+            \ assigning it if necessary\n     public static int get() {\n        \
+            \ return threadId.get();\n     }\n }\n \n Each thread holds an implicit\
+            \ reference to its copy of a thread-local\n variable as long as the thread\
+            \ is alive and the ThreadLocal\n instance is accessible; after a thread\
+            \ goes away, all of its copies of\n thread-local instances are subject\
+            \ to garbage collection (unless other\n references to these copies exist)."
+          fields:
+            threadLocalHashCode:
+              name: threadLocalHashCode
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            HASH_INCREMENT:
+              name: HASH_INCREMENT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            nextHashCode:
+              name: nextHashCode
+              modifiers:
+              - private
+              - static
+              type:
+                basic: AtomicInteger
+                full: java.util.concurrent.atomic.AtomicInteger
           constructors:
           - modifiers:
             - public
+            notes: Creates a thread local variable.
           methods:
+          - name: childValue
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T
+            return:
+              type:
+                basic: T
+                full: T
+          - name: createMap
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            - name: arg1
+              type:
+                basic: T
+                full: T
+            return:
+              type:
+                basic: void
+                full: void
           - name: get
             modifiers:
             - public
@@ -15,6 +94,49 @@ languages:
               type:
                 basic: T
                 full: T
+              notes: the current thread's value of this thread-local
+            notes: "Returns the value in the current thread's copy of this\n thread-local\
+              \ variable.  If the variable has no value for the\n current thread,\
+              \ it is first initialized to the value returned\n by an invocation of\
+              \ the initialValue() method."
+          - name: getMap
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            return:
+              type:
+                basic: ThreadLocal.ThreadLocalMap
+                full: java.lang.ThreadLocal$ThreadLocalMap
+          - name: initialValue
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the initial value for this thread-local
+            notes: "Returns the current thread's \"initial value\" for this\n thread-local\
+              \ variable.  This method will be invoked the first\n time a thread accesses\
+              \ the variable with the get()\n method, unless the thread previously\
+              \ invoked the set(T)\n method, in which case the initialValue method\
+              \ will not\n be invoked for the thread.  Normally, this method is invoked\
+              \ at\n most once per thread, but it may be invoked again in case of\n\
+              \ subsequent invocations of remove() followed by get().\n\n This implementation\
+              \ simply returns null; if the\n programmer desires thread-local variables\
+              \ to have an initial\n value other than null, ThreadLocal must be\n\
+              \ subclassed, and this method overridden.  Typically, an\n anonymous\
+              \ inner class will be used."
+          - name: isPresent
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: remove
             modifiers:
             - public
@@ -22,31 +144,73 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Removes the current thread's value for this thread-local\n variable.\
+              \  If this thread-local variable is subsequently\n read by the current\
+              \ thread, its value will be\n reinitialized by invoking its initialValue()\
+              \ method,\n unless its value is set by the current thread\n in the interim.\
+              \  This may result in multiple invocations of the\n initialValue method\
+              \ in the current thread."
           - name: set
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: T
                 full: T
+              notes: "the value to be stored in the current thread's copy of\n   \
+                \     this thread-local."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the current thread's copy of this thread-local variable\n\
+              \ to the specified value.  Most subclasses will have no need to\n override\
+              \ this method, relying solely on the initialValue()\n method to set\
+              \ the values of thread-locals."
+          - name: setInitialValue
+            modifiers:
+            - private
+            return:
+              type:
+                basic: T
+                full: T
           staticMethods:
+          - name: createInheritedMap
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ThreadLocal.ThreadLocalMap
+                full: java.lang.ThreadLocal$ThreadLocalMap
+            return:
+              type:
+                basic: ThreadLocal.ThreadLocalMap
+                full: java.lang.ThreadLocal$ThreadLocalMap
+          - name: nextHashCode
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: int
+                full: int
           - name: withInitial
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: supplier
               type:
-                basic: Supplier<? extends S>
+                basic: Supplier
                 full: java.util.function.Supplier<? extends S>
+              notes: the supplier to be used to determine the initial value
             return:
               type:
-                basic: ThreadLocal<S>
+                basic: ThreadLocal
                 full: java.lang.ThreadLocal<S>
-          javaType: class
-          extends: Object
+              notes: a new thread local variable
+            notes: "Creates a thread local variable. The initial value of the variable\
+              \ is\n determined by invoking the get method on the Supplier."

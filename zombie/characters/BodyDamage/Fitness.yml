@@ -4,9 +4,137 @@ languages:
     packages:
       zombie.characters.BodyDamage:
         Fitness:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          fields:
+            bodypartToIncStiffness:
+              name: bodypartToIncStiffness
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.String>
+            currentExe:
+              name: currentExe
+              modifiers:
+              - private
+              type:
+                basic: Fitness.FitnessExercise
+                full: zombie.characters.BodyDamage.Fitness$FitnessExercise
+            exeTimer:
+              name: exeTimer
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, java.lang.Long>
+            exercises:
+              name: exercises
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, zombie.characters.BodyDamage.Fitness$FitnessExercise>
+            fitnessLvl:
+              name: fitnessLvl
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            lastUpdate:
+              name: lastUpdate
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            parent:
+              name: parent
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            regularityMap:
+              name: regularityMap
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, java.lang.Float>
+            stiffnessIncMap:
+              name: stiffnessIncMap
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, java.lang.Float>
+            stiffnessTimerMap:
+              name: stiffnessTimerMap
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, java.lang.Integer>
+            strLvl:
+              name: strLvl
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            BASE_ENDURANCE_RED:
+              name: BASE_ENDURANCE_RED
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            BASE_PAIN_INC:
+              name: BASE_PAIN_INC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            BASE_REGULARITY_DEC:
+              name: BASE_REGULARITY_DEC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            BASE_REGULARITY_INC:
+              name: BASE_REGULARITY_INC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            BASE_STIFFNESS_INC:
+              name: BASE_STIFFNESS_INC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            HOURS_FOR_STIFFNESS:
+              name: HOURS_FOR_STIFFNESS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
@@ -14,13 +142,22 @@ languages:
             - name: parent
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
           methods:
+          - name: decreaseRegularity
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: exerciseRepeat
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: getCurrentExeStiffnessInc
             modifiers:
             - public
@@ -28,9 +165,11 @@ languages:
             - name: type
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: float
+                full: float
           - name: getCurrentExeStiffnessTimer
             modifiers:
             - public
@@ -38,15 +177,18 @@ languages:
             - name: type
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: int
+                full: int
           - name: getParent
             modifiers:
             - public
             return:
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
           - name: getRegularity
             modifiers:
             - public
@@ -54,55 +196,75 @@ languages:
             - name: type
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: float
+                full: float
           - name: getRegularityMap
             modifiers:
             - public
             return:
               type:
                 basic: HashMap
+                full: java.util.HashMap<java.lang.String, java.lang.Float>
           - name: incFutureStiffness
             modifiers:
             - public
             return:
               type:
                 basic: void
-            notes: 'We setup a timer after finishing an exercice, 12h after, we gonna
-              start to increase stiffness (add pains in muscles)  When adding the
-              stiffness, we decrease slowly our vars while increasing pain, untill
-              no more stiffness is to be added.  Stiffness induced will depend on
-              regularity, fatigue.  Numbers approx: At 0 regularity, 60min exercises
-              should gives almost 4h of stiffness (gets additional pain)'
+                full: void
+            notes: "We setup a timer after finishing an exercice, 12h after, we gonna\
+              \ start to increase stiffness (add pains in muscles)\n When adding the\
+              \ stiffness, we decrease slowly our vars while increasing pain, untill\
+              \ no more stiffness is to be added.\n Stiffness induced will depend\
+              \ on regularity, fatigue.\n Numbers approx: At 0 regularity, 60min exercises\
+              \ should gives almost 4h of stiffness (gets additional pain)"
           - name: incRegularity
             modifiers:
             - public
             return:
               type:
                 basic: void
-            notes: Increase the regularity when you've done a repeat of an exercice  Depend
-              on fitness (using logarithm), the more fitness, the LESS regularity
-              you get  Regularity will influence on the stiffness you get once you've
-              finished an exercise
+                full: void
+            notes: "Increase the regularity when you've done a repeat of an exercice\n\
+              \ Depend on fitness (using logarithm), the more fitness, the LESS regularity\
+              \ you get\n Regularity will influence on the stiffness you get once\
+              \ you've finished an exercise"
           - name: incStats
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: increasePain
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
           - name: init
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: initRegularityMapProfession
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: load
             modifiers:
             - public
@@ -110,24 +272,29 @@ languages:
             - name: input
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: WorldVersion
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: onGoingStiffness
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: reduceEndurance
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
             notes: Reduce endurance, using metabolics (to know what kind of exercise
               it is, some are more exhausting than others), regularity, current carrying
               weight.
@@ -138,15 +305,18 @@ languages:
             - name: type
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: resetValues
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -154,9 +324,11 @@ languages:
             - name: output
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             return:
               type:
                 basic: void
+                full: void
           - name: setCurrentExercise
             modifiers:
             - public
@@ -164,9 +336,11 @@ languages:
             - name: type
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: setParent
             modifiers:
             - public
@@ -174,9 +348,11 @@ languages:
             - name: parent
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             return:
               type:
                 basic: void
+                full: void
           - name: setRegularityMap
             modifiers:
             - public
@@ -184,16 +360,23 @@ languages:
             - name: regularityMap
               type:
                 basic: HashMap
-                full: HashMap<String,Float>
+                full: java.util.HashMap<java.lang.String, java.lang.Float>
             return:
               type:
                 basic: void
+                full: void
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
             notes: We update every 10 in game minutes to facilitate calculs
-          javaType: class
-          extends: Object
+          - name: updateExeTimer
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void

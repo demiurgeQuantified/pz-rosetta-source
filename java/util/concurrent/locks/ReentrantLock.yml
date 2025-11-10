@@ -4,24 +4,77 @@ languages:
     packages:
       java.util.concurrent.locks:
         ReentrantLock:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A reentrant mutual exclusion Lock with the same basic\n behavior\
+            \ and semantics as the implicit monitor lock accessed using\n synchronized\
+            \ methods and statements, but with extended\n capabilities.\n\n A ReentrantLock\
+            \ is owned by the thread last\n successfully locking, but not yet unlocking\
+            \ it. A thread invoking\n lock will return, successfully acquiring the\
+            \ lock, when\n the lock is not owned by another thread. The method will\
+            \ return\n immediately if the current thread already owns the lock. This\
+            \ can\n be checked using methods isHeldByCurrentThread(), and getHoldCount().\n\
+            \n The constructor for this class accepts an optional\n fairness parameter.\
+            \  When set true, under\n contention, locks favor granting access to the\
+            \ longest-waiting\n thread.  Otherwise this lock does not guarantee any\
+            \ particular\n access order.  Programs using fair locks accessed by many\
+            \ threads\n may display lower overall throughput (i.e., are slower; often\
+            \ much\n slower) than those using the default setting, but have smaller\n\
+            \ variances in times to obtain locks and guarantee lack of\n starvation.\
+            \ Note however, that fairness of locks does not guarantee\n fairness of\
+            \ thread scheduling. Thus, one of many threads using a\n fair lock may\
+            \ obtain it multiple times in succession while other\n active threads\
+            \ are not progressing and not currently holding the\n lock.\n Also note\
+            \ that the untimed tryLock() method does not\n honor the fairness setting.\
+            \ It will succeed if the lock\n is available even if other threads are\
+            \ waiting.\n\n It is recommended practice to always immediately\n follow\
+            \ a call to lock with a try block, most\n typically in a before/after\
+            \ construction such as:\n\n  <code>\n class X {\n   private final ReentrantLock\
+            \ lock = new ReentrantLock();\n   // ...\n\n   public void m() {\n   \
+            \  lock.lock();  // block until condition holds\n     try {\n       //\
+            \ ... method body\n     } finally {\n       lock.unlock();\n     }\n \
+            \  }\n }</code>\n\n In addition to implementing the Lock interface, this\n\
+            \ class defines a number of public and protected\n methods for inspecting\
+            \ the state of the lock.  Some of these\n methods are only useful for\
+            \ instrumentation and monitoring.\n\n Serialization of this class behaves\
+            \ in the same way as built-in\n locks: a deserialized lock is in the unlocked\
+            \ state, regardless of\n its state when serialized.\n\n This lock supports\
+            \ a maximum of 2147483647 recursive locks by\n the same thread. Attempts\
+            \ to exceed this limit result in\n Error throws from locking methods."
+          fields:
+            sync:
+              name: sync
+              modifiers:
+              - private
+              type:
+                basic: ReentrantLock.Sync
+                full: java.util.concurrent.locks.ReentrantLock$Sync
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: "Creates an instance of ReentrantLock.\n This is equivalent to\
+              \ using ReentrantLock(false)."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fair
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this lock should use a fair ordering policy
+            notes: "Creates an instance of ReentrantLock with the\n given fairness\
+              \ policy."
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: getHoldCount
             modifiers:
             - public
@@ -29,6 +82,33 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the number of holds on this lock by the current thread,\n  \
+                \       or zero if this lock is not held by the current thread"
+            notes: "Queries the number of holds on this lock by the current thread.\n\
+              \n A thread has a hold on a lock for each lock action that is not\n\
+              \ matched by an unlock action.\n\n The hold count information is typically\
+              \ only used for testing and\n debugging purposes. For example, if a\
+              \ certain section of code should\n not be entered with the lock already\
+              \ held then we can assert that\n fact:\n\n  <code>\n class X {\n   final\
+              \ ReentrantLock lock = new ReentrantLock();\n   // ...\n   public void\
+              \ m() {\n     assert lock.getHoldCount() == 0;\n     lock.lock();\n\
+              \     try {\n       // ... method body\n     } finally {\n       lock.unlock();\n\
+              \     }\n   }\n }</code>"
+          - name: getOwner
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: the owner, or null if not owned
+            notes: "Returns the thread that currently owns this lock, or\n null if\
+              \ not owned. When this method is called by a\n thread that is not the\
+              \ owner, the return value reflects a\n best-effort approximation of\
+              \ current lock status. For example,\n the owner may be momentarily null\
+              \ even if there are\n threads trying to acquire the lock but have not\
+              \ yet done so.\n This method is designed to facilitate construction\
+              \ of\n subclasses that provide more extensive lock monitoring\n facilities."
           - name: getQueueLength
             modifiers:
             - public
@@ -37,31 +117,88 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the estimated number of threads waiting for this lock
+            notes: "Returns an estimate of the number of threads waiting to acquire\n\
+              \ this lock.  The value is only an estimate because the number of\n\
+              \ threads may change dynamically while this method traverses\n internal\
+              \ data structures.  This method is designed for use in\n monitoring\
+              \ system state, not for synchronization control."
+          - name: getQueuedThreads
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire this lock.  Because the actual set of threads may change\n\
+              \ dynamically while constructing this result, the returned\n collection\
+              \ is only a best-effort estimate.  The elements of the\n returned collection\
+              \ are in no particular order.  This method is\n designed to facilitate\
+              \ construction of subclasses that provide\n more extensive monitoring\
+              \ facilities."
           - name: getWaitQueueLength
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: condition
               type:
                 basic: Condition
                 full: java.util.concurrent.locks.Condition
+              notes: the condition
             return:
               type:
                 basic: int
                 full: int
+              notes: the estimated number of waiting threads
+            notes: "Returns an estimate of the number of threads waiting on the\n\
+              \ given condition associated with this lock. Note that because\n timeouts\
+              \ and interrupts may occur at any time, the estimate\n serves only as\
+              \ an upper bound on the actual number of waiters.\n This method is designed\
+              \ for use in monitoring of the system\n state, not for synchronization\
+              \ control."
+          - name: getWaitingThreads
+            modifiers:
+            - protected
+            parameters:
+            - name: condition
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+              notes: the condition
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing those threads that may be\n waiting\
+              \ on the given condition associated with this lock.\n Because the actual\
+              \ set of threads may change dynamically while\n constructing this result,\
+              \ the returned collection is only a\n best-effort estimate. The elements\
+              \ of the returned collection\n are in no particular order.  This method\
+              \ is designed to\n facilitate construction of subclasses that provide\
+              \ more\n extensive condition monitoring facilities."
           - name: hasQueuedThread
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: thread
               type:
                 basic: Thread
                 full: java.lang.Thread
+              notes: the thread
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the given thread is queued waiting for this lock
+            notes: "Queries whether the given thread is waiting to acquire this\n\
+              \ lock. Note that because cancellations may occur at any time, a\n true\
+              \ return does not guarantee that this thread\n will ever acquire this\
+              \ lock.  This method is designed primarily for use\n in monitoring of\
+              \ the system state."
           - name: hasQueuedThreads
             modifiers:
             - public
@@ -70,18 +207,32 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if there may be other threads waiting to\n         acquire\
+                \ the lock"
+            notes: "Queries whether any threads are waiting to acquire this lock.\
+              \ Note that\n because cancellations may occur at any time, a true\n\
+              \ return does not guarantee that any other thread will ever\n acquire\
+              \ this lock.  This method is designed primarily for use in\n monitoring\
+              \ of the system state."
           - name: hasWaiters
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: condition
               type:
                 basic: Condition
                 full: java.util.concurrent.locks.Condition
+              notes: the condition
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if there are any waiting threads
+            notes: "Queries whether any threads are waiting on the given condition\n\
+              \ associated with this lock. Note that because timeouts and\n interrupts\
+              \ may occur at any time, a true return does\n not guarantee that a future\
+              \ signal will awaken any\n threads.  This method is designed primarily\
+              \ for use in\n monitoring of the system state."
           - name: isFair
             modifiers:
             - public
@@ -90,6 +241,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this lock has fairness set true
+            notes: Returns true if this lock has fairness set true.
           - name: isHeldByCurrentThread
             modifiers:
             - public
@@ -97,6 +250,20 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if current thread holds this lock and\n         false otherwise"
+            notes: "Queries if this lock is held by the current thread.\n\n Analogous\
+              \ to the Thread.holdsLock(Object) method for\n built-in monitor locks,\
+              \ this method is typically used for\n debugging and testing. For example,\
+              \ a method that should only be\n called while a lock is held can assert\
+              \ that this is the case:\n\n  <code>\n class X {\n   final ReentrantLock\
+              \ lock = new ReentrantLock();\n   // ...\n\n   public void m() {\n \
+              \      assert lock.isHeldByCurrentThread();\n       // ... method body\n\
+              \   }\n }</code>\n\n It can also be used to ensure that a reentrant\
+              \ lock is used\n in a non-reentrant manner, for example:\n\n  <code>\n\
+              \ class X {\n   final ReentrantLock lock = new ReentrantLock();\n  \
+              \ // ...\n\n   public void m() {\n       assert !lock.isHeldByCurrentThread();\n\
+              \       lock.lock();\n       try {\n           // ... method body\n\
+              \       } finally {\n           lock.unlock();\n       }\n   }\n }</code>"
           - name: isLocked
             modifiers:
             - public
@@ -104,6 +271,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if any thread holds this lock and\n         false otherwise"
+            notes: "Queries if this lock is held by any thread. This method is\n designed\
+              \ for use in monitoring of the system state,\n not for synchronization\
+              \ control."
           - name: lock
             modifiers:
             - public
@@ -111,13 +282,14 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: lock
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Acquires the lock.\n\n Acquires the lock if it is not held by\
+              \ another thread and returns\n immediately, setting the lock hold count\
+              \ to one.\n\n If the current thread already holds the lock then the\
+              \ hold\n count is incremented by one and the method returns immediately.\n\
+              \n If the lock is held by another thread then the\n current thread becomes\
+              \ disabled for thread scheduling\n purposes and lies dormant until the\
+              \ lock has been acquired,\n at which time the lock hold count is set\
+              \ to one."
           - name: lockInterruptibly
             modifiers:
             - public
@@ -125,13 +297,23 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: lockInterruptibly
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Acquires the lock unless the current thread is\n interrupted.\n\
+              \n Acquires the lock if it is not held by another thread and returns\n\
+              \ immediately, setting the lock hold count to one.\n\n If the current\
+              \ thread already holds this lock then the hold count\n is incremented\
+              \ by one and the method returns immediately.\n\n If the lock is held\
+              \ by another thread then the\n current thread becomes disabled for thread\
+              \ scheduling\n purposes and lies dormant until one of two things happens:\n\
+              \n \n\n The lock is acquired by the current thread; or\n\n Some other\
+              \ thread interrupts the\n current thread.\n\n \n\n If the lock is acquired\
+              \ by the current thread then the lock hold\n count is set to one.\n\n\
+              \ If the current thread:\n\n \n\n has its interrupted status set on\
+              \ entry to this method; or\n\n is interrupted while acquiring\n the\
+              \ lock,\n\n \n\n then InterruptedException is thrown and the current\
+              \ thread's\n interrupted status is cleared.\n\n In this implementation,\
+              \ as this method is an explicit\n interruption point, preference is\
+              \ given to responding to the\n interrupt over normal or reentrant acquisition\
+              \ of the lock."
           - name: newCondition
             modifiers:
             - public
@@ -139,13 +321,30 @@ languages:
               type:
                 basic: Condition
                 full: java.util.concurrent.locks.Condition
-          - name: newCondition
+              notes: the Condition object
+            notes: "Returns a Condition instance for use with this\n Lock instance.\n\
+              \n The returned Condition instance supports the same\n usages as do\
+              \ the Object monitor methods (wait, notify, and notifyAll) when used\
+              \ with the built-in\n monitor lock.\n\n \n\n If this lock is not held\
+              \ when any of the Condition\n waiting or signalling methods are called,\
+              \ then an IllegalMonitorStateException is thrown.\n\n When the condition\
+              \ waiting\n methods are called the lock is released and, before they\n\
+              \ return, the lock is reacquired and the lock hold count restored\n\
+              \ to what it was when the method was called.\n\n If a thread is interrupted\n\
+              \ while waiting then the wait will terminate, an InterruptedException\
+              \ will be thrown, and the thread's\n interrupted status will be cleared.\n\
+              \n Waiting threads are signalled in FIFO order.\n\n The ordering of\
+              \ lock reacquisition for threads returning\n from waiting methods is\
+              \ the same as for threads initially\n acquiring the lock, which is in\
+              \ the default case not specified,\n but for fair locks favors those\
+              \ threads that have been\n waiting the longest."
+          - name: toString
             modifiers:
             - public
             return:
               type:
-                basic: Condition
-                full: java.util.concurrent.locks.Condition
+                basic: String
+                full: java.lang.String
           - name: tryLock
             modifiers:
             - public
@@ -153,45 +352,73 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: tryLock
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if the lock was free and was acquired by the\n        \
+                \ current thread, or the lock was already held by the current\n  \
+                \       thread; and false otherwise"
+            notes: "Acquires the lock only if it is not held by another thread at\
+              \ the time\n of invocation.\n\n Acquires the lock if it is not held\
+              \ by another thread and\n returns immediately with the value true, setting\
+              \ the\n lock hold count to one. Even when this lock has been set to\
+              \ use a\n fair ordering policy, a call to tryLock() will\n immediately\
+              \ acquire the lock if it is available, whether or not\n other threads\
+              \ are currently waiting for the lock.\n This &quot;barging&quot; behavior\
+              \ can be useful in certain\n circumstances, even though it breaks fairness.\
+              \ If you want to honor\n the fairness setting for this lock, then use\n\
+              \ tryLock(0, TimeUnit.SECONDS)\n which is almost equivalent (it also\
+              \ detects interruption).\n\n If the current thread already holds this\
+              \ lock then the hold\n count is incremented by one and the method returns\
+              \ true.\n\n If the lock is held by another thread then this method will\
+              \ return\n immediately with the value false."
           - name: tryLock
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the time to wait for the lock
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: tryLock
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TimeUnit
-                full: java.util.concurrent.TimeUnit
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if the lock was free and was acquired by the\n        \
+                \ current thread, or the lock was already held by the current\n  \
+                \       thread; and false if the waiting time elapsed before\n   \
+                \      the lock could be acquired"
+            notes: "Acquires the lock if it is not held by another thread within the\
+              \ given\n waiting time and the current thread has not been\n interrupted.\n\
+              \n Acquires the lock if it is not held by another thread and returns\n\
+              \ immediately with the value true, setting the lock hold count\n to\
+              \ one. If this lock has been set to use a fair ordering policy then\n\
+              \ an available lock will not be acquired if any other threads\n are\
+              \ waiting for the lock. This is in contrast to the tryLock()\n method.\
+              \ If you want a timed tryLock that does permit barging on\n a fair lock\
+              \ then combine the timed and un-timed forms together:\n\n  <code>\n\
+              \ if (lock.tryLock() ||\n     lock.tryLock(timeout, unit)) {\n   ...\n\
+              \ }</code>\n\n If the current thread\n already holds this lock then\
+              \ the hold count is incremented by one and\n the method returns true.\n\
+              \n If the lock is held by another thread then the\n current thread becomes\
+              \ disabled for thread scheduling\n purposes and lies dormant until one\
+              \ of three things happens:\n\n \n\n The lock is acquired by the current\
+              \ thread; or\n\n Some other thread interrupts\n the current thread;\
+              \ or\n\n The specified waiting time elapses\n\n \n\n If the lock is\
+              \ acquired then the value true is returned and\n the lock hold count\
+              \ is set to one.\n\n If the current thread:\n\n \n\n has its interrupted\
+              \ status set on entry to this method; or\n\n is interrupted while\n\
+              \ acquiring the lock,\n\n \n then InterruptedException is thrown and\
+              \ the current thread's\n interrupted status is cleared.\n\n If the specified\
+              \ waiting time elapses then the value false\n is returned.  If the time\
+              \ is less than or equal to zero, the method\n will not wait at all.\n\
+              \n In this implementation, as this method is an explicit\n interruption\
+              \ point, preference is given to responding to the\n interrupt over normal\
+              \ or reentrant acquisition of the lock, and\n over reporting the elapse\
+              \ of the waiting time."
           - name: unlock
             modifiers:
             - public
@@ -199,12 +426,8 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: unlock
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
-          javaType: class
-          extends: Object
+            notes: "Attempts to release this lock.\n\n If the current thread is the\
+              \ holder of this lock then the hold\n count is decremented.  If the\
+              \ hold count is now zero then the lock\n is released.  If the current\
+              \ thread is not the holder of this\n lock then IllegalMonitorStateException\
+              \ is thrown."

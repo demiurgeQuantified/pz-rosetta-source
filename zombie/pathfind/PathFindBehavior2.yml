@@ -4,23 +4,39 @@ languages:
     packages:
       zombie.pathfind:
         PathFindBehavior2:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
           fields:
             Listeners:
               name: Listeners
               modifiers:
               - public
               type:
-                basic: ArrayList<IPathfinder>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.pathfind.IPathfinder>
-                nullable: true
             NPCData:
               name: NPCData
               modifiers:
               - public
               type:
-                basic: NPCData
+                basic: PathFindBehavior2.NPCData
                 full: zombie.pathfind.PathFindBehavior2$NPCData
-                nullable: true
+            actualPos:
+              name: actualPos
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.pathfind.PathFindBehavior2$DebugPt>
+            bStartedMoving:
+              name: bStartedMoving
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
             bStopping:
               name: bStopping
               modifiers:
@@ -28,7 +44,90 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-                nullable: true
+            bTurningToObstacle:
+              name: bTurningToObstacle
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            chr:
+              name: chr
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            goal:
+              name: goal
+              modifiers:
+              - private
+              type:
+                basic: PathFindBehavior2.Goal
+                full: zombie.pathfind.PathFindBehavior2$Goal
+            goalCharacter:
+              name: goalCharacter
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            goalSitOnFurnitureAnySpriteGridObject:
+              name: goalSitOnFurnitureAnySpriteGridObject
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            goalSitOnFurnitureObject:
+              name: goalSitOnFurnitureObject
+              modifiers:
+              - private
+              type:
+                basic: IsoObject
+                full: zombie.iso.IsoObject
+            goalVehicle:
+              name: goalVehicle
+              modifiers:
+              - private
+              type:
+                basic: BaseVehicle
+                full: zombie.vehicles.BaseVehicle
+            goalVehicleArea:
+              name: goalVehicleArea
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            goalVehicleSeat:
+              name: goalVehicleSeat
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            isCancel:
+              name: isCancel
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            path:
+              name: path
+              modifiers:
+              - private
+              type:
+                basic: Path
+                full: zombie.pathfind.Path
+            pathIndex:
+              name: pathIndex
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
             pathNextIsSet:
               name: pathNextIsSet
               modifiers:
@@ -36,7 +135,6 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-                nullable: true
             pathNextX:
               name: pathNextX
               modifiers:
@@ -44,7 +142,6 @@ languages:
               type:
                 basic: float
                 full: float
-                nullable: true
             pathNextY:
               name: pathNextY
               modifiers:
@@ -52,16 +149,111 @@ languages:
               type:
                 basic: float
                 full: float
-                nullable: true
+            startX:
+              name: startX
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            startY:
+              name: startY
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            startZ:
+              name: startZ
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            targetX:
+              name: targetX
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            targetXYZ:
+              name: targetXYZ
+              modifiers:
+              - private
+              type:
+                basic: TFloatArrayList
+                full: gnu.trove.list.array.TFloatArrayList
+            targetY:
+              name: targetY
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            targetZ:
+              name: targetZ
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
             walkingOnTheSpot:
               name: walkingOnTheSpot
               modifiers:
               - public
-              - final
               type:
                 basic: WalkingOnTheSpot
                 full: zombie.ai.WalkingOnTheSpot
-                nullable: true
+          staticFields:
+            actualPool:
+              name: actualPool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectPool
+                full: zombie.popman.ObjectPool<zombie.pathfind.PathFindBehavior2$DebugPt>
+            pointOnPath:
+              name: pointOnPath
+              modifiers:
+              - private
+              - static
+              type:
+                basic: PathFindBehavior2.PointOnPath
+                full: zombie.pathfind.PathFindBehavior2$PointOnPath
+            tempVector2:
+              name: tempVector2
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
+            tempVector2_2:
+              name: tempVector2_2
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
+            tempVector2f:
+              name: tempVector2f
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Vector2f
+                full: org.joml.Vector2f
+            tempVector3f_1:
+              name: tempVector3f_1
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Vector3f
+                full: org.joml.Vector3f
           constructors:
           - modifiers:
             - public
@@ -83,18 +275,6 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: Failed
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Mover
-                full: zombie.ai.astar.Mover
-            return:
-              type:
-                basic: void
-                full: void
           - name: Succeeded
             modifiers:
             - public
@@ -111,18 +291,30 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: Succeeded
+          - name: advanceAlongPath
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: Path
-                full: zombie.pathfind.Path
+                basic: float
+                full: float
             - name: arg1
               type:
-                basic: Mover
-                full: zombie.ai.astar.Mover
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: float
+                full: float
+            - name: arg4
+              type:
+                basic: PathFindBehavior2.PointOnPath
+                full: zombie.pathfind.PathFindBehavior2$PointOnPath
             return:
               type:
                 basic: void
@@ -137,6 +329,62 @@ languages:
           - name: cancel
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkCrawlingTransition
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: PathNode
+                full: zombie.pathfind.PathNode
+            - name: arg1
+              type:
+                basic: PathNode
+                full: zombie.pathfind.PathNode
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkDoorHoppableWindow
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: fixSitOnFurniturePath
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
             return:
               type:
                 basic: void
@@ -256,6 +504,30 @@ languages:
           - name: isMovingUsingPathFind
             modifiers:
             - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isPointInSquare
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: boolean
@@ -422,6 +694,22 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: pathToSitOnFurnitureNoSpriteGrid
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoObject
+                full: zombie.iso.IsoObject
+            - name: arg1
+              type:
+                basic: TFloatArrayList
+                full: gnu.trove.list.array.TFloatArrayList
+            return:
+              type:
+                basic: void
+                full: void
           - name: pathToSound
             modifiers:
             - public
@@ -551,8 +839,15 @@ languages:
             - public
             return:
               type:
-                basic: BehaviorResult
+                basic: PathFindBehavior2.BehaviorResult
                 full: zombie.pathfind.PathFindBehavior2$BehaviorResult
+          - name: updateWhileRunningPathfind
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
           - name: closestPointOnPath
             modifiers:
@@ -581,11 +876,9 @@ languages:
                 full: zombie.pathfind.Path
             - name: arg5
               type:
-                basic: PointOnPath
+                basic: PathFindBehavior2.PointOnPath
                 full: zombie.pathfind.PathFindBehavior2$PointOnPath
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object

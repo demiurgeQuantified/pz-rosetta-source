@@ -4,43 +4,299 @@ languages:
     packages:
       java.awt.image:
         Raster:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A class representing a rectangular array of pixels.  A Raster\n\
+            \ encapsulates a DataBuffer that stores the sample values and a\n SampleModel\
+            \ that describes how to locate a given sample value in a\n DataBuffer.\n\
+            \ \n A Raster defines values for pixels occupying a particular\n rectangular\
+            \ area of the plane, not necessarily including (0, 0).\n The rectangle,\
+            \ known as the Raster's bounding rectangle and\n available by means of\
+            \ the getBounds method, is defined by minX,\n minY, width, and height\
+            \ values.  The minX and minY values define\n the coordinate of the upper\
+            \ left corner of the Raster.  References\n to pixels outside of the bounding\
+            \ rectangle may result in an\n exception being thrown, or may result in\
+            \ references to unintended\n elements of the Raster's associated DataBuffer.\
+            \  It is the user's\n responsibility to avoid accessing such pixels.\n\
+            \ \n A SampleModel describes how samples of a Raster\n are stored in the\
+            \ primitive array elements of a DataBuffer.\n Samples may be stored one\
+            \ per data element, as in a\n PixelInterleavedSampleModel or BandedSampleModel,\
+            \ or packed several to\n an element, as in a SinglePixelPackedSampleModel\
+            \ or\n MultiPixelPackedSampleModel.  The SampleModel is also\n controls\
+            \ whether samples are sign extended, allowing unsigned\n data to be stored\
+            \ in signed Java data types such as byte, short, and\n int.\n \n Although\
+            \ a Raster may live anywhere in the plane, a SampleModel\n makes use of\
+            \ a simple coordinate system that starts at (0, 0).  A\n Raster therefore\
+            \ contains a translation factor that allows pixel\n locations to be mapped\
+            \ between the Raster's coordinate system and\n that of the SampleModel.\
+            \  The translation from the SampleModel\n coordinate system to that of\
+            \ the Raster may be obtained by the\n getSampleModelTranslateX and getSampleModelTranslateY\
+            \ methods.\n \n A Raster may share a DataBuffer with another Raster either\
+            \ by\n explicit construction or by the use of the createChild and\n createTranslatedChild\
+            \ methods.  Rasters created by these methods\n can return a reference\
+            \ to the Raster they were created from by\n means of the getParent method.\
+            \  For a Raster that was not\n constructed by means of a call to createTranslatedChild\
+            \ or\n createChild, getParent will return null.\n \n The createTranslatedChild\
+            \ method returns a new Raster that\n shares all of the data of the current\
+            \ Raster, but occupies a\n bounding rectangle of the same width and height\
+            \ but with a\n different starting point.  For example, if the parent Raster\n\
+            \ occupied the region (10, 10) to (100, 100), and the translated\n Raster\
+            \ was defined to start at (50, 50), then pixel (20, 20) of the\n parent\
+            \ and pixel (60, 60) of the child occupy the same location in\n the DataBuffer\
+            \ shared by the two Rasters.  In the first case, (-10,\n -10) should be\
+            \ added to a pixel coordinate to obtain the\n corresponding SampleModel\
+            \ coordinate, and in the second case (-50,\n -50) should be added.\n \n\
+            \ The translation between a parent and child Raster may be\n determined\
+            \ by subtracting the child's sampleModelTranslateX and\n sampleModelTranslateY\
+            \ values from those of the parent.\n \n The createChild method may be\
+            \ used to create a new Raster\n occupying only a subset of its parent's\
+            \ bounding rectangle\n (with the same or a translated coordinate system)\
+            \ or\n with a subset of the bands of its parent.\n \n All constructors\
+            \ are protected.  The correct way to create a\n Raster is to use one of\
+            \ the static create methods defined in this\n class.  These methods create\
+            \ instances of Raster that use the\n standard Interleaved, Banded, and\
+            \ Packed SampleModels and that may\n be processed more efficiently than\
+            \ a Raster created by combining\n an externally generated SampleModel\
+            \ and DataBuffer."
+          fields:
+            dataBuffer:
+              name: dataBuffer
+              modifiers:
+              - protected
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer that stores the image data.
+            height:
+              name: height
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The height of this Raster.
+            minX:
+              name: minX
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper-left pixel of this Raster.
+            minY:
+              name: minY
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper-left pixel of this Raster.
+            numBands:
+              name: numBands
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The number of bands in the Raster.
+            numDataElements:
+              name: numDataElements
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The number of DataBuffer data elements per pixel.
+            parent:
+              name: parent
+              modifiers:
+              - protected
+              type:
+                basic: Raster
+                full: java.awt.image.Raster
+              notes: The parent of this Raster, or null.
+            sampleModel:
+              name: sampleModel
+              modifiers:
+              - protected
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: "The SampleModel that describes how pixels from this Raster\n\
+                \ are stored in the DataBuffer."
+            sampleModelTranslateX:
+              name: sampleModelTranslateX
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The X translation from the coordinate space of the\n Raster's\
+                \ SampleModel to that of the Raster."
+            sampleModelTranslateY:
+              name: sampleModelTranslateY
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The Y translation from the coordinate space of the\n Raster's\
+                \ SampleModel to that of the Raster."
+            width:
+              name: width
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The width of this Raster.
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: sampleModel
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: The SampleModel that specifies the layout
+            - name: origin
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: The Point that specified the origin
+            notes: "Constructs a Raster with the given SampleModel.  The Raster's\n\
+              \  upper left corner is origin and it is the same size as the\n  SampleModel.\
+              \  A DataBuffer large enough to describe the\n  Raster is automatically\
+              \ created."
+          - modifiers:
+            - protected
+            parameters:
+            - name: sampleModel
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: The SampleModel that specifies the layout
+            - name: dataBuffer
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer that contains the image data
+            - name: origin
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: The Point that specifies the origin
+            notes: "Constructs a Raster with the given SampleModel and DataBuffer.\n\
+              \  The Raster's upper left corner is origin and it is the same size\n\
+              \  as the SampleModel.  The DataBuffer is not initialized and must\n\
+              \  be compatible with SampleModel."
+          - modifiers:
+            - protected
+            parameters:
+            - name: sampleModel
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: The SampleModel that specifies the layout
+            - name: dataBuffer
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer that contains the image data
+            - name: aRegion
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
+              notes: The Rectangle that specifies the image area
+            - name: sampleModelTranslate
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: "The Point that specifies the translation\n                 \
+                \       from SampleModel to Raster coordinates"
+            - name: parent
+              type:
+                basic: Raster
+                full: java.awt.image.Raster
+              notes: The parent (if any) of this raster
+            notes: "Constructs a Raster with the given SampleModel, DataBuffer, and\n\
+              \ parent.  aRegion specifies the bounding rectangle of the new\n Raster.\
+              \  When translated into the base Raster's coordinate\n system, aRegion\
+              \ must be contained by the base Raster.\n (The base Raster is the Raster's\
+              \ ancestor which has no parent.)\n sampleModelTranslate specifies the\
+              \ sampleModelTranslateX and\n sampleModelTranslateY values of the new\
+              \ Raster.\n\n Note that this constructor should generally be called\
+              \ by other\n constructors or create methods, it should not be used directly."
           methods:
           - name: createChild
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parentX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "The X coordinate of the upper-left corner\n        in this Raster's\
+                \ coordinates"
+            - name: parentY
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "The Y coordinate of the upper-left corner\n        in this Raster's\
+                \ coordinates"
+            - name: width
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the region starting at (parentX, parentY)
+            - name: height
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the region starting at (parentX, parentY).
+            - name: childMinX
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: "The X coordinate of the upper-left corner\n                \
+                \   of the returned Raster"
+            - name: childMinY
               type:
                 basic: int
                 full: int
-            - name: arg6
+              notes: "The Y coordinate of the upper-left corner\n                \
+                \   of the returned Raster"
+            - name: bandList
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: Array of band indices, or null to use all bands
             return:
               type:
                 basic: Raster
                 full: java.awt.image.Raster
+              notes: a new Raster.
+            notes: "Returns a new Raster which shares all or part of this Raster's\n\
+              \ DataBuffer.  The new Raster will possess a reference to the\n current\
+              \ Raster, accessible through its getParent() method.\n\n  The parentX,\
+              \ parentY, width and height parameters\n form a Rectangle in this Raster's\
+              \ coordinate space,\n indicating the area of pixels to be shared.  An\
+              \ error will\n be thrown if this Rectangle is not contained with the\
+              \ bounds\n of the current Raster.\n\n  The new Raster may additionally\
+              \ be translated to a\n different coordinate system for the plane than\
+              \ that used by the current\n Raster.  The childMinX and childMinY parameters\
+              \ give the new\n (x, y) coordinate of the upper-left pixel of the returned\n\
+              \ Raster; the coordinate (childMinX, childMinY) in the new Raster\n\
+              \ will map to the same pixel as the coordinate (parentX, parentY)\n\
+              \ in the current Raster.\n\n  The new Raster may be defined to contain\
+              \ only a subset of\n the bands of the current Raster, possibly reordered,\
+              \ by means\n of the bandList parameter.  If bandList is null, it is\
+              \ taken to\n include all of the bands of the current Raster in their\
+              \ current\n order.\n\n  To create a new Raster that contains a subregion\
+              \ of the current\n Raster, but shares its coordinate system and bands,\n\
+              \ this method should be called with childMinX equal to parentX,\n childMinY\
+              \ equal to parentY, and bandList equal to null."
           - name: createCompatibleWritableRaster
             modifiers:
             - public
@@ -48,74 +304,110 @@ languages:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a compatible WritableRaster with the same sample\n         model\
+                \ and a new data buffer."
+            notes: "Create a compatible WritableRaster the same size as this Raster\
+              \ with\n the same SampleModel and a new initialized DataBuffer."
           - name: createCompatibleWritableRaster
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: the specified width of the new WritableRaster
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: the specified height of the new WritableRaster
+            return:
+              type:
+                basic: WritableRaster
+                full: java.awt.image.WritableRaster
+              notes: "a compatible WritableRaster with the specified\n         size\
+                \ and a new sample model and data buffer."
+            notes: "Create a compatible WritableRaster with the specified size, a\
+              \ new\n SampleModel, and a new initialized DataBuffer."
+          - name: createCompatibleWritableRaster
+            modifiers:
+            - public
+            parameters:
+            - name: rect
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: "a Rectangle that specifies the size and\n        location of\
+                \ the WritableRaster"
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a compatible WritableRaster with the specified\n         size\
+                \ and location and a new sample model and data buffer."
+            notes: "Create a compatible WritableRaster with location (minX, minY)\n\
+              \ and size (width, height) specified by rect, a\n new SampleModel, and\
+              \ a new initialized DataBuffer."
           - name: createCompatibleWritableRaster
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the X coordinate of the upper-left corner of\n        the WritableRaster"
+            - name: y
               type:
                 basic: int
                 full: int
+              notes: "the Y coordinate of the upper-left corner of\n        the WritableRaster"
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: the specified width of the WritableRaster
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: the specified height of the WritableRaster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
-          - name: createCompatibleWritableRaster
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: WritableRaster
-                full: java.awt.image.WritableRaster
+              notes: "a compatible WritableRaster with the specified\n         size\
+                \ and location and a new sample model and data buffer."
+            notes: "Create a compatible WritableRaster with the specified\n location\
+              \ (minX, minY) and size (width, height), a\n new SampleModel, and a\
+              \ new initialized DataBuffer."
           - name: createTranslatedChild
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: childMinX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the X coordinate of the upper-left\n        corner of the new\
+                \ Raster"
+            - name: childMinY
               type:
                 basic: int
                 full: int
+              notes: "the Y coordinate of the upper-left\n        corner of the new\
+                \ Raster"
             return:
               type:
                 basic: Raster
                 full: java.awt.image.Raster
+              notes: "a new Raster with the same size, SampleModel,\n         and\
+                \ DataBuffer as this Raster, but with the\n         specified location."
+            notes: "Create a Raster with the same size, SampleModel and DataBuffer\n\
+              \ as this one, but with a different location.  The new Raster\n will\
+              \ possess a reference to the current Raster, accessible\n through its\
+              \ getParent() method."
           - name: getBounds
             modifiers:
             - public
@@ -123,6 +415,9 @@ languages:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: the bounding box of this Raster.
+            notes: "Returns the bounding Rectangle of this Raster. This function returns\n\
+              \ the same information as getMinX/MinY/Width/Height."
           - name: getDataBuffer
             modifiers:
             - public
@@ -130,54 +425,94 @@ languages:
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: the DataBuffer of this Raster.
+            notes: Returns the DataBuffer associated with this Raster.
           - name: getDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: outData
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "An object reference to an array of type defined by\n       \
+                \          getTransferType() and length getNumDataElements().\n  \
+                \               If null, an array of appropriate type and size will\
+                \ be\n                 allocated"
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "An object reference to an array of type defined by\n       \
+                \          getTransferType() with the requested pixel data."
+            notes: "Returns data for a single pixel in a primitive array of type\n\
+              \ TransferType.  For image data supported by the Java 2D(tm) API,\n\
+              \ this will be one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT,\n\
+              \ DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT, DataBuffer.TYPE_FLOAT,\n\
+              \ or DataBuffer.TYPE_DOUBLE.  Data may be returned in a packed format,\n\
+              \ thus increasing efficiency for data transfers.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed.\n A ClassCastException will be\
+              \ thrown if the input object is non null\n and references anything other\
+              \ than an array of TransferType."
           - name: getDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper-left pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper-left pixel location
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the pixel rectangle
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the pixel rectangle
+            - name: outData
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "An object reference to an array of type defined by\n       \
+                \          getTransferType() and length w*h*getNumDataElements().\n\
+                \                 If null, an array of appropriate type and size will\
+                \ be\n                 allocated."
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "An object reference to an array of type defined by\n       \
+                \          getTransferType() with the requested pixel data."
+            notes: "Returns the pixel data for the specified rectangle of pixels in\
+              \ a\n primitive array of type TransferType.\n For image data supported\
+              \ by the Java 2D API, this\n will be one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT,\n\
+              \ DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT, DataBuffer.TYPE_FLOAT,\n\
+              \ or DataBuffer.TYPE_DOUBLE.  Data may be returned in a packed format,\n\
+              \ thus increasing efficiency for data transfers.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed.\n A ClassCastException will be\
+              \ thrown if the input object is non null\n and references anything other\
+              \ than an array of TransferType."
           - name: getHeight
             modifiers:
             - public
@@ -186,6 +521,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the height of this Raster.
+            notes: Returns the height in pixels of the Raster.
           - name: getMinX
             modifiers:
             - public
@@ -194,6 +531,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the minimum x coordinate of this Raster.
+            notes: Returns the minimum valid X coordinate of the Raster.
           - name: getMinY
             modifiers:
             - public
@@ -202,6 +541,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the minimum y coordinate of this Raster.
+            notes: Returns the minimum valid Y coordinate of the Raster.
           - name: getNumBands
             modifiers:
             - public
@@ -210,6 +551,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of bands of this Raster.
+            notes: Returns the number of bands (samples per pixel) in this Raster.
           - name: getNumDataElements
             modifiers:
             - public
@@ -218,6 +561,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of data elements.
+            notes: "Returns the number of data elements needed to transfer one pixel\n\
+              \  via the getDataElements and setDataElements methods.  When pixels\n\
+              \  are transferred via these methods, they may be transferred in a\n\
+              \  packed or unpacked format, depending on the implementation of the\n\
+              \  underlying SampleModel.  Using these methods, pixels are transferred\n\
+              \  as an array of getNumDataElements() elements of a primitive type\
+              \ given\n  by getTransferType().  The TransferType may or may not be\
+              \ the same\n  as the storage data type of the DataBuffer."
           - name: getParent
             modifiers:
             - public
@@ -225,210 +577,290 @@ languages:
               type:
                 basic: Raster
                 full: java.awt.image.Raster
+              notes: the parent Raster or null.
+            notes: Returns the parent Raster (if any) of this Raster or null.
           - name: getPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: iArray
               type:
-                basic: double[]
-                full: double[]
+                basic: int
+                full: int[]
+              notes: An optionally preallocated int array
             return:
               type:
-                basic: double[]
-                full: double[]
+                basic: int
+                full: int[]
+              notes: the samples for the specified pixel.
+            notes: "Returns the samples in an array of int for the specified pixel.\n\
+              \ An ArrayIndexOutOfBoundsException may be thrown\n if the coordinates\
+              \ are not in bounds.  However, explicit bounds\n checking is not guaranteed."
           - name: getPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: fArray
               type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: An optionally preallocated float array
             return:
               type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: the samples for the specified pixel.
+            notes: "Returns the samples in an array of float for the\n specified pixel.\n\
+              \ An ArrayIndexOutOfBoundsException may be thrown\n if the coordinates\
+              \ are not in bounds.  However, explicit bounds\n checking is not guaranteed."
           - name: getPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: dArray
               type:
-                basic: int[]
-                full: int[]
-            return:
-              type:
-                basic: int[]
-                full: int[]
-          - name: getPixels
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: double[]
+                basic: double
                 full: double[]
+              notes: An optionally preallocated double array
             return:
               type:
-                basic: double[]
+                basic: double
                 full: double[]
+              notes: the samples for the specified pixel.
+            notes: "Returns the samples in an array of double for the specified pixel.\n\
+              \ An ArrayIndexOutOfBoundsException may be thrown\n if the coordinates\
+              \ are not in bounds.  However, explicit bounds\n checking is not guaranteed."
           - name: getPixels
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper-left pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper-left pixel location
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the pixel rectangle
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the pixel rectangle
+            - name: iArray
               type:
-                basic: float[]
-                full: float[]
+                basic: int
+                full: int[]
+              notes: An optionally pre-allocated int array
             return:
               type:
-                basic: float[]
-                full: float[]
+                basic: int
+                full: int[]
+              notes: the samples for the specified rectangle of pixels.
+            notes: "Returns an int array containing all samples for a rectangle of\
+              \ pixels,\n one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed."
           - name: getPixels
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the pixel rectangle
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the pixel rectangle
+            - name: fArray
               type:
-                basic: int[]
-                full: int[]
+                basic: float
+                full: float[]
+              notes: An optionally pre-allocated float array
             return:
               type:
-                basic: int[]
-                full: int[]
+                basic: float
+                full: float[]
+              notes: the samples for the specified rectangle of pixels.
+            notes: "Returns a float array containing all samples for a rectangle of\
+              \ pixels,\n one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed."
+          - name: getPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper-left pixel location
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper-left pixel location
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: An optionally pre-allocated double array
+            return:
+              type:
+                basic: double
+                full: double[]
+              notes: the samples for the specified rectangle of pixels.
+            notes: "Returns a double array containing all samples for a rectangle\
+              \ of pixels,\n one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed."
           - name: getSample
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: b
               type:
                 basic: int
                 full: int
+              notes: The band to return
             return:
               type:
                 basic: int
                 full: int
+              notes: "the sample in the specified band for the pixel at the\n    \
+                \     specified coordinate."
+            notes: "Returns the sample in a specified band for the pixel located\n\
+              \ at (x,y) as an int.\n An ArrayIndexOutOfBoundsException may be thrown\n\
+              \ if the coordinates are not in bounds.  However, explicit bounds\n\
+              \ checking is not guaranteed."
           - name: getSampleDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: b
               type:
                 basic: int
                 full: int
+              notes: The band to return
             return:
               type:
                 basic: double
                 full: double
+              notes: "the sample in the specified band for the pixel at the\n    \
+                \     specified coordinate."
+            notes: "Returns the sample in a specified band\n for a pixel located at\
+              \ (x,y) as a double.\n An ArrayIndexOutOfBoundsException may be thrown\n\
+              \ if the coordinates are not in bounds.  However, explicit bounds\n\
+              \ checking is not guaranteed."
           - name: getSampleFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: b
               type:
                 basic: int
                 full: int
+              notes: The band to return
             return:
               type:
                 basic: float
                 full: float
+              notes: "the sample in the specified band for the pixel at the\n    \
+                \     specified coordinate."
+            notes: "Returns the sample in a specified band\n for the pixel located\
+              \ at (x,y) as a float.\n An ArrayIndexOutOfBoundsException may be thrown\n\
+              \ if the coordinates are not in bounds.  However, explicit bounds\n\
+              \ checking is not guaranteed."
           - name: getSampleModel
             modifiers:
             - public
@@ -436,6 +868,9 @@ languages:
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
+              notes: the SampleModel of this Raster.
+            notes: Returns the SampleModel that describes the layout of the image
+              data.
           - name: getSampleModelTranslateX
             modifiers:
             - public
@@ -444,6 +879,12 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the X translation from the coordinate space of the\n       \
+                \  Raster's SampleModel to that of the Raster."
+            notes: "Returns the X translation from the coordinate system of the\n\
+              \ SampleModel to that of the Raster.  To convert a pixel's X\n coordinate\
+              \ from the Raster coordinate system to the SampleModel\n coordinate\
+              \ system, this value must be subtracted."
           - name: getSampleModelTranslateY
             modifiers:
             - public
@@ -452,102 +893,144 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the Y translation from the coordinate space of the\n       \
+                \  Raster's SampleModel to that of the Raster."
+            notes: "Returns the Y translation from the coordinate system of the\n\
+              \ SampleModel to that of the Raster.  To convert a pixel's Y\n coordinate\
+              \ from the Raster coordinate system to the SampleModel\n coordinate\
+              \ system, this value must be subtracted."
           - name: getSamples
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper-left pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper-left pixel location
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the pixel rectangle
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the pixel rectangle
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg5
-              type:
-                basic: double[]
-                full: double[]
-            return:
-              type:
-                basic: double[]
-                full: double[]
-          - name: getSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: The band to return
+            - name: iArray
               type:
                 basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: float[]
-                full: float[]
-            return:
-              type:
-                basic: float[]
-                full: float[]
-          - name: getSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: int[]
                 full: int[]
+              notes: An optionally pre-allocated int array
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "the samples for the specified band for the specified\n     \
+                \    rectangle of pixels."
+            notes: "Returns the samples for a specified band for the specified rectangle\n\
+              \ of pixels in an int array, one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed."
+          - name: getSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper-left pixel location
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper-left pixel location
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to return
+            - name: fArray
+              type:
+                basic: float
+                full: float[]
+              notes: An optionally pre-allocated float array
+            return:
+              type:
+                basic: float
+                full: float[]
+              notes: "the samples for the specified band for the specified\n     \
+                \    rectangle of pixels."
+            notes: "Returns the samples for a specified band for the specified rectangle\n\
+              \ of pixels in a float array, one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed."
+          - name: getSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper-left pixel location
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper-left pixel location
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to return
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: An optionally pre-allocated double array
+            return:
+              type:
+                basic: double
+                full: double[]
+              notes: "the samples for the specified band for the specified\n     \
+                \    rectangle of pixels."
+            notes: "Returns the samples for a specified band for a specified rectangle\n\
+              \ of pixels in a double array, one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown\n if the coordinates are not in bounds.  However, explicit\
+              \ bounds\n checking is not guaranteed."
           - name: getTransferType
             modifiers:
             - public
@@ -556,6 +1039,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: this transfer type.
+            notes: "Returns the TransferType used to transfer pixels via the\n  getDataElements\
+              \ and setDataElements methods.  When pixels\n  are transferred via these\
+              \ methods, they may be transferred in a\n  packed or unpacked format,\
+              \ depending on the implementation of the\n  underlying SampleModel.\
+              \  Using these methods, pixels are transferred\n  as an array of getNumDataElements()\
+              \ elements of a primitive type given\n  by getTransferType().  The TransferType\
+              \ may or may not be the same\n  as the storage data type of the DataBuffer.\
+              \  The TransferType will\n  be one of the types defined in DataBuffer."
           - name: getWidth
             modifiers:
             - public
@@ -564,395 +1056,586 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the width of this Raster.
+            notes: Returns the width in pixels of the Raster.
           staticMethods:
           - name: createBandedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataType
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the data type for storing samples
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: bands
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the number of bands
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified data type,\n    \
+                \     width, height and number of bands."
+            notes: "Creates a Raster based on a BandedSampleModel with the\n specified\
+              \ data type, width, height, and number of bands.\n\n  The upper left\
+              \ corner of the Raster is given by the\n location argument.  If location\
+              \ is null, (0, 0) will be used.\n The dataType parameter should be one\
+              \ of the enumerated values\n defined in the DataBuffer class.\n\n  The\
+              \ only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,\n and\
+              \ TYPE_INT."
           - name: createBandedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataType
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the data type for storing samples
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: scanlineStride
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the line stride of the image data
+            - name: bankIndices
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg5
+              notes: the bank indices for each band
+            - name: bandOffsets
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg6
+              notes: the offsets of all bands
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified data type,\n    \
+                \     width, height, scanline stride, bank indices and band\n    \
+                \     offsets."
+            notes: "Creates a Raster based on a BandedSampleModel with the\n specified\
+              \ data type, width, height, scanline stride, bank\n indices and band\
+              \ offsets.  The number of bands is inferred from\n bankIndices.length\
+              \ and bandOffsets.length, which must be the\n same.\n\n  The upper left\
+              \ corner of the Raster is given by the\n location argument.  The dataType\
+              \ parameter should be one of the\n enumerated values defined in the\
+              \ DataBuffer class.\n\n  The only dataTypes supported currently are\
+              \ TYPE_BYTE, TYPE_USHORT,\n and TYPE_INT."
           - name: createBandedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataBuffer
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
-            - name: arg1
+              notes: "the DataBuffer that contains the\n        image data"
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: scanlineStride
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the line stride of the image data
+            - name: bankIndices
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg5
+              notes: the bank indices for each band
+            - name: bandOffsets
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg6
+              notes: the offsets of all bands
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified\n         DataBuffer,\
+                \ width, height, scanline stride,\n         bank indices and band\
+                \ offsets."
+            notes: "Creates a Raster based on a BandedSampleModel with the\n specified\
+              \ DataBuffer, width, height, scanline stride, bank\n indices, and band\
+              \ offsets.  The number of bands is inferred\n from bankIndices.length\
+              \ and bandOffsets.length, which must be\n the same.  The upper left\
+              \ corner of the Raster is given by the\n location argument.  If location\
+              \ is null, (0, 0) will be used."
           - name: createInterleavedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataType
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the data type for storing samples
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: bands
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the number of bands
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified data type,\n    \
+                \     width, height and number of bands."
+            notes: "Creates a Raster based on a PixelInterleavedSampleModel with the\n\
+              \ specified data type, width, height, and number of bands.\n\n  The\
+              \ upper left corner of the Raster is given by the\n location argument.\
+              \  If location is null, (0, 0) will be used.\n The dataType parameter\
+              \ should be one of the enumerated values\n defined in the DataBuffer\
+              \ class.\n\n  Note that interleaved DataBuffer.TYPE_INT\n Rasters are\
+              \ not supported.  To create a 1-band Raster of type\n DataBuffer.TYPE_INT,\
+              \ use\n Raster.createPackedRaster().\n  The only dataTypes supported\
+              \ currently are TYPE_BYTE\n and TYPE_USHORT."
           - name: createInterleavedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataType
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the data type for storing samples
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: scanlineStride
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the line stride of the image data
+            - name: pixelStride
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: the pixel stride of the image data
+            - name: bandOffsets
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg6
+              notes: the offsets of all bands
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified data type,\n    \
+                \     width, height, scanline stride, pixel stride and band\n    \
+                \     offsets."
+            notes: "Creates a Raster based on a PixelInterleavedSampleModel with the\n\
+              \ specified data type, width, height, scanline stride, pixel\n stride,\
+              \ and band offsets.  The number of bands is inferred from\n bandOffsets.length.\n\
+              \n  The upper left corner of the Raster is given by the\n location argument.\
+              \  If location is null, (0, 0) will be used.\n The dataType parameter\
+              \ should be one of the enumerated values\n defined in the DataBuffer\
+              \ class.\n\n  Note that interleaved DataBuffer.TYPE_INT\n Rasters are\
+              \ not supported.  To create a 1-band Raster of type\n DataBuffer.TYPE_INT,\
+              \ use\n Raster.createPackedRaster().\n  The only dataTypes supported\
+              \ currently are TYPE_BYTE\n and TYPE_USHORT."
           - name: createInterleavedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataBuffer
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
-            - name: arg1
+              notes: "the DataBuffer that contains the\n        image data"
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: scanlineStride
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the line stride of the image data
+            - name: pixelStride
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: the pixel stride of the image data
+            - name: bandOffsets
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg6
+              notes: the offsets of all bands
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified\n         DataBuffer,\
+                \ width, height, scanline stride,\n         pixel stride and band\
+                \ offsets."
+            notes: "Creates a Raster based on a PixelInterleavedSampleModel with the\n\
+              \ specified DataBuffer, width, height, scanline stride, pixel\n stride,\
+              \ and band offsets.  The number of bands is inferred from\n bandOffsets.length.\
+              \  The upper left corner of the Raster\n is given by the location argument.\
+              \  If location is null, (0, 0)\n will be used.\n  Note that interleaved\
+              \ DataBuffer.TYPE_INT\n Rasters are not supported.  To create a 1-band\
+              \ Raster of type\n DataBuffer.TYPE_INT, use\n Raster.createPackedRaster()."
           - name: createPackedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataType
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the data type for storing samples
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: bandMasks
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg4
+              notes: an array containing an entry for each band
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified data type,\n    \
+                \     width, height, and band masks."
+            notes: "Creates a Raster based on a SinglePixelPackedSampleModel with\n\
+              \ the specified data type, width, height, and band masks.\n The number\
+              \ of bands is inferred from bandMasks.length.\n\n  The upper left corner\
+              \ of the Raster is given by the\n location argument.  If location is\
+              \ null, (0, 0) will be used.\n The dataType parameter should be one\
+              \ of the enumerated values\n defined in the DataBuffer class.\n\n  The\
+              \ only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,\n and\
+              \ TYPE_INT."
           - name: createPackedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: dataType
+              type:
+                basic: int
+                full: int
+              notes: the data type for storing samples
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: the width in pixels of the image data
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: the height in pixels of the image data
+            - name: bands
+              type:
+                basic: int
+                full: int
+              notes: the number of bands
+            - name: bitsPerBand
+              type:
+                basic: int
+                full: int
+              notes: the number of bits per band
+            - name: location
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: the upper-left corner of the Raster
+            return:
+              type:
+                basic: WritableRaster
+                full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified data type,\n    \
+                \     width, height, number of bands, and bits per band."
+            notes: "Creates a Raster based on a packed SampleModel with the\n specified\
+              \ data type, width, height, number of bands, and bits\n per band.  If\
+              \ the number of bands is one, the SampleModel will\n be a MultiPixelPackedSampleModel.\n\
+              \n  If the number of bands is more than one, the SampleModel\n will\
+              \ be a SinglePixelPackedSampleModel, with each band having\n bitsPerBand\
+              \ bits.  In either case, the requirements on dataType\n and bitsPerBand\
+              \ imposed by the corresponding SampleModel must\n be met.\n\n  The upper\
+              \ left corner of the Raster is given by the\n location argument.  If\
+              \ location is null, (0, 0) will be used.\n The dataType parameter should\
+              \ be one of the enumerated values\n defined in the DataBuffer class.\n\
+              \n  The only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,\n\
+              \ and TYPE_INT."
+          - name: createPackedRaster
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: dataBuffer
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
-            - name: arg1
+              notes: "the DataBuffer that contains the\n        image data"
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: scanlineStride
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the line stride of the image data
+            - name: bandMasks
+              type:
+                basic: int
+                full: int[]
+              notes: an array containing an entry for each band
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified\n         DataBuffer,\
+                \ width, height, scanline stride,\n         and band masks."
+            notes: "Creates a Raster based on a SinglePixelPackedSampleModel with\n\
+              \ the specified DataBuffer, width, height, scanline stride, and\n band\
+              \ masks.  The number of bands is inferred from bandMasks.length.\n The\
+              \ upper left corner of the Raster is given by\n the location argument.\
+              \  If location is null, (0, 0) will be used."
           - name: createPackedRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: Point
-                full: java.awt.Point
-            return:
-              type:
-                basic: WritableRaster
-                full: java.awt.image.WritableRaster
-          - name: createPackedRaster
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
+            - name: dataBuffer
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
-            - name: arg1
+              notes: "the DataBuffer that contains the\n        image data"
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the width in pixels of the image data
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the height in pixels of the image data
+            - name: bitsPerPixel
               type:
                 basic: int
                 full: int
-            - name: arg4
-              type:
-                basic: int[]
-                full: int[]
-            - name: arg5
+              notes: the number of bits for each pixel
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified\n         DataBuffer,\
+                \ width, height, and\n         bits per pixel."
+            notes: "Creates a Raster based on a MultiPixelPackedSampleModel with the\n\
+              \ specified DataBuffer, width, height, and bits per pixel.  The upper\n\
+              \ left corner of the Raster is given by the location argument.  If\n\
+              \ location is null, (0, 0) will be used."
           - name: createRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: sm
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
-            - name: arg1
+              notes: the specified SampleModel
+            - name: db
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
-            - name: arg2
+              notes: the specified DataBuffer
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the upper-left corner of the Raster
             return:
               type:
                 basic: Raster
                 full: java.awt.image.Raster
+              notes: "a Raster with the specified\n          SampleModel, DataBuffer,\
+                \ and\n          location."
+            notes: "Creates a Raster with the specified SampleModel and DataBuffer.\n\
+              \  The upper left corner of the Raster is given by the location argument.\n\
+              \  If location is null, (0, 0) will be used."
           - name: createWritableRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: sm
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
-            - name: arg1
+              notes: the specified SampleModel
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: "the upper-left corner of the\n         WritableRaster"
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster with the specified\n          SampleModel and\
+                \ location."
+            notes: "Creates a WritableRaster with the specified SampleModel.\n  The\
+              \ upper left corner of the Raster is given by the location argument.\n\
+              \  If location is null, (0, 0) will be used."
           - name: createWritableRaster
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: sm
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
-            - name: arg1
+              notes: the specified SampleModel
+            - name: db
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
-            - name: arg2
+              notes: the specified DataBuffer
+            - name: location
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: "the upper-left corner of the\n         WritableRaster"
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
-          javaType: class
-          extends: Object
+              notes: "a WritableRaster with the specified\n          SampleModel,\
+                \ DataBuffer, and\n          location."
+            notes: "Creates a WritableRaster with the specified SampleModel and DataBuffer.\n\
+              \  The upper left corner of the Raster is given by the location argument.\n\
+              \  If location is null, (0, 0) will be used."
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

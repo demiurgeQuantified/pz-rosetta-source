@@ -1,0 +1,134 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent:
+        ForkJoinWorkerThread:
+          extends: java.lang.Thread
+          modifiers:
+          - public
+          notes: "A thread managed by a ForkJoinPool, which executes\n ForkJoinTasks.\n\
+            \ This class is subclassable solely for the sake of adding\n functionality\
+            \ -- there are no overridable methods dealing with\n scheduling or execution.\
+            \  However, you can override initialization\n and termination methods\
+            \ surrounding the main task processing loop.\n If you do create such a\
+            \ subclass, you will also need to supply a\n custom ForkJoinPool.ForkJoinWorkerThreadFactory\
+            \ to\n use it in a ForkJoinPool."
+          fields:
+            pool:
+              name: pool
+              modifiers:
+              - package
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            workQueue:
+              name: workQueue
+              modifiers:
+              - package
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+            - name: arg1
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+            - name: arg1
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+          - modifiers:
+            - protected
+            parameters:
+            - name: pool
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+              notes: the pool this thread works in
+            notes: Creates a ForkJoinWorkerThread operating in the given pool.
+          methods:
+          - name: getPool
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+              notes: the pool
+            notes: Returns the pool hosting this thread.
+          - name: getPoolIndex
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the index number
+            notes: "Returns the unique index number of this thread in its pool.\n\
+              \ The returned value ranges from zero to the maximum number of\n threads\
+              \ (minus one) that may exist in the pool, and does not\n change during\
+              \ the lifetime of the thread.  This method may be\n useful for applications\
+              \ that track status or collect results\n per-worker-thread rather than\
+              \ per-task."
+          - name: onStart
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Initializes internal state after construction but before\n processing\
+              \ any tasks. If you override this method, you must\n invoke super.onStart()\
+              \ at the beginning of the method.\n Initialization requires care: Most\
+              \ fields must have legal\n default values, to ensure that attempted\
+              \ accesses from other\n threads work correctly even before this thread\
+              \ starts\n processing tasks."
+          - name: onTermination
+            modifiers:
+            - protected
+            parameters:
+            - name: exception
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: "the exception causing this thread to abort due\n to an unrecoverable\
+                \ error, or null if completed normally"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Performs cleanup associated with termination of this worker\n\
+              \ thread.  If you override this method, you must invoke\n super.onTermination\
+              \ at the end of the overridden method."
+          - name: run
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "This method is required to be public, but should never be\n called\
+              \ explicitly. It performs the main run loop to execute\n ForkJoinTasks."

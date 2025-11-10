@@ -4,31 +4,308 @@ languages:
     packages:
       zombie.core.physics:
         RagdollController:
+          extends: zombie.util.PooledObject
+          modifiers:
+          - public
+          - final
+          fields:
+            l_quaternions:
+              name: l_quaternions
+              modifiers:
+              - private
+              type:
+                basic: RagdollController.Reusables_Quaternions
+                full: zombie.core.physics.RagdollController$Reusables_Quaternions
+            m_addedToWorld:
+              name: m_addedToWorld
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_debugDrawSettings:
+              name: m_debugDrawSettings
+              modifiers:
+              - private
+              type:
+                basic: RagdollControllerDebugRenderer.DebugDrawSettings
+                full: zombie.core.physics.RagdollControllerDebugRenderer$DebugDrawSettings
+            m_gameCharacterObject:
+              name: m_gameCharacterObject
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            m_headPosition:
+              name: m_headPosition
+              modifiers:
+              - private
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            m_isInitialized:
+              name: m_isInitialized
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_isOnBack:
+              name: m_isOnBack
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_isUpright:
+              name: m_isUpright
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_keyframesForBone:
+              name: m_keyframesForBone
+              modifiers:
+              - private
+              type:
+                basic: Keyframe
+                full: zombie.core.skinnedmodel.animation.Keyframe[]
+            m_pelvisPosition:
+              name: m_pelvisPosition
+              modifiers:
+              - private
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            m_previousHeadPosition:
+              name: m_previousHeadPosition
+              modifiers:
+              - private
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            m_previousPelvisPosition:
+              name: m_previousPelvisPosition
+              modifiers:
+              - private
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            m_ragdollLocalRotation:
+              name: m_ragdollLocalRotation
+              modifiers:
+              - private
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            m_ragdollStateData:
+              name: m_ragdollStateData
+              modifiers:
+              - private
+              type:
+                basic: RagdollStateData
+                full: zombie.core.physics.RagdollStateData
+            m_ragdollWorldPosition:
+              name: m_ragdollWorldPosition
+              modifiers:
+              - private
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            m_ragdollWorldPositionPZBullet:
+              name: m_ragdollWorldPositionPZBullet
+              modifiers:
+              - private
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            m_ragdollWorldRotationPZBullet:
+              name: m_ragdollWorldRotationPZBullet
+              modifiers:
+              - private
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            m_simulationState:
+              name: m_simulationState
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            wasContactingVehicle:
+              name: wasContactingVehicle
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ActiveRagdollDistance:
+              name: ActiveRagdollDistance
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
             MovementThreshold:
               name: MovementThreshold
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: float
                 full: float
-                nullable: true
             MovementThresholdTime:
               name: MovementThresholdTime
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: float
                 full: float
-                nullable: true
+            VehicleCollisionFriction:
+              name: VehicleCollisionFriction
+              modifiers:
+              - public
+              - static
+              type:
+                basic: float
+                full: float
+            impulseBuffer:
+              name: impulseBuffer
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float[]
+            numberOfActiveSimulations:
+              name: numberOfActiveSimulations
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ragdollControllerPool:
+              name: ragdollControllerPool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Pool
+                full: zombie.util.Pool<zombie.core.physics.RagdollController>
+            rigidBodyBuffer:
+              name: rigidBodyBuffer
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float[]
+            simulationTimeoutDecayFactor:
+              name: simulationTimeoutDecayFactor
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            skeletonBuffer:
+              name: skeletonBuffer
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float[]
+            vehicleRagdollBodyDynamics:
+              name: vehicleRagdollBodyDynamics
+              modifiers:
+              - private
+              - static
+              type:
+                basic: RagdollBodyDynamics
+                full: zombie.scripting.objects.RagdollBodyDynamics
+            vehicleRagdollBodyDynamicsParams:
+              name: vehicleRagdollBodyDynamicsParams
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float[]
+          constructors:
+          - modifiers:
+            - private
           methods:
           - name: addToWorld
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: calculateRagdollWorldRotation
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            return:
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+          - name: calculateRagdollWorldTransform
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg1
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg2
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            return:
+              type:
+                basic: void
+                full: void
+          - name: calculateSimulationData
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: RagdollStateData
+                full: zombie.core.physics.RagdollStateData
+            - name: arg1
+              type:
+                basic: float
+                full: float
             return:
               type:
                 basic: void
@@ -47,13 +324,30 @@ languages:
               type:
                 basic: AnimationPlayer
                 full: zombie.core.skinnedmodel.animation.AnimationPlayer
-          - name: getCalculatedSimlationDirectionAngle
+          - name: getBoneTransformVelocitiesFromAnimation
             modifiers:
-            - public
-            return:
+            - private
+            parameters:
+            - name: arg0
               type:
                 basic: float
-                full: float
+                full: float[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getBoneTransformsFromAnimation
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float[]
+            return:
+              type:
+                basic: void
+                full: void
           - name: getCalculatedSimulationDirection
             modifiers:
             - public
@@ -66,12 +360,19 @@ languages:
               type:
                 basic: Vector2
                 full: zombie.iso.Vector2
+          - name: getCalculatedSimulationDirectionAngle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
           - name: getDebugDrawSettings
             modifiers:
             - public
             return:
               type:
-                basic: DebugDrawSettings
+                basic: RagdollControllerDebugRenderer.DebugDrawSettings
                 full: zombie.core.physics.RagdollControllerDebugRenderer$DebugDrawSettings
           - name: getGameCharacterObject
             modifiers:
@@ -99,6 +400,62 @@ languages:
               type:
                 basic: int
                 full: int
+          - name: getJointAssociatedBone
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: RagdollJoint
+                full: zombie.core.physics.RagdollJoint
+            return:
+              type:
+                basic: SkeletonBone
+                full: zombie.core.skinnedmodel.model.SkeletonBone
+          - name: getKeyframeForBone
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationClip
+                full: zombie.core.skinnedmodel.animation.AnimationClip
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Keyframe
+                full: zombie.core.skinnedmodel.animation.Keyframe
+          - name: getKeyframesForBone
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Keyframe
+                full: zombie.core.skinnedmodel.animation.Keyframe[]
+          - name: getKeyframesForBone
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationClip
+                full: zombie.core.skinnedmodel.animation.AnimationClip
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Keyframe
+                full: zombie.core.skinnedmodel.animation.Keyframe[]
           - name: getNumberOfBones
             modifiers:
             - public
@@ -139,6 +496,25 @@ languages:
               type:
                 basic: float
                 full: float
+          - name: getRagdollLocalRotation
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            return:
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+          - name: getRagdollSimulationAnimationClip
+            modifiers:
+            - private
+            return:
+              type:
+                basic: AnimationClip
+                full: zombie.core.skinnedmodel.animation.AnimationClip
           - name: getRagdollStateData
             modifiers:
             - public
@@ -146,6 +522,34 @@ languages:
               type:
                 basic: RagdollStateData
                 full: zombie.core.physics.RagdollStateData
+          - name: getSimulationCharacterForwardAngle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getSimulationRenderedAngle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getSkeletonBoneHierarchy
+            modifiers:
+            - private
+            return:
+              type:
+                basic: SkinningBoneHierarchy
+                full: zombie.core.skinnedmodel.model.SkinningBoneHierarchy
+          - name: initialize
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isInitialized
             modifiers:
             - public
@@ -202,9 +606,42 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: postUpdate
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: reinitialize
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeFromWorld
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: reset
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: resetVehicleRagdollBodyDynamics
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -217,6 +654,50 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setBoneKeyframePRS
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationClip
+                full: zombie.core.skinnedmodel.animation.AnimationClip
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg3
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            - name: arg4
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setBoneTransformsToAnimation
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: void
@@ -269,6 +750,13 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: setRagdollLocalRotation
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: setUpright
             modifiers:
             - public
@@ -281,9 +769,48 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: simulateHitReaction
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: simulateHitReaction0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: simulateRagdoll
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg2
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg3
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            - name: arg4
+              type:
+                basic: float
+                full: float[]
+            - name: arg5
+              type:
+                basic: float
+                full: float[]
             return:
               type:
                 basic: void
@@ -296,6 +823,14 @@ languages:
               type:
                 basic: float
                 full: float
+            - name: arg1
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg2
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
             return:
               type:
                 basic: void
@@ -307,9 +842,81 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: updateRagdollWorldTransform
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg1
+              type:
+                basic: Vector3f
+                full: org.lwjgl.util.vector.Vector3f
+            - name: arg2
+              type:
+                basic: Quaternion
+                full: org.lwjgl.util.vector.Quaternion
+            return:
+              type:
+                basic: void
+                full: void
           - name: updateSimulationStateID
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateSimulationTimeout
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: RagdollStateData
+                full: zombie.core.physics.RagdollStateData
+            return:
+              type:
+                basic: void
+                full: void
+          - name: uploadAnimationBonePreviousTransformsToRagdoll
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: uploadAnimationBoneTransformsToRagdoll
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: vehicleCollision
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoZombie
+                full: zombie.characters.IsoZombie
+            - name: arg1
+              type:
+                basic: BaseVehicle
+                full: zombie.vehicles.BaseVehicle
             return:
               type:
                 basic: void
@@ -323,6 +930,27 @@ languages:
               type:
                 basic: RagdollController
                 full: zombie.core.physics.RagdollController
+          - name: checkForActiveRagdoll
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: getNumberOfActiveSimulations
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: int
+                full: int
           - name: pzSpaceToBulletSpace
             modifiers:
             - public
@@ -336,5 +964,16 @@ languages:
               type:
                 basic: Vector3f
                 full: org.lwjgl.util.vector.Vector3f
-          javaType: class
-          extends: PooledObject
+          - name: setVehicleRagdollBodyDynamics
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: RagdollBodyDynamics
+                full: zombie.scripting.objects.RagdollBodyDynamics
+            return:
+              type:
+                basic: void
+                full: void

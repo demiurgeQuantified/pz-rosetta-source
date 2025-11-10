@@ -4,21 +4,92 @@ languages:
     packages:
       java.awt.image:
         BufferStrategy:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "The BufferStrategy class represents the mechanism with which\n to\
+            \ organize complex memory on a particular Canvas or\n Window.  Hardware\
+            \ and software limitations determine whether and\n how a particular buffer\
+            \ strategy can be implemented.  These limitations\n are detectable through\
+            \ the capabilities of the\n GraphicsConfiguration used when creating the\n\
+            \ Canvas or Window.\n \n It is worth noting that the terms buffer and\
+            \ surface are meant\n to be synonymous: an area of contiguous memory,\
+            \ either in video device\n memory or in system memory.\n \n There are\
+            \ several types of complex buffer strategies, including\n sequential ring\
+            \ buffering and blit buffering.\n Sequential ring buffering (i.e., double\
+            \ or triple\n buffering) is the most common; an application draws to a\
+            \ single back\n buffer and then moves the contents to the front (display)\
+            \ in a single\n step, either by copying the data or moving the video pointer.\n\
+            \ Moving the video pointer exchanges the buffers so that the first buffer\n\
+            \ drawn becomes the front buffer, or what is currently displayed on the\n\
+            \ device; this is called page flipping.\n \n Alternatively, the contents\
+            \ of the back buffer can be copied, or\n blitted forward in a chain instead\
+            \ of moving the video pointer.\n <code>\n Double buffering:\n\n      \
+            \              ***********         ***********\n                    *\
+            \         * ------> *         *\n [To display] <---- * Front B *   Show\
+            \  * Back B. * <---- Rendering\n                    *         * <------\
+            \ *         *\n                    ***********         ***********\n\n\
+            \ Triple buffering:\n\n [To      ***********         ***********     \
+            \   ***********\n display] *         * --------+---------+------> *  \
+            \       *\n    <---- * Front B *   Show  * Mid. B. *        * Back B.\
+            \ * <---- Rendering\n          *         * <------ *         * <-----\
+            \ *         *\n          ***********         ***********        ***********\n\
+            \n </code>\n \n Here is an example of how buffer strategies can be created\
+            \ and used:\n <code>\n\n // Check the capabilities of the GraphicsConfiguration\n\
+            \ ...\n\n // Create our component\n Window w = new Window(gc);\n\n //\
+            \ Show our window\n w.setVisible(true);\n\n // Create a general double-buffering\
+            \ strategy\n w.createBufferStrategy(2);\n BufferStrategy strategy = w.getBufferStrategy();\n\
+            \n // Main loop\n while (!done) {\n     // Prepare for rendering the next\
+            \ frame\n     // ...\n\n     // Render single frame\n     do {\n     \
+            \    // The following loop ensures that the contents of the drawing buffer\n\
+            \         // are consistent in case the underlying surface was recreated\n\
+            \         do {\n             // Get a new graphics context every time\
+            \ through the loop\n             // to make sure the strategy is validated\n\
+            \             Graphics graphics = strategy.getDrawGraphics();\n\n    \
+            \         // Render to graphics\n             // ...\n\n             //\
+            \ Dispose the graphics\n             graphics.dispose();\n\n         \
+            \    // Repeat the rendering if the drawing buffer contents\n        \
+            \     // were restored\n         } while (strategy.contentsRestored());\n\
+            \n         // Display the buffer\n         strategy.show();\n\n      \
+            \   // Repeat the rendering if the drawing buffer was lost\n     } while\
+            \ (strategy.contentsLost());\n }\n\n // Dispose the window\n w.setVisible(false);\n\
+            \ w.dispose();\n </code>"
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructor for subclasses to call.
           methods:
           - name: contentsLost
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "Whether or not the drawing buffer was lost since the last call\n\
+                \ to getDrawGraphics."
+            notes: "Returns whether the drawing buffer was lost since the last call\
+              \ to\n getDrawGraphics.  Since the buffers in a buffer strategy\n are\
+              \ usually type VolatileImage, they may become lost.\n For a discussion\
+              \ on lost buffers, see VolatileImage."
           - name: contentsRestored
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "Whether or not the drawing buffer was restored since the last\n\
+                \         call to getDrawGraphics."
+            notes: "Returns whether the drawing buffer was recently restored from\
+              \ a lost\n state and reinitialized to the default background color (white).\n\
+              \ Since the buffers in a buffer strategy are usually type\n VolatileImage,\
+              \ they may become lost.  If a surface has\n been recently restored from\
+              \ a lost state since the last call to\n getDrawGraphics, it may require\
+              \ repainting.\n For a discussion on lost buffers, see VolatileImage."
           - name: dispose
             modifiers:
             - public
@@ -26,26 +97,41 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Releases system resources currently consumed by this\n BufferStrategy\
+              \ and\n removes it from the associated Component.  After invoking this\n\
+              \ method, getBufferStrategy will return null.  Trying\n to use a BufferStrategy\
+              \ after it has been disposed will\n result in undefined behavior."
           - name: getCapabilities
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: BufferCapabilities
                 full: java.awt.BufferCapabilities
+              notes: the buffering capabilities of this strategy
+            notes: "Returns the BufferCapabilities for this\n BufferStrategy."
           - name: getDrawGraphics
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: a graphics context for the drawing buffer
+            notes: "Creates a graphics context for the drawing buffer.  This method\
+              \ may not\n be synchronized for performance reasons; use of this method\
+              \ by multiple\n threads should be handled at the application level.\
+              \  Disposal of the\n graphics object obtained must be handled by the\
+              \ application."
           - name: show
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Makes the next available buffer visible by either copying the\
+              \ memory\n (blitting) or changing the display pointer (flipping)."

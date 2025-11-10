@@ -4,10 +4,90 @@ languages:
     packages:
       java.nio.file.spi:
         FileSystemProvider:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Service-provider class for file systems. The methods defined by\
+            \ the Files class will typically delegate to an instance of this\n class.\n\
+            \n  A file system provider is a concrete implementation of this class\
+            \ that\n implements the abstract methods defined by this class. A provider\
+            \ is\n identified by a URI scheme. The default provider\n is identified\
+            \ by the URI scheme \"file\". It creates the FileSystem that\n provides\
+            \ access to the file systems accessible to the Java virtual machine.\n\
+            \ The FileSystems class defines how file system providers are located\n\
+            \ and loaded. The default provider is typically a system-default provider\
+            \ but\n may be overridden if the system property java.nio.file.spi.DefaultFileSystemProvider\
+            \ is set. In that case, the\n provider has a one argument constructor\
+            \ whose formal parameter type is \n FileSystemProvider. All other providers\
+            \ have a zero argument constructor\n that initializes the provider.\n\n\
+            \  A provider is a factory for one or more FileSystem instances. Each\n\
+            \ file system is identified by a URI where the URI's scheme matches\n\
+            \ the provider's scheme. The default file system, for example,\n is identified\
+            \ by the URI \"file:///\". A memory-based file system,\n for example,\
+            \ may be identified by a URI such as \"memory:///?name=logfs\".\n The\
+            \ newFileSystem method may be used to create a file\n system, and the\
+            \ getFileSystem method may be used to\n obtain a reference to an existing\
+            \ file system created by the provider. Where\n a provider is the factory\
+            \ for a single file system then it is provider dependent\n if the file\
+            \ system is created when the provider is initialized, or later when\n\
+            \ the newFileSystem method is invoked. In the case of the default\n provider,\
+            \ the FileSystem is created when the provider is initialized.\n\n  All\
+            \ of the methods in this class are safe for use by multiple concurrent\n\
+            \ threads."
+          staticFields:
+            DEFAULT_OPEN_OPTIONS:
+              name: DEFAULT_OPEN_OPTIONS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Set
+                full: java.util.Set<java.nio.file.OpenOption>
+            installedProviders:
+              name: installedProviders
+              modifiers:
+              - private
+              - static
+              type:
+                basic: List
+                full: java.util.List<java.nio.file.spi.FileSystemProvider>
+            loadingProviders:
+              name: loadingProviders
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            lock:
+              name: lock
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Void
+                full: java.lang.Void
+          - modifiers:
+            - protected
+            notes: "Initializes a new instance of this class.\n\n  During construction\
+              \ a provider may safely access files associated\n with the default provider\
+              \ but care needs to be taken to avoid circular\n loading of other installed\
+              \ providers. If circular loading of installed\n providers is detected\
+              \ then an unspecified error is thrown."
           methods:
           - name: checkAccess
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -15,7 +95,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: AccessMode[]
+                basic: AccessMode
                 full: java.nio.file.AccessMode[]
             return:
               type:
@@ -24,6 +104,7 @@ languages:
           - name: copy
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -35,7 +116,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg2
               type:
-                basic: CopyOption[]
+                basic: CopyOption
                 full: java.nio.file.CopyOption[]
             return:
               type:
@@ -44,6 +125,7 @@ languages:
           - name: createDirectory
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -51,7 +133,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: FileAttribute<?>[>
+                basic: FileAttribute
                 full: java.nio.file.attribute.FileAttribute<?>[]
             return:
               type:
@@ -61,18 +143,24 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: link
               type:
                 basic: Path
                 full: java.nio.file.Path
-            - name: arg1
+              notes: the link (directory entry) to create
+            - name: existing
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: a path to an existing file
             return:
               type:
                 basic: void
                 full: void
+            notes: "Creates a new link (directory entry) for an existing file. This\
+              \ method\n works in exactly the manner specified by the Files.createLink(java.nio.file.Path,\
+              \ java.nio.file.Path)\n method.\n\n  The default implementation of this\
+              \ method throws \n UnsupportedOperationException."
           - name: createSymbolicLink
             modifiers:
             - public
@@ -87,7 +175,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg2
               type:
-                basic: FileAttribute<?>[>
+                basic: FileAttribute
                 full: java.nio.file.attribute.FileAttribute<?>[]
             return:
               type:
@@ -96,30 +184,43 @@ languages:
           - name: delete
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: path
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to the file to delete
             return:
               type:
                 basic: void
                 full: void
+            notes: "Deletes a file. This method works in exactly the  manner specified\
+              \ by the\n Files.delete(java.nio.file.Path) method."
           - name: deleteIfExists
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: path
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to the file to delete
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the file was deleted by this method; \n          false\
+                \ if the file could not be deleted because it did not\n          exist"
+            notes: "Deletes a file if it exists. This method works in exactly the\
+              \ manner\n specified by the Files.deleteIfExists(java.nio.file.Path)\
+              \ method.\n\n  The default implementation of this method simply invokes\
+              \ delete(java.nio.file.Path) ignoring the NoSuchFileException when the\
+              \ file does not\n exist. It may be overridden where appropriate."
           - name: getFileAttributeView
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -127,11 +228,11 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Class<V>
+                basic: Class
                 full: java.lang.Class<V>
             - name: arg2
               type:
-                basic: LinkOption[]
+                basic: LinkOption
                 full: java.nio.file.LinkOption[]
             return:
               type:
@@ -140,77 +241,134 @@ languages:
           - name: getFileStore
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: path
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to the file
             return:
               type:
                 basic: FileStore
                 full: java.nio.file.FileStore
+              notes: the file store where the file is stored
+            notes: "Returns the FileStore representing the file store where a file\n\
+              \ is located. This method works in exactly the manner specified by the\n\
+              \ Files.getFileStore(java.nio.file.Path) method."
           - name: getFileSystem
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: uri
               type:
                 basic: URI
                 full: java.net.URI
+              notes: URI reference
             return:
               type:
                 basic: FileSystem
                 full: java.nio.file.FileSystem
+              notes: The file system
+            notes: "Returns an existing FileSystem created by this provider.\n\n \
+              \ This method returns a reference to a FileSystem that was\n created\
+              \ by invoking the newFileSystem(URI,Map)\n method. File systems created\
+              \ the newFileSystem(Path,Map) method are not returned by this method.\n\
+              \ The file system is identified by its URI. Its exact form\n is highly\
+              \ provider dependent. In the case of the default provider the URI's\n\
+              \ path component is \"/\" and the authority, query and fragment components\n\
+              \ are undefined (Undefined components are represented by null).\n\n\
+              \  Once a file system created by this provider is closed it is provider-dependent\
+              \ if this\n method returns a reference to the closed file system or\
+              \ throws FileSystemNotFoundException. If the provider allows a new file\
+              \ system to\n be created with the same URI as a file system it previously\
+              \ created then\n this method throws the exception if invoked after the\
+              \ file system is\n closed (and before a new instance is created by the\
+              \ newFileSystem method).\n\n  If a security manager is installed then\
+              \ a provider implementation\n may require to check a permission before\
+              \ returning a reference to an\n existing file system. In the case of\
+              \ the default file system, no permission check is required."
           - name: getPath
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: uri
               type:
                 basic: URI
                 full: java.net.URI
+              notes: The URI to convert
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: The resulting Path
+            notes: "Return a Path object by converting the given URI. The\n resulting\
+              \ Path is associated with a FileSystem that\n already exists or is constructed\
+              \ automatically.\n\n  The exact form of the URI is file system provider\
+              \ dependent. In the\n case of the default provider, the URI scheme is\
+              \ \"file\" and the\n given URI has a non-empty path component, and undefined\
+              \ query, and\n fragment components. The resulting Path is associated\
+              \ with the\n default default FileSystem.\n\n  If a security manager\
+              \ is installed then a provider implementation\n may require to check\
+              \ a permission. In the case of the default file system, no permission\
+              \ check is\n required."
           - name: getScheme
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The URI scheme
+            notes: Returns the URI scheme that identifies this provider.
           - name: isHidden
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: path
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to the file to test
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the file is considered hidden
+            notes: "Tells whether or not a file is considered hidden. This method\n\
+              \ works in exactly the manner specified by the Files.isHidden(java.nio.file.Path)\n\
+              \ method.\n\n  This method is invoked by the isHidden method."
           - name: isSameFile
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: path
               type:
                 basic: Path
                 full: java.nio.file.Path
-            - name: arg1
+              notes: one path to the file
+            - name: path2
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the other path
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, the two paths locate the same file
+            notes: "Tests if two paths locate the same file. This method works in\
+              \ exactly the\n manner specified by the Files.isSameFile(java.nio.file.Path,\
+              \ java.nio.file.Path) method."
           - name: move
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -222,7 +380,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg2
               type:
-                basic: CopyOption[]
+                basic: CopyOption
                 full: java.nio.file.CopyOption[]
             return:
               type:
@@ -238,7 +396,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Set<? extends OpenOption>
+                basic: Set
                 full: java.util.Set<? extends java.nio.file.OpenOption>
             - name: arg2
               type:
@@ -246,7 +404,7 @@ languages:
                 full: java.util.concurrent.ExecutorService
             - name: arg3
               type:
-                basic: FileAttribute<?>[>
+                basic: FileAttribute
                 full: java.nio.file.attribute.FileAttribute<?>[]
             return:
               type:
@@ -255,6 +413,7 @@ languages:
           - name: newByteChannel
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -262,11 +421,11 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Set<? extends OpenOption>
+                basic: Set
                 full: java.util.Set<? extends java.nio.file.OpenOption>
             - name: arg2
               type:
-                basic: FileAttribute<?>[>
+                basic: FileAttribute
                 full: java.nio.file.attribute.FileAttribute<?>[]
             return:
               type:
@@ -275,6 +434,7 @@ languages:
           - name: newDirectoryStream
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -282,11 +442,11 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Filter<Path>
+                basic: DirectoryStream.Filter
                 full: java.nio.file.DirectoryStream$Filter<? super java.nio.file.Path>
             return:
               type:
-                basic: DirectoryStream<Path>
+                basic: DirectoryStream
                 full: java.nio.file.DirectoryStream<java.nio.file.Path>
           - name: newFileChannel
             modifiers:
@@ -298,11 +458,11 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Set<? extends OpenOption>
+                basic: Set
                 full: java.util.Set<? extends java.nio.file.OpenOption>
             - name: arg2
               type:
-                basic: FileAttribute<?>[>
+                basic: FileAttribute
                 full: java.nio.file.attribute.FileAttribute<?>[]
             return:
               type:
@@ -311,35 +471,65 @@ languages:
           - name: newFileSystem
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: uri
               type:
                 basic: URI
                 full: java.net.URI
-            - name: arg1
+              notes: URI reference
+            - name: env
               type:
-                basic: Map<String, ?>
+                basic: Map
                 full: java.util.Map<java.lang.String, ?>
+              notes: "A map of provider specific properties to configure the file\
+                \ system;\n          may be empty"
             return:
               type:
                 basic: FileSystem
                 full: java.nio.file.FileSystem
+              notes: A new file system
+            notes: "Constructs a new FileSystem object identified by a URI. This\n\
+              \ method is invoked by the FileSystems.newFileSystem(URI,Map)\n method\
+              \ to open a new file system identified by a URI.\n\n  The uri parameter\
+              \ is an absolute, hierarchical URI, with a\n scheme equal (without regard\
+              \ to case) to the scheme supported by this\n provider. The exact form\
+              \ of the URI is highly provider dependent. The\n env parameter is a\
+              \ map of provider specific properties to configure\n the file system.\n\
+              \n  This method throws FileSystemAlreadyExistsException if the\n file\
+              \ system already exists because it was previously created by an\n invocation\
+              \ of this method. Once a file system is closed it is provider-dependent\
+              \ if the\n provider allows a new file system to be created with the\
+              \ same URI as a\n file system it previously created."
           - name: newFileSystem
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: path
               type:
                 basic: Path
                 full: java.nio.file.Path
-            - name: arg1
+              notes: The path to the file
+            - name: env
               type:
-                basic: Map<String, ?>
+                basic: Map
                 full: java.util.Map<java.lang.String, ?>
+              notes: "A map of provider specific properties to configure the file\
+                \ system;\n          may be empty"
             return:
               type:
                 basic: FileSystem
                 full: java.nio.file.FileSystem
+              notes: A new file system
+            notes: "Constructs a new FileSystem to access the contents of a file as\
+              \ a\n file system.\n\n  This method is intended for specialized providers\
+              \ of pseudo file\n systems where the contents of one or more files is\
+              \ treated as a file\n system. The env parameter is a map of provider\
+              \ specific properties\n to configure the file system.\n\n  If this provider\
+              \ does not support the creation of such file systems\n or if the provider\
+              \ does not recognize the file type of the given file then\n it throws\
+              \ UnsupportedOperationException. The default implementation\n of this\
+              \ method throws UnsupportedOperationException."
           - name: newInputStream
             modifiers:
             - public
@@ -350,7 +540,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: OpenOption[]
+                basic: OpenOption
                 full: java.nio.file.OpenOption[]
             return:
               type:
@@ -366,7 +556,7 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: OpenOption[]
+                basic: OpenOption
                 full: java.nio.file.OpenOption[]
             return:
               type:
@@ -375,6 +565,7 @@ languages:
           - name: readAttributes
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -382,11 +573,11 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Class<A>
+                basic: Class
                 full: java.lang.Class<A>
             - name: arg2
               type:
-                basic: LinkOption[]
+                basic: LinkOption
                 full: java.nio.file.LinkOption[]
             return:
               type:
@@ -395,6 +586,7 @@ languages:
           - name: readAttributes
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -406,27 +598,33 @@ languages:
                 full: java.lang.String
             - name: arg2
               type:
-                basic: LinkOption[]
+                basic: LinkOption
                 full: java.nio.file.LinkOption[]
             return:
               type:
-                basic: Map<String, Object>
+                basic: Map
                 full: java.util.Map<java.lang.String, java.lang.Object>
           - name: readSymbolicLink
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: link
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to the symbolic link
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: The target of the symbolic link
+            notes: "Reads the target of a symbolic link. This method works in exactly\
+              \ the\n manner specified by the Files.readSymbolicLink(java.nio.file.Path)\
+              \ method.\n\n  The default implementation of this method throws \n UnsupportedOperationException."
           - name: setAttribute
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -442,20 +640,41 @@ languages:
                 full: java.lang.Object
             - name: arg3
               type:
-                basic: LinkOption[]
+                basic: LinkOption
                 full: java.nio.file.LinkOption[]
             return:
               type:
                 basic: void
                 full: void
           staticMethods:
+          - name: checkPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void
           - name: installedProviders
             modifiers:
             - public
             - static
             return:
               type:
-                basic: List<FileSystemProvider>
+                basic: List
                 full: java.util.List<java.nio.file.spi.FileSystemProvider>
-          javaType: class
-          extends: Object
+              notes: "An unmodifiable list of the installed file system providers.\
+                \ The\n          list contains at least one element, that is the default\
+                \ file\n          system provider"
+            notes: "Returns a list of the installed file system providers.\n\n  The\
+              \ first invocation of this method causes the default provider to be\n\
+              \ initialized (if not already initialized) and loads any other installed\n\
+              \ providers as described by the FileSystems class."
+          - name: loadInstalledProviders
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.nio.file.spi.FileSystemProvider>

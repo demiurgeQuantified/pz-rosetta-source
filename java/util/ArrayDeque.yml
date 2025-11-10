@@ -4,116 +4,194 @@ languages:
     packages:
       java.util:
         ArrayDeque:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.util.AbstractCollection<E>
+          modifiers:
+          - public
+          notes: "Resizable-array implementation of the Deque interface.  Array\n\
+            \ deques have no capacity restrictions; they grow as necessary to support\n\
+            \ usage.  They are not thread-safe; in the absence of external\n synchronization,\
+            \ they do not support concurrent access by multiple threads.\n Null elements\
+            \ are prohibited.  This class is likely to be faster than\n Stack when\
+            \ used as a stack, and faster than LinkedList\n when used as a queue.\n\
+            \n Most ArrayDeque operations run in amortized constant time.\n Exceptions\
+            \ include\n remove,\n removeFirstOccurrence,\n removeLastOccurrence,\n\
+            \ contains,\n iterator.remove(),\n and the bulk operations, all of which\
+            \ run in linear time.\n\n The iterators returned by this class's iterator\n\
+            \ method are fail-fast: If the deque is modified at any time after\n the\
+            \ iterator is created, in any way except through the iterator's own\n\
+            \ remove method, the iterator will generally throw a ConcurrentModificationException.\
+            \  Thus, in the face of concurrent\n modification, the iterator fails\
+            \ quickly and cleanly, rather than risking\n arbitrary, non-deterministic\
+            \ behavior at an undetermined time in the\n future.\n\n Note that the\
+            \ fail-fast behavior of an iterator cannot be guaranteed\n as it is, generally\
+            \ speaking, impossible to make any hard guarantees in the\n presence of\
+            \ unsynchronized concurrent modification.  Fail-fast iterators\n throw\
+            \ ConcurrentModificationException on a best-effort basis.\n Therefore,\
+            \ it would be wrong to write a program that depended on this\n exception\
+            \ for its correctness: the fail-fast behavior of iterators\n should be\
+            \ used only to detect bugs.\n\n This class and its iterator implement\
+            \ all of the\n optional methods of the Collection and Iterator interfaces.\n\
+            \n This class is a member of the\n \n Java Collections Framework."
+          fields:
+            elements:
+              name: elements
+              modifiers:
+              - package
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            head:
+              name: head
+              modifiers:
+              - package
               type:
                 basic: int
                 full: int
+            tail:
+              name: tail
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+          staticFields:
+            MAX_ARRAY_SIZE:
+              name: MAX_ARRAY_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: "Constructs an empty array deque with an initial capacity\n sufficient\
+              \ to hold 16 elements."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: numElements
               type:
-                basic: Collection<? extends E>
+                basic: int
+                full: int
+              notes: lower bound on initial capacity of the deque
+            notes: "Constructs an empty array deque with an initial capacity\n sufficient\
+              \ to hold the specified number of elements."
+          - modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: Collection
                 full: java.util.Collection<? extends E>
+              notes: the collection whose elements are to be placed into the deque
+            notes: "Constructs a deque containing the elements of the specified\n\
+              \ collection, in the order they are returned by the collection's\n iterator.\
+              \  (The first element returned by the collection's\n iterator becomes\
+              \ the first element, or front of the\n deque.)"
           methods:
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: add
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true (as specified by Collection.add(E))
+            notes: "Inserts the specified element at the end of this deque.\n\n This\
+              \ method is equivalent to addLast(E)."
           - name: addAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<? extends E>
+                basic: Collection
                 full: java.util.Collection<? extends E>
+              notes: the elements to be inserted into this deque
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: addAll
+              notes: true if this deque changed as a result of the call
+            notes: "Adds all of the elements in the specified collection at the end\n\
+              \ of this deque, as if by calling addLast(E) on each one,\n in the order\
+              \ that they are returned by the collection's iterator."
+          - name: addFirst
             modifiers:
             - public
             parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Inserts the specified element at the front of this deque.
+          - name: addLast
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Inserts the specified element at the end of this deque.\n\n This\
+              \ method is equivalent to add(E)."
+          - name: bulkRemove
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: Collection<? extends E>
-                full: java.util.Collection<? extends E>
+                basic: Predicate
+                full: java.util.function.Predicate<? super E>
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: addFirst
+          - name: bulkRemoveModified
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: E
-                full: E
+                basic: Predicate
+                full: java.util.function.Predicate<? super E>
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: void
-                full: void
-          - name: addFirst
+                basic: boolean
+                full: boolean
+          - name: checkInvariants
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: void
-                full: void
-          - name: addLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: void
-                full: void
-          - name: addLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
+            - package
             return:
               type:
                 basic: void
@@ -125,84 +203,100 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Removes all of the elements from this deque.\n The deque will\
+              \ be empty after this call returns."
           - name: clone
             modifiers:
             - public
             return:
               type:
-                basic: ArrayDeque<E>
+                basic: ArrayDeque
                 full: java.util.ArrayDeque<E>
+              notes: a copy of this deque
+            notes: Returns a copy of this deque.
           - name: clone
             modifiers:
             - public
             return:
               type:
-                basic: ArrayDeque<E>
-                full: java.util.ArrayDeque<E>
+                basic: Object
+                full: java.lang.Object
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: object to be checked for containment in this deque
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: contains
+              notes: true if this deque contains the specified element
+            notes: "Returns true if this deque contains the specified element.\n More\
+              \ formally, returns true if and only if this deque contains\n at least\
+              \ one element e such that o.equals(e)."
+          - name: copyElements
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: descendingIterator
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Iterator<E>
-                full: java.util.Iterator<E>
-          - name: descendingIterator
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Iterator<E>
-                full: java.util.Iterator<E>
-          - name: element
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: element
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: forEach
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer<? super E>
-                full: java.util.function.Consumer<? super E>
+                basic: Collection
+                full: java.util.Collection<? extends E>
             return:
               type:
                 basic: void
                 full: void
+          - name: delete
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: descendingIterator
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Iterator
+                full: java.util.Iterator<E>
+              notes: "an iterator over the elements in this deque in reverse\n sequence"
+            notes: 'Description copied from interface: Deque'
+          - name: element
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: the head of the queue represented by this deque
+            notes: "Retrieves, but does not remove, the head of the queue represented\
+              \ by\n this deque.  This method differs from peek only in\n that it\
+              \ throws an exception if this deque is empty.\n\n This method is equivalent\
+              \ to getFirst()."
+          - name: forEach
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super E>
+              notes: The action to be performed for each element
+            return:
+              type:
+                basic: void
+                full: void
+            notes: 'Description copied from interface: Iterable'
           - name: getFirst
             modifiers:
             - public
@@ -210,13 +304,8 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: getFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this deque
+            notes: 'Description copied from interface: Deque'
           - name: getLast
             modifiers:
             - public
@@ -224,13 +313,20 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: getLast
+              notes: the tail of this deque
+            notes: 'Description copied from interface: Deque'
+          - name: grow
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: E
-                full: E
+                basic: void
+                full: void
           - name: isEmpty
             modifiers:
             - public
@@ -238,92 +334,82 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this deque contains no elements
+            notes: Returns true if this deque contains no elements.
           - name: iterator
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<E>
+                basic: Iterator
                 full: java.util.Iterator<E>
-          - name: iterator
+              notes: an iterator over the elements in this deque
+            notes: "Returns an iterator over the elements in this deque.  The elements\n\
+              \ will be ordered from first (head) to last (tail).  This is the same\n\
+              \ order that elements would be dequeued (via successive calls to\n remove()\
+              \ or popped (via successive calls to pop())."
+          - name: newCapacity
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: Iterator<E>
-                full: java.util.Iterator<E>
+                basic: int
+                full: int
           - name: offer
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: offer
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true (as specified by Queue.offer(E))
+            notes: "Inserts the specified element at the end of this deque.\n\n This\
+              \ method is equivalent to offerLast(E)."
           - name: offerFirst
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: offerFirst
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true (as specified by Deque.offerFirst(E))
+            notes: Inserts the specified element at the front of this deque.
           - name: offerLast
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: offerLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true (as specified by Deque.offerLast(E))
+            notes: Inserts the specified element at the end of this deque.
           - name: peek
             modifiers:
             - public
@@ -331,13 +417,11 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: peek
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: "the head of the queue represented by this deque, or\n      \
+                \   null if this deque is empty"
+            notes: "Retrieves, but does not remove, the head of the queue represented\
+              \ by\n this deque, or returns null if this deque is empty.\n\n This\
+              \ method is equivalent to peekFirst()."
           - name: peekFirst
             modifiers:
             - public
@@ -345,13 +429,8 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: peekFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
           - name: peekLast
             modifiers:
             - public
@@ -359,13 +438,8 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: peekLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the tail of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
           - name: poll
             modifiers:
             - public
@@ -373,13 +447,11 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: poll
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: "the head of the queue represented by this deque, or\n      \
+                \   null if this deque is empty"
+            notes: "Retrieves and removes the head of the queue represented by this\
+              \ deque\n (in other words, the first element of this deque), or returns\n\
+              \ null if this deque is empty.\n\n This method is equivalent to pollFirst()."
           - name: pollFirst
             modifiers:
             - public
@@ -387,13 +459,8 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: pollFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
           - name: pollLast
             modifiers:
             - public
@@ -401,13 +468,8 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: pollLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the tail of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
           - name: pop
             modifiers:
             - public
@@ -415,33 +477,35 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: pop
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: "the element at the front of this deque (which is the top\n \
+                \        of the stack represented by this deque)"
+            notes: "Pops an element from the stack represented by this deque.  In\
+              \ other\n words, removes and returns the first element of this deque.\n\
+              \n This method is equivalent to removeFirst()."
           - name: push
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to push
             return:
               type:
                 basic: void
                 full: void
-          - name: push
+            notes: "Pushes an element onto the stack represented by this deque.  In\
+              \ other\n words, inserts the element at the front of this deque.\n\n\
+              \ This method is equivalent to addFirst(E)."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: E
-                full: E
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -453,49 +517,47 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: remove
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: the head of the queue represented by this deque
+            notes: "Retrieves and removes the head of the queue represented by this\
+              \ deque.\n\n This method differs from poll() only in that it\n throws\
+              \ an exception if this deque is empty.\n\n This method is equivalent\
+              \ to removeFirst()."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this deque, if present
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this deque contained the specified element
+            notes: "Removes a single instance of the specified element from this deque.\n\
+              \ If the deque does not contain the element, it is unchanged.\n More\
+              \ formally, removes the first element e such that\n o.equals(e) (if\
+              \ such an element exists).\n Returns true if this deque contained the\
+              \ specified element\n (or equivalently, if this deque changed as a result\
+              \ of the call).\n\n This method is equivalent to removeFirstOccurrence(Object)."
           - name: removeAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<?>
+                basic: Collection
                 full: java.util.Collection<?>
+              notes: collection containing elements to be removed from this collection
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this collection changed as a result of the\n       \
+                \  call"
+            notes: 'Description copied from class: AbstractCollection'
           - name: removeFirst
             modifiers:
             - public
@@ -503,49 +565,43 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: removeFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this deque
+            notes: 'Description copied from interface: Deque'
           - name: removeFirstOccurrence
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this deque, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: removeFirstOccurrence
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the deque contained the specified element
+            notes: "Removes the first occurrence of the specified element in this\n\
+              \ deque (when traversing the deque from head to tail).\n If the deque\
+              \ does not contain the element, it is unchanged.\n More formally, removes\
+              \ the first element e such that\n o.equals(e) (if such an element exists).\n\
+              \ Returns true if this deque contained the specified element\n (or equivalently,\
+              \ if this deque changed as a result of the call)."
           - name: removeIf
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: filter
               type:
-                basic: Predicate<? super E>
+                basic: Predicate
                 full: java.util.function.Predicate<? super E>
+              notes: "a predicate which returns true for elements to be\n        removed"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if any elements were removed
+            notes: 'Description copied from interface: Collection'
           - name: removeLast
             modifiers:
             - public
@@ -553,49 +609,43 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: removeLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the tail of this deque
+            notes: 'Description copied from interface: Deque'
           - name: removeLastOccurrence
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this deque, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: removeLastOccurrence
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the deque contained the specified element
+            notes: "Removes the last occurrence of the specified element in this\n\
+              \ deque (when traversing the deque from head to tail).\n If the deque\
+              \ does not contain the element, it is unchanged.\n More formally, removes\
+              \ the last element e such that\n o.equals(e) (if such an element exists).\n\
+              \ Returns true if this deque contained the specified element\n (or equivalently,\
+              \ if this deque changed as a result of the call)."
           - name: retainAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<?>
+                basic: Collection
                 full: java.util.Collection<?>
+              notes: collection containing elements to be retained in this collection
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this collection changed as a result of the call
+            notes: 'Description copied from class: AbstractCollection'
           - name: size
             modifiers:
             - public
@@ -603,38 +653,309 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: size
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the number of elements in this deque
+            notes: Returns the number of elements in this deque.
           - name: spliterator
             modifiers:
             - public
             return:
               type:
-                basic: Spliterator<E>
+                basic: Spliterator
                 full: java.util.Spliterator<E>
+              notes: a Spliterator over the elements in this deque
+            notes: "Creates a late-binding\n and fail-fast Spliterator over the elements\
+              \ in this\n deque.\n\n The Spliterator reports Spliterator.SIZED,\n\
+              \ Spliterator.SUBSIZED, Spliterator.ORDERED, and\n Spliterator.NONNULL.\
+              \  Overriding implementations should document\n the reporting of additional\
+              \ characteristic values."
           - name: toArray
             modifiers:
             - public
             return:
               type:
-                basic: T[]
+                basic: Object
+                full: java.lang.Object[]
+              notes: an array containing all of the elements in this deque
+            notes: "Returns an array containing all of the elements in this deque\n\
+              \ in proper sequence (from first to last element).\n\n The returned\
+              \ array will be \"safe\" in that no references to it are\n maintained\
+              \ by this deque.  (In other words, this method must allocate\n a new\
+              \ array).  The caller is thus free to modify the returned array.\n\n\
+              \ This method acts as bridge between array-based and collection-based\n\
+              \ APIs."
+          - name: toArray
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<T[]>
+            return:
+              type:
+                basic: T
                 full: T[]
           - name: toArray
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: a
               type:
-                basic: T[]
+                basic: T
                 full: T[]
+              notes: "the array into which the elements of the deque are to\n    \
+                \      be stored, if it is big enough; otherwise, a new array of the\n\
+                \          same runtime type is allocated for this purpose"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          javaType: class
-          extends: AbstractCollection<E>
+              notes: an array containing all of the elements in this deque
+            notes: "Returns an array containing all of the elements in this deque\
+              \ in\n proper sequence (from first to last element); the runtime type\
+              \ of the\n returned array is that of the specified array.  If the deque\
+              \ fits in\n the specified array, it is returned therein.  Otherwise,\
+              \ a new array\n is allocated with the runtime type of the specified\
+              \ array and the\n size of this deque.\n\n If this deque fits in the\
+              \ specified array with room to spare\n (i.e., the array has more elements\
+              \ than this deque), the element in\n the array immediately following\
+              \ the end of the deque is set to\n null.\n\n Like the toArray() method,\
+              \ this method acts as bridge between\n array-based and collection-based\
+              \ APIs.  Further, this method allows\n precise control over the runtime\
+              \ type of the output array, and may,\n under certain circumstances,\
+              \ be used to save allocation costs.\n\n Suppose x is a deque known to\
+              \ contain only strings.\n The following code can be used to dump the\
+              \ deque into a newly\n allocated array of String:\n\n  <code>String[]\
+              \ y = x.toArray(new String[0]);</code>\n\n Note that toArray(new Object[0])\
+              \ is identical in function to\n toArray()."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: circularClear
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: dec
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: elementAt
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: E
+                full: E
+          - name: inc
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: inc
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: isClear
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$removeAll$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$retainAll$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: nBits
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long[]
+          - name: nonNullElementAt
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: E
+                full: E
+          - name: setBit
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sub
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int

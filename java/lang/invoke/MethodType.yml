@@ -4,21 +4,204 @@ languages:
     packages:
       java.lang.invoke:
         MethodType:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A method type represents the arguments and return type accepted\
+            \ and\n returned by a method handle, or the arguments and return type\
+            \ passed\n and expected  by a method handle caller.  Method types must\
+            \ be properly\n matched between a method handle and all its callers,\n\
+            \ and the JVM's operations enforce this matching at, specifically\n during\
+            \ calls to MethodHandle.invokeExact\n and MethodHandle.invoke, and during\
+            \ execution\n of invokedynamic instructions.\n \n The structure is a return\
+            \ type accompanied by any number of parameter types.\n The types (primitive,\
+            \ void, and reference) are represented by Class objects.\n (For ease of\
+            \ exposition, we treat void as if it were a type.\n In fact, it denotes\
+            \ the absence of a return type.)\n \n All instances of MethodType are\
+            \ immutable.\n Two instances are completely interchangeable if they compare\
+            \ equal.\n Equality depends on pairwise correspondence of the return and\
+            \ parameter types and on nothing else.\n \n This type can be created only\
+            \ by factory methods.\n All factory methods may cache values, though caching\
+            \ is not guaranteed.\n Some factory methods are static, while others are\
+            \ virtual methods which\n modify precursor method types, e.g., by changing\
+            \ a selected parameter.\n \n Factory methods which operate on groups of\
+            \ parameter types\n are systematically presented in two versions, so that\
+            \ both Java arrays and\n Java lists can be used to work with groups of\
+            \ parameter types.\n The query methods parameterArray and parameterList\n\
+            \ also provide a choice between arrays and lists.\n \n MethodType objects\
+            \ are sometimes derived from bytecode instructions\n such as invokedynamic,\
+            \ specifically from the type descriptor strings associated\n with the\
+            \ instructions in a class file's constant pool.\n \n Like classes and\
+            \ strings, method types can also be represented directly\n in a class\
+            \ file's constant pool as constants.\n A method type may be loaded by\
+            \ an ldc instruction which refers\n to a suitable CONSTANT_MethodType\
+            \ constant pool entry.\n The entry refers to a CONSTANT_Utf8 spelling\
+            \ for the descriptor string.\n (For full details on method type constants,\
+            \ see sections 4.4.8 and 5.4.3.5 of the Java Virtual Machine\n Specification.)\n\
+            \ \n When the JVM materializes a MethodType from a descriptor string,\n\
+            \ all classes named in the descriptor must be accessible, and will be\
+            \ loaded.\n (But the classes need not be initialized, as is the case with\
+            \ a CONSTANT_Class.)\n This loading may occur at any time before the MethodType\
+            \ object is first derived.\n \n Nominal Descriptors\n \n A MethodType\
+            \ can be described in nominal form\n if and only if all of the parameter\
+            \ types and return type can be described\n with a nominal descriptor represented\
+            \ by\n ClassDesc.  If a method type can be described nominally, then:\n\
+            \ \n The method type has a nominal descriptor\n     returned by MethodType::describeConstable.\n\
+            \ The descriptor string returned by\n     MethodType::descriptorString\
+            \ or\n     MethodType::toMethodDescriptorString\n     for the method type\
+            \ is a method descriptor (JVMS 4.3.3).\n \n \n If any of the parameter\
+            \ types or return type cannot be described\n nominally, i.e. Class::describeConstable\n\
+            \ returns an empty optional for that type,\n then the method type cannot\
+            \ be described nominally:\n \n The method type has no nominal descriptor\
+            \ and\n     MethodType::describeConstable returns\n     an empty optional.\n\
+            \ The descriptor string returned by\n     MethodType::descriptorString\
+            \ or\n     MethodType::toMethodDescriptorString\n     for the method type\
+            \ is not a type descriptor."
+          fields:
+            form:
+              name: form
+              modifiers:
+              - private
+              type:
+                basic: MethodTypeForm
+                full: java.lang.invoke.MethodTypeForm
+            invokers:
+              name: invokers
+              modifiers:
+              - private
+              type:
+                basic: Invokers
+                full: java.lang.invoke.Invokers
+            methodDescriptor:
+              name: methodDescriptor
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            ptypes:
+              name: ptypes
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            rtype:
+              name: rtype
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            wrapAlt:
+              name: wrapAlt
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            MAX_JVM_ARITY:
+              name: MAX_JVM_ARITY
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_MH_ARITY:
+              name: MAX_MH_ARITY
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_MH_INVOKER_ARITY:
+              name: MAX_MH_INVOKER_ARITY
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            METHOD_HANDLE_ARRAY:
+              name: METHOD_HANDLE_ARRAY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            NO_PTYPES:
+              name: NO_PTYPES
+              modifiers:
+              - package
+              - static
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            internTable:
+              name: internTable
+              modifiers:
+              - package
+              - static
+              type:
+                basic: MethodType.ConcurrentWeakInternSet
+                full: java.lang.invoke.MethodType$ConcurrentWeakInternSet<java.lang.invoke.MethodType>
+            objectOnlyTypes:
+              name: objectOnlyTypes
+              modifiers:
+              - private
+              - static
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType[]
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+          methods:
           - name: appendParameterTypes
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: Class<?>[>
+                basic: Class
                 full: java.lang.Class<?>[]
             return:
               type:
@@ -30,12 +213,75 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: List<Class<?>>
+                basic: List
                 full: java.util.List<java.lang.Class<?>>
             return:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+          - name: asCollectorType
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: asSpreaderType
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: basicType
+            modifiers:
+            - package
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: canConvertParameters
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: changeParameterType
             modifiers:
             - public
@@ -46,7 +292,7 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             return:
               type:
@@ -62,27 +308,11 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: OfField
+                basic: TypeDescriptor.OfField
                 full: java.lang.invoke.TypeDescriptor$OfField
             return:
               type:
-                basic: OfMethod
-                full: java.lang.invoke.TypeDescriptor$OfMethod
-          - name: changeParameterType
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: OfField
-                full: java.lang.invoke.TypeDescriptor$OfField
-            return:
-              type:
-                basic: OfMethod
+                basic: TypeDescriptor.OfMethod
                 full: java.lang.invoke.TypeDescriptor$OfMethod
           - name: changeReturnType
             modifiers:
@@ -90,7 +320,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             return:
               type:
@@ -102,37 +332,18 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: OfField
+                basic: TypeDescriptor.OfField
                 full: java.lang.invoke.TypeDescriptor$OfField
             return:
               type:
-                basic: OfMethod
-                full: java.lang.invoke.TypeDescriptor$OfMethod
-          - name: changeReturnType
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: OfField
-                full: java.lang.invoke.TypeDescriptor$OfField
-            return:
-              type:
-                basic: OfMethod
+                basic: TypeDescriptor.OfMethod
                 full: java.lang.invoke.TypeDescriptor$OfMethod
           - name: describeConstable
             modifiers:
             - public
             return:
               type:
-                basic: Optional<MethodTypeDesc>
-                full: java.util.Optional<java.lang.constant.MethodTypeDesc>
-          - name: describeConstable
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Optional<MethodTypeDesc>
+                basic: Optional
                 full: java.util.Optional<java.lang.constant.MethodTypeDesc>
           - name: descriptorString
             modifiers:
@@ -155,8 +366,8 @@ languages:
                 full: int
             return:
               type:
-                basic: OfMethod
-                full: java.lang.invoke.TypeDescriptor$OfMethod
+                basic: MethodType
+                full: java.lang.invoke.MethodType
           - name: dropParameterTypes
             modifiers:
             - public
@@ -171,11 +382,11 @@ languages:
                 full: int
             return:
               type:
-                basic: OfMethod
+                basic: TypeDescriptor.OfMethod
                 full: java.lang.invoke.TypeDescriptor$OfMethod
-          - name: dropParameterTypes
+          - name: effectivelyIdenticalParameters
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
@@ -183,12 +394,12 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: int
-                full: int
+                basic: List
+                full: java.util.List<java.lang.Class<?>>
             return:
               type:
-                basic: OfMethod
-                full: java.lang.invoke.TypeDescriptor$OfMethod
+                basic: boolean
+                full: boolean
           - name: equals
             modifiers:
             - public
@@ -201,6 +412,18 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: equals
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: erase
             modifiers:
             - public
@@ -208,6 +431,25 @@ languages:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+          - name: explicitCastEquivalentToAsType
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: form
+            modifiers:
+            - package
+            return:
+              type:
+                basic: MethodTypeForm
+                full: java.lang.invoke.MethodTypeForm
           - name: generic
             modifiers:
             - public
@@ -246,7 +488,7 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: Class<?>[>
+                basic: Class
                 full: java.lang.Class<?>[]
             return:
               type:
@@ -262,79 +504,105 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: OfField[]
-                full: java.lang.invoke.TypeDescriptor$OfField[]
-            return:
-              type:
-                basic: OfMethod
-                full: java.lang.invoke.TypeDescriptor$OfMethod
-          - name: insertParameterTypes
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: OfField[]
-                full: java.lang.invoke.TypeDescriptor$OfField[]
-            return:
-              type:
-                basic: OfMethod
-                full: java.lang.invoke.TypeDescriptor$OfMethod
-          - name: insertParameterTypes
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: List<Class<?>>
+                basic: List
                 full: java.util.List<java.lang.Class<?>>
             return:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+          - name: insertParameterTypes
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: TypeDescriptor.OfField
+                full: java.lang.invoke.TypeDescriptor$OfField[]
+            return:
+              type:
+                basic: TypeDescriptor.OfMethod
+                full: java.lang.invoke.TypeDescriptor$OfMethod
+          - name: invokerType
+            modifiers:
+            - package
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: invokers
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Invokers
+                full: java.lang.invoke.Invokers
+          - name: isConvertibleTo
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isGeneric
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isViewableAs
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: lastParameterType
             modifiers:
             - public
             return:
               type:
-                basic: Class<?>
+                basic: Class
+                full: java.lang.Class<?>
+          - name: leadingReferenceParameter
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Class
                 full: java.lang.Class<?>
           - name: parameterArray
             modifiers:
             - public
             return:
               type:
-                basic: Class<?>[>
+                basic: Class
                 full: java.lang.Class<?>[]
           - name: parameterArray
             modifiers:
             - public
             return:
               type:
-                basic: Class<?>[>
-                full: java.lang.Class<?>[]
-          - name: parameterArray
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Class<?>[>
-                full: java.lang.Class<?>[]
-          - name: parameterCount
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+                basic: TypeDescriptor.OfField
+                full: java.lang.invoke.TypeDescriptor$OfField[]
           - name: parameterCount
             modifiers:
             - public
@@ -347,15 +615,15 @@ languages:
             - public
             return:
               type:
-                basic: List<Class<?>>
+                basic: List
                 full: java.util.List<java.lang.Class<?>>
-          - name: parameterList
+          - name: parameterSlotCount
             modifiers:
-            - public
+            - package
             return:
               type:
-                basic: List<Class<?>>
-                full: java.util.List<java.lang.Class<?>>
+                basic: int
+                full: int
           - name: parameterType
             modifiers:
             - public
@@ -366,19 +634,7 @@ languages:
                 full: int
             return:
               type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-          - name: parameterType
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
           - name: parameterType
             modifiers:
@@ -390,30 +646,95 @@ languages:
                 full: int
             return:
               type:
-                basic: Class<?>
+                basic: TypeDescriptor.OfField
+                full: java.lang.invoke.TypeDescriptor$OfField
+          - name: ptypes
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readResolve
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: replaceParameterTypes
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: returnType
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Class
                 full: java.lang.Class<?>
           - name: returnType
             modifiers:
             - public
             return:
               type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-          - name: returnType
+                basic: TypeDescriptor.OfField
+                full: java.lang.invoke.TypeDescriptor$OfField
+          - name: rtype
             modifiers:
-            - public
+            - package
             return:
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
-          - name: returnType
+          - name: setForm
             modifiers:
-            - public
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodTypeForm
+                full: java.lang.invoke.MethodTypeForm
             return:
               type:
-                basic: Class<?>
-                full: java.lang.Class<?>
+                basic: void
+                full: void
           - name: toMethodDescriptorString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: toString
             modifiers:
             - public
             return:
@@ -434,7 +755,96 @@ languages:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
+          - name: canConvert
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: checkPtypes
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            return:
+              type:
+                basic: int
+                full: int
+          - name: checkSlotCount
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: explicitCastEquivalentToAsType
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: fromDescriptor
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
           - name: fromMethodDescriptorString
             modifiers:
             - public
@@ -461,6 +871,10 @@ languages:
               type:
                 basic: int
                 full: int
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: MethodType
@@ -474,7 +888,63 @@ languages:
               type:
                 basic: int
                 full: int
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: lambda$describeConstable$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class
+            return:
+              type:
+                basic: ClassDesc
+                full: java.lang.constant.ClassDesc
+          - name: lambda$describeConstable$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: ClassDesc
+                full: java.lang.constant.ClassDesc[]
+          - name: listToArray
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<java.lang.Class<?>>
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+          - name: makeImpl
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
             - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            - name: arg2
               type:
                 basic: boolean
                 full: boolean
@@ -489,24 +959,11 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-            return:
-              type:
-                basic: MethodType
-                full: java.lang.invoke.MethodType
-          - name: methodType
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg1
               type:
-                basic: Class<?>[>
+                basic: Class
                 full: java.lang.Class<?>[]
             return:
               type:
@@ -519,45 +976,11 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg1
               type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-            return:
-              type:
-                basic: MethodType
-                full: java.lang.invoke.MethodType
-          - name: methodType
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-            - name: arg1
-              type:
-                basic: MethodType
-                full: java.lang.invoke.MethodType
-            return:
-              type:
-                basic: MethodType
-                full: java.lang.invoke.MethodType
-          - name: methodType
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<?>
-                full: java.lang.Class<?>
-            - name: arg1
-              type:
-                basic: List<Class<?>>
+                basic: List
                 full: java.util.List<java.lang.Class<?>>
             return:
               type:
@@ -570,19 +993,116 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg1
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
             - name: arg2
               type:
-                basic: Class<?>[>
+                basic: Class
                 full: java.lang.Class<?>[]
             return:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
-          javaType: class
-          extends: Object
+          - name: methodType
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: methodType
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: methodType
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: newIndexOutOfBoundsException
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: IndexOutOfBoundsException
+                full: java.lang.IndexOutOfBoundsException
+          - name: toFieldDescriptorString
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: unwrapWithNoPrims
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: wrapWithPrims
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType

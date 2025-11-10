@@ -4,104 +4,236 @@ languages:
     packages:
       java.security.cert:
         CertificateFactorySpi:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class defines the Service Provider Interface (SPI)\n for the\
+            \ CertificateFactory class.\n All the abstract methods in this class must\
+            \ be implemented by each\n cryptographic service provider who wishes to\
+            \ supply the implementation\n of a certificate factory for a particular\
+            \ certificate type, e.g., X.509.\n\n Certificate factories are used to\
+            \ generate certificate, certification path\n (CertPath) and certificate\
+            \ revocation list (CRL) objects from\n their encodings.\n\n A certificate\
+            \ factory for X.509 must return certificates that are an\n instance of\
+            \ java.security.cert.X509Certificate, and CRLs\n that are an instance\
+            \ of java.security.cert.X509CRL."
           constructors:
           - modifiers:
             - public
+            notes: Constructor for subclasses to call.
           methods:
           - name: engineGenerateCRL
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: an input stream with the CRL data.
             return:
               type:
                 basic: CRL
                 full: java.security.cert.CRL
+              notes: "a CRL object initialized with the data\n from the input stream."
+            notes: "Generates a certificate revocation list (CRL) object and initializes\
+              \ it\n with the data read from the input stream inStream.\n\n In order\
+              \ to take advantage of the specialized CRL format\n supported by this\
+              \ certificate factory,\n the returned CRL object can be typecast to\
+              \ the corresponding\n CRL class. For example, if this certificate\n\
+              \ factory implements X.509 CRLs, the returned CRL object\n can be typecast\
+              \ to the X509CRL class.\n\n Note that if the given input stream does\
+              \ not support\n mark and\n reset, this method will\n consume the entire\
+              \ input stream. Otherwise, each call to this\n method consumes one CRL\
+              \ and the read position of the input stream\n is positioned to the next\
+              \ available byte after the inherent\n end-of-CRL marker. If the data\
+              \ in the\n input stream does not contain an inherent end-of-CRL marker\
+              \ (other\n than EOF) and there is trailing data after the CRL is parsed,\
+              \ a\n CRLException is thrown."
           - name: engineGenerateCRLs
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the input stream with the CRLs.
             return:
               type:
-                basic: Collection<? extends CRL>
+                basic: Collection
                 full: java.util.Collection<? extends java.security.cert.CRL>
+              notes: "a (possibly empty) collection view of\n java.security.cert.CRL\
+                \ objects initialized with the data from the input\n stream."
+            notes: "Returns a (possibly empty) collection view of the CRLs read\n\
+              \ from the given input stream inStream.\n\n In order to take advantage\
+              \ of the specialized CRL format\n supported by this certificate factory,\
+              \ each element in\n the returned collection view can be typecast to\
+              \ the corresponding\n CRL class. For example, if this certificate\n\
+              \ factory implements X.509 CRLs, the elements in the returned\n collection\
+              \ can be typecast to the X509CRL class.\n\n In the case of a certificate\
+              \ factory for X.509 CRLs,\n inStream may contain a single DER-encoded\
+              \ CRL.\n In addition, inStream may contain a PKCS#7 CRL\n set. This\
+              \ is a PKCS#7 SignedData object, with the only\n significant field being\
+              \ crls. In particular, the\n signature and the contents are ignored.\
+              \ This format allows multiple\n CRLs to be downloaded at once. If no\
+              \ CRLs are present,\n an empty collection is returned.\n\n Note that\
+              \ if the given input stream does not support\n mark and\n reset, this\
+              \ method will\n consume the entire input stream."
           - name: engineGenerateCertPath
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: an InputStream containing the data
             return:
               type:
                 basic: CertPath
                 full: java.security.cert.CertPath
+              notes: "a CertPath initialized with the data from the\n   InputStream"
+            notes: "Generates a CertPath object and initializes it with\n the data\
+              \ read from the InputStream inStream. The data\n is assumed to be in\
+              \ the default encoding.\n\n  This method was added to version 1.4 of\
+              \ the Java 2 Platform\n Standard Edition. In order to maintain backwards\
+              \ compatibility with\n existing service providers, this method cannot\
+              \ be abstract\n and by default throws an UnsupportedOperationException."
           - name: engineGenerateCertPath
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: List<? extends Certificate>
-                full: java.util.List<? extends java.security.cert.Certificate>
-            return:
-              type:
-                basic: CertPath
-                full: java.security.cert.CertPath
-          - name: engineGenerateCertPath
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
-            - name: arg1
+              notes: an InputStream containing the data
+            - name: encoding
               type:
                 basic: String
                 full: java.lang.String
+              notes: the encoding used for the data
             return:
               type:
                 basic: CertPath
                 full: java.security.cert.CertPath
-          - name: engineGenerateCertificate
+              notes: "a CertPath initialized with the data from the\n   InputStream"
+            notes: "Generates a CertPath object and initializes it with\n the data\
+              \ read from the InputStream inStream. The data\n is assumed to be in\
+              \ the specified encoding.\n\n  This method was added to version 1.4\
+              \ of the Java 2 Platform\n Standard Edition. In order to maintain backwards\
+              \ compatibility with\n existing service providers, this method cannot\
+              \ be abstract\n and by default throws an UnsupportedOperationException."
+          - name: engineGenerateCertPath
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: certificates
+              type:
+                basic: List
+                full: java.util.List<? extends java.security.cert.Certificate>
+              notes: a List of Certificates
+            return:
+              type:
+                basic: CertPath
+                full: java.security.cert.CertPath
+              notes: "a CertPath initialized with the supplied list of\n   certificates"
+            notes: "Generates a CertPath object and initializes it with\n a List of\
+              \ Certificates.\n \n The certificates supplied must be of a type supported\
+              \ by the\n CertificateFactory. They will be copied out of the supplied\n\
+              \ List object.\n\n  This method was added to version 1.4 of the Java\
+              \ 2 Platform\n Standard Edition. In order to maintain backwards compatibility\
+              \ with\n existing service providers, this method cannot be abstract\n\
+              \ and by default throws an UnsupportedOperationException."
+          - name: engineGenerateCertificate
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: an input stream with the certificate data.
             return:
               type:
                 basic: Certificate
                 full: java.security.cert.Certificate
+              notes: "a certificate object initialized with the data\n from the input\
+                \ stream."
+            notes: "Generates a certificate object and initializes it with\n the data\
+              \ read from the input stream inStream.\n\n In order to take advantage\
+              \ of the specialized certificate format\n supported by this certificate\
+              \ factory,\n the returned certificate object can be typecast to the\
+              \ corresponding\n certificate class. For example, if this certificate\n\
+              \ factory implements X.509 certificates, the returned certificate object\n\
+              \ can be typecast to the X509Certificate class.\n\n In the case of a\
+              \ certificate factory for X.509 certificates, the\n certificate provided\
+              \ in inStream must be DER-encoded and\n may be supplied in binary or\
+              \ printable (Base64) encoding. If the\n certificate is provided in Base64\
+              \ encoding, it must be bounded at\n the beginning by -----BEGIN CERTIFICATE-----,\
+              \ and must be bounded at\n the end by -----END CERTIFICATE-----.\n\n\
+              \ Note that if the given input stream does not support\n mark and\n\
+              \ reset, this method will\n consume the entire input stream. Otherwise,\
+              \ each call to this\n method consumes one certificate and the read position\
+              \ of the input stream\n is positioned to the next available byte after\
+              \ the inherent\n end-of-certificate marker. If the data in the\n input\
+              \ stream does not contain an inherent end-of-certificate marker (other\n\
+              \ than EOF) and there is trailing data after the certificate is parsed,\
+              \ a\n CertificateException is thrown."
           - name: engineGenerateCertificates
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the input stream with the certificates.
             return:
               type:
-                basic: Collection<? extends Certificate>
+                basic: Collection
                 full: java.util.Collection<? extends java.security.cert.Certificate>
+              notes: "a (possibly empty) collection view of\n java.security.cert.Certificate\
+                \ objects\n initialized with the data from the input stream."
+            notes: "Returns a (possibly empty) collection view of the certificates\
+              \ read\n from the given input stream inStream.\n\n In order to take\
+              \ advantage of the specialized certificate format\n supported by this\
+              \ certificate factory, each element in\n the returned collection view\
+              \ can be typecast to the corresponding\n certificate class. For example,\
+              \ if this certificate\n factory implements X.509 certificates, the elements\
+              \ in the returned\n collection can be typecast to the X509Certificate\
+              \ class.\n\n In the case of a certificate factory for X.509 certificates,\n\
+              \ inStream may contain a single DER-encoded certificate\n in the formats\
+              \ described for\n generateCertificate.\n In addition, inStream may contain\
+              \ a PKCS#7 certificate\n chain. This is a PKCS#7 SignedData object,\
+              \ with the only\n significant field being certificates. In particular,\
+              \ the\n signature and the contents are ignored. This format allows multiple\n\
+              \ certificates to be downloaded at once. If no certificates are present,\n\
+              \ an empty collection is returned.\n\n Note that if the given input\
+              \ stream does not support\n mark and\n reset, this method will\n consume\
+              \ the entire input stream."
           - name: engineGetCertPathEncodings
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<String>
+                basic: Iterator
                 full: java.util.Iterator<java.lang.String>
-          javaType: class
-          extends: Object
+              notes: "an Iterator over the names of the supported\n         CertPath\
+                \ encodings (as Strings)"
+            notes: "Returns an iteration of the CertPath encodings supported\n by\
+              \ this certificate factory, with the default encoding first. See\n the\
+              \ CertPath Encodings section in the \n Java Security Standard Algorithm\
+              \ Names Specification\n for information about standard encoding names.\n\
+              \ \n Attempts to modify the returned Iterator via its\n remove method\
+              \ result in an\n UnsupportedOperationException.\n\n  This method was\
+              \ added to version 1.4 of the Java 2 Platform\n Standard Edition. In\
+              \ order to maintain backwards compatibility with\n existing service\
+              \ providers, this method cannot be abstract\n and by default throws\
+              \ an UnsupportedOperationException."

@@ -4,6 +4,7 @@ languages:
     packages:
       zombie.ai:
         StateMachine:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
@@ -14,6 +15,42 @@ languages:
               - public
               type:
                 basic: int
+                full: int
+            m_currentState:
+              name: m_currentState
+              modifiers:
+              - private
+              type:
+                basic: State
+                full: zombie.ai.State
+            m_isLocked:
+              name: m_isLocked
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_owner:
+              name: m_owner
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            m_previousState:
+              name: m_previousState
+              modifiers:
+              - private
+              type:
+                basic: State
+                full: zombie.ai.State
+            m_subStates:
+              name: m_subStates
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<zombie.ai.StateMachine$SubstateSlot>
           constructors:
           - modifiers:
             - public
@@ -21,21 +58,24 @@ languages:
             - name: owner
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
           methods:
-          - name: changeState
+          - name: changeRootState
             modifiers:
-            - public
+            - private
             parameters:
-            - name: newState
+            - name: arg0
               type:
                 basic: State
-            - name: subStates
+                full: zombie.ai.State
+            - name: arg1
               type:
-                basic: Iterable
-                full: Iterable<State>
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: changeState
             modifiers:
             - public
@@ -43,28 +83,73 @@ languages:
             - name: newState
               type:
                 basic: State
+                full: zombie.ai.State
             - name: subStates
               type:
                 basic: Iterable
-                full: Iterable<State>
+                full: java.lang.Iterable<zombie.ai.State>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: changeState
+            modifiers:
+            - public
+            parameters:
+            - name: newState
+              type:
+                basic: State
+                full: zombie.ai.State
+            - name: subStates
+              type:
+                basic: Iterable
+                full: java.lang.Iterable<zombie.ai.State>
             - name: restart
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
+          - name: ensureSubstateActive
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: State
+                full: zombie.ai.State
+            return:
+              type:
+                basic: void
+                full: void
           - name: getCurrent
             modifiers:
             - public
             return:
               type:
                 basic: State
+                full: zombie.ai.State
+          - name: getExistingSlot
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: State
+                full: zombie.ai.State
+            return:
+              type:
+                basic: StateMachine.SubstateSlot
+                full: zombie.ai.StateMachine$SubstateSlot
           - name: getPrevious
             modifiers:
             - public
             return:
               type:
                 basic: State
+                full: zombie.ai.State
           - name: getSubStateAt
             modifiers:
             - public
@@ -72,21 +157,25 @@ languages:
             - name: idx
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: State
+                full: zombie.ai.State
           - name: getSubStateCount
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: isLocked
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isSubstate
             modifiers:
             - public
@@ -94,9 +183,42 @@ languages:
             - name: substate
               type:
                 basic: State
+                full: zombie.ai.State
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: logCurrentState
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeSubstate
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: State
+                full: zombie.ai.State
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeSubstate
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: StateMachine.SubstateSlot
+                full: zombie.ai.StateMachine$SubstateSlot
+            return:
+              type:
+                basic: void
+                full: void
           - name: revertToPreviousState
             modifiers:
             - public
@@ -104,9 +226,11 @@ languages:
             - name: sender
               type:
                 basic: State
+                full: zombie.ai.State
             return:
               type:
                 basic: void
+                full: void
           - name: setLocked
             modifiers:
             - public
@@ -114,28 +238,158 @@ languages:
             - name: lock
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: stateAnimEvent
             modifiers:
             - public
             - final
             parameters:
-            - name: stateLayer
+            - name: arg0
               type:
                 basic: int
-            - name: event
+                full: int
+            - name: arg1
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            - name: arg2
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg3
               type:
                 basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
             return:
               type:
                 basic: void
+                full: void
+          - name: stateEnter
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: State
+                full: zombie.ai.State
+            return:
+              type:
+                basic: void
+                full: void
+          - name: stateExit
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: State
+                full: zombie.ai.State
+            return:
+              type:
+                basic: void
+                full: void
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
+                full: void
+          staticMethods:
+          - name: lambda$changeState$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: StateMachine.SubstateSlot
+                full: zombie.ai.StateMachine$SubstateSlot
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$changeState$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: State
+                full: zombie.ai.State
+            - name: arg1
+              type:
+                basic: StateMachine
+                full: zombie.ai.StateMachine
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$changeState$2
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: StateMachine.SubstateSlot
+                full: zombie.ai.StateMachine$SubstateSlot
+            - name: arg1
+              type:
+                basic: StateMachine
+                full: zombie.ai.StateMachine
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$getExistingSlot$3
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: StateMachine.SubstateSlot
+                full: zombie.ai.StateMachine$SubstateSlot
+            - name: arg1
+              type:
+                basic: State
+                full: zombie.ai.State
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$stateAnimEvent$4
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: StateMachine.SubstateSlot
+                full: zombie.ai.StateMachine$SubstateSlot
+            - name: arg1
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            - name: arg2
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            - name: arg3
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg4
+              type:
+                basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
+            return:
+              type:
+                basic: void
+                full: void

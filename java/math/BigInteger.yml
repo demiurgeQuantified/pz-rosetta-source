@@ -4,195 +4,641 @@ languages:
     packages:
       java.math:
         BigInteger:
+          extends: java.lang.Number
+          modifiers:
+          - public
+          notes: "Immutable arbitrary-precision integers.  All operations behave as\
+            \ if\n BigIntegers were represented in two's-complement notation (like\
+            \ Java's\n primitive integer types).  BigInteger provides analogues to\
+            \ all of Java's\n primitive integer operators, and all relevant methods\
+            \ from java.lang.Math.\n Additionally, BigInteger provides operations\
+            \ for modular arithmetic, GCD\n calculation, primality testing, prime\
+            \ generation, bit manipulation,\n and a few other miscellaneous operations.\n\
+            \n Semantics of arithmetic operations exactly mimic those of Java's integer\n\
+            \ arithmetic operators, as defined in The Java Language Specification.\n\
+            \ For example, division by zero throws an ArithmeticException, and\n division\
+            \ of a negative by a positive yields a negative (or zero) remainder.\n\
+            \n Semantics of shift operations extend those of Java's shift operators\n\
+            \ to allow for negative shift distances.  A right-shift with a negative\n\
+            \ shift distance results in a left shift, and vice-versa.  The unsigned\n\
+            \ right shift operator (>>>) is omitted since this operation\n only makes\
+            \ sense for a fixed sized word and not for a\n representation conceptually\
+            \ having an infinite number of leading\n virtual sign bits.\n\n Semantics\
+            \ of bitwise logical operations exactly mimic those of Java's\n bitwise\
+            \ integer operators.  The binary operators (and,\n or, xor) implicitly\
+            \ perform sign extension on the shorter\n of the two operands prior to\
+            \ performing the operation.\n\n Comparison operations perform signed integer\
+            \ comparisons, analogous to\n those performed by Java's relational and\
+            \ equality operators.\n\n Modular arithmetic operations are provided to\
+            \ compute residues, perform\n exponentiation, and compute multiplicative\
+            \ inverses.  These methods always\n return a non-negative result, between\
+            \ 0 and (modulus - 1),\n inclusive.\n\n Bit operations operate on a single\
+            \ bit of the two's-complement\n representation of their operand.  If necessary,\
+            \ the operand is sign-extended\n so that it contains the designated bit.\
+            \  None of the single-bit\n operations can produce a BigInteger with a\
+            \ different sign from the\n BigInteger being operated on, as they affect\
+            \ only a single bit, and the\n arbitrarily large abstraction provided\
+            \ by this class ensures that conceptually\n there are infinitely many\
+            \ \"virtual sign bits\" preceding each BigInteger.\n\n For the sake of\
+            \ brevity and clarity, pseudo-code is used throughout the\n descriptions\
+            \ of BigInteger methods.  The pseudo-code expression\n (i + j) is shorthand\
+            \ for \"a BigInteger whose value is\n that of the BigInteger i plus that\
+            \ of the BigInteger j.\"\n The pseudo-code expression (i == j) is shorthand\
+            \ for\n \"true if and only if the BigInteger i represents the same\n value\
+            \ as the BigInteger j.\"  Other pseudo-code expressions are\n interpreted\
+            \ similarly.\n\n All methods and constructors in this class throw\n NullPointerException\
+            \ when passed\n a null object reference for any input parameter.\n\n BigInteger\
+            \ must support values in the range\n -2Integer.MAX_VALUE (exclusive) to\n\
+            \ +2Integer.MAX_VALUE (exclusive)\n and may support values outside of\
+            \ that range.\n\n An ArithmeticException is thrown when a BigInteger\n\
+            \ constructor or method would generate a value outside of the\n supported\
+            \ range.\n\n The range of probable prime values is limited and may be\
+            \ less than\n the full supported positive range of BigInteger.\n The range\
+            \ must be at least 1 to 2500000000."
+          fields:
+            bitCountPlusOne:
+              name: bitCountPlusOne
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            bitLengthPlusOne:
+              name: bitLengthPlusOne
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            firstNonzeroIntNumPlusTwo:
+              name: firstNonzeroIntNumPlusTwo
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            lowestSetBitPlusTwo:
+              name: lowestSetBitPlusTwo
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            mag:
+              name: mag
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int[]
+            signum:
+              name: signum
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            BURNIKEL_ZIEGLER_OFFSET:
+              name: BURNIKEL_ZIEGLER_OFFSET
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            BURNIKEL_ZIEGLER_THRESHOLD:
+              name: BURNIKEL_ZIEGLER_THRESHOLD
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            DEFAULT_PRIME_CERTAINTY:
+              name: DEFAULT_PRIME_CERTAINTY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            KARATSUBA_SQUARE_THRESHOLD:
+              name: KARATSUBA_SQUARE_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            KARATSUBA_THRESHOLD:
+              name: KARATSUBA_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            LOG_TWO:
+              name: LOG_TWO
+              modifiers:
+              - private
+              - static
+              type:
+                basic: double
+                full: double
+            LONG_MASK:
+              name: LONG_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: long
+                full: long
+            MAX_CONSTANT:
+              name: MAX_CONSTANT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_MAG_LENGTH:
+              name: MAX_MAG_LENGTH
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MONTGOMERY_INTRINSIC_THRESHOLD:
+              name: MONTGOMERY_INTRINSIC_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MULTIPLY_SQUARE_THRESHOLD:
+              name: MULTIPLY_SQUARE_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            NEGATIVE_ONE:
+              name: NEGATIVE_ONE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            NUM_ZEROS:
+              name: NUM_ZEROS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             ONE:
               name: ONE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-                nullable: true
+              notes: The BigInteger constant one.
+            PRIME_SEARCH_BIT_LENGTH_LIMIT:
+              name: PRIME_SEARCH_BIT_LENGTH_LIMIT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SCHOENHAGE_BASE_CONVERSION_THRESHOLD:
+              name: SCHOENHAGE_BASE_CONVERSION_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SMALL_PRIME_PRODUCT:
+              name: SMALL_PRIME_PRODUCT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            SMALL_PRIME_THRESHOLD:
+              name: SMALL_PRIME_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             TEN:
               name: TEN
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-                nullable: true
+              notes: The BigInteger constant ten.
+            TOOM_COOK_SQUARE_THRESHOLD:
+              name: TOOM_COOK_SQUARE_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            TOOM_COOK_THRESHOLD:
+              name: TOOM_COOK_THRESHOLD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             TWO:
               name: TWO
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-                nullable: true
+              notes: The BigInteger constant two.
             ZERO:
               name: ZERO
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-                nullable: true
+              notes: The BigInteger constant zero.
+            ZEROS:
+              name: ZEROS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            bitsPerDigit:
+              name: bitsPerDigit
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long[]
+            bnExpModThreshTable:
+              name: bnExpModThreshTable
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int[]
+            digitsPerInt:
+              name: digitsPerInt
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
+            digitsPerLong:
+              name: digitsPerLong
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
+            intRadix:
+              name: intRadix
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
+            logCache:
+              name: logCache
+              modifiers:
+              - private
+              - static
+              type:
+                basic: double
+                full: double[]
+            longRadix:
+              name: longRadix
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger[]
+            negConst:
+              name: negConst
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger[]
+            posConst:
+              name: posConst
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger[]
+            powerCache:
+              name: powerCache
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger[][]
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "byte array containing a sub-array which is the big-endian\n\
+                \         two's-complement binary representation of a BigInteger."
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the binary representation.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes to use.
+            notes: "Translates a byte sub-array containing the two's-complement binary\n\
+              \ representation of a BigInteger into a BigInteger.  The sub-array is\n\
+              \ specified via an offset into the array and a length.  The sub-array\
+              \ is\n assumed to be in big-endian byte-order: the most significant\n\
+              \ byte is the element at index off.  The val array is\n assumed to be\
+              \ unchanged for the duration of the constructor call.\n\n An IndexOutOfBoundsException\
+              \ is thrown if the length of the array\n val is non-zero and either\
+              \ off is negative, len\n is negative, or off+len is greater than the\
+              \ length of\n val."
           - modifiers:
             - public
             parameters:
+            - name: val
+              type:
+                basic: byte
+                full: byte[]
+              notes: "big-endian two's-complement binary representation of a\n   \
+                \      BigInteger."
+            notes: "Translates a byte array containing the two's-complement binary\n\
+              \ representation of a BigInteger into a BigInteger.  The input array\
+              \ is\n assumed to be in big-endian byte-order: the most significant\n\
+              \ byte is in the zeroth element.  The val array is assumed to be\n unchanged\
+              \ for the duration of the constructor call."
+          - modifiers:
+            - private
+            parameters:
             - name: arg0
+              type:
+                basic: int
+                full: int[]
+          - modifiers:
+            - public
+            parameters:
+            - name: signum
+              type:
+                basic: int
+                full: int
+              notes: "signum of the number (-1 for negative, 0 for zero, 1\n     \
+                \    for positive)."
+            - name: magnitude
+              type:
+                basic: byte
+                full: byte[]
+              notes: "big-endian binary representation of the magnitude of\n     \
+                \    the number."
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the binary representation.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes to use.
+            notes: "Translates the sign-magnitude representation of a BigInteger into\
+              \ a\n BigInteger.  The sign is represented as an integer signum value:\
+              \ -1 for\n negative, 0 for zero, or 1 for positive.  The magnitude is\
+              \ a sub-array of\n a byte array in big-endian byte-order: the most significant\
+              \ byte\n is the element at index off.  A zero value of the length\n\
+              \ len is permissible, and will result in a BigInteger value of 0,\n\
+              \ whether signum is -1, 0 or 1.  The magnitude array is assumed to\n\
+              \ be unchanged for the duration of the constructor call.\n\n An IndexOutOfBoundsException\
+              \ is thrown if the length of the array\n magnitude is non-zero and either\
+              \ off is negative,\n len is negative, or off+len is greater than the\
+              \ length of\n magnitude."
+          - modifiers:
+            - public
+            parameters:
+            - name: signum
+              type:
+                basic: int
+                full: int
+              notes: "signum of the number (-1 for negative, 0 for zero, 1\n     \
+                \    for positive)."
+            - name: magnitude
+              type:
+                basic: byte
+                full: byte[]
+              notes: "big-endian binary representation of the magnitude of\n     \
+                \    the number."
+            notes: "Translates the sign-magnitude representation of a BigInteger into\
+              \ a\n BigInteger.  The sign is represented as an integer signum value:\
+              \ -1 for\n negative, 0 for zero, or 1 for positive.  The magnitude is\
+              \ a byte array\n in big-endian byte-order: the most significant byte\
+              \ is the\n zeroth element.  A zero-length magnitude array is permissible,\
+              \ and will\n result in a BigInteger value of 0, whether signum is -1,\
+              \ 0 or 1.  The\n magnitude array is assumed to be unchanged for the\
+              \ duration of\n the constructor call."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+          - modifiers:
+            - public
+            parameters:
+            - name: val
               type:
                 basic: String
                 full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: String representation of BigInteger.
+            - name: radix
               type:
                 basic: int
                 full: int
-            - name: arg1
-              type:
-                basic: byte[]
-                full: byte[]
+              notes: radix to be used in interpreting val.
+            notes: "Translates the String representation of a BigInteger in the\n\
+              \ specified radix into a BigInteger.  The String representation\n consists\
+              \ of an optional minus or plus sign followed by a\n sequence of one\
+              \ or more digits in the specified radix.  The\n character-to-digit mapping\
+              \ is provided by Character.digit.  The String may\n not contain any\
+              \ extraneous characters (whitespace, for\n example)."
           - modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
+              type:
+                basic: char
+                full: char[]
+            - name: arg1
               type:
                 basic: int
                 full: int
-            - name: arg1
+            - name: arg2
               type:
-                basic: Random
-                full: java.util.Random
+                basic: int
+                full: int
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
+              notes: decimal String representation of BigInteger.
+            notes: "Translates the decimal String representation of a BigInteger\n\
+              \ into a BigInteger.  The String representation consists of an\n optional\
+              \ minus or plus sign followed by a sequence of one or\n more decimal\
+              \ digits.  The character-to-digit mapping is\n provided by Character.digit.\
+              \  The String may not contain any extraneous\n characters (whitespace,\
+              \ for example)."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
+            - name: numBits
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
+              notes: maximum bitLength of the new BigInteger.
+            - name: rnd
               type:
                 basic: Random
                 full: java.util.Random
+              notes: "source of randomness to be used in computing the new\n     \
+                \    BigInteger."
+            notes: "Constructs a randomly generated BigInteger, uniformly distributed\
+              \ over\n the range 0 to (2numBits - 1), inclusive.\n The uniformity\
+              \ of the distribution assumes that a fair source of random\n bits is\
+              \ provided in rnd.  Note that this constructor always\n constructs a\
+              \ non-negative BigInteger."
           - modifiers:
             - public
+            parameters:
+            - name: bitLength
+              type:
+                basic: int
+                full: int
+              notes: bitLength of the returned BigInteger.
+            - name: certainty
+              type:
+                basic: int
+                full: int
+              notes: "a measure of the uncertainty that the caller is\n         willing\
+                \ to tolerate.  The probability that the new BigInteger\n        \
+                \ represents a prime number will exceed\n         (1"
+            - name: rnd
+              type:
+                basic: Random
+                full: java.util.Random
+              notes: "source of random bits used to select candidates to be\n    \
+                \     tested for primality."
+            notes: "Constructs a randomly generated positive BigInteger that is probably\n\
+              \ prime, with the specified bitLength."
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
                 basic: int
-                full: int
+                full: int[]
             - name: arg1
               type:
-                basic: byte[]
+                basic: int
+                full: int
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
                 full: byte[]
-            - name: arg2
+            - name: arg1
               type:
                 basic: int
                 full: int
-            - name: arg3
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
               type:
-                basic: int
-                full: int
+                basic: long
+                full: long
           methods:
-          - name: __and__
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-            return:
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-          - name: __not__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-          - name: __or__
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-            return:
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-          - name: __toString__
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: abs
             modifiers:
             - public
@@ -200,30 +646,71 @@ languages:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: abs(this)
+            notes: "Returns a BigInteger whose value is the absolute value of this\n\
+              \ BigInteger."
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value to be added to this BigInteger.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this + val
+            notes: Returns a BigInteger whose value is (this + val).
+          - name: add
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: and
+            modifiers:
+            - public
+            parameters:
+            - name: val
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: value to be AND'ed with this BigInteger.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this & val
+            notes: "Returns a BigInteger whose value is (this & val).  (This\n method\
+              \ returns a negative BigInteger if and only if this and val are\n both\
+              \ negative.)"
           - name: andNot
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value to be complemented and AND'ed with this BigInteger.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this & ~val
+            notes: "Returns a BigInteger whose value is (this & ~val).  This\n method,\
+              \ which is equivalent to and(val.not()), is provided as\n a convenience\
+              \ for masking operations.  (This method returns a negative\n BigInteger\
+              \ if and only if this is negative and val is\n positive.)"
           - name: bitCount
             modifiers:
             - public
@@ -231,6 +718,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "number of bits in the two's complement representation\n    \
+                \     of this BigInteger that differ from its sign bit."
+            notes: "Returns the number of bits in the two's complement representation\n\
+              \ of this BigInteger that differ from its sign bit.  This method is\n\
+              \ useful when implementing bit-vector style sets atop BigIntegers."
           - name: bitLength
             modifiers:
             - public
@@ -238,6 +730,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "number of bits in the minimal two's-complement\n         representation\
+                \ of this BigInteger, excluding a sign bit."
+            notes: "Returns the number of bits in the minimal two's-complement\n representation\
+              \ of this BigInteger, excluding a sign bit.\n For positive BigIntegers,\
+              \ this is equivalent to the number of bits in\n the ordinary binary\
+              \ representation.  For zero this method returns\n 0.  (Computes (ceil(log2(this\
+              \ < 0 ? -this : this+1))).)"
           - name: byteValueExact
             modifiers:
             - public
@@ -245,18 +744,79 @@ languages:
               type:
                 basic: byte
                 full: byte
+              notes: this BigInteger converted to a byte.
+            notes: "Converts this BigInteger to a byte, checking\n for lost information.\
+              \  If the value of this BigInteger\n is out of the range of the byte\
+              \ type, then an\n ArithmeticException is thrown."
+          - name: checkRange
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: clearBit
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: int
                 full: int
+              notes: index of bit to clear.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this & ~(1<<n)
+            notes: "Returns a BigInteger whose value is equivalent to this BigInteger\n\
+              \ with the designated bit cleared.\n (Computes (this & ~(1<<n)).)"
+          - name: compareMagnitude
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: int
+                full: int
+          - name: compareMagnitude
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: val
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: BigInteger to which this BigInteger is to be compared.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "-1, 0 or 1 as this BigInteger is numerically less than, equal\n\
+                \         to, or greater than val."
+            notes: "Compares this BigInteger with the specified BigInteger.  This\n\
+              \ method is provided in preference to individual methods for each\n\
+              \ of the six boolean comparison operators (<, ==,\n >, >=, !=, <=).\
+              \  The suggested\n idiom for performing these comparisons is: \n (x.compareTo(y)\
+              \ <op> 0), where\n <op> is one of the six comparison operators."
           - name: compareTo
             modifiers:
             - public
@@ -265,30 +825,6 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
             return:
               type:
                 basic: int
@@ -297,17 +833,39 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value by which this BigInteger is to be divided.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this / val
+            notes: Returns a BigInteger whose value is (this / val).
           - name: divideAndRemainder
             modifiers:
             - public
+            parameters:
+            - name: val
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: "value by which this BigInteger is to be divided, and the\n \
+                \        remainder computed."
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger[]
+              notes: "an array of two BigIntegers: the quotient (this / val)\n   \
+                \      is the initial element, and the remainder (this % val)\n  \
+                \       is the final element."
+            notes: "Returns an array of two BigIntegers containing (this / val)\n\
+              \ followed by (this % val)."
+          - name: divideAndRemainderBurnikelZiegler
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -315,8 +873,44 @@ languages:
                 full: java.math.BigInteger
             return:
               type:
-                basic: BigInteger[]
+                basic: BigInteger
                 full: java.math.BigInteger[]
+          - name: divideAndRemainderKnuth
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger[]
+          - name: divideBurnikelZiegler
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: divideKnuth
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
           - name: doubleValue
             modifiers:
             - public
@@ -324,30 +918,60 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: this BigInteger converted to a double.
+            notes: "Converts this BigInteger to a double.  This\n conversion is similar\
+              \ to the\n narrowing primitive conversion from double to\n float as\
+              \ defined in\n The Java Language Specification:\n if this BigInteger\
+              \ has too great a magnitude\n to represent as a double, it will be converted\
+              \ to\n Double.NEGATIVE_INFINITY or Double.POSITIVE_INFINITY as appropriate.\
+              \  Note that even when\n the return value is finite, this conversion\
+              \ can lose\n information about the precision of the BigInteger value."
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: Object to which this BigInteger is to be compared.
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: flipBit
+              notes: "true if and only if the specified Object is a\n         BigInteger\
+                \ whose value is numerically equal to this BigInteger."
+            notes: Compares this BigInteger with the specified Object for equality.
+          - name: exactDivideBy3
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
+            - private
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+          - name: firstNonzeroIntNum
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
+          - name: flipBit
+            modifiers:
+            - public
+            parameters:
+            - name: n
+              type:
+                basic: int
+                full: int
+              notes: index of bit to flip.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this ^ (1<<n)
+            notes: "Returns a BigInteger whose value is equivalent to this BigInteger\n\
+              \ with the designated bit flipped.\n (Computes (this ^ (1<<n)).)"
           - name: floatValue
             modifiers:
             - public
@@ -355,14 +979,50 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: this BigInteger converted to a float.
+            notes: "Converts this BigInteger to a float.  This\n conversion is similar\
+              \ to the\n narrowing primitive conversion from double to\n float as\
+              \ defined in\n The Java Language Specification:\n if this BigInteger\
+              \ has too great a magnitude\n to represent as a float, it will be converted\
+              \ to\n Float.NEGATIVE_INFINITY or Float.POSITIVE_INFINITY as appropriate.\
+              \  Note that even when\n the return value is finite, this conversion\
+              \ can lose\n information about the precision of the BigInteger value."
           - name: gcd
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value with which the GCD is to be computed.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: GCD(abs(this), abs(val))
+            notes: "Returns a BigInteger whose value is the greatest common divisor\
+              \ of\n abs(this) and abs(val).  Returns 0 if\n this == 0 && val == 0."
+          - name: getInt
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getLower
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: BigInteger
@@ -374,9 +1034,59 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: index of the rightmost one bit in this BigInteger.
+            notes: "Returns the index of the rightmost (lowest-order) one bit in this\n\
+              \ BigInteger (the number of zero bits to the right of the rightmost\n\
+              \ one bit).  Returns -1 if this BigInteger contains no one bits.\n (Computes\
+              \ (this == 0? -1 : log2(this & -this)).)"
+          - name: getToomSlice
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: getUpper
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
           - name: hashCode
             modifiers:
             - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: hash code for this BigInteger.
+            notes: Returns the hash code for this BigInteger.
+          - name: intLength
+            modifiers:
+            - private
             return:
               type:
                 basic: int
@@ -388,6 +1098,14 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: this BigInteger converted to an int.
+            notes: "Converts this BigInteger to an int.  This\n conversion is analogous\
+              \ to a\n narrowing primitive conversion from long to\n int as defined\
+              \ in\n The Java Language Specification:\n if this BigInteger is too\
+              \ big to fit in an\n int, only the low-order 32 bits are returned.\n\
+              \ Note that this conversion can lose information about the\n overall\
+              \ magnitude of the BigInteger value as well as return a\n result with\
+              \ the opposite sign."
           - name: intValueExact
             modifiers:
             - public
@@ -395,18 +1113,41 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: this BigInteger converted to an int.
+            notes: "Converts this BigInteger to an int, checking\n for lost information.\
+              \  If the value of this BigInteger\n is out of the range of the int\
+              \ type, then an\n ArithmeticException is thrown."
           - name: isProbablePrime
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: certainty
               type:
                 basic: int
                 full: int
+              notes: "a measure of the uncertainty that the caller is\n         willing\
+                \ to tolerate: if the call returns true\n         the probability\
+                \ that this BigInteger is prime exceeds\n         (1"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this BigInteger is probably prime,\n         false if\
+                \ it's definitely composite."
+            notes: "Returns true if this BigInteger is probably prime,\n false if\
+              \ it's definitely composite.  If\n certainty is &le; 0, true is\n returned."
+          - name: javaIncrement
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
           - name: longValue
             modifiers:
             - public
@@ -414,6 +1155,14 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: this BigInteger converted to a long.
+            notes: "Converts this BigInteger to a long.  This\n conversion is analogous\
+              \ to a\n narrowing primitive conversion from long to\n int as defined\
+              \ in\n The Java Language Specification:\n if this BigInteger is too\
+              \ big to fit in a\n long, only the low-order 64 bits are returned.\n\
+              \ Note that this conversion can lose information about the\n overall\
+              \ magnitude of the BigInteger value as well as return a\n result with\
+              \ the opposite sign."
           - name: longValueExact
             modifiers:
             - public
@@ -421,38 +1170,74 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: this BigInteger converted to a long.
+            notes: "Converts this BigInteger to a long, checking\n for lost information.\
+              \  If the value of this BigInteger\n is out of the range of the long\
+              \ type, then an\n ArithmeticException is thrown."
+          - name: magSerializedForm
+            modifiers:
+            - private
+            return:
+              type:
+                basic: byte
+                full: byte[]
           - name: max
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value with which the maximum is to be computed.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: "the BigInteger whose value is the greater of this and\n    \
+                \     val.  If they are equal, either may be returned."
+            notes: Returns the maximum of this BigInteger and val.
           - name: min
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value with which the minimum is to be computed.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: "the BigInteger whose value is the lesser of this BigInteger\
+                \ and\n         val.  If they are equal, either may be returned."
+            notes: Returns the minimum of this BigInteger and val.
           - name: mod
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: the modulus.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this mod m
+            notes: "Returns a BigInteger whose value is (this mod m).  This method\n\
+              \ differs from remainder in that it always returns a\n non-negative\
+              \ BigInteger."
+          - name: mod2
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: BigInteger
@@ -461,17 +1246,133 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: the modulus.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this-1 mod m.
+            notes: Returns a BigInteger whose value is (this-1 mod m).
           - name: modPow
             modifiers:
             - public
+            parameters:
+            - name: exponent
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: the exponent.
+            - name: m
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: the modulus.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: thisexponent mod m
+            notes: "Returns a BigInteger whose value is\n (thisexponent mod m).  (Unlike\
+              \ pow, this\n method permits negative exponents.)"
+          - name: modPow2
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: multiply
+            modifiers:
+            - public
+            parameters:
+            - name: val
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: value to be multiplied by this BigInteger.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this * val
+            notes: Returns a BigInteger whose value is (this * val).
+          - name: multiply
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: multiply
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: negate
+            modifiers:
+            - public
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: -this
+            notes: Returns a BigInteger whose value is (-this).
+          - name: nextProbablePrime
+            modifiers:
+            - public
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: "the first integer greater than this BigInteger that\n      \
+                \   is probably prime."
+            notes: "Returns the first integer greater than this BigInteger that\n\
+              \ is probably prime.  The probability that the number returned by this\n\
+              \ method is composite does not exceed 2-100. This method will\n never\
+              \ skip over a prime when searching: if it returns p, there\n is no prime\
+              \ q such that this < q < p."
+          - name: not
+            modifiers:
+            - public
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: ~this
+            notes: "Returns a BigInteger whose value is (~this).  (This method\n returns\
+              \ a negative value if and only if this BigInteger is\n non-negative.)"
+          - name: oddModPow
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -485,47 +1386,141 @@ languages:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-          - name: multiply
+          - name: or
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value to be OR'ed with this BigInteger.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-          - name: negate
+              notes: this | val
+            notes: "Returns a BigInteger whose value is (this | val).  (This method\n\
+              \ returns a negative BigInteger if and only if either this or val is\n\
+              \ negative.)"
+          - name: parseInt
             modifiers:
-            - public
-            return:
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-          - name: nextProbablePrime
-            modifiers:
-            - public
-            return:
-              type:
-                basic: BigInteger
-                full: java.math.BigInteger
-          - name: pow
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
+              type:
+                basic: char
+                full: char[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
               type:
                 basic: int
                 full: int
             return:
               type:
+                basic: int
+                full: int
+          - name: passesLucasLehmer
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: passesMillerRabin
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: Random
+                full: java.util.Random
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: pow
+            modifiers:
+            - public
+            parameters:
+            - name: exponent
+              type:
+                basic: int
+                full: int
+              notes: exponent to which this BigInteger is to be raised.
+            return:
+              type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: thisexponent
+            notes: "Returns a BigInteger whose value is (thisexponent).\n Note that\
+              \ exponent is an integer rather than a BigInteger."
+          - name: primeToCertainty
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: Random
+                full: java.util.Random
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: remainder
             modifiers:
             - public
+            parameters:
+            - name: val
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: "value by which this BigInteger is to be divided, and the\n \
+                \        remainder computed."
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this % val
+            notes: Returns a BigInteger whose value is (this % val).
+          - name: remainderBurnikelZiegler
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: remainderKnuth
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -539,29 +1534,55 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: int
                 full: int
+              notes: index of bit to set.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this | (1<<n)
+            notes: "Returns a BigInteger whose value is equivalent to this BigInteger\n\
+              \ with the designated bit set.  (Computes (this | (1<<n)).)"
           - name: shiftLeft
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: int
                 full: int
+              notes: shift distance, in bits.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this << n
+            notes: "Returns a BigInteger whose value is (this << n).\n The shift distance,\
+              \ n, may be negative, in which case\n this method performs a right shift.\n\
+              \ (Computes floor(this * 2n).)"
           - name: shiftRight
             modifiers:
             - public
+            parameters:
+            - name: n
+              type:
+                basic: int
+                full: int
+              notes: shift distance, in bits.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this >> n
+            notes: "Returns a BigInteger whose value is (this >> n).  Sign\n extension\
+              \ is performed.  The shift distance, n, may be\n negative, in which\
+              \ case this method performs a left shift.\n (Computes floor(this / 2n).)"
+          - name: shiftRightImpl
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -578,6 +1599,24 @@ languages:
               type:
                 basic: short
                 full: short
+              notes: this BigInteger converted to a short.
+            notes: "Converts this BigInteger to a short, checking\n for lost information.\
+              \  If the value of this BigInteger\n is out of the range of the short\
+              \ type, then an\n ArithmeticException is thrown."
+          - name: signBit
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
+          - name: signInt
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
           - name: signum
             modifiers:
             - public
@@ -585,6 +1624,29 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "-1, 0 or 1 as the value of this BigInteger is negative, zero\
+                \ or\n         positive."
+            notes: Returns the signum function of this BigInteger.
+          - name: smallToString
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: sqrt
             modifiers:
             - public
@@ -592,26 +1654,106 @@ languages:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: the integer square root of this
+            notes: "Returns the integer square root of this BigInteger.  The integer\
+              \ square\n root of the corresponding mathematical integer n is the largest\n\
+              \ mathematical integer s such that s*s <= n.  It is equal\n to the value\
+              \ of floor(sqrt(n)), where sqrt(n) denotes the\n real square root of\
+              \ n treated as a real.  Note that the integer\n square root will be\
+              \ less than the real square root if the latter is not\n representable\
+              \ as an integral value."
           - name: sqrtAndRemainder
             modifiers:
             - public
             return:
               type:
-                basic: BigInteger[]
-                full: java.math.BigInteger[]
-          - name: subtract
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
                 basic: BigInteger
-                full: java.math.BigInteger
+                full: java.math.BigInteger[]
+              notes: "an array of two BigIntegers with the integer square root at\n\
+                \         offset 0 and the remainder at offset 1"
+            notes: "Returns an array of two BigIntegers containing the integer square\
+              \ root\n s of this and its remainder this - s*s,\n respectively."
+          - name: square
+            modifiers:
+            - private
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+          - name: square
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: squareKaratsuba
+            modifiers:
+            - private
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: squareToomCook3
+            modifiers:
+            - private
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: subtract
+            modifiers:
+            - public
+            parameters:
+            - name: val
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: value to be subtracted from this BigInteger.
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: this - val
+            notes: Returns a BigInteger whose value is (this - val).
           - name: testBit
+            modifiers:
+            - public
+            parameters:
+            - name: n
+              type:
+                basic: int
+                full: int
+              notes: index of bit to test.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if and only if the designated bit is set.
+            notes: "Returns true if and only if the designated bit is set.\n (Computes\
+              \ ((this & (1<<n)) != 0).)"
+          - name: toByteArray
+            modifiers:
+            - public
+            return:
+              type:
+                basic: byte
+                full: byte[]
+              notes: "a byte array containing the two's-complement representation\
+                \ of\n         this BigInteger."
+            notes: "Returns a byte array containing the two's-complement\n representation\
+              \ of this BigInteger.  The byte array will be in\n big-endian byte-order:\
+              \ the most significant byte is in\n the zeroth element.  The array will\
+              \ contain the minimum number\n of bytes required to represent this BigInteger,\
+              \ including at\n least one sign bit, which is (ceil((this.bitLength()\
+              \ +\n 1)/8)).  (This representation is compatible with the\n (byte[])\
+              \ constructor.)"
+          - name: toString
             modifiers:
             - public
             parameters:
@@ -621,44 +1763,869 @@ languages:
                 full: int
             return:
               type:
-                basic: boolean
-                full: boolean
-          - name: toByteArray
+                basic: String
+                full: java.lang.String
+          - name: toString
             modifiers:
             - public
             return:
               type:
-                basic: byte[]
-                full: byte[]
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: xor
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: value to be XOR'ed with this BigInteger.
             return:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: this ^ val
+            notes: "Returns a BigInteger whose value is (this ^ val).  (This method\n\
+              \ returns a negative BigInteger if and only if exactly one of this and\n\
+              \ val are negative.)"
           staticMethods:
-          - name: __valueOf__
+          - name: add
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
               type:
                 basic: long
                 full: long
             return:
               type:
+                basic: int
+                full: int[]
+          - name: add
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: addOne
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: bitLength
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: bitLengthForInt
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: destructiveMulAdd
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getPrimeSearchLen
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getRadixConversionCache
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
                 basic: BigInteger
                 full: java.math.BigInteger
+          - name: implMontgomeryMultiply
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: long
+                full: long
+            - name: arg5
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: implMontgomeryMultiplyChecks
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implMontgomerySquare
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            - name: arg4
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: implMulAdd
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: implMulAddCheck
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: implMultiplyToLen
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: implSquareToLen
+            modifiers:
+            - private
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: implSquareToLenChecks
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: intArrayCmpToLen
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: jacobiSymbol
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: int
+                full: int
+          - name: largePrime
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: Random
+                full: java.util.Random
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: leftShift
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: lucasLehmerSequence
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            - name: arg2
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: makePositive
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: makePositive
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: materialize
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: montReduce
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: montgomeryMultiply
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: long
+                full: long
+            - name: arg5
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: montgomerySquare
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            - name: arg4
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: mulAdd
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: multiplyByInt
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: multiplyKaratsuba
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            - name: arg1
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: multiplyToLen
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: multiplyToLenCheck
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: multiplyToomCook3
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            - name: arg1
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: padWithZeros
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: primitiveLeftShift
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: primitiveRightShift
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: probablePrime
             modifiers:
             - public
+            - static
+            parameters:
+            - name: bitLength
+              type:
+                basic: int
+                full: int
+              notes: bitLength of the returned BigInteger.
+            - name: rnd
+              type:
+                basic: Random
+                full: java.util.Random
+              notes: "source of random bits used to select candidates to be\n    \
+                \     tested for primality."
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+              notes: a BigInteger of bitLength bits that is probably prime
+            notes: "Returns a positive BigInteger that is probably prime, with the\n\
+              \ specified bitLength. The probability that a BigInteger returned\n\
+              \ by this method is composite does not exceed 2-100."
+          - name: randomBits
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -671,7 +2638,301 @@ languages:
                 full: java.util.Random
             return:
               type:
+                basic: byte
+                full: byte[]
+          - name: reportOverflow
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: shiftLeft
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: shiftLeftImplWorker
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: shiftRightImplWorker
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: smallPrime
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: Random
+                full: java.util.Random
+            return:
+              type:
                 basic: BigInteger
                 full: java.math.BigInteger
-          javaType: class
-          extends: Number
+          - name: squareToLen
+            modifiers:
+            - private
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: stripLeadingZeroBytes
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: stripLeadingZeroInts
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: subN
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: subtract
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: subtract
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: subtract
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: toString
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+            - name: arg1
+              type:
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: trustedStripLeadingZeroInts
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: valueOf
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          - name: valueOf
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger

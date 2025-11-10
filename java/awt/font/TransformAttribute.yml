@@ -4,38 +4,70 @@ languages:
     packages:
       java.awt.font:
         TransformAttribute:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "The TransformAttribute class provides an immutable\n wrapper for\
+            \ a transform so that it is safe to use as an attribute."
+          fields:
+            transform:
+              name: transform
+              modifiers:
+              - private
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
           staticFields:
             IDENTITY:
               name: IDENTITY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TransformAttribute
                 full: java.awt.font.TransformAttribute
-                nullable: true
+              notes: A TransformAttribute representing the identity transform.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: transform
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the specified AffineTransform to be wrapped,\n or null."
+            notes: "Wraps the specified transform.  The transform is cloned and a\n\
+              \ reference to the clone is kept.  The original transform is unchanged.\n\
+              \ If null is passed as the argument, this constructor behaves as though\n\
+              \ it were the identity transform.  (Note that it is preferable to use\n\
+              \ IDENTITY in this case.)"
           methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: rhs
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare to
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the argument is a TransformAttribute\n whose transform\
+                \ is equal to this TransformAttribute's\n transform."
+            notes: "Returns true if rhs is a TransformAttribute\n whose transform\
+              \ is equal to this TransformAttribute's\n transform."
           - name: getTransform
             modifiers:
             - public
@@ -43,6 +75,9 @@ languages:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform that is a copy of the wrapped\n transform\
+                \ of this TransformAttribute."
+            notes: Returns a copy of the wrapped transform.
           - name: hashCode
             modifiers:
             - public
@@ -50,6 +85,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object.
+            notes: 'Description copied from class: Object'
           - name: isIdentity
             modifiers:
             - public
@@ -57,5 +94,25 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: "true if the wrapped transform is\n an identity transform; false\
+                \ otherwise."
+            notes: "Returns true if the wrapped transform is\n an identity transform."
+          - name: readResolve
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void

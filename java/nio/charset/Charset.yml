@@ -4,23 +4,224 @@ languages:
     packages:
       java.nio.charset:
         Charset:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            - final
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A named mapping between sequences of sixteen-bit Unicode code units\
+            \ and sequences of\n bytes.  This class defines methods for creating decoders\
+            \ and encoders and\n for retrieving the various names associated with\
+            \ a charset.  Instances of\n this class are immutable.\n\n  This class\
+            \ also defines static methods for testing whether a particular\n charset\
+            \ is supported, for locating charset instances by name, and for\n constructing\
+            \ a map that contains every charset for which support is\n available in\
+            \ the current Java virtual machine.  Support for new charsets can\n be\
+            \ added via the service-provider interface defined in the CharsetProvider\
+            \ class.\n\n  All of the methods defined in this class are safe for use\
+            \ by multiple\n concurrent threads.\n\n\n Charset names\n\n  Charsets\
+            \ are named by strings composed of the following characters:\n\n \n\n\
+            \    The uppercase letters 'A' through 'Z'\n        ('&#92;u0041' through\
+            \ '&#92;u005a'),\n\n    The lowercase letters 'a' through 'z'\n      \
+            \  ('&#92;u0061' through '&#92;u007a'),\n\n    The digits '0' through\
+            \ '9'\n        ('&#92;u0030' through '&#92;u0039'),\n\n    The dash character\
+            \ '-'\n        ('&#92;u002d', HYPHEN-MINUS),\n\n    The plus character\
+            \ '+'\n        ('&#92;u002b', PLUS SIGN),\n\n    The period character\
+            \ '.'\n        ('&#92;u002e', FULL STOP),\n\n    The colon character ':'\n\
+            \        ('&#92;u003a', COLON), and\n\n    The underscore character '_'\n\
+            \        ('&#92;u005f', LOW LINE).\n\n \n\n A charset name must begin\
+            \ with either a letter or a digit.  The empty string\n is not a legal\
+            \ charset name.  Charset names are not case-sensitive; that is,\n case\
+            \ is always ignored when comparing charset names.  Charset names\n generally\
+            \ follow the conventions documented in RFC 2278: IANA Charset\n Registration\
+            \ Procedures.\n\n  Every charset has a canonical name and may also have\
+            \ one or more\n aliases.  The canonical name is returned by the name method\n\
+            \ of this class.  Canonical names are, by convention, usually in upper\
+            \ case.\n The aliases of a charset are returned by the aliases\n method.\n\
+            \n Some charsets have an historical name that is defined for\n compatibility\
+            \ with previous versions of the Java platform.  A charset's\n historical\
+            \ name is either its canonical name or one of its aliases.  The\n historical\
+            \ name is returned by the getEncoding() methods of the\n InputStreamReader\
+            \ and OutputStreamWriter classes.\n\n  If a charset listed in the IANA\
+            \ Charset\n Registry is supported by an implementation of the Java platform\
+            \ then\n its canonical name must be the name listed in the registry. Many\
+            \ charsets\n are given more than one name in the registry, in which case\
+            \ the registry\n identifies one of the names as MIME-preferred.  If a\
+            \ charset has more\n than one registry name then its canonical name must\
+            \ be the MIME-preferred\n name and the other names in the registry must\
+            \ be valid aliases.  If a\n supported charset is not listed in the IANA\
+            \ registry then its canonical name\n must begin with one of the strings\
+            \ \"X-\" or \"x-\".\n\n  The IANA charset registry does change over time,\
+            \ and so the canonical\n name and the aliases of a particular charset\
+            \ may also change over time.  To\n ensure compatibility it is recommended\
+            \ that no alias ever be removed from a\n charset, and that if the canonical\
+            \ name of a charset is changed then its\n previous canonical name be made\
+            \ into an alias.\n\n\n Standard charsets\n\n\n  Every implementation of\
+            \ the Java platform is required to support the\n following standard charsets.\
+            \  Consult the release documentation for your\n implementation to see\
+            \ if any other charsets are supported.  The behavior\n of such optional\
+            \ charsets may differ between implementations.\n\n \n Description of standard\
+            \ charsets\n \n CharsetDescription\n \n \n US-ASCII\n     Seven-bit ASCII,\
+            \ a.k.a. ISO646-US,\n         a.k.a. the Basic Latin block of the Unicode\
+            \ character set\n ISO-8859-1  \n     ISO Latin Alphabet No. 1, a.k.a.\
+            \ ISO-LATIN-1\n UTF-8\n     Eight-bit UCS Transformation Format\n UTF-16BE\n\
+            \     Sixteen-bit UCS Transformation Format,\n         big-endian byte\
+            \ order\n UTF-16LE\n     Sixteen-bit UCS Transformation Format,\n    \
+            \     little-endian byte order\n UTF-16\n     Sixteen-bit UCS Transformation\
+            \ Format,\n         byte order identified by an optional byte-order mark\n\
+            \ \n \n\n  The UTF-8 charset is specified by RFC 2279; the\n transformation\
+            \ format upon which it is based is specified in\n Amendment 2 of ISO 10646-1\
+            \ and is also described in the Unicode\n Standard.\n\n  The UTF-16 charsets\
+            \ are specified by RFC 2781; the\n transformation formats upon which they\
+            \ are based are specified in\n Amendment 1 of ISO 10646-1 and are also\
+            \ described in the Unicode\n Standard.\n\n  The UTF-16 charsets use sixteen-bit\
+            \ quantities and are\n therefore sensitive to byte order.  In these encodings\
+            \ the byte order of a\n stream may be indicated by an initial byte-order\
+            \ mark represented by\n the Unicode character '&#92;uFEFF'.  Byte-order\
+            \ marks are handled\n as follows:\n\n \n\n    When decoding, the UTF-16BE\
+            \ and UTF-16LE\n   charsets interpret the initial byte-order marks as\
+            \ a ZERO-WIDTH\n   NON-BREAKING SPACE; when encoding, they do not write\n\
+            \   byte-order marks. \n\n    When decoding, the UTF-16 charset interprets\
+            \ the\n   byte-order mark at the beginning of the input stream to indicate\
+            \ the\n   byte-order of the stream but defaults to big-endian if there\
+            \ is no\n   byte-order mark; when encoding, it uses big-endian byte order\
+            \ and writes\n   a big-endian byte-order mark. \n\n \n\n In any case,\
+            \ byte order marks occurring after the first element of an\n input sequence\
+            \ are not omitted since the same code is used to represent\n ZERO-WIDTH\
+            \ NON-BREAKING SPACE.\n\n  Every instance of the Java virtual machine\
+            \ has a default charset, which\n may or may not be one of the standard\
+            \ charsets.  The default charset is\n determined during virtual-machine\
+            \ startup and typically depends upon the\n locale and charset being used\
+            \ by the underlying operating system. \n\n  The StandardCharsets class\
+            \ defines constants for each of the\n standard charsets.\n\n Terminology\n\
+            \n  The name of this class is taken from the terms used in\n RFC 2278.\n\
+            \ In that document a charset is defined as the combination of\n one or\
+            \ more coded character sets and a character-encoding scheme.\n (This definition\
+            \ is confusing; some other software systems define\n charset as a synonym\
+            \ for coded character set.)\n\n  A coded character set is a mapping between\
+            \ a set of abstract\n characters and a set of integers.  US-ASCII, ISO\
+            \ 8859-1,\n JIS X 0201, and Unicode are examples of coded character sets.\n\
+            \n  Some standards have defined a character set to be simply a\n set of\
+            \ abstract characters without an associated assigned numbering.\n An alphabet\
+            \ is an example of such a character set.  However, the subtle\n distinction\
+            \ between character set and coded character set\n is rarely used in practice;\
+            \ the former has become a short form for the\n latter, including in the\
+            \ Java API specification.\n\n  A character-encoding scheme is a mapping\
+            \ between one or more\n coded character sets and a set of octet (eight-bit\
+            \ byte) sequences.\n UTF-8, UTF-16, ISO 2022, and EUC are examples of\n\
+            \ character-encoding schemes.  Encoding schemes are often associated with\n\
+            \ a particular coded character set; UTF-8, for example, is used only to\n\
+            \ encode Unicode.  Some schemes, however, are associated with multiple\n\
+            \ coded character sets; EUC, for example, can be used to encode\n characters\
+            \ in a variety of Asian coded character sets.\n\n  When a coded character\
+            \ set is used exclusively with a single\n character-encoding scheme then\
+            \ the corresponding charset is usually\n named for the coded character\
+            \ set; otherwise a charset is usually named\n for the encoding scheme\
+            \ and, possibly, the locale of the coded\n character sets that it supports.\
+            \  Hence US-ASCII is both the\n name of a coded character set and of the\
+            \ charset that encodes it, while\n EUC-JP is the name of the charset that\
+            \ encodes the\n JIS X 0201, JIS X 0208, and JIS X 0212\n coded character\
+            \ sets for the Japanese language.\n\n  The native character encoding of\
+            \ the Java programming language is\n UTF-16.  A charset in the Java platform\
+            \ therefore defines a mapping\n between sequences of sixteen-bit UTF-16\
+            \ code units (that is, sequences\n of chars) and sequences of bytes."
+          fields:
+            aliasSet:
+              name: aliasSet
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+            aliases:
+              name: aliases
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String[]
+            name:
+              name: name
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+          staticFields:
+            cache1:
+              name: cache1
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            cache2:
+              name: cache2
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            defaultCharset:
+              name: defaultCharset
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+            gate:
+              name: gate
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ThreadLocal
+                full: java.lang.ThreadLocal<java.lang.ThreadLocal<?>>
+            standardProvider:
+              name: standardProvider
+              modifiers:
+              - private
+              - static
+              type:
+                basic: CharsetProvider
+                full: java.nio.charset.spi.CharsetProvider
+            zeroAliases:
+              name: zeroAliases
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: canonicalName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The canonical name of this charset
+            - name: aliases
+              type:
+                basic: String
+                full: java.lang.String[]
+              notes: An array of this charset's aliases, or null if it has no aliases
+            notes: "Initializes a new charset with the given canonical name and alias\n\
+              \ set."
+          methods:
           - name: aliases
             modifiers:
             - public
             - final
             return:
               type:
-                basic: Set<String>
+                basic: Set
                 full: java.util.Set<java.lang.String>
+              notes: An immutable set of this charset's aliases
+            notes: Returns a set containing this charset's aliases.
           - name: canEncode
             modifiers:
             - public
@@ -28,39 +229,40 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
+              notes: true if, and only if, this charset supports encoding
+            notes: "Tells whether or not this charset supports encoding.\n\n  Nearly\
+              \ all charsets support encoding.  The primary exceptions are\n special-purpose\
+              \ auto-detect charsets whose decoders can determine\n which of several\
+              \ possible encoding schemes is in use by examining the\n input byte\
+              \ sequence.  Such charsets do not support encoding because\n there is\
+              \ no way to determine which encoding should be used on output.\n Implementations\
+              \ of such charsets should override this method to return\n false."
           - name: compareTo
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: that
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: The charset to which this charset is to be compared
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "A negative integer, zero, or a positive integer as this charset\n\
+                \         is less than, equal to, or greater than the specified charset"
+            notes: "Compares this charset to another.\n\n  Charsets are ordered by\
+              \ their canonical names, without regard to\n case."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -68,28 +270,56 @@ languages:
           - name: contains
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: cs
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: The given charset
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the given charset is contained in this charset
+            notes: "Tells whether or not this charset contains the given charset.\n\
+              \n  A charset C is said to contain a charset D if,\n and only if, every\
+              \ character representable in D is also\n representable in C.  If this\
+              \ relationship holds then it is\n guaranteed that every string that\
+              \ can be encoded in D can also be\n encoded in C without performing\
+              \ any replacements.\n\n  That C contains D does not imply that each\
+              \ character\n representable in C by a particular byte sequence is represented\n\
+              \ in D by the same byte sequence, although sometimes this is the\n case.\n\
+              \n  Every charset contains itself.\n\n  This method computes an approximation\
+              \ of the containment relation:\n If it returns true then the given charset\
+              \ is known to be\n contained by this charset; if it returns false, however,\
+              \ then\n it is not necessarily the case that the given charset is not\
+              \ contained\n in this charset."
           - name: decode
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: bb
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The byte buffer to be decoded
             return:
               type:
                 basic: CharBuffer
                 full: java.nio.CharBuffer
+              notes: A char buffer containing the decoded characters
+            notes: "Convenience method that decodes bytes in this charset into Unicode\n\
+              \ characters.\n\n  An invocation of this method upon a charset cs returns\
+              \ the\n same result as the expression\n\n \n     cs.newDecoder()\n \
+              \      .onMalformedInput(CodingErrorAction.REPLACE)\n       .onUnmappableCharacter(CodingErrorAction.REPLACE)\n\
+              \       .decode(bb); \n\n except that it is potentially more efficient\
+              \ because it can cache\n decoders between successive invocations.\n\n\
+              \  This method always replaces malformed-input and unmappable-character\n\
+              \ sequences with this charset's default replacement byte array.  In\
+              \ order\n to detect such sequences, use the CharsetDecoder.decode(java.nio.ByteBuffer)\
+              \ method directly."
           - name: displayName
             modifiers:
             - public
@@ -97,57 +327,91 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The display name of this charset in the default locale
+            notes: "Returns this charset's human-readable name for the default locale.\n\
+              \n  The default implementation of this method simply returns this\n\
+              \ charset's canonical name.  Concrete subclasses of this class may\n\
+              \ override this method in order to provide a localized display name."
           - name: displayName
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: locale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: The locale for which the display name is to be retrieved
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The display name of this charset in the given locale
+            notes: "Returns this charset's human-readable name for the given locale.\n\
+              \n  The default implementation of this method simply returns this\n\
+              \ charset's canonical name.  Concrete subclasses of this class may\n\
+              \ override this method in order to provide a localized display name."
           - name: encode
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-          - name: encode
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
+            - name: cb
               type:
                 basic: CharBuffer
                 full: java.nio.CharBuffer
+              notes: The char buffer to be encoded
             return:
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: A byte buffer containing the encoded characters
+            notes: "Convenience method that encodes Unicode characters into bytes\
+              \ in this\n charset.\n\n  An invocation of this method upon a charset\
+              \ cs returns the\n same result as the expression\n\n \n     cs.newEncoder()\n\
+              \       .onMalformedInput(CodingErrorAction.REPLACE)\n       .onUnmappableCharacter(CodingErrorAction.REPLACE)\n\
+              \       .encode(bb); \n\n except that it is potentially more efficient\
+              \ because it can cache\n encoders between successive invocations.\n\n\
+              \  This method always replaces malformed-input and unmappable-character\n\
+              \ sequences with this charset's default replacement string.  In order\
+              \ to\n detect such sequences, use the CharsetEncoder.encode(java.nio.CharBuffer)\
+              \ method directly."
+          - name: encode
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: str
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The string to be encoded
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: A byte buffer containing the encoded characters
+            notes: "Convenience method that encodes a string into bytes in this charset.\n\
+              \n  An invocation of this method upon a charset cs returns the\n same\
+              \ result as the expression\n\n \n     cs.encode(CharBuffer.wrap(s));"
           - name: equals
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: ob
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the reference object with which to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this charset is equal to the\n       \
+                \   given object"
+            notes: "Tells whether or not this object is equal to another.\n\n  Two\
+              \ charsets are equal if, and only if, they have the same canonical\n\
+              \ names.  A charset is never equal to any other type of object."
           - name: hashCode
             modifiers:
             - public
@@ -156,6 +420,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: An integer hashcode
+            notes: Computes a hashcode for this charset.
           - name: isRegistered
             modifiers:
             - public
@@ -164,6 +430,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this charset is known by its\n       \
+                \   implementor to be registered with the IANA"
+            notes: "Tells whether or not this charset is registered in the IANA Charset\n\
+              \ Registry."
           - name: name
             modifiers:
             - public
@@ -172,20 +442,36 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The canonical name of this charset
+            notes: Returns this charset's canonical name.
           - name: newDecoder
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: CharsetDecoder
                 full: java.nio.charset.CharsetDecoder
+              notes: A new decoder for this charset
+            notes: Constructs a new decoder for this charset.
           - name: newEncoder
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: CharsetEncoder
                 full: java.nio.charset.CharsetEncoder
+              notes: A new encoder for this charset
+            notes: Constructs a new encoder for this charset.
+          - name: toString
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: availableCharsets
             modifiers:
@@ -193,8 +479,56 @@ languages:
             - static
             return:
               type:
-                basic: SortedMap<String, Charset>
+                basic: SortedMap
                 full: java.util.SortedMap<java.lang.String, java.nio.charset.Charset>
+              notes: "An immutable, case-insensitive map from canonical charset names\n\
+                \         to charset objects"
+            notes: "Constructs a sorted map from canonical charset names to charset\
+              \ objects.\n\n  The map returned by this method will have one entry\
+              \ for each charset\n for which support is available in the current Java\
+              \ virtual machine.  If\n two or more supported charsets have the same\
+              \ canonical name then the\n resulting map will contain just one of them;\
+              \ which one it will contain\n is not specified. \n\n  The invocation\
+              \ of this method, and the subsequent use of the\n resulting map, may\
+              \ cause time-consuming disk or network I/O operations\n to occur.  This\
+              \ method is provided for applications that need to\n enumerate all of\
+              \ the available charsets, for example to allow user\n charset selection.\
+              \  This method is not used by the forName method, which instead employs\
+              \ an efficient incremental lookup\n algorithm.\n\n  This method may\
+              \ return different results at different times if new\n charset providers\
+              \ are dynamically made available to the current Java\n virtual machine.\
+              \  In the absence of such changes, the charsets returned\n by this method\
+              \ are exactly those that can be retrieved via the forName method."
+          - name: cache
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkName
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
           - name: defaultCharset
             modifiers:
             - public
@@ -203,9 +537,49 @@ languages:
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: A charset object for the default charset
+            notes: "Returns the default charset of this Java virtual machine.\n\n\
+              \  The default charset is determined during virtual-machine startup\
+              \ and\n typically depends upon the locale and charset of the underlying\n\
+              \ operating system."
           - name: forName
             modifiers:
             - public
+            - static
+            parameters:
+            - name: charsetName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The name of the requested charset; may be either\n         a\
+                \ canonical name or an alias"
+            return:
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+              notes: A charset object for the named charset
+            notes: Returns a charset object for the named charset.
+          - name: isSupported
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: charsetName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The name of the requested charset; may be either\n         a\
+                \ canonical name or an alias"
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if, and only if, support for the named charset\n      \
+                \    is available in the current Java virtual machine"
+            notes: Tells whether the named charset is supported.
+          - name: lookup
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -216,9 +590,9 @@ languages:
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
-          - name: isSupported
+          - name: lookup2
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
@@ -227,7 +601,56 @@ languages:
                 full: java.lang.String
             return:
               type:
-                basic: boolean
-                full: boolean
-          javaType: class
-          extends: Object
+                basic: Charset
+                full: java.nio.charset.Charset
+          - name: lookupExtendedCharset
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+          - name: lookupViaProviders
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+          - name: providers
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: Iterator
+                full: java.util.Iterator<java.nio.charset.spi.CharsetProvider>
+          - name: put
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Iterator
+                full: java.util.Iterator<java.nio.charset.Charset>
+            - name: arg1
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.nio.charset.Charset>
+            return:
+              type:
+                basic: void
+                full: void

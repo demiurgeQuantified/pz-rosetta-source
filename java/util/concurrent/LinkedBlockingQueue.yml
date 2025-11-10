@@ -4,39 +4,123 @@ languages:
     packages:
       java.util.concurrent:
         LinkedBlockingQueue:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.util.AbstractQueue<E>
+          modifiers:
+          - public
+          notes: "An optionally-bounded blocking queue based on\n linked nodes.\n\
+            \ This queue orders elements FIFO (first-in-first-out).\n The head of\
+            \ the queue is that element that has been on the\n queue the longest time.\n\
+            \ The tail of the queue is that element that has been on the\n queue the\
+            \ shortest time. New elements\n are inserted at the tail of the queue,\
+            \ and the queue retrieval\n operations obtain elements at the head of\
+            \ the queue.\n Linked queues typically have higher throughput than array-based\
+            \ queues but\n less predictable performance in most concurrent applications.\n\
+            \n The optional capacity bound constructor argument serves as a\n way\
+            \ to prevent excessive queue expansion. The capacity, if unspecified,\n\
+            \ is equal to Integer.MAX_VALUE.  Linked nodes are\n dynamically created\
+            \ upon each insertion unless this would bring the\n queue above capacity.\n\
+            \n This class and its iterator implement all of the optional\n methods\
+            \ of the Collection and Iterator interfaces.\n\n This class is a member\
+            \ of the\n \n Java Collections Framework."
+          fields:
+            capacity:
+              name: capacity
+              modifiers:
+              - private
               type:
                 basic: int
                 full: int
+            count:
+              name: count
+              modifiers:
+              - private
+              type:
+                basic: AtomicInteger
+                full: java.util.concurrent.atomic.AtomicInteger
+            head:
+              name: head
+              modifiers:
+              - package
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            last:
+              name: last
+              modifiers:
+              - private
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            notEmpty:
+              name: notEmpty
+              modifiers:
+              - private
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+            notFull:
+              name: notFull
+              modifiers:
+              - private
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+            putLock:
+              name: putLock
+              modifiers:
+              - private
+              type:
+                basic: ReentrantLock
+                full: java.util.concurrent.locks.ReentrantLock
+            takeLock:
+              name: takeLock
+              modifiers:
+              - private
+              type:
+                basic: ReentrantLock
+                full: java.util.concurrent.locks.ReentrantLock
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: "Creates a LinkedBlockingQueue with a capacity of\n Integer.MAX_VALUE."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: capacity
               type:
-                basic: Collection<? extends E>
+                basic: int
+                full: int
+              notes: the capacity of this queue
+            notes: Creates a LinkedBlockingQueue with the given (fixed) capacity.
+          - modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: Collection
                 full: java.util.Collection<? extends E>
+              notes: the collection of elements to initially contain
+            notes: "Creates a LinkedBlockingQueue with a capacity of\n Integer.MAX_VALUE,\
+              \ initially containing the elements of the\n given collection,\n added\
+              \ in traversal order of the collection's iterator."
           methods:
-          - name: __toString__
+          - name: bulkRemove
             modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-          - name: add
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: E
-                full: E
+                basic: Predicate
+                full: java.util.function.Predicate<? super E>
             return:
               type:
                 basic: boolean
@@ -48,94 +132,135 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Atomically removes all of the elements from this queue.\n The\
+              \ queue will be empty after this call returns."
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: object to be checked for containment in this queue
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: contains
+              notes: true if this queue contains the specified element
+            notes: "Returns true if this queue contains the specified element.\n More\
+              \ formally, returns true if and only if this queue contains\n at least\
+              \ one element e such that o.equals(e)."
+          - name: dequeue
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
+            - private
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: E
+                full: E
           - name: drainTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<? super E>
+                basic: Collection
                 full: java.util.Collection<? super E>
-            return:
-              type:
-                basic: int
-                full: int
-          - name: drainTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<? super E>
-                full: java.util.Collection<? super E>
+              notes: the collection to transfer elements into
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of elements transferred
+            notes: 'Description copied from interface: BlockingQueue'
           - name: drainTo
             modifiers:
             - public
             parameters:
+            - name: c
+              type:
+                basic: Collection
+                full: java.util.Collection<? super E>
+              notes: the collection to transfer elements into
+            - name: maxElements
+              type:
+                basic: int
+                full: int
+              notes: the maximum number of elements to transfer
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of elements transferred
+            notes: 'Description copied from interface: BlockingQueue'
+          - name: enqueue
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: Collection<? super E>
-                full: java.util.Collection<? super E>
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: findPred
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
             - name: arg1
               type:
-                basic: int
-                full: int
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
             return:
               type:
-                basic: int
-                full: int
-          - name: drainTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<? super E>
-                full: java.util.Collection<? super E>
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: int
-                full: int
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
           - name: forEach
             modifiers:
             - public
             parameters:
+            - name: action
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super E>
+              notes: The action to be performed for each element
+            return:
+              type:
+                basic: void
+                full: void
+            notes: 'Description copied from interface: Iterable'
+          - name: forEachFrom
+            modifiers:
+            - package
+            parameters:
             - name: arg0
               type:
-                basic: Consumer<? super E>
+                basic: Consumer
                 full: java.util.function.Consumer<? super E>
+            - name: arg1
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: fullyLock
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: fullyUnlock
+            modifiers:
+            - package
             return:
               type:
                 basic: void
@@ -145,72 +270,61 @@ languages:
             - public
             return:
               type:
-                basic: Iterator<E>
+                basic: Iterator
                 full: java.util.Iterator<E>
+              notes: an iterator over the elements in this queue in proper sequence
+            notes: "Returns an iterator over the elements in this queue in proper\
+              \ sequence.\n The elements will be returned in order from first (head)\
+              \ to last (tail).\n\n The returned iterator is\n weakly consistent."
           - name: offer
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offer
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offer
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
+              notes: the element to add
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg2
+              notes: "how long to wait before giving up, in units of\n        unit"
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if successful, or false if\n         the specified waiting\
+                \ time elapses before space is available"
+            notes: "Inserts the specified element at the tail of this queue, waiting\
+              \ if\n necessary up to the specified wait time for space to become available."
           - name: offer
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
-            - name: arg1
-              type:
-                basic: long
-                full: long
-            - name: arg2
-              type:
-                basic: TimeUnit
-                full: java.util.concurrent.TimeUnit
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the element was added to this queue, else\n        \
+                \ false"
+            notes: "Inserts the specified element at the tail of this queue if it\
+              \ is\n possible to do so immediately without exceeding the queue's capacity,\n\
+              \ returning true upon success and false if this queue\n is full.\n When\
+              \ using a capacity-restricted queue, this method is generally\n preferable\
+              \ to method add, which can fail to\n insert an element only by throwing\
+              \ an exception."
           - name: peek
             modifiers:
             - public
@@ -218,65 +332,62 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: poll
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this queue, or null if this queue is empty
+            notes: 'Description copied from interface: Queue'
           - name: poll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "how long to wait before giving up, in units of\n        unit"
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
             return:
               type:
                 basic: E
                 full: E
+              notes: "the head of this queue, or null if the\n         specified waiting\
+                \ time elapses before an element is available"
+            notes: 'Description copied from interface: BlockingQueue'
           - name: poll
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TimeUnit
-                full: java.util.concurrent.TimeUnit
             return:
               type:
                 basic: E
                 full: E
+              notes: the head of this queue, or null if this queue is empty
+            notes: 'Description copied from interface: Queue'
           - name: put
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: void
                 full: void
-          - name: put
+            notes: "Inserts the specified element at the tail of this queue, waiting\
+              \ if\n necessary for space to become available."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: E
-                full: E
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -288,73 +399,93 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: remainingCapacity
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the remaining capacity
+            notes: "Returns the number of additional elements that this queue can\
+              \ ideally\n (in the absence of memory or resource constraints) accept\
+              \ without\n blocking. This is always equal to the initial capacity of\
+              \ this queue\n less the current size of this queue.\n\n Note that you\
+              \ cannot always tell if an attempt to insert\n an element will succeed\
+              \ by inspecting remainingCapacity\n because it may be the case that\
+              \ another thread is about to\n insert or remove an element."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this queue, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if this queue changed as a result of the call
+            notes: "Removes a single instance of the specified element from this queue,\n\
+              \ if it is present.  More formally, removes an element e such\n that\
+              \ o.equals(e), if this queue contains one or more such\n elements.\n\
+              \ Returns true if this queue contained the specified element\n (or equivalently,\
+              \ if this queue changed as a result of the call)."
           - name: removeAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<?>
+                basic: Collection
                 full: java.util.Collection<?>
+              notes: collection containing elements to be removed from this collection
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this collection changed as a result of the\n       \
+                \  call"
+            notes: 'Description copied from class: AbstractCollection'
           - name: removeIf
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: filter
               type:
-                basic: Predicate<? super E>
+                basic: Predicate
                 full: java.util.function.Predicate<? super E>
+              notes: "a predicate which returns true for elements to be\n        removed"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if any elements were removed
+            notes: 'Description copied from interface: Collection'
           - name: retainAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<?>
+                basic: Collection
                 full: java.util.Collection<?>
+              notes: collection containing elements to be retained in this collection
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this collection changed as a result of the call
+            notes: 'Description copied from class: AbstractCollection'
+          - name: signalNotEmpty
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: signalNotFull
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: size
             modifiers:
             - public
@@ -362,13 +493,31 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of elements in this queue
+            notes: Returns the number of elements in this queue.
           - name: spliterator
             modifiers:
             - public
             return:
               type:
-                basic: Spliterator<E>
+                basic: Spliterator
                 full: java.util.Spliterator<E>
+              notes: a Spliterator over the elements in this queue
+            notes: "Returns a Spliterator over the elements in this queue.\n\n The\
+              \ returned spliterator is\n weakly consistent.\n\n The Spliterator reports\
+              \ Spliterator.CONCURRENT,\n Spliterator.ORDERED, and Spliterator.NONNULL."
+          - name: succ
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            return:
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
           - name: take
             modifiers:
             - public
@@ -376,31 +525,121 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: take
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this queue
+            notes: 'Description copied from interface: BlockingQueue'
           - name: toArray
             modifiers:
             - public
             return:
               type:
-                basic: T[]
-                full: T[]
+                basic: Object
+                full: java.lang.Object[]
+              notes: an array containing all of the elements in this queue
+            notes: "Returns an array containing all of the elements in this queue,\
+              \ in\n proper sequence.\n\n The returned array will be \"safe\" in that\
+              \ no references to it are\n maintained by this queue.  (In other words,\
+              \ this method must allocate\n a new array).  The caller is thus free\
+              \ to modify the returned array.\n\n This method acts as bridge between\
+              \ array-based and collection-based\n APIs."
           - name: toArray
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: a
               type:
-                basic: T[]
+                basic: T
                 full: T[]
+              notes: "the array into which the elements of the queue are to\n    \
+                \      be stored, if it is big enough; otherwise, a new array of the\n\
+                \          same runtime type is allocated for this purpose"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          javaType: class
-          extends: AbstractQueue<E>
+              notes: an array containing all of the elements in this queue
+            notes: "Returns an array containing all of the elements in this queue,\
+              \ in\n proper sequence; the runtime type of the returned array is that\
+              \ of\n the specified array.  If the queue fits in the specified array,\
+              \ it\n is returned therein.  Otherwise, a new array is allocated with\
+              \ the\n runtime type of the specified array and the size of this queue.\n\
+              \n If this queue fits in the specified array with room to spare\n (i.e.,\
+              \ the array has more elements than this queue), the element in\n the\
+              \ array immediately following the end of the queue is set to\n null.\n\
+              \n Like the toArray() method, this method acts as bridge between\n array-based\
+              \ and collection-based APIs.  Further, this method allows\n precise\
+              \ control over the runtime type of the output array, and may,\n under\
+              \ certain circumstances, be used to save allocation costs.\n\n Suppose\
+              \ x is a queue known to contain only strings.\n The following code can\
+              \ be used to dump the queue into a newly\n allocated array of String:\n\
+              \n  <code>String[] y = x.toArray(new String[0]);</code>\n\n Note that\
+              \ toArray(new Object[0]) is identical in function to\n toArray()."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: unlink
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            - name: arg1
+              type:
+                basic: LinkedBlockingQueue.Node
+                full: java.util.concurrent.LinkedBlockingQueue$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: lambda$removeAll$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$retainAll$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean

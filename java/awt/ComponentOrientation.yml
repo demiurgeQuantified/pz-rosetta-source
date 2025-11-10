@@ -4,37 +4,116 @@ languages:
     packages:
       java.awt:
         ComponentOrientation:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "The ComponentOrientation class encapsulates the language-sensitive\n\
+            \ orientation that is to be used to order the elements of a component\n\
+            \ or of text. It is used to reflect the differences in this ordering\n\
+            \ between Western alphabets, Middle Eastern (such as Hebrew), and Far\n\
+            \ Eastern (such as Japanese).\n \n Fundamentally, this governs items (such\
+            \ as characters) which are laid out\n in lines, with the lines then laid\
+            \ out in a block. This also applies\n to items in a widget: for example,\
+            \ in a check box where the box is\n positioned relative to the text.\n\
+            \ \n There are four different orientations used in modern languages\n\
+            \ as in the following table.\n \n LT          RT          TL         \
+            \ TR\n A B C       C B A       A D G       G D A\n D E F       F E D \
+            \      B E H       H E B\n G H I       I H G       C F I       I F C\n\
+            \ \n (In the header, the two-letter abbreviation represents the item direction\n\
+            \ in the first letter, and the line direction in the second. For example,\n\
+            \ LT means \"items left-to-right, lines top-to-bottom\",\n TL means \"\
+            items top-to-bottom, lines left-to-right\", and so on.)\n \n The orientations\
+            \ are:\n \n LT - Western Europe (optional for Japanese, Chinese, Korean)\n\
+            \ RT - Middle East (Arabic, Hebrew)\n TR - Japanese, Chinese, Korean\n\
+            \ TL - Mongolian\n \n Components whose view and controller code depends\
+            \ on orientation\n should use the isLeftToRight() and\n isHorizontal()\
+            \ methods to\n determine their behavior. They should not include switch-like\n\
+            \ code that keys off of the constants, such as:\n \n if (orientation ==\
+            \ LEFT_TO_RIGHT) {\n   ...\n } else if (orientation == RIGHT_TO_LEFT)\
+            \ {\n   ...\n } else {\n   // Oops\n }\n \n This is unsafe, since more\
+            \ constants may be added in the future and\n since it is not guaranteed\
+            \ that orientation objects will be unique."
+          fields:
+            orientation:
+              name: orientation
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
+            HORIZ_BIT:
+              name: HORIZ_BIT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             LEFT_TO_RIGHT:
               name: LEFT_TO_RIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: ComponentOrientation
                 full: java.awt.ComponentOrientation
-                nullable: true
+              notes: "Items run left to right and lines flow top to bottom\n Examples:\
+                \ English, French."
+            LTR_BIT:
+              name: LTR_BIT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             RIGHT_TO_LEFT:
               name: RIGHT_TO_LEFT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: ComponentOrientation
                 full: java.awt.ComponentOrientation
-                nullable: true
+              notes: "Items run right to left and lines flow top to bottom\n Examples:\
+                \ Arabic, Hebrew."
             UNKNOWN:
               name: UNKNOWN
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: ComponentOrientation
                 full: java.awt.ComponentOrientation
-                nullable: true
+              notes: "Indicates that a component's orientation has not been set.\n\
+                \ To preserve the behavior of existing applications,\n isLeftToRight\
+                \ will return true for this value."
+            UNK_BIT:
+              name: UNK_BIT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
           methods:
           - name: isHorizontal
             modifiers:
@@ -43,6 +122,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this orientation has horizontal lines
+            notes: "Are lines horizontal?\n This will return true for horizontal,\
+              \ left-to-right writing\n systems such as Roman."
           - name: isLeftToRight
             modifiers:
             - public
@@ -50,33 +132,45 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this orientation is left-to-right
+            notes: "HorizontalLines: Do items run left-to-right?\n Vertical Lines:\
+              \  Do lines run left-to-right?\n This will return true for horizontal,\
+              \ left-to-right writing\n systems such as Roman."
           staticMethods:
           - name: getOrientation
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: locale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: the specified locale
             return:
               type:
                 basic: ComponentOrientation
                 full: java.awt.ComponentOrientation
+              notes: the orientation for the locale
+            notes: Returns the orientation that is appropriate for the given locale.
           - name: getOrientation
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: bdl
               type:
                 basic: ResourceBundle
                 full: java.util.ResourceBundle
+              notes: the bundle to use
             return:
               type:
                 basic: ComponentOrientation
                 full: java.awt.ComponentOrientation
-            deprecated: true
-          javaType: class
-          extends: Object
+              notes: the orientation
+            notes: "Returns the orientation appropriate for the given ResourceBundle's\n\
+              \ localization.  Three approaches are tried, in the following order:\n\
+              \ \n Retrieve a ComponentOrientation object from the ResourceBundle\n\
+              \      using the string \"Orientation\" as the key.\n Use the ResourceBundle.getLocale\
+              \ to determine the bundle's\n      locale, then return the orientation\
+              \ for that locale.\n Return the default locale's orientation."

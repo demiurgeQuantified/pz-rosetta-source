@@ -4,27 +4,180 @@ languages:
     packages:
       java.text:
         NumberFormat:
+          extends: java.text.Format
+          modifiers:
+          - public
+          - abstract
+          fields:
+            groupingUsed:
+              name: groupingUsed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            maxFractionDigits:
+              name: maxFractionDigits
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte
+            maxIntegerDigits:
+              name: maxIntegerDigits
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte
+            maximumFractionDigits:
+              name: maximumFractionDigits
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            maximumIntegerDigits:
+              name: maximumIntegerDigits
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            minFractionDigits:
+              name: minFractionDigits
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte
+            minIntegerDigits:
+              name: minIntegerDigits
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte
+            minimumFractionDigits:
+              name: minimumFractionDigits
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            minimumIntegerDigits:
+              name: minimumIntegerDigits
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            parseIntegerOnly:
+              name: parseIntegerOnly
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            serialVersionOnStream:
+              name: serialVersionOnStream
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
+            COMPACTSTYLE:
+              name: COMPACTSTYLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            CURRENCYSTYLE:
+              name: CURRENCYSTYLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             FRACTION_FIELD:
               name: FRACTION_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field constant used to construct a FieldPosition object. Signifies\
+                \ that\n the position of the fraction part of a formatted number should\
+                \ be returned."
+            INTEGERSTYLE:
+              name: INTEGERSTYLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             INTEGER_FIELD:
               name: INTEGER_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field constant used to construct a FieldPosition object. Signifies\
+                \ that\n the position of the integer part of a formatted number should\
+                \ be returned."
+            NUMBERSTYLE:
+              name: NUMBERSTYLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            PERCENTSTYLE:
+              name: PERCENTSTYLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SCIENTIFICSTYLE:
+              name: SCIENTIFICSTYLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            currentSerialVersion:
+              name: currentSerialVersion
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - package
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Sole constructor.  (For invocation by subclass constructors, typically\n\
+              \ implicit.)"
           methods:
           - name: clone
             modifiers:
@@ -33,22 +186,27 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a clone of this instance.
+            notes: Overrides Cloneable.
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the reference object with which to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: format
+              notes: "true if this object is the same as the obj\n          argument;\
+                \ false otherwise."
+            notes: Overrides equals.
+          - name: fastFormat
             modifiers:
-            - public
-            - final
+            - package
             parameters:
             - name: arg0
               type:
@@ -61,76 +219,141 @@ languages:
           - name: format
             modifiers:
             - public
-            - final
             parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-          - name: format
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-            - name: arg2
-              type:
-                basic: FieldPosition
-                full: java.text.FieldPosition
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: format
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: number
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the number to format
+            - name: toAppendTo
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
-            - name: arg2
+              notes: "the StringBuffer to which the formatted\n                  \
+                \ text is to be appended"
+            - name: pos
               type:
                 basic: FieldPosition
                 full: java.text.FieldPosition
+              notes: "keeps track on the position of the field within the\n      \
+                \             returned string. For example, for formatting a number\n\
+                \                   1234567.89 in Locale.US locale,\n            \
+                \       if the given fieldPosition is\n                   INTEGER_FIELD,\
+                \ the begin index\n                   and end index of fieldPosition\
+                \ will be set\n                   to 0 and 9, respectively for the\
+                \ output string\n                   1,234,567.89."
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: the value passed in as toAppendTo
+            notes: "Formats a number and appends the resulting text to the given string\n\
+              \ buffer.\n The number can be of any subclass of Number.\n \n This implementation\
+              \ extracts the number's value using\n Number.longValue() for all integral\
+              \ type values that\n can be converted to long without loss of information,\n\
+              \ including BigInteger values with a\n bit length of less than 64,\n\
+              \ and Number.doubleValue() for all other types. It\n then calls\n format(long,java.lang.StringBuffer,java.text.FieldPosition)\n\
+              \ or format(double,java.lang.StringBuffer,java.text.FieldPosition).\n\
+              \ This may result in loss of magnitude information and precision for\n\
+              \ BigInteger and BigDecimal values."
           - name: format
             modifiers:
             - public
+            - final
             parameters:
-            - name: arg0
+            - name: number
+              type:
+                basic: double
+                full: double
+              notes: the double number to format
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the formatted String
+            notes: Specialization of format.
+          - name: format
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: number
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the long number to format
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the formatted String
+            notes: Specialization of format.
+          - name: format
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: number
+              type:
+                basic: double
+                full: double
+              notes: the double number to format
+            - name: toAppendTo
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
-            - name: arg2
+              notes: "the StringBuffer to which the formatted text is to be\n    \
+                \               appended"
+            - name: pos
               type:
                 basic: FieldPosition
                 full: java.text.FieldPosition
+              notes: "keeps track on the position of the field within the\n      \
+                \             returned string. For example, for formatting a number\n\
+                \                   1234567.89 in Locale.US locale,\n            \
+                \       if the given fieldPosition is\n                   INTEGER_FIELD,\
+                \ the begin index\n                   and end index of fieldPosition\
+                \ will be set\n                   to 0 and 9, respectively for the\
+                \ output string\n                   1,234,567.89."
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: the formatted StringBuffer
+            notes: Specialization of format.
+          - name: format
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: number
+              type:
+                basic: long
+                full: long
+              notes: the long number to format
+            - name: toAppendTo
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: "the StringBuffer to which the formatted text is to be\n    \
+                \               appended"
+            - name: pos
+              type:
+                basic: FieldPosition
+                full: java.text.FieldPosition
+              notes: "keeps track on the position of the field within the\n      \
+                \             returned string. For example, for formatting a number\n\
+                \                   123456789 in Locale.US locale,\n             \
+                \      if the given fieldPosition is\n                   INTEGER_FIELD,\
+                \ the begin index\n                   and end index of fieldPosition\
+                \ will be set\n                   to 0 and 11, respectively for the\
+                \ output string\n                   123,456,789."
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: the formatted StringBuffer
+            notes: Specialization of format.
           - name: getCurrency
             modifiers:
             - public
@@ -138,6 +361,12 @@ languages:
               type:
                 basic: Currency
                 full: java.util.Currency
+              notes: the currency used by this number format, or null
+            notes: "Gets the currency used by this number format when formatting\n\
+              \ currency values. The initial value is derived in a locale dependent\n\
+              \ way. The returned value may be null if no valid\n currency could be\
+              \ determined and no currency has been set using\n setCurrency.\n \n\
+              \ The default implementation throws\n UnsupportedOperationException."
           - name: getMaximumFractionDigits
             modifiers:
             - public
@@ -145,6 +374,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the maximum number of digits.
+            notes: "Returns the maximum number of digits allowed in the fraction portion\
+              \ of a\n number."
           - name: getMaximumIntegerDigits
             modifiers:
             - public
@@ -152,6 +384,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the maximum number of digits
+            notes: "Returns the maximum number of digits allowed in the integer portion\
+              \ of a\n number."
           - name: getMinimumFractionDigits
             modifiers:
             - public
@@ -159,6 +394,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the minimum number of digits
+            notes: "Returns the minimum number of digits allowed in the fraction portion\
+              \ of a\n number."
           - name: getMinimumIntegerDigits
             modifiers:
             - public
@@ -166,6 +404,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the minimum number of digits
+            notes: "Returns the minimum number of digits allowed in the integer portion\
+              \ of a\n number."
           - name: getRoundingMode
             modifiers:
             - public
@@ -173,6 +414,11 @@ languages:
               type:
                 basic: RoundingMode
                 full: java.math.RoundingMode
+              notes: The RoundingMode used for this NumberFormat.
+            notes: "Gets the RoundingMode used in this NumberFormat.\n The default\
+              \ implementation of this method in NumberFormat\n always throws UnsupportedOperationException.\n\
+              \ Subclasses which handle different rounding modes should override\n\
+              \ this method."
           - name: hashCode
             modifiers:
             - public
@@ -180,6 +426,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object.
+            notes: Overrides hashCode.
           - name: isGroupingUsed
             modifiers:
             - public
@@ -187,6 +435,12 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if grouping is used;\n         false otherwise"
+            notes: "Returns true if grouping is used in this format. For example,\
+              \ in the\n English locale, with grouping on, the number 1234567 might\
+              \ be formatted\n as \"1,234,567\". The grouping separator as well as\
+              \ the size of each group\n is locale dependent and is determined by\
+              \ sub-classes of NumberFormat."
           - name: isParseIntegerOnly
             modifiers:
             - public
@@ -194,143 +448,257 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if numbers should be parsed as integers only;\n       \
+                \  false otherwise"
+            notes: "Returns true if this format will parse numbers as integers only.\n\
+              \ For example in the English locale, with ParseIntegerOnly true, the\n\
+              \ string \"1234.\" would be parsed as the integer value 1234 and parsing\n\
+              \ would stop at the \".\" character.  Of course, the exact format accepted\n\
+              \ by the parse operation is locale dependent and determined by sub-classes\n\
+              \ of NumberFormat."
           - name: parse
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: String
                 full: java.lang.String
-            return:
-              type:
-                basic: Number
-                full: java.lang.Number
-          - name: parse
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
+              notes: the String to parse
+            - name: parsePosition
               type:
                 basic: ParsePosition
                 full: java.text.ParsePosition
+              notes: the parse position
             return:
               type:
                 basic: Number
                 full: java.lang.Number
+              notes: the parsed value
+            notes: "Returns a Long if possible (e.g., within the range [Long.MIN_VALUE,\n\
+              \ Long.MAX_VALUE] and with no decimals), otherwise a Double.\n If IntegerOnly\
+              \ is set, will stop at a decimal\n point (or equivalent; e.g., for rational\
+              \ numbers \"1 2/3\", will stop\n after the 1).\n Does not throw an exception;\
+              \ if no object can be parsed, index is\n unchanged!"
+          - name: parse
+            modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: A String whose beginning should be parsed.
+            return:
+              type:
+                basic: Number
+                full: java.lang.Number
+              notes: A Number parsed from the string.
+            notes: "Parses text from the beginning of the given string to produce\
+              \ a number.\n The method may not use the entire text of the given string.\n\
+              \ \n See the parse(String, ParsePosition) method for more information\n\
+              \ on number parsing."
           - name: parseObject
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: A String, part of which should be parsed.
+            - name: pos
               type:
                 basic: ParsePosition
                 full: java.text.ParsePosition
+              notes: "A ParsePosition object with index and error\n            index\
+                \ information as described above."
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "A Number parsed from the string. In case of\n         error,\
+                \ returns null."
+            notes: "Parses text from a string to produce a Number.\n \n The method\
+              \ attempts to parse text starting at the index given by\n pos.\n If\
+              \ parsing succeeds, then the index of pos is updated\n to the index\
+              \ after the last character used (parsing does not necessarily\n use\
+              \ all characters up to the end of the string), and the parsed\n number\
+              \ is returned. The updated pos can be used to\n indicate the starting\
+              \ point for the next call to this method.\n If an error occurs, then\
+              \ the index of pos is not\n changed, the error index of pos is set to\
+              \ the index of\n the character where the error occurred, and null is\
+              \ returned.\n \n See the parse(String, ParsePosition) method for more\
+              \ information\n on number parsing."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: setCurrency
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: currency
               type:
                 basic: Currency
                 full: java.util.Currency
+              notes: the new currency to be used by this number format
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the currency used by this number format when formatting\n\
+              \ currency values. This does not update the minimum or maximum\n number\
+              \ of fraction digits used by the number format.\n \n The default implementation\
+              \ throws\n UnsupportedOperationException."
           - name: setGroupingUsed
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if grouping is used;\n                 false otherwise"
             return:
               type:
                 basic: void
                 full: void
+            notes: Set whether or not grouping will be used in this format.
           - name: setMaximumFractionDigits
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: int
                 full: int
+              notes: "the maximum number of fraction digits to be shown; if\n less\
+                \ than zero, then zero is used. The concrete subclass may enforce\
+                \ an\n upper limit to this value appropriate to the numeric type being\
+                \ formatted."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the maximum number of digits allowed in the fraction portion\
+              \ of a\n number. maximumFractionDigits must be &ge; minimumFractionDigits.\
+              \  If the\n new value for maximumFractionDigits is less than the current\
+              \ value\n of minimumFractionDigits, then minimumFractionDigits will\
+              \ also be set to\n the new value."
           - name: setMaximumIntegerDigits
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: int
                 full: int
+              notes: "the maximum number of integer digits to be shown; if\n less\
+                \ than zero, then zero is used. The concrete subclass may enforce\
+                \ an\n upper limit to this value appropriate to the numeric type being\
+                \ formatted."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the maximum number of digits allowed in the integer portion\
+              \ of a\n number. maximumIntegerDigits must be &ge; minimumIntegerDigits.\
+              \  If the\n new value for maximumIntegerDigits is less than the current\
+              \ value\n of minimumIntegerDigits, then minimumIntegerDigits will also\
+              \ be set to\n the new value."
           - name: setMinimumFractionDigits
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: int
                 full: int
+              notes: "the minimum number of fraction digits to be shown; if\n less\
+                \ than zero, then zero is used. The concrete subclass may enforce\
+                \ an\n upper limit to this value appropriate to the numeric type being\
+                \ formatted."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the minimum number of digits allowed in the fraction portion\
+              \ of a\n number. minimumFractionDigits must be &le; maximumFractionDigits.\
+              \  If the\n new value for minimumFractionDigits exceeds the current\
+              \ value\n of maximumFractionDigits, then maximumFractionDigits will\
+              \ also be set to\n the new value"
           - name: setMinimumIntegerDigits
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: int
                 full: int
+              notes: "the minimum number of integer digits to be shown; if\n less\
+                \ than zero, then zero is used. The concrete subclass may enforce\
+                \ an\n upper limit to this value appropriate to the numeric type being\
+                \ formatted."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the minimum number of digits allowed in the integer portion\
+              \ of a\n number. minimumIntegerDigits must be &le; maximumIntegerDigits.\
+              \  If the\n new value for minimumIntegerDigits exceeds the current value\n\
+              \ of maximumIntegerDigits, then maximumIntegerDigits will also be set\
+              \ to\n the new value"
           - name: setParseIntegerOnly
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if numbers should be parsed as integers only;\n       \
+                \       false otherwise"
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets whether or not numbers should be parsed as integers only.
           - name: setRoundingMode
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: roundingMode
               type:
                 basic: RoundingMode
                 full: java.math.RoundingMode
+              notes: The RoundingMode to be used
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the RoundingMode used in this NumberFormat.\n The default\
+              \ implementation of this method in NumberFormat always\n throws UnsupportedOperationException.\n\
+              \ Subclasses which handle different rounding modes should override\n\
+              \ this method."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
                 basic: void
@@ -342,8 +710,15 @@ languages:
             - static
             return:
               type:
-                basic: Locale[]
+                basic: Locale
                 full: java.util.Locale[]
+              notes: "An array of locales for which localized\n         NumberFormat\
+                \ instances are available."
+            notes: "Returns an array of all locales for which the\n get*Instance methods\
+              \ of this class can return\n localized instances.\n The returned array\
+              \ represents the union of locales supported by the Java\n runtime and\
+              \ by installed\n NumberFormatProvider implementations.\n It must contain\
+              \ at least a Locale instance equal to\n Locale.US."
           - name: getCompactNumberInstance
             modifiers:
             - public
@@ -352,9 +727,96 @@ languages:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
+              notes: "A NumberFormat instance for compact number\n         formatting"
+            notes: "Returns a compact number format for the default\n FORMAT locale\
+              \ with\n \"SHORT\" format style."
           - name: getCompactNumberInstance
             modifiers:
             - public
+            - static
+            parameters:
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
+            - name: formatStyle
+              type:
+                basic: NumberFormat.Style
+                full: java.text.NumberFormat$Style
+              notes: the style for formatting a number
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: "A NumberFormat instance for compact number\n         formatting"
+            notes: "Returns a compact number format for the specified locale\n and\
+              \ formatStyle."
+          - name: getCurrencyInstance
+            modifiers:
+            - public
+            - final
+            - static
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: the NumberFormat instance for currency formatting
+            notes: "Returns a currency format for the current default\n FORMAT locale.\n\
+              \ This is equivalent to calling\n getCurrencyInstance(Locale.getDefault(Locale.Category.FORMAT))."
+          - name: getCurrencyInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: inLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: the NumberFormat instance for currency formatting
+            notes: "Returns a currency format for the specified locale.\n\n If the\
+              \ specified locale contains the \"cf\" (\n \n currency format style)\n\
+              \ Unicode extension,\n the returned currency format uses the style if\
+              \ it is available.\n Otherwise, the style uses the default \"standard\"\
+              \ currency format.\n For example, if the style designates \"account\"\
+              , negative\n currency amounts use a pair of parentheses in some locales."
+          - name: getInstance
+            modifiers:
+            - public
+            - final
+            - static
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: "the NumberFormat instance for general-purpose number\n formatting"
+            notes: "Returns a general-purpose number format for the current default\n\
+              \ FORMAT locale.\n This is the same as calling\n getNumberInstance()."
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: inLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: "the NumberFormat instance for general-purpose number\n formatting"
+            notes: "Returns a general-purpose number format for the specified locale.\n\
+              \ This is the same as calling\n getNumberInstance(inLocale)."
+          - name: getInstance
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -363,52 +825,37 @@ languages:
                 full: java.util.Locale
             - name: arg1
               type:
-                basic: Style
+                basic: NumberFormat.Style
                 full: java.text.NumberFormat$Style
-            return:
+            - name: arg2
               type:
-                basic: NumberFormat
-                full: java.text.NumberFormat
-          - name: getCurrencyInstance
-            modifiers:
-            - public
-            - static
-            - final
-            return:
-              type:
-                basic: NumberFormat
-                full: java.text.NumberFormat
-          - name: getCurrencyInstance
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Locale
-                full: java.util.Locale
+                basic: int
+                full: int
             return:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
           - name: getInstance
             modifiers:
-            - public
-            - static
-            - final
-            return:
-              type:
-                basic: NumberFormat
-                full: java.text.NumberFormat
-          - name: getInstance
-            modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
+                basic: LocaleProviderAdapter
+                full: sun.util.locale.provider.LocaleProviderAdapter
+            - name: arg1
+              type:
                 basic: Locale
                 full: java.util.Locale
+            - name: arg2
+              type:
+                basic: NumberFormat.Style
+                full: java.text.NumberFormat$Style
+            - name: arg3
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: NumberFormat
@@ -416,37 +863,107 @@ languages:
           - name: getIntegerInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             return:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
+              notes: a number format for integer values
+            notes: "Returns an integer number format for the current default\n FORMAT\
+              \ locale. The\n returned number format is configured to round floating\
+              \ point numbers\n to the nearest integer using half-even rounding (see\
+              \ RoundingMode.HALF_EVEN) for formatting,\n and to parse only the integer\
+              \ part of an input string (see isParseIntegerOnly).\n This is equivalent\
+              \ to calling\n getIntegerInstance(Locale.getDefault(Locale.Category.FORMAT))."
           - name: getIntegerInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: inLocale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: the desired locale
             return:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
+              notes: a number format for integer values
+            notes: "Returns an integer number format for the specified locale. The\n\
+              \ returned number format is configured to round floating point numbers\n\
+              \ to the nearest integer using half-even rounding (see RoundingMode.HALF_EVEN)\
+              \ for formatting,\n and to parse only the integer part of an input string\
+              \ (see isParseIntegerOnly)."
+          - name: getNumberInstance
+            modifiers:
+            - public
+            - final
+            - static
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: "the NumberFormat instance for general-purpose number\n formatting"
+            notes: "Returns a general-purpose number format for the current default\n\
+              \ FORMAT locale.\n This is equivalent to calling\n getNumberInstance(Locale.getDefault(Locale.Category.FORMAT))."
           - name: getNumberInstance
             modifiers:
             - public
             - static
-            - final
+            parameters:
+            - name: inLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
             return:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
-          - name: getNumberInstance
+              notes: "the NumberFormat instance for general-purpose number\n formatting"
+            notes: Returns a general-purpose number format for the specified locale.
+          - name: getPercentInstance
             modifiers:
             - public
+            - final
+            - static
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: the NumberFormat instance for percentage formatting
+            notes: "Returns a percentage format for the current default\n FORMAT locale.\n\
+              \ This is equivalent to calling\n getPercentInstance(Locale.getDefault(Locale.Category.FORMAT))."
+          - name: getPercentInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: inLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: the NumberFormat instance for percentage formatting
+            notes: Returns a percentage format for the specified locale.
+          - name: getScientificInstance
+            modifiers:
+            - package
+            - final
+            - static
+            return:
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+          - name: getScientificInstance
+            modifiers:
+            - package
             - static
             parameters:
             - name: arg0
@@ -457,27 +974,3 @@ languages:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
-          - name: getPercentInstance
-            modifiers:
-            - public
-            - static
-            - final
-            return:
-              type:
-                basic: NumberFormat
-                full: java.text.NumberFormat
-          - name: getPercentInstance
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Locale
-                full: java.util.Locale
-            return:
-              type:
-                basic: NumberFormat
-                full: java.text.NumberFormat
-          javaType: class
-          extends: Format

@@ -4,113 +4,178 @@ languages:
     packages:
       java.awt.im:
         InputMethodHighlight:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "An InputMethodHighlight is used to describe the highlight\n attributes\
+            \ of text being composed.\n The description can be at two levels:\n at\
+            \ the abstract level it specifies the conversion state and whether the\n\
+            \ text is selected; at the concrete level it specifies style attributes\
+            \ used\n to render the highlight.\n An InputMethodHighlight must provide\
+            \ the description at the\n abstract level; it may or may not provide the\
+            \ description at the concrete\n level.\n If no concrete style is provided,\
+            \ a renderer should use\n Toolkit.mapInputMethodHighlight(java.awt.im.InputMethodHighlight)\
+            \ to map to a concrete style.\n \n The abstract description consists of\
+            \ three fields: selected,\n state, and variation.\n selected indicates\
+            \ whether the text range is the one that the\n input method is currently\
+            \ working on, for example, the segment for which\n conversion candidates\
+            \ are currently shown in a menu.\n state represents the conversion state.\
+            \ State values are defined\n by the input method framework and should\
+            \ be distinguished in all\n mappings from abstract to concrete styles.\
+            \ Currently defined state values\n are raw (unconverted) and converted.\n\
+            \ These state values are recommended for use before and after the\n main\
+            \ conversion step of text composition, say, before and after kana->kanji\n\
+            \ or pinyin->hanzi conversion.\n The variation field allows input methods\
+            \ to express additional\n information about the conversion results.\n\
+            \ \n\n InputMethodHighlight instances are typically used as attribute\
+            \ values\n returned from AttributedCharacterIterator for the INPUT_METHOD_HIGHLIGHT\n\
+            \ attribute. They may be wrapped into Annotation\n instances to indicate\
+            \ separate text segments."
+          fields:
+            selected:
+              name: selected
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            state:
+              name: state
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            style:
+              name: style
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.awt.font.TextAttribute, ?>
+            variation:
+              name: variation
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
             CONVERTED_TEXT:
               name: CONVERTED_TEXT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for the converted text state.
             RAW_TEXT:
               name: RAW_TEXT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for the raw text state.
             SELECTED_CONVERTED_TEXT_HIGHLIGHT:
               name: SELECTED_CONVERTED_TEXT_HIGHLIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: InputMethodHighlight
                 full: java.awt.im.InputMethodHighlight
-                nullable: true
+              notes: Constant for the default highlight for selected converted text.
             SELECTED_RAW_TEXT_HIGHLIGHT:
               name: SELECTED_RAW_TEXT_HIGHLIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: InputMethodHighlight
                 full: java.awt.im.InputMethodHighlight
-                nullable: true
+              notes: Constant for the default highlight for selected raw text.
             UNSELECTED_CONVERTED_TEXT_HIGHLIGHT:
               name: UNSELECTED_CONVERTED_TEXT_HIGHLIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: InputMethodHighlight
                 full: java.awt.im.InputMethodHighlight
-                nullable: true
+              notes: Constant for the default highlight for unselected converted text.
             UNSELECTED_RAW_TEXT_HIGHLIGHT:
               name: UNSELECTED_RAW_TEXT_HIGHLIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: InputMethodHighlight
                 full: java.awt.im.InputMethodHighlight
-                nullable: true
+              notes: Constant for the default highlight for unselected raw text.
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: selected
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: Whether the text range is selected
+            - name: state
               type:
                 basic: int
                 full: int
+              notes: The conversion state for the text range
+            notes: "Constructs an input method highlight record.\n The variation is\
+              \ set to 0, the style to null."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: selected
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: Whether the text range is selected
+            - name: state
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The conversion state for the text range
+            - name: variation
               type:
                 basic: int
                 full: int
+              notes: The style variation for the text range
+            notes: "Constructs an input method highlight record.\n The style is set\
+              \ to null."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: selected
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: whether the text range is selected
+            - name: state
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the conversion state for the text range
+            - name: variation
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the variation for the text range
+            - name: style
               type:
-                basic: Map<TextAttribute, ?>
+                basic: Map
                 full: java.util.Map<java.awt.font.TextAttribute, ?>
+              notes: the rendering style attributes for the text range, or null
+            notes: "Constructs an input method highlight record.\n The style attributes\
+              \ map provided must be unmodifiable."
           methods:
           - name: getState
             modifiers:
@@ -119,13 +184,17 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The conversion state for the text range - RAW_TEXT or CONVERTED_TEXT.
+            notes: Returns the conversion state of the text range.
           - name: getStyle
             modifiers:
             - public
             return:
               type:
-                basic: Map<TextAttribute, ?>
+                basic: Map
                 full: java.util.Map<java.awt.font.TextAttribute, ?>
+              notes: the rendering style attributes for the text range, or null
+            notes: Returns the rendering style attributes for the text range, or null.
           - name: getVariation
             modifiers:
             - public
@@ -133,6 +202,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the variation of the text range
+            notes: Returns the variation of the text range.
           - name: isSelected
             modifiers:
             - public
@@ -140,5 +211,5 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: whether the text range is selected
+            notes: Returns whether the text range is selected.

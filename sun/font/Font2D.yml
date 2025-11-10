@@ -4,7 +4,39 @@ languages:
     packages:
       sun.font:
         Font2D:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
           fields:
+            family:
+              name: family
+              modifiers:
+              - protected
+              type:
+                basic: FontFamily
+                full: sun.font.FontFamily
+            familyName:
+              name: familyName
+              modifiers:
+              - protected
+              type:
+                basic: String
+                full: java.lang.String
+            fontRank:
+              name: fontRank
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            fullName:
+              name: fullName
+              modifiers:
+              - protected
+              type:
+                basic: String
+                full: java.lang.String
             handle:
               name: handle
               modifiers:
@@ -12,108 +44,162 @@ languages:
               type:
                 basic: Font2DHandle
                 full: sun.font.Font2DHandle
-                nullable: true
+            lastFontStrike:
+              name: lastFontStrike
+              modifiers:
+              - protected
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference<sun.font.FontStrike>
+            mapper:
+              name: mapper
+              modifiers:
+              - protected
+              type:
+                basic: CharToGlyphMapper
+                full: sun.font.CharToGlyphMapper
+            strikeCache:
+              name: strikeCache
+              modifiers:
+              - protected
+              type:
+                basic: ConcurrentHashMap
+                full: java.util.concurrent.ConcurrentHashMap<sun.font.FontStrikeDesc,
+                  java.lang.ref.Reference<sun.font.FontStrike>>
+            strikeCacheMax:
+              name: strikeCacheMax
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            style:
+              name: style
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            useWeak:
+              name: useWeak
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
           staticFields:
+            DEFAULT_FRC:
+              name: DEFAULT_FRC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
             DEFAULT_RANK:
               name: DEFAULT_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             FONT_CONFIG_RANK:
               name: FONT_CONFIG_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             FWEIGHT_BOLD:
               name: FWEIGHT_BOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             FWEIGHT_NORMAL:
               name: FWEIGHT_NORMAL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             FWIDTH_NORMAL:
               name: FWIDTH_NORMAL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             JRE_RANK:
               name: JRE_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             NATIVE_RANK:
               name: NATIVE_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             TTF_RANK:
               name: TTF_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             TYPE1_RANK:
               name: TYPE1_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             UNKNOWN_RANK:
               name: UNKNOWN_RANK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+            boldItalicNames:
+              name: boldItalicNames
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
+            boldNames:
+              name: boldNames
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
+            italicNames:
+              name: italicNames
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
           constructors:
           - modifiers:
             - public
@@ -182,6 +268,19 @@ languages:
               type:
                 basic: int
                 full: int
+          - name: createStrike
+            modifiers:
+            - package
+            - abstract
+            parameters:
+            - name: arg0
+              type:
+                basic: FontStrikeDesc
+                full: sun.font.FontStrikeDesc
+            return:
+              type:
+                basic: FontStrike
+                full: sun.font.FontStrike
           - name: getBaselineFor
             modifiers:
             - public
@@ -216,11 +315,19 @@ languages:
                 full: java.awt.Font
             - name: arg1
               type:
-                basic: FontRenderContext
-                full: java.awt.font.FontRenderContext
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
             - name: arg2
               type:
-                basic: float[]
+                basic: Object
+                full: java.lang.Object
+            - name: arg3
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg4
+              type:
+                basic: float
                 full: float[]
             return:
               type:
@@ -236,19 +343,11 @@ languages:
                 full: java.awt.Font
             - name: arg1
               type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
             - name: arg2
               type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg3
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg4
-              type:
-                basic: float[]
+                basic: float
                 full: float[]
             return:
               type:
@@ -290,6 +389,14 @@ languages:
               type:
                 basic: float
                 full: float
+          - name: getMapper
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: CharToGlyphMapper
+                full: sun.font.CharToGlyphMapper
           - name: getMissingGlyphCode
             modifiers:
             - public
@@ -304,6 +411,13 @@ languages:
               type:
                 basic: int
                 full: int
+          - name: getPlatformNativeFontPtr
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: long
+                full: long
           - name: getPostscriptName
             modifiers:
             - public
@@ -311,18 +425,13 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: getStrike
+          - name: getRank
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Font
-                full: java.awt.Font
+            - package
             return:
               type:
-                basic: FontStrike
-                full: sun.font.FontStrike
+                basic: int
+                full: int
           - name: getStrike
             modifiers:
             - public
@@ -331,10 +440,6 @@ languages:
               type:
                 basic: Font
                 full: java.awt.Font
-            - name: arg1
-              type:
-                basic: FontRenderContext
-                full: java.awt.font.FontRenderContext
             return:
               type:
                 basic: FontStrike
@@ -391,6 +496,50 @@ languages:
               type:
                 basic: FontStrike
                 full: sun.font.FontStrike
+          - name: getStrike
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Font
+                full: java.awt.Font
+            - name: arg1
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
+            return:
+              type:
+                basic: FontStrike
+                full: sun.font.FontStrike
+          - name: getStrike
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: FontStrikeDesc
+                full: sun.font.FontStrikeDesc
+            return:
+              type:
+                basic: FontStrike
+                full: sun.font.FontStrike
+          - name: getStrike
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: FontStrikeDesc
+                full: sun.font.FontStrikeDesc
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: FontStrike
+                full: sun.font.FontStrike
           - name: getStyle
             modifiers:
             - public
@@ -408,7 +557,7 @@ languages:
                 full: float
             - name: arg1
               type:
-                basic: float[]
+                basic: float
                 full: float[]
             - name: arg2
               type:
@@ -418,6 +567,37 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: getTableBytes
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: byte
+                full: byte[]
+          - name: getUnitsPerEm
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: long
+                full: long
+          - name: getValidatedGlyphCode
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
           - name: getWeight
             modifiers:
             - public
@@ -439,6 +619,65 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: setRank
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setStyle
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setUseWeakRefs
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: supportsEncoding
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: updateLastStrikeRef
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: FontStrike
+                full: sun.font.FontStrike
+            return:
+              type:
+                basic: void
+                full: void
           - name: useAAForPtSize
             modifiers:
             - public
@@ -451,5 +690,3 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object

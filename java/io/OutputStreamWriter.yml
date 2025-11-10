@@ -4,47 +4,89 @@ languages:
     packages:
       java.io:
         OutputStreamWriter:
+          extends: java.io.Writer
+          modifiers:
+          - public
+          notes: "An OutputStreamWriter is a bridge from character streams to byte\
+            \ streams:\n Characters written to it are encoded into bytes using a specified\
+            \ charset.  The charset that it uses\n may be specified by name or may\
+            \ be given explicitly, or the platform's\n default charset may be accepted.\n\
+            \n  Each invocation of a write() method causes the encoding converter\
+            \ to be\n invoked on the given character(s).  The resulting bytes are\
+            \ accumulated in a\n buffer before being written to the underlying output\
+            \ stream.  Note that the\n characters passed to the write() methods are\
+            \ not buffered.\n\n  For top efficiency, consider wrapping an OutputStreamWriter\
+            \ within a\n BufferedWriter so as to avoid frequent converter invocations.\
+            \  For example:\n\n \n Writer out\n   = new BufferedWriter(new OutputStreamWriter(System.out));\n\
+            \ \n\n  A surrogate pair is a character represented by a sequence of two\n\
+            \ char values: A high surrogate in the range '&#92;uD800' to\n '&#92;uDBFF'\
+            \ followed by a low surrogate in the range '&#92;uDC00' to\n '&#92;uDFFF'.\n\
+            \n  A malformed surrogate element is a high surrogate that is not\n followed\
+            \ by a low surrogate or a low surrogate that is not preceded by a\n high\
+            \ surrogate.\n\n  This class always replaces malformed surrogate elements\
+            \ and unmappable\n character sequences with the charset's default substitution\
+            \ sequence.\n The CharsetEncoder class should be used when more\n control\
+            \ over the encoding process is required."
+          fields:
+            se:
+              name: se
+              modifiers:
+              - private
+              type:
+                basic: StreamEncoder
+                full: sun.nio.cs.StreamEncoder
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: OutputStream
-                full: java.io.OutputStream
-            - name: arg1
+              notes: An OutputStream
+            - name: charsetName
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The name of a supported\n         charset"
+            notes: Creates an OutputStreamWriter that uses the named charset.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-            - name: arg1
+              notes: An OutputStream
+            notes: Creates an OutputStreamWriter that uses the default character encoding.
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: An OutputStream
+            - name: cs
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: A charset
+            notes: Creates an OutputStreamWriter that uses the given charset.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-            - name: arg1
+              notes: An OutputStream
+            - name: enc
               type:
                 basic: CharsetEncoder
                 full: java.nio.charset.CharsetEncoder
+              notes: A charset encoder
+            notes: Creates an OutputStreamWriter that uses the given charset encoder.
           methods:
           - name: append
             modifiers:
@@ -54,30 +96,6 @@ languages:
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
             - name: arg1
               type:
                 basic: int
@@ -86,6 +104,18 @@ languages:
               type:
                 basic: int
                 full: int
+            return:
+              type:
+                basic: Writer
+                full: java.io.Writer
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
             return:
               type:
                 basic: Writer
@@ -108,8 +138,20 @@ languages:
                 full: int
             return:
               type:
-                basic: Writer
-                full: java.io.Writer
+                basic: Appendable
+                full: java.lang.Appendable
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            return:
+              type:
+                basic: Appendable
+                full: java.lang.Appendable
           - name: close
             modifiers:
             - public
@@ -117,9 +159,18 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: 'Description copied from class: Writer'
           - name: flush
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Flushes the stream.
+          - name: flushBuffer
+            modifiers:
+            - package
             return:
               type:
                 basic: void
@@ -131,57 +182,74 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The historical name of this encoding, or possibly\n        \
+                \ null if the stream has been closed"
+            notes: "Returns the name of the character encoding being used by this\
+              \ stream.\n\n  If the encoding has an historical name then that name\
+              \ is returned;\n otherwise the encoding's canonical name is returned.\n\
+              \n  If this instance was created with the OutputStreamWriter(OutputStream,\
+              \ String) constructor then the returned\n name, being unique for the\
+              \ encoding, may differ from the name passed to\n the constructor.  This\
+              \ method may return null if the stream has\n been closed."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: int
                 full: int
+              notes: int specifying a character to be written
             return:
               type:
                 basic: void
                 full: void
+            notes: Writes a single character.
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cbuf
               type:
-                basic: char[]
+                basic: char
                 full: char[]
-            - name: arg1
+              notes: Buffer of characters
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: Offset from which to start writing characters
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: Number of characters to write
             return:
               type:
                 basic: void
                 full: void
+            notes: Writes a portion of an array of characters.
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: A String
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: Offset from which to start writing characters
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: Number of characters to write
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Writer
+            notes: Writes a portion of a string.

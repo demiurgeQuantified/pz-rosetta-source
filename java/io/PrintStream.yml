@@ -4,182 +4,373 @@ languages:
     packages:
       java.io:
         PrintStream:
+          extends: java.io.FilterOutputStream
+          modifiers:
+          - public
+          notes: "A PrintStream adds functionality to another output stream,\n namely\
+            \ the ability to print representations of various data values\n conveniently.\
+            \  Two other features are provided as well.  Unlike other output\n streams,\
+            \ a PrintStream never throws an\n IOException; instead, exceptional situations\
+            \ merely set an\n internal flag that can be tested via the checkError\
+            \ method.\n Optionally, a PrintStream can be created so as to flush\n\
+            \ automatically; this means that the flush method of the underlying\n\
+            \ output stream is automatically invoked after a byte array is written,\
+            \ one\n of the println methods is invoked, or a newline character or byte\n\
+            \ ('\\n') is written.\n\n  All characters printed by a PrintStream are\
+            \ converted into\n bytes using the given encoding or charset, or the platform's\
+            \ default\n character encoding if not specified.\n The PrintWriter class\
+            \ should be used in situations that require\n writing characters rather\
+            \ than bytes.\n\n  This class always replaces malformed and unmappable\
+            \ character sequences\n with the charset's default replacement string.\n\
+            \ The CharsetEncoder class should be used when more\n control over the\
+            \ encoding process is required."
+          fields:
+            autoFlush:
+              name: autoFlush
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            charOut:
+              name: charOut
+              modifiers:
+              - private
+              type:
+                basic: OutputStreamWriter
+                full: java.io.OutputStreamWriter
+            closing:
+              name: closing
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            formatter:
+              name: formatter
+              modifiers:
+              - private
+              type:
+                basic: Formatter
+                full: java.util.Formatter
+            textOut:
+              name: textOut
+              modifiers:
+              - private
+              type:
+                basic: BufferedWriter
+                full: java.io.BufferedWriter
+            trouble:
+              name: trouble
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: File
-                full: java.io.File
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: boolean
+                full: boolean
+            - name: arg1
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: File
-                full: java.io.File
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: File
-                full: java.io.File
+                basic: boolean
+                full: boolean
             - name: arg1
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: OutputStream
-                full: java.io.OutputStream
-            - name: arg1
-              type:
-                basic: boolean
-                full: boolean
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Charset
-                full: java.nio.charset.Charset
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: OutputStream
-                full: java.io.OutputStream
-            - name: arg1
-              type:
-                basic: boolean
-                full: boolean
             - name: arg2
               type:
-                basic: String
-                full: java.lang.String
+                basic: OutputStream
+                full: java.io.OutputStream
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-            - name: arg1
+              notes: "The output stream to which values and objects will be\n    \
+                \                printed"
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified OutputStream. Characters written to the stream are\
+              \ converted\n to bytes using the platform's default character encoding."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: "The output stream to which values and objects will be\n    \
+                \                printed"
+            - name: autoFlush
               type:
                 basic: boolean
                 full: boolean
-            - name: arg2
+              notes: "Whether the output buffer will be flushed\n                \
+                \    whenever a byte array is written, one of the\n              \
+                \      println methods is invoked, or a newline\n                \
+                \    character or byte ('\\n') is written"
+            notes: "Creates a new print stream, with the specified OutputStream and\
+              \ line\n flushing. Characters written to the stream are converted to\
+              \ bytes using\n the platform's default character encoding."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: "The output stream to which values and objects will be\n    \
+                \                printed"
+            - name: autoFlush
+              type:
+                basic: boolean
+                full: boolean
+              notes: "Whether the output buffer will be flushed\n                \
+                \    whenever a byte array is written, one of the\n              \
+                \      println methods is invoked, or a newline\n                \
+                \    character or byte ('\\n') is written"
+            - name: encoding
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The name of a supported\n                    \n            \
+                \        character encoding"
+            notes: "Creates a new print stream, with the specified OutputStream, line\n\
+              \ flushing, and character encoding."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: "The output stream to which values and objects will be\n    \
+                \                printed"
+            - name: autoFlush
+              type:
+                basic: boolean
+                full: boolean
+              notes: "Whether the output buffer will be flushed\n                \
+                \    whenever a byte array is written, one of the\n              \
+                \      println methods is invoked, or a newline\n                \
+                \    character or byte ('\\n') is written"
+            - name: charset
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: A charset
+            notes: "Creates a new print stream, with the specified OutputStream, line\n\
+              \ flushing and charset.  This convenience constructor creates the necessary\n\
+              \ intermediate OutputStreamWriter,\n which will encode characters using\
+              \ the provided charset."
+          - modifiers:
+            - public
+            parameters:
+            - name: fileName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The name of the file to use as the destination of this print\n\
+                \         stream.  If the file exists, then it will be truncated to\n\
+                \         zero size; otherwise, a new file will be created.  The output\n\
+                \         will be written to the file and is buffered."
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified file name.  This convenience constructor creates\n\
+              \ the necessary intermediate OutputStreamWriter, which will encode characters\
+              \ using the\n default charset\n for this instance of the Java virtual\
+              \ machine."
+          - modifiers:
+            - public
+            parameters:
+            - name: fileName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The name of the file to use as the destination of this print\n\
+                \         stream.  If the file exists, then it will be truncated to\n\
+                \         zero size; otherwise, a new file will be created.  The output\n\
+                \         will be written to the file and is buffered."
+            - name: csn
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The name of a supported charset
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified file name and charset.  This convenience constructor\
+              \ creates\n the necessary intermediate OutputStreamWriter, which will\
+              \ encode characters using the provided\n charset."
+          - modifiers:
+            - public
+            parameters:
+            - name: fileName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The name of the file to use as the destination of this print\n\
+                \         stream.  If the file exists, then it will be truncated to\n\
+                \         zero size; otherwise, a new file will be created.  The output\n\
+                \         will be written to the file and is buffered."
+            - name: charset
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+              notes: A charset
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified file name and charset.  This convenience constructor\
+              \ creates\n the necessary intermediate OutputStreamWriter, which will\
+              \ encode characters using the provided\n charset."
+          - modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: File
+                full: java.io.File
+              notes: "The file to use as the destination of this print stream.  If\
+                \ the\n         file exists, then it will be truncated to zero size;\
+                \ otherwise,\n         a new file will be created.  The output will\
+                \ be written to the\n         file and is buffered."
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified file.  This convenience constructor creates the necessary\n\
+              \ intermediate OutputStreamWriter,\n which will encode characters using\
+              \ the default charset for this\n instance of the Java virtual machine."
+          - modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: File
+                full: java.io.File
+              notes: "The file to use as the destination of this print stream.  If\
+                \ the\n         file exists, then it will be truncated to zero size;\
+                \ otherwise,\n         a new file will be created.  The output will\
+                \ be written to the\n         file and is buffered."
+            - name: csn
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The name of a supported charset
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified file and charset.  This convenience constructor creates\n\
+              \ the necessary intermediate OutputStreamWriter, which will encode characters\
+              \ using the provided\n charset."
+          - modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: File
+                full: java.io.File
+              notes: "The file to use as the destination of this print stream.  If\
+                \ the\n         file exists, then it will be truncated to zero size;\
+                \ otherwise,\n         a new file will be created.  The output will\
+                \ be written to the\n         file and is buffered."
+            - name: charset
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+              notes: A charset
+            notes: "Creates a new print stream, without automatic line flushing, with\
+              \ the\n specified file and charset.  This convenience constructor creates\n\
+              \ the necessary intermediate OutputStreamWriter, which will encode characters\
+              \ using the provided\n charset."
           methods:
           - name: append
             modifiers:
             - public
             parameters:
+            - name: csq
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: "The character sequence to append.  If csq is\n         null,\
+                \ then the four characters \"null\" are\n         appended to this\
+                \ output stream."
+            return:
+              type:
+                basic: PrintStream
+                full: java.io.PrintStream
+              notes: This output stream
+            notes: "Appends the specified character sequence to this output stream.\n\
+              \n  An invocation of this method of the form out.append(csq)\n behaves\
+              \ in exactly the same way as the invocation\n\n <code>\n     out.print(csq.toString())\n\
+              \ </code>\n\n  Depending on the specification of toString for the\n\
+              \ character sequence csq, the entire sequence may not be\n appended.\
+              \  For instance, invoking then toString method of a\n character buffer\
+              \ will return a subsequence whose content depends upon\n the buffer's\
+              \ position and limit."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: csq
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: "The character sequence from which a subsequence will be\n  \
+                \       appended.  If csq is null, then characters\n         will\
+                \ be appended as if csq contained the four\n         characters \"\
+                null\"."
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: The index of the first character in the subsequence
+            - name: end
+              type:
+                basic: int
+                full: int
+              notes: "The index of the character following the last character in the\n\
+                \         subsequence"
+            return:
+              type:
+                basic: PrintStream
+                full: java.io.PrintStream
+              notes: This output stream
+            notes: "Appends a subsequence of the specified character sequence to this\
+              \ output\n stream.\n\n  An invocation of this method of the form\n out.append(csq,\
+              \ start, end) when\n csq is not null, behaves in\n exactly the same\
+              \ way as the invocation\n\n <code>\n     out.print(csq.subSequence(start,\
+              \ end).toString())\n </code>"
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: char
+                full: char
+              notes: The 16-bit character to append
+            return:
+              type:
+                basic: PrintStream
+                full: java.io.PrintStream
+              notes: This output stream
+            notes: "Appends the specified character to this output stream.\n\n  An\
+              \ invocation of this method of the form out.append(c)\n behaves in exactly\
+              \ the same way as the invocation\n\n <code>\n     out.print(c)\n </code>"
+          - name: append
+            modifiers:
+            - public
+            parameters:
             - name: arg0
               type:
                 basic: char
                 full: char
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char
-                full: char
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char
-                full: char
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
             return:
               type:
                 basic: Appendable
@@ -212,34 +403,6 @@ languages:
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: Appendable
@@ -251,6 +414,26 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if and only if this stream has encountered an\n       \
+                \  IOException other than\n         InterruptedIOException, or the\n\
+                \         setError method has been invoked"
+            notes: "Flushes the stream and checks its error state. The internal error\
+              \ state\n is set to true when the underlying output stream throws an\n\
+              \ IOException other than InterruptedIOException,\n and when the setError\
+              \ method is invoked.  If an operation\n on the underlying output stream\
+              \ throws an\n InterruptedIOException, then the PrintStream\n converts\
+              \ the exception back into an interrupt by doing:\n <code>\n     Thread.currentThread().interrupt();\n\
+              \ </code>\n or the equivalent."
+          - name: clearError
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Clears the internal error state of this stream.\n\n  This method\
+              \ will cause subsequent invocations of checkError() to return false\
+              \ until another write\n operation fails and invokes setError()."
           - name: close
             modifiers:
             - public
@@ -258,9 +441,11 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: close
+            notes: "Closes the stream.  This is done by flushing the stream and then\
+              \ closing\n the underlying output stream."
+          - name: ensureOpen
             modifiers:
-            - public
+            - private
             return:
               type:
                 basic: void
@@ -272,6 +457,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Flushes the stream.  This is done by writing any buffered output\
+              \ bytes to\n the underlying output stream and then flushing that stream."
           - name: format
             modifiers:
             - public
@@ -282,7 +469,7 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -302,20 +489,15 @@ languages:
                 full: java.lang.String
             - name: arg2
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
                 basic: PrintStream
                 full: java.io.PrintStream
-          - name: print
+          - name: newLine
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char[]
-                full: char[]
+            - private
             return:
               type:
                 basic: void
@@ -324,98 +506,159 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
                 basic: boolean
                 full: boolean
+              notes: The boolean to be printed
             return:
               type:
                 basic: void
                 full: void
+            notes: "Prints a boolean value.  The string produced by String.valueOf(boolean)\
+              \ is translated into bytes\n according to the platform's default character\
+              \ encoding, and these bytes\n are written in exactly the manner of the\n\
+              \ write(int) method."
           - name: print
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: char
                 full: char
+              notes: The char to be printed
             return:
               type:
                 basic: void
                 full: void
+            notes: "Prints a character.  The character is translated into one or more\
+              \ bytes\n according to the character encoding given to the constructor,\
+              \ or the\n platform's default character encoding if none specified.\
+              \ These bytes\n are written in exactly the manner of the write(int)\
+              \ method."
           - name: print
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: void
-                full: void
-          - name: print
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: float
-                full: float
-            return:
-              type:
-                basic: void
-                full: void
-          - name: print
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: The int to be printed
             return:
               type:
                 basic: void
                 full: void
+            notes: "Prints an integer.  The string produced by String.valueOf(int)\
+              \ is translated into bytes\n according to the platform's default character\
+              \ encoding, and these bytes\n are written in exactly the manner of the\n\
+              \ write(int) method."
           - name: print
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: void
-                full: void
-          - name: print
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
-          - name: print
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: l
               type:
                 basic: long
                 full: long
+              notes: The long to be printed
             return:
               type:
                 basic: void
                 full: void
+            notes: "Prints a long integer.  The string produced by String.valueOf(long)\
+              \ is translated into bytes\n according to the platform's default character\
+              \ encoding, and these bytes\n are written in exactly the manner of the\n\
+              \ write(int) method."
+          - name: print
+            modifiers:
+            - public
+            parameters:
+            - name: f
+              type:
+                basic: float
+                full: float
+              notes: The float to be printed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a floating-point number.  The string produced by String.valueOf(float)\
+              \ is translated into bytes\n according to the platform's default character\
+              \ encoding, and these bytes\n are written in exactly the manner of the\n\
+              \ write(int) method."
+          - name: print
+            modifiers:
+            - public
+            parameters:
+            - name: d
+              type:
+                basic: double
+                full: double
+              notes: The double to be printed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a double-precision floating-point number.  The string produced\
+              \ by\n String.valueOf(double) is translated into\n bytes according to\
+              \ the platform's default character encoding, and these\n bytes are written\
+              \ in exactly the manner of the write(int) method."
+          - name: print
+            modifiers:
+            - public
+            parameters:
+            - name: s
+              type:
+                basic: char
+                full: char[]
+              notes: The array of chars to be printed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints an array of characters.  The characters are converted into\
+              \ bytes\n according to the character encoding given to the constructor,\
+              \ or the\n platform's default character encoding if none specified.\
+              \ These bytes\n are written in exactly the manner of the write(int)\
+              \ method."
+          - name: print
+            modifiers:
+            - public
+            parameters:
+            - name: s
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The String to be printed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a string.  If the argument is null then the string\n \"\
+              null\" is printed.  Otherwise, the string's characters are\n converted\
+              \ into bytes according to the character encoding given to the\n constructor,\
+              \ or the platform's default character encoding if none\n specified.\
+              \ These bytes are written in exactly the manner of the\n write(int)\
+              \ method."
+          - name: print
+            modifiers:
+            - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The Object to be printed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints an object.  The string produced by the String.valueOf(Object)\
+              \ method is translated into bytes\n according to the platform's default\
+              \ character encoding, and these bytes\n are written in exactly the manner\
+              \ of the\n write(int) method."
           - name: printf
             modifiers:
             - public
@@ -426,7 +669,7 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -446,7 +689,7 @@ languages:
                 full: java.lang.String
             - name: arg2
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -459,154 +702,242 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Terminates the current line by writing the line separator string.\
+              \  The\n line separator string is defined by the system property\n line.separator,\
+              \ and is not necessarily a single newline\n character ('\\n')."
           - name: println
             modifiers:
             - public
             parameters:
+            - name: x
+              type:
+                basic: boolean
+                full: boolean
+              notes: The boolean to be printed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a boolean and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(boolean) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: char
+                full: char
+              notes: The char to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a character and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(char) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The int to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints an integer and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(int) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: long
+                full: long
+              notes: a The long to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a long and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(long) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: float
+                full: float
+              notes: The float to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a float and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(float) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: double
+                full: double
+              notes: The double to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a double and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(double) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: char
+                full: char[]
+              notes: an array of chars to print.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints an array of characters and then terminate the line.  This\
+              \ method\n behaves as though it invokes print(char[]) and\n then println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The String to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints a String and then terminate the line.  This method behaves\
+              \ as\n though it invokes print(String) and then\n println()."
+          - name: println
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The Object to be printed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints an Object and then terminate the line.  This method calls\n\
+              \ at first String.valueOf(x) to get the printed object's string value,\n\
+              \ then behaves as\n though it invokes print(String) and then\n println()."
+          - name: setError
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the error state of the stream to true.\n\n  This method will\
+              \ cause subsequent invocations of checkError() to return true until\n\
+              \ clearError() is invoked."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The byte to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes the specified byte to this stream.  If the byte is a newline\
+              \ and\n automatic flushing is enabled then the flush method will be\n\
+              \ invoked on the underlying output stream.\n\n  Note that the byte is\
+              \ written as given; to write a character that\n will be translated according\
+              \ to the platform's default character\n encoding, use the print(char)\
+              \ or println(char)\n methods."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: buf
+              type:
+                basic: byte
+                full: byte[]
+              notes: A byte array
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: Offset from which to start taking bytes
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: Number of bytes to write
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes len bytes from the specified byte array starting at\n offset\
+              \ off to this stream.  If automatic flushing is\n enabled then the flush\
+              \ method will be invoked on the underlying\n output stream.\n\n  Note\
+              \ that the bytes will be written as given; to write characters\n that\
+              \ will be translated according to the platform's default character\n\
+              \ encoding, use the print(char) or println(char)\n methods."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: buf
+              type:
+                basic: byte
+                full: byte[]
+              notes: A byte array
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes all bytes from the specified byte array to this stream.\
+              \ If\n automatic flushing is enabled then the flush method will be\n\
+              \ invoked on the underlying output stream.\n\n  Note that the bytes\
+              \ will be written as given; to write characters\n that will be translated\
+              \ according to the platform's default character\n encoding, use the\
+              \ print(char[]) or println(char[])\n methods."
+          - name: write
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: char[]
+                basic: char
                 full: char[]
             return:
               type:
                 basic: void
                 full: void
-          - name: println
+          - name: write
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char
-                full: char
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: float
-                full: float
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
-          - name: println
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: void
@@ -615,13 +946,72 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: buf
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: A byte array
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: FilterOutputStream
+            notes: "Writes all bytes from the specified byte array to this stream.\n\
+              \ If automatic flushing is enabled then the flush method\n will be invoked.\n\
+              \n  Note that the bytes will be written as given; to write characters\n\
+              \ that will be translated according to the platform's default character\n\
+              \ encoding, use the print(char[]) or println(char[])\n methods."
+          - name: writeln
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: char
+                full: char[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeln
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: requireNonNull
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: T
+                full: T
+          - name: toCharset
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset

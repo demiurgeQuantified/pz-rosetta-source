@@ -4,60 +4,158 @@ languages:
     packages:
       java.util:
         BitSet:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class implements a vector of bits that grows as needed. Each\n\
+            \ component of the bit set has a boolean value. The\n bits of a BitSet\
+            \ are indexed by nonnegative integers.\n Individual indexed bits can be\
+            \ examined, set, or cleared. One\n BitSet may be used to modify the contents\
+            \ of another\n BitSet through logical AND, logical inclusive OR, and\n\
+            \ logical exclusive OR operations.\n\n By default, all bits in the set\
+            \ initially have the value\n false.\n\n Every bit set has a current size,\
+            \ which is the number of bits\n of space currently in use by the bit set.\
+            \ Note that the size is\n related to the implementation of a bit set,\
+            \ so it may change with\n implementation. The length of a bit set relates\
+            \ to logical length\n of a bit set and is defined independently of implementation.\n\
+            \n Unless otherwise noted, passing a null parameter to any of the\n methods\
+            \ in a BitSet will result in a\n NullPointerException.\n\n A BitSet is\
+            \ not safe for multithreaded use without\n external synchronization."
+          fields:
+            sizeIsSticky:
+              name: sizeIsSticky
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            words:
+              name: words
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long[]
+            wordsInUse:
+              name: wordsInUse
+              modifiers:
+              - private
               type:
                 basic: int
                 full: int
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ADDRESS_BITS_PER_WORD:
+              name: ADDRESS_BITS_PER_WORD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            BITS_PER_WORD:
+              name: BITS_PER_WORD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            BIT_INDEX_MASK:
+              name: BIT_INDEX_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            WORD_MASK:
+              name: WORD_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: Creates a new bit set. All bits are initially false.
+          - modifiers:
+            - public
+            parameters:
+            - name: nbits
+              type:
+                basic: int
+                full: int
+              notes: the initial size of the bit set
+            notes: "Creates a bit set whose initial size is large enough to explicitly\n\
+              \ represent bits with indices in the range 0 through\n nbits-1. All\
+              \ bits are initially false."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long[]
           methods:
-          - name: __and__
+          - name: and
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: set
               type:
                 basic: BitSet
                 full: java.util.BitSet
+              notes: a bit set
             return:
               type:
                 basic: void
                 full: void
-          - name: __or__
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BitSet
-                full: java.util.BitSet
-            return:
-              type:
-                basic: void
-                full: void
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+            notes: "Performs a logical AND of this target bit set with the\n argument\
+              \ bit set. This bit set is modified so that each bit in it\n has the\
+              \ value true if and only if it both initially\n had the value true and\
+              \ the corresponding bit in the\n bit set argument also had the value\
+              \ true."
           - name: andNot
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: set
               type:
                 basic: BitSet
                 full: java.util.BitSet
+              notes: "the BitSet with which to mask this\n         BitSet"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Clears all of the bits in this BitSet whose corresponding\n bit\
+              \ is set in the specified BitSet."
           - name: cardinality
             modifiers:
             - public
@@ -65,9 +163,11 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: clear
+              notes: the number of bits set to true in this BitSet
+            notes: Returns the number of bits set to true in this BitSet.
+          - name: checkInvariants
             modifiers:
-            - public
+            - private
             return:
               type:
                 basic: void
@@ -76,30 +176,44 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bitIndex
               type:
                 basic: int
                 full: int
+              notes: the index of the bit to be cleared
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the bit specified by the index to false.
           - name: clear
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: index of the first bit to be cleared
+            - name: toIndex
               type:
                 basic: int
                 full: int
+              notes: index after the last bit to be cleared
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the bits from the specified fromIndex (inclusive) to the\n\
+              \ specified toIndex (exclusive) to false."
+          - name: clear
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Sets all of the bits in this BitSet to false.
           - name: clone
             modifiers:
             - public
@@ -107,21 +221,45 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a clone of this bit set
+            notes: "Cloning this BitSet produces a new BitSet\n that is equal to it.\n\
+              \ The clone of the bit set is another bit set that has exactly the\n\
+              \ same bits set to true as this bit set."
+          - name: ensureCapacity
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare with
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: flip
+              notes: "true if the objects are the same;\n         false otherwise"
+            notes: "Compares this object against the specified object.\n The result\
+              \ is true if and only if the argument is\n not null and is a BitSet\
+              \ object that has\n exactly the same set of bits set to true as this\
+              \ bit\n set. That is, for every nonnegative int index k,\n ((BitSet)obj).get(k)\
+              \ == this.get(k)\n must be true. The current sizes of the two bit sets\
+              \ are not compared."
+          - name: expandTo
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -135,46 +273,75 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bitIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
+              notes: the index of the bit to flip
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the bit at the specified index to the complement of its\n\
+              \ current value."
+          - name: flip
+            modifiers:
+            - public
+            parameters:
+            - name: fromIndex
+              type:
+                basic: int
+                full: int
+              notes: index of the first bit to flip
+            - name: toIndex
+              type:
+                basic: int
+                full: int
+              notes: index after the last bit to flip
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets each bit from the specified fromIndex (inclusive) to the\n\
+              \ specified toIndex (exclusive) to the complement of its current\n value."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bitIndex
               type:
                 basic: int
                 full: int
+              notes: the bit index
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: the value of the bit with the specified index
+            notes: "Returns the value of the bit with the specified index. The value\n\
+              \ is true if the bit with the index bitIndex\n is currently set in this\
+              \ BitSet; otherwise, the result\n is false."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: index of the first bit to include
+            - name: toIndex
               type:
                 basic: int
                 full: int
+              notes: index after the last bit to include
             return:
               type:
                 basic: BitSet
                 full: java.util.BitSet
+              notes: a new BitSet from a range of this BitSet
+            notes: "Returns a new BitSet composed of bits from this BitSet\n from\
+              \ fromIndex (inclusive) to toIndex (exclusive)."
           - name: hashCode
             modifiers:
             - public
@@ -182,18 +349,43 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the hash code value for this bit set
+            notes: "Returns the hash code value for this bit set. The hash code depends\n\
+              \ only on which bits are set within this BitSet.\n\n The hash code is\
+              \ defined to be the result of the following\n calculation:\n   <code>\n\
+              \ public int hashCode() {\n     long h = 1234;\n     long[] words =\
+              \ toLongArray();\n     for (int i = words.length; --i >= 0; )\n    \
+              \     h ^= words[i] * (i + 1);\n     return (int)((h >> 32) ^ h);\n\
+              \ }</code>\n Note that the hash code changes if the set of bits is altered."
+          - name: initWords
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: intersects
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: set
               type:
                 basic: BitSet
                 full: java.util.BitSet
+              notes: BitSet to intersect with
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "boolean indicating whether this BitSet intersects\n        \
+                \ the specified BitSet"
+            notes: "Returns true if the specified BitSet has any bits set to\n true\
+              \ that are also set to true in this BitSet."
           - name: isEmpty
             modifiers:
             - public
@@ -201,6 +393,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: boolean indicating whether this BitSet is empty
+            notes: "Returns true if this BitSet contains no bits that are set\n to\
+              \ true."
           - name: length
             modifiers:
             - public
@@ -208,23 +403,57 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the logical size of this BitSet
+            notes: "Returns the \"logical size\" of this BitSet: the index of\n the\
+              \ highest set bit in the BitSet plus one. Returns zero\n if the BitSet\
+              \ contains no set bits."
           - name: nextClearBit
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
+              notes: the index to start checking from (inclusive)
             return:
               type:
                 basic: int
                 full: int
+              notes: the index of the next clear bit
+            notes: "Returns the index of the first bit that is set to false\n that\
+              \ occurs on or after the specified starting index."
           - name: nextSetBit
             modifiers:
             - public
             parameters:
+            - name: fromIndex
+              type:
+                basic: int
+                full: int
+              notes: the index to start checking from (inclusive)
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the index of the next set bit, or -1 if there\n         is no\
+                \ such bit"
+            notes: "Returns the index of the first bit that is set to true\n that\
+              \ occurs on or after the specified starting index. If no such\n bit\
+              \ exists then -1 is returned.\n\n To iterate over the true bits in a\
+              \ BitSet,\n use the following loop:\n\n   <code>\n for (int i = bs.nextSetBit(0);\
+              \ i >= 0; i = bs.nextSetBit(i+1)) {\n     // operate on index i here\n\
+              \     if (i == Integer.MAX_VALUE) {\n         break; // or (i+1) would\
+              \ overflow\n     }\n }</code>"
+          - name: nextSetBit
+            modifiers:
+            - private
+            parameters:
             - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
               type:
                 basic: int
                 full: int
@@ -232,38 +461,77 @@ languages:
               type:
                 basic: int
                 full: int
+          - name: or
+            modifiers:
+            - public
+            parameters:
+            - name: set
+              type:
+                basic: BitSet
+                full: java.util.BitSet
+              notes: a bit set
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Performs a logical OR of this bit set with the bit set\n argument.\
+              \ This bit set is modified so that a bit in it has the\n value true\
+              \ if and only if it either already had the\n value true or the corresponding\
+              \ bit in the bit set\n argument has the value true."
           - name: previousClearBit
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
+              notes: the index to start checking from (inclusive)
             return:
               type:
                 basic: int
                 full: int
+              notes: "the index of the previous clear bit, or -1 if there\n      \
+                \   is no such bit"
+            notes: "Returns the index of the nearest bit that is set to false\n that\
+              \ occurs on or before the specified starting index.\n If no such bit\
+              \ exists, or if -1 is given as the\n starting index, then -1 is returned."
           - name: previousSetBit
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
+              notes: the index to start checking from (inclusive)
             return:
               type:
                 basic: int
                 full: int
-          - name: set
+              notes: "the index of the previous set bit, or -1 if there\n        \
+                \ is no such bit"
+            notes: "Returns the index of the nearest bit that is set to true\n that\
+              \ occurs on or before the specified starting index.\n If no such bit\
+              \ exists, or if -1 is given as the\n starting index, then -1 is returned.\n\
+              \n To iterate over the true bits in a BitSet,\n use the following loop:\n\
+              \n   <code>\n for (int i = bs.length(); (i = bs.previousSetBit(i-1))\
+              \ >= 0; ) {\n     // operate on index i here\n }</code>"
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: int
-                full: int
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: recalculateWordsInUse
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -272,54 +540,80 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bitIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: a bit index
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Sets the bit at the specified index to true.
+          - name: set
+            modifiers:
+            - public
+            parameters:
+            - name: bitIndex
+              type:
+                basic: int
+                full: int
+              notes: a bit index
+            - name: value
               type:
                 basic: boolean
                 full: boolean
+              notes: a boolean value to set
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the bit at the specified index to the specified value.
           - name: set
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: index of the first bit to be set
+            - name: toIndex
               type:
                 basic: int
                 full: int
+              notes: index after the last bit to be set
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the bits from the specified fromIndex (inclusive) to the\n\
+              \ specified toIndex (exclusive) to true."
           - name: set
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: fromIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: index of the first bit to be set
+            - name: toIndex
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: index after the last bit to be set
+            - name: value
               type:
                 basic: boolean
                 full: boolean
+              notes: value to set the selected bits to
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the bits from the specified fromIndex (inclusive) to the\n\
+              \ specified toIndex (exclusive) to the specified value."
           - name: size
             modifiers:
             - public
@@ -327,6 +621,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of bits currently in this bit set
+            notes: "Returns the number of bits of space actually in use by this\n\
+              \ BitSet to represent bit values.\n The maximum element in the set is\
+              \ the size - 1st element."
           - name: stream
             modifiers:
             - public
@@ -334,73 +632,118 @@ languages:
               type:
                 basic: IntStream
                 full: java.util.stream.IntStream
+              notes: a stream of integers representing set indices
+            notes: "Returns a stream of indices for which this BitSet\n contains a\
+              \ bit in the set state. The indices are returned\n in order, from lowest\
+              \ to highest. The size of the stream\n is the number of bits in the\
+              \ set state, equal to the value\n returned by the cardinality() method.\n\
+              \n The stream binds to this bit set when the terminal stream operation\n\
+              \ commences (specifically, the spliterator for the stream is\n late-binding).\
+              \  If the\n bit set is modified during that operation then the result\
+              \ is undefined."
           - name: toByteArray
             modifiers:
             - public
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "a byte array containing a little-endian representation\n   \
+                \      of all the bits in this bit set"
+            notes: "Returns a new byte array containing all the bits in this bit set.\n\
+              \n More precisely, if\n byte[] bytes = s.toByteArray();\n then bytes.length\
+              \ == (s.length()+7)/8 and\n s.get(n) == ((bytes[n/8] & (1<<(n%8))) !=\
+              \ 0)\n for all n < 8 * bytes.length."
           - name: toLongArray
             modifiers:
             - public
             return:
               type:
-                basic: long[]
+                basic: long
                 full: long[]
-          - name: xor
+              notes: "a long array containing a little-endian representation\n   \
+                \      of all the bits in this bit set"
+            notes: "Returns a new long array containing all the bits in this bit set.\n\
+              \n More precisely, if\n long[] longs = s.toLongArray();\n then longs.length\
+              \ == (s.length()+63)/64 and\n s.get(n) == ((longs[n/64] & (1L<<(n%64)))\
+              \ != 0)\n for all n < 64 * longs.length."
+          - name: toString
             modifiers:
             - public
-            parameters:
-            - name: arg0
+            return:
               type:
-                basic: BitSet
-                full: java.util.BitSet
+                basic: String
+                full: java.lang.String
+          - name: trimToSize
+            modifiers:
+            - private
             return:
               type:
                 basic: void
                 full: void
-          staticMethods:
-          - name: __valueOf__
+          - name: writeObject
             modifiers:
-            - public
-            - static
+            - private
             parameters:
             - name: arg0
               type:
-                basic: byte[]
-                full: byte[]
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
+              type:
+                basic: void
+                full: void
+          - name: xor
+            modifiers:
+            - public
+            parameters:
+            - name: set
               type:
                 basic: BitSet
                 full: java.util.BitSet
-          - name: __valueOf__
+              notes: a bit set
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Performs a logical XOR of this bit set with the bit set\n argument.\
+              \ This bit set is modified so that a bit in it has the\n value true\
+              \ if and only if one of the following\n statements holds:\n \n The bit\
+              \ initially has the value true, and the\n     corresponding bit in the\
+              \ argument has the value false.\n The bit initially has the value false,\
+              \ and the\n     corresponding bit in the argument has the value true."
+          staticMethods:
+          - name: checkRange
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: valueOf
             modifiers:
             - public
             - static
             parameters:
             - name: arg0
               type:
-                basic: long[]
+                basic: long
                 full: long[]
             return:
               type:
                 basic: BitSet
                 full: java.util.BitSet
-          - name: __valueOf__
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            return:
-              type:
-                basic: BitSet
-                full: java.util.BitSet
-          - name: __valueOf__
+          - name: valueOf
             modifiers:
             - public
             - static
@@ -413,5 +756,42 @@ languages:
               type:
                 basic: BitSet
                 full: java.util.BitSet
-          javaType: class
-          extends: Object
+          - name: valueOf
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: BitSet
+                full: java.util.BitSet
+          - name: valueOf
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: BitSet
+                full: java.util.BitSet
+          - name: wordIndex
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int

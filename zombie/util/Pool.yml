@@ -4,9 +4,30 @@ languages:
     packages:
       zombie.util:
         Pool:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          notes: "A thread-safe object pool. Useful for re-using memory without it\
+            \ falling into the garbage collector.\n\n Beware: Once an item has been\
+            \ allocated, it MUST be released at some point by calling its release()\
+            \ function.\n         If not, the item's memory will never be recycled,\
+            \ and it will be considered a memory leak."
+          fields:
+            m_allocator:
+              name: m_allocator
+              modifiers:
+              - private
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<PO>
+            m_stacks:
+              name: m_stacks
+              modifiers:
+              - private
+              type:
+                basic: ThreadLocal
+                full: java.lang.ThreadLocal<zombie.util.Pool$PoolStacks>
           constructors:
           - modifiers:
             - public
@@ -14,26 +35,70 @@ languages:
             - name: allocator
               type:
                 basic: Supplier
-                full: Supplier<PO>
+                full: java.util.function.Supplier<PO>
           methods:
           - name: alloc
             modifiers:
             - public
-            - final
             return:
               type:
                 basic: PO
+                full: PO
+          - name: allocInternal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Pool.PoolStacks
+                full: zombie.util.Pool$PoolStacks
+            - name: arg1
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<PO>
+            return:
+              type:
+                basic: PO
+                full: PO
+          - name: getPoolStacks
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ThreadLocal
+                full: java.lang.ThreadLocal<zombie.util.Pool$PoolStacks>
           - name: release
             modifiers:
             - public
-            - final
             parameters:
             - name: item
               type:
                 basic: IPooledObject
+                full: zombie.util.IPooledObject
             return:
               type:
                 basic: void
+                full: void
+          - name: releaseItemInternal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IPooledObject
+                full: zombie.util.IPooledObject
+            - name: arg1
+              type:
+                basic: Pool.PoolStacks
+                full: zombie.util.Pool$PoolStacks
+            - name: arg2
+              type:
+                basic: Pool
+                full: zombie.util.Pool<zombie.util.IPooledObject>
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
           - name: tryRelease
             modifiers:
@@ -43,20 +108,24 @@ languages:
             - name: obj
               type:
                 basic: E
+                full: E
             return:
               type:
                 basic: E
+                full: E
           - name: tryRelease
             modifiers:
             - public
             - static
             parameters:
-            - name: pooledObject
+            - name: arg0
               type:
                 basic: E
+                full: E
             return:
               type:
                 basic: E
+                full: E
           - name: tryRelease
             modifiers:
             - public
@@ -64,14 +133,9 @@ languages:
             parameters:
             - name: objArray
               type:
-                basic: E[]
+                basic: E
+                full: E[]
             return:
               type:
-                basic: E[]
-          javaType: class
-          extends: Object
-          notes: 'A thread-safe object pool. Useful for re-using memory without it
-            falling into the garbage collector.   Beware: Once an item has been allocated,
-            it MUST be released at some point by calling its release() function.          If
-            not, the item''s memory will never be recycled, and it will be considered
-            a memory leak.'
+                basic: E
+                full: E[]

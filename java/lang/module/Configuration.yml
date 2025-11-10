@@ -4,80 +4,275 @@ languages:
     packages:
       java.lang.module:
         Configuration:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A configuration that is the result of \n resolution or resolution\
+            \ with\n service binding.\n\n  A configuration encapsulates the readability\
+            \ graph that is the\n output of resolution. A readability graph is a directed\
+            \ graph whose vertices\n are of type ResolvedModule and the edges represent\
+            \ the readability\n amongst the modules. Configuration defines the modules()\
+            \ method to get the set of resolved modules in the graph. \n ResolvedModule\
+            \ defines the reads() method to\n get the set of modules that a resolved\
+            \ module reads. The modules that are\n read may be in the same configuration\
+            \ or may be in parent\n configurations. \n\n  Configuration defines the\
+            \ resolve method to resolve a collection of root modules, and the resolveAndBind\n\
+            \ method to do resolution with service binding. There are instance and\n\
+            \ static variants of both methods. The instance methods create a configuration\n\
+            \ with the receiver as the parent configuration. The static methods are\
+            \ for\n more advanced cases where there can be more than one parent configuration.\
+            \ \n\n  Each layer of modules in the Java virtual\n machine is created\
+            \ from a configuration. The configuration for the boot layer is obtained\
+            \ by invoking \n ModuleLayer.boot().configuration(). The configuration\
+            \ for the boot layer\n will often be the parent when creating new configurations.\
+            \ \n\n  Example \n\n  The following example uses the resolve method to\
+            \ resolve a\n module named myapp with the configuration for the boot layer\
+            \ as the\n parent configuration. It prints the name of each resolved module\
+            \ and the\n names of the modules that each module reads. \n\n <code>\n\
+            \    ModuleFinder finder = ModuleFinder.of(dir1, dir2, dir3);\n\n    Configuration\
+            \ parent = ModuleLayer.boot().configuration();\n\n    Configuration cf\
+            \ = parent.resolve(finder, ModuleFinder.of(), Set.of(\"myapp\"));\n  \
+            \  cf.modules().forEach(m -> {\n        System.out.format(\"%s -> %s%n\"\
+            ,\n            m.name(),\n            m.reads().stream()\n           \
+            \     .map(ResolvedModule::name)\n                .collect(Collectors.joining(\"\
+            , \")));\n    });\n </code>"
+          fields:
+            allConfigurations:
+              name: allConfigurations
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.module.Configuration>
+            graph:
+              name: graph
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.module.ResolvedModule, java.util.Set<java.lang.module.ResolvedModule>>
+            modules:
+              name: modules
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.module.ResolvedModule>
+            nameToModule:
+              name: nameToModule
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.module.ResolvedModule>
+            parents:
+              name: parents
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.module.Configuration>
+            targetPlatform:
+              name: targetPlatform
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            EMPTY_CONFIGURATION:
+              name: EMPTY_CONFIGURATION
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+          constructors:
+          - modifiers:
+            - private
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<java.lang.module.Configuration>
+            - name: arg1
+              type:
+                basic: Resolver
+                full: java.lang.module.Resolver
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleFinder
+                full: java.lang.module.ModuleFinder
+            - name: arg1
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.util.Set<java.lang.String>>
+          methods:
+          - name: configurations
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Stream
+                full: java.util.stream.Stream<java.lang.module.Configuration>
+          - name: descriptors
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.module.ModuleDescriptor>
           - name: findModule
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The module name of the resolved module to find
             return:
               type:
-                basic: Optional<ResolvedModule>
+                basic: Optional
                 full: java.util.Optional<java.lang.module.ResolvedModule>
+              notes: "The resolved module with the given name or an empty \n     \
+                \    Optional if there isn't a module with this name in this\n   \
+                \      configuration or any parent configurations"
+            notes: "Finds a resolved module in this configuration, or if not in this\n\
+              \ configuration, the parent configurations.\n Finding a module in parent\
+              \ configurations is equivalent to invoking\n findModule on each parent,\
+              \ in search order, until the module\n is found or all parents have been\
+              \ searched. In a tree of\n configurations then this is equivalent to\
+              \ a depth-first search."
           - name: modules
             modifiers:
             - public
             return:
               type:
-                basic: Set<ResolvedModule>
+                basic: Set
                 full: java.util.Set<java.lang.module.ResolvedModule>
+              notes: "A possibly-empty unmodifiable set of the resolved modules\n\
+                \         in this configuration"
+            notes: Returns an unmodifiable set of the resolved modules in this configuration.
           - name: parents
             modifiers:
             - public
             return:
               type:
-                basic: List<Configuration>
+                basic: List
                 full: java.util.List<java.lang.module.Configuration>
+              notes: A possibly-empty unmodifiable list of this parent configurations
+            notes: "Returns an unmodifiable list of this configuration's parents,\
+              \ in search\n order. If this is the empty configuration then an\n empty\
+              \ list is returned."
+          - name: reads
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ResolvedModule
+                full: java.lang.module.ResolvedModule
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.module.ResolvedModule>
           - name: resolve
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: before
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
-            - name: arg1
+              notes: The before module finder to find modules
+            - name: after
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
-            - name: arg2
+              notes: "The after module finder to locate modules when not\n       \
+                \  located by the before module finder or in parent\n         configurations"
+            - name: roots
               type:
-                basic: Collection<String>
+                basic: Collection
                 full: java.util.Collection<java.lang.String>
+              notes: "The possibly-empty collection of module names of the modules\n\
+                \         to resolve"
             return:
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
+              notes: "The configuration that is the result of resolving the given\n\
+                \         root modules"
+            notes: "Resolves a collection of root modules, with this configuration\
+              \ as its\n parent, to create a new configuration. This method works\
+              \ exactly as\n specified by the static resolve\n method when invoked\
+              \ with this configuration as the parent. In other words,\n if this configuration\
+              \ is cf then this method is equivalent to\n invoking:\n  <code>\n  \
+              \   Configuration.resolve(before, List.of(cf), after, roots);\n </code>"
           - name: resolveAndBind
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: before
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
-            - name: arg1
+              notes: The before module finder to find modules
+            - name: after
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
-            - name: arg2
+              notes: "The after module finder to locate modules when not\n       \
+                \  located by the before module finder or in parent\n         configurations"
+            - name: roots
               type:
-                basic: Collection<String>
+                basic: Collection
                 full: java.util.Collection<java.lang.String>
+              notes: "The possibly-empty collection of module names of the modules\n\
+                \         to resolve"
             return:
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
+              notes: "The configuration that is the result of resolving, with service\n\
+                \         binding, the given root modules"
+            notes: "Resolves a collection of root modules, with service binding, and\
+              \ with\n this configuration as its parent, to create a new configuration.\n\
+              \ This method works exactly as specified by the static resolveAndBind\
+              \ method when invoked with this configuration\n as the parent. In other\
+              \ words, if this configuration is cf then\n this method is equivalent\
+              \ to invoking:\n  <code>\n     Configuration.resolveAndBind(before,\
+              \ List.of(cf), after, roots);\n </code>"
+          - name: targetPlatform
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: empty
             modifiers:
@@ -87,9 +282,91 @@ languages:
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
+              notes: The empty configuration
+            notes: "Returns the empty configuration. There are no modules in the\n\
+              \ empty configuration. It has no parents."
+          - name: lambda$findModule$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            return:
+              type:
+                basic: ResolvedModule
+                full: java.lang.module.ResolvedModule
           - name: resolve
             modifiers:
             - public
+            - static
+            parameters:
+            - name: before
+              type:
+                basic: ModuleFinder
+                full: java.lang.module.ModuleFinder
+              notes: The before module finder to find modules
+            - name: parents
+              type:
+                basic: List
+                full: java.util.List<java.lang.module.Configuration>
+              notes: The list parent configurations in search order
+            - name: after
+              type:
+                basic: ModuleFinder
+                full: java.lang.module.ModuleFinder
+              notes: "The after module finder to locate modules when not\n       \
+                \  located by the before module finder or in parent\n         configurations"
+            - name: roots
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.String>
+              notes: "The possibly-empty collection of module names of the modules\n\
+                \         to resolve"
+            return:
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+              notes: "The configuration that is the result of resolving the given\n\
+                \         root modules"
+            notes: "Resolves a collection of root modules to create a configuration.\n\
+              \n  Each root module is located using the given before module\n finder.\
+              \ If a module is not found then it is located in the parent\n configuration\
+              \ as if by invoking the findModule method on each parent in iteration\
+              \ order. If not found then\n the module is located using the given after\
+              \ module finder. The\n same search order is used to locate transitive\
+              \ dependences. Root modules\n or dependences that are located in a parent\
+              \ configuration are resolved\n no further and are not included in the\
+              \ resulting configuration. \n\n  When all modules have been enumerated\
+              \ then a readability graph\n is computed, and in conjunction with the\
+              \ module exports and service use,\n checked for consistency. \n\n  Resolution\
+              \ may fail with FindException for the following\n observability-related\
+              \ reasons: \n\n \n\n      A root module, or a direct or transitive dependency,\
+              \ is not\n     found. \n\n      An error occurs when attempting to find\
+              \ a module.\n     Possible errors include I/O errors, errors detected\
+              \ parsing a module\n     descriptor (module-info.class) or two versions\
+              \ of the same\n     module are found in the same directory. \n\n \n\n\
+              \  Resolution may fail with ResolutionException if any of the\n following\
+              \ consistency checks fail: \n\n \n\n      A cycle is detected, say where\
+              \ module m1 requires\n     module m2 and m2 requires m1. \n\n      A\
+              \ module reads two or more modules with the same name. This\n     includes\
+              \ the case where a module reads another with the same name as\n    \
+              \ itself. \n\n      Two or more modules in the configuration export\
+              \ the same\n     package to a module that reads both. This includes\
+              \ the case where a\n     module M containing package p reads another\
+              \ module\n     that exports p to M. \n\n      A module M declares that\
+              \ it \"uses p.S\" or\n     \"provides p.S with ...\" but package p is\
+              \ neither in\n     module M nor exported to M by any module that\n \
+              \    M reads."
+          - name: resolveAndBind
+            modifiers:
+            - package
             - static
             parameters:
             - name: arg0
@@ -98,16 +375,12 @@ languages:
                 full: java.lang.module.ModuleFinder
             - name: arg1
               type:
-                basic: List<Configuration>
-                full: java.util.List<java.lang.module.Configuration>
+                basic: Collection
+                full: java.util.Collection<java.lang.String>
             - name: arg2
               type:
-                basic: ModuleFinder
-                full: java.lang.module.ModuleFinder
-            - name: arg3
-              type:
-                basic: Collection<String>
-                full: java.util.Collection<java.lang.String>
+                basic: PrintStream
+                full: java.io.PrintStream
             return:
               type:
                 basic: Configuration
@@ -117,25 +390,46 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: before
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
-            - name: arg1
+              notes: The before module finder to find modules
+            - name: parents
               type:
-                basic: List<Configuration>
+                basic: List
                 full: java.util.List<java.lang.module.Configuration>
-            - name: arg2
+              notes: The list parent configurations in search order
+            - name: after
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
-            - name: arg3
+              notes: "The after module finder to locate modules when not\n       \
+                \  located by the before module finder or in parent\n         configurations"
+            - name: roots
               type:
-                basic: Collection<String>
+                basic: Collection
                 full: java.util.Collection<java.lang.String>
+              notes: "The possibly-empty collection of module names of the modules\n\
+                \         to resolve"
             return:
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
-          javaType: class
-          extends: Object
+              notes: "The configuration that is the result of resolving, with service\n\
+                \         binding, the given root modules"
+            notes: "Resolves a collection of root modules, with service binding, to\
+              \ create\n configuration.\n\n  This method works exactly as specified\
+              \ by resolve except that the graph of resolved modules is augmented\n\
+              \ with modules induced by the service-use dependence relation. \n\n\
+              \ More specifically, the root modules are\n resolved as if by calling\
+              \ resolve. The resolved modules, and\n all modules in the parent configurations,\
+              \ with service dependences are then examined. All modules found by the\
+              \ given\n module finders that provide an\n implementation of one or\
+              \ more of the service types are added to the\n module graph and then\
+              \ resolved as if by calling the \n resolve method. Adding modules to\
+              \ the module graph may introduce new\n service-use dependences and so\
+              \ the process works iteratively until no\n more modules are added. \n\
+              \n  As service binding involves resolution then it may fail with \n\
+              \ FindException or ResolutionException for exactly the same\n reasons\
+              \ specified in resolve."

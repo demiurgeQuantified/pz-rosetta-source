@@ -4,22 +4,291 @@ languages:
     packages:
       java.util:
         ResourceBundle:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Resource bundles contain locale-specific objects.  When your program\
+            \ needs a\n locale-specific resource, a String for example, your program\
+            \ can\n load it from the resource bundle that is appropriate for the current\
+            \ user's\n locale. In this way, you can write program code that is largely\
+            \ independent\n of the user's locale isolating most, if not all, of the\
+            \ locale-specific\n information in resource bundles.\n\n \n This allows\
+            \ you to write programs that can:\n \n  be easily localized, or translated,\
+            \ into different languages\n  handle multiple locales at once\n  be easily\
+            \ modified later to support even more locales\n \n\n \n Resource bundles\
+            \ belong to families whose members share a common base\n name, but whose\
+            \ names also have additional components that identify\n their locales.\
+            \ For example, the base name of a family of resource\n bundles might be\
+            \ \"MyResources\". The family should have a default\n resource bundle\
+            \ which simply has the same name as its family -\n \"MyResources\" - and\
+            \ will be used as the bundle of last resort if a\n specific locale is\
+            \ not supported. The family can then provide as\n many locale-specific\
+            \ members as needed, for example a German one\n named \"MyResources_de\"\
+            .\n\n \n Each resource bundle in a family contains the same items, but\
+            \ the items have\n been translated for the locale represented by that\
+            \ resource bundle.\n For example, both \"MyResources\" and \"MyResources_de\"\
+            \ may have a\n String that's used on a button for canceling operations.\n\
+            \ In \"MyResources\" the String may contain \"Cancel\" and in\n \"MyResources_de\"\
+            \ it may contain \"Abbrechen\".\n\n \n If there are different resources\
+            \ for different countries, you\n can make specializations: for example,\
+            \ \"MyResources_de_CH\" contains objects for\n the German language (de)\
+            \ in Switzerland (CH). If you want to only\n modify some of the resources\n\
+            \ in the specialization, you can do so.\n\n \n When your program needs\
+            \ a locale-specific object, it loads\n the ResourceBundle class using\
+            \ the\n getBundle\n method:\n \n \n ResourceBundle myResources =\n   \
+            \   ResourceBundle.getBundle(\"MyResources\", currentLocale);\n \n \n\n\
+            \ \n Resource bundles contain key/value pairs. The keys uniquely\n identify\
+            \ a locale-specific object in the bundle. Here's an\n example of a ListResourceBundle\
+            \ that contains\n two key/value pairs:\n \n \n public class MyResources\
+            \ extends ListResourceBundle {\n     protected Object[][] getContents()\
+            \ {\n         return new Object[][] {\n             // LOCALIZE THE SECOND\
+            \ STRING OF EACH ARRAY (e.g., \"OK\")\n             {\"OkKey\", \"OK\"\
+            },\n             {\"CancelKey\", \"Cancel\"},\n             // END OF\
+            \ MATERIAL TO LOCALIZE\n        };\n     }\n }\n \n \n Keys are always\
+            \ Strings.\n In this example, the keys are \"OkKey\" and \"CancelKey\"\
+            .\n In the above example, the values\n are also Strings--\"OK\" and \"\
+            Cancel\"--but\n they don't have to be. The values can be any type of object.\n\
+            \n \n You retrieve an object from resource bundle using the appropriate\n\
+            \ getter method. Because \"OkKey\" and \"CancelKey\"\n are both strings,\
+            \ you would use getString to retrieve them:\n \n \n button1 = new Button(myResources.getString(\"\
+            OkKey\"));\n button2 = new Button(myResources.getString(\"CancelKey\"\
+            ));\n \n \n The getter methods all require the key as an argument and\
+            \ return\n the object if found. If the object is not found, the getter\
+            \ method\n throws a MissingResourceException.\n\n \n Besides getString,\
+            \ ResourceBundle also provides\n a method for getting string arrays, getStringArray,\n\
+            \ as well as a generic getObject method for any other\n type of object.\
+            \ When using getObject, you'll\n have to cast the result to the appropriate\
+            \ type. For example:\n \n \n int[] myIntegers = (int[]) myResources.getObject(\"\
+            intList\");\n \n \n\n \n The Java Platform provides two subclasses of\
+            \ ResourceBundle,\n ListResourceBundle and PropertyResourceBundle,\n that\
+            \ provide a fairly simple way to create resources.\n As you saw briefly\
+            \ in a previous example, ListResourceBundle\n manages its resource as\
+            \ a list of key/value pairs.\n PropertyResourceBundle uses a properties\
+            \ file to manage\n its resources.\n\n \n If ListResourceBundle or PropertyResourceBundle\n\
+            \ do not suit your needs, you can write your own ResourceBundle\n subclass.\
+            \  Your subclasses must override two methods: handleGetObject\n and getKeys().\n\
+            \n \n The implementation of a ResourceBundle subclass must be thread-safe\n\
+            \ if it's simultaneously used by multiple threads. The default implementations\n\
+            \ of the non-abstract methods in this class, and the methods in the direct\n\
+            \ known concrete subclasses ListResourceBundle and\n PropertyResourceBundle\
+            \ are thread-safe.\n\n Resource Bundles and Named Modules\n\n Resource\
+            \ bundles can be deployed in modules in the following ways:\n\n Resource\
+            \ bundles together with an application\n\n Resource bundles can be deployed\
+            \ together with an application in the same\n module.  In that case, the\
+            \ resource bundles are loaded\n by code in the module by calling the getBundle(String)\n\
+            \ or getBundle(String, Locale) method.\n\n Resource bundles as service\
+            \ providers\n\n Resource bundles can be deployed in one or more service\
+            \ provider modules\n and they can be located using ServiceLoader.\n A\
+            \ service interface or class must be\n defined. The caller module declares\
+            \ that it uses the service, the service\n provider modules declare that\
+            \ they provide implementations of the service.\n Refer to ResourceBundleProvider\
+            \ for developing resource bundle\n services and deploying resource bundle\
+            \ providers.\n The module obtaining the resource bundle can be a resource\
+            \ bundle\n provider itself; in which case this module only locates the\
+            \ resource bundle\n via service provider mechanism.\n\n A resource bundle\
+            \ provider can\n provide resource bundles in any format such XML which\
+            \ replaces the need\n of ResourceBundle.Control.\n\n Resource bundles\
+            \ in other modules and class path\n\n Resource bundles in a named module\
+            \ may be encapsulated so that\n it cannot be located by code in other\
+            \ modules.  Resource bundles\n in unnamed modules and class path are open\
+            \ for any module to access.\n Resource bundle follows the resource encapsulation\
+            \ rules as specified\n in Module.getResourceAsStream(String).\n\n The\
+            \ getBundle factory methods with no Control parameter\n locate and load\
+            \ resource bundles from\n service providers.\n It may continue the search\
+            \ as if calling Module.getResourceAsStream(String)\n to find the named\
+            \ resource from a given module and calling\n ClassLoader.getResourceAsStream(String);\
+            \ refer to\n the specification of the getBundle method for details.\n\
+            \ Only non-encapsulated resource bundles of \"java.class\"\n or \"java.properties\"\
+            \ format are searched.\n\n If the caller module is a\n \n resource bundle\
+            \ provider, it does not fall back to the\n class loader search.\n\n Resource\
+            \ bundles in automatic modules\n\n A common format of resource bundles\
+            \ is in .properties file format.  Typically .properties resource bundles\n\
+            \ are packaged in a JAR file.  Resource bundle only JAR file can be readily\n\
+            \ deployed as an \n automatic module.  For example, if the JAR file contains\
+            \ the\n entry \"p/q/Foo_ja.properties\" and no .class entry,\n when resolved\
+            \ and defined as an automatic module, no package is derived\n for this\
+            \ module.  This allows resource bundles in .properties\n format packaged\
+            \ in one or more JAR files that may contain entries\n in the same directory\
+            \ and can be resolved successfully as\n automatic modules.\n\n ResourceBundle.Control\n\
+            \n The ResourceBundle.Control class provides information necessary\n to\
+            \ perform the bundle loading process by the getBundle\n factory methods\
+            \ that take a ResourceBundle.Control\n instance. You can implement your\
+            \ own subclass in order to enable\n non-standard resource bundle formats,\
+            \ change the search strategy, or\n define caching parameters. Refer to\
+            \ the descriptions of the class and the\n getBundle\n factory method for\
+            \ details.\n\n  ResourceBundle.Control is designed for an application\
+            \ deployed\n in an unnamed module, for example to support resource bundles\
+            \ in\n non-standard formats or package localized resources in a non-traditional\n\
+            \ convention. ResourceBundleProvider is the replacement for\n ResourceBundle.Control\
+            \ when migrating to modules.\n UnsupportedOperationException will be thrown\
+            \ when a factory\n method that takes the ResourceBundle.Control parameter\
+            \ is called.\n\n For the getBundle factory\n methods that take no ResourceBundle.Control\
+            \ instance, their  default behavior of resource bundle loading\n can be\
+            \ modified with custom ResourceBundleControlProvider implementations.\n\
+            \ If any of the\n providers provides a ResourceBundle.Control for the\
+            \ given base name, that ResourceBundle.Control will be used instead of\
+            \ the default ResourceBundle.Control. If there is\n more than one service\
+            \ provider for supporting the same base name,\n the first one returned\
+            \ from ServiceLoader will be used.\n A custom ResourceBundle.Control implementation\
+            \ is ignored by named modules.\n\n Cache Management\n\n Resource bundle\
+            \ instances created by the getBundle factory\n methods are cached by default,\
+            \ and the factory methods return the same\n resource bundle instance multiple\
+            \ times if it has been\n cached. getBundle clients may clear the cache,\
+            \ manage the\n lifetime of cached resource bundle instances using time-to-live\
+            \ values,\n or specify not to cache resource bundle instances. Refer to\
+            \ the\n descriptions of the getBundle factory method, clearCache, ResourceBundle.Control.getTimeToLive,\
+            \ and ResourceBundle.Control.needsReload for details.\n\n Example\n\n\
+            \ The following is a very simple example of a ResourceBundle\n subclass,\
+            \ MyResources, that manages two resources (for a larger number of\n resources\
+            \ you would probably use a Map).\n Notice that you don't need to supply\
+            \ a value if\n a \"parent-level\" ResourceBundle handles the same\n key\
+            \ with the same value (as for the okKey below).\n \n \n // default (English\
+            \ language, United States)\n public class MyResources extends ResourceBundle\
+            \ {\n     public Object handleGetObject(String key) {\n         if (key.equals(\"\
+            okKey\")) return \"Ok\";\n         if (key.equals(\"cancelKey\")) return\
+            \ \"Cancel\";\n         return null;\n     }\n\n     public Enumeration<String>\
+            \ getKeys() {\n         return Collections.enumeration(keySet());\n  \
+            \   }\n\n     // Overrides handleKeySet() so that the getKeys() implementation\n\
+            \     // can rely on the keySet() value.\n     protected Set<String> handleKeySet()\
+            \ {\n         return new HashSet<String>(Arrays.asList(\"okKey\", \"cancelKey\"\
+            ));\n     }\n }\n\n // German language\n public class MyResources_de extends\
+            \ MyResources {\n     public Object handleGetObject(String key) {\n  \
+            \       // don't need okKey, since parent level handles it.\n        \
+            \ if (key.equals(\"cancelKey\")) return \"Abbrechen\";\n         return\
+            \ null;\n     }\n\n     protected Set<String> handleKeySet() {\n     \
+            \    return new HashSet<String>(Arrays.asList(\"cancelKey\"));\n     }\n\
+            \ }\n \n \n You do not have to restrict yourself to using a single family\
+            \ of\n ResourceBundles. For example, you could have a set of bundles for\n\
+            \ exception messages, ExceptionResources\n (ExceptionResources_fr, ExceptionResources_de,\
+            \ ...),\n and one for widgets, WidgetResource (WidgetResources_fr,\n WidgetResources_de,\
+            \ ...); breaking up the resources however you like."
+          fields:
+            cacheKey:
+              name: cacheKey
+              modifiers:
+              - private
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            expired:
+              name: expired
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            keySet:
+              name: keySet
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+            locale:
+              name: locale
+              modifiers:
+              - private
+              type:
+                basic: Locale
+                full: java.util.Locale
+            name:
+              name: name
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            parent:
+              name: parent
+              modifiers:
+              - protected
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: "The parent bundle of this bundle.\n The parent bundle is searched\
+                \ by getObject\n when this bundle does not contain a particular resource."
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            INITIAL_CACHE_SIZE:
+              name: INITIAL_CACHE_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            NONEXISTENT_BUNDLE:
+              name: NONEXISTENT_BUNDLE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            TRACE_ON:
+              name: TRACE_ON
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            UNKNOWN_FORMAT:
+              name: UNKNOWN_FORMAT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            cacheList:
+              name: cacheList
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.util.ResourceBundle$CacheKey,
+                  java.util.ResourceBundle$BundleReference>
+            referenceQueue:
+              name: referenceQueue
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<java.lang.Object>
           constructors:
           - modifiers:
             - public
+            notes: "Sole constructor.  (For invocation by subclass constructors, typically\n\
+              \ implicit.)"
           methods:
           - name: containsKey
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
+              notes: the resource key
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the given key is\n        contained in this ResourceBundle\
+                \ or its\n        parent bundles; false otherwise."
+            notes: "Determines whether the given key is contained in\n this ResourceBundle\
+              \ or its parent bundles."
           - name: getBaseBundleName
             modifiers:
             - public
@@ -27,13 +296,23 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The base name of the resource bundle, as provided to and expected\n\
+                \ by the ResourceBundle.getBundle(...) methods."
+            notes: "Returns the base name of this bundle, if known, or null if unknown.\n\
+              \n If not null, then this is the value of the baseName parameter\n that\
+              \ was passed to the ResourceBundle.getBundle(...) method\n when the\
+              \ resource bundle was loaded."
           - name: getKeys
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Enumeration<String>
+                basic: Enumeration
                 full: java.util.Enumeration<java.lang.String>
+              notes: "an Enumeration of the keys contained in\n         this ResourceBundle\
+                \ and its parent bundles."
+            notes: Returns an enumeration of the keys.
           - name: getLocale
             modifiers:
             - public
@@ -41,58 +320,150 @@ languages:
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: the locale of this resource bundle
+            notes: "Returns the locale of this resource bundle. This method can be\
+              \ used after a\n call to getBundle() to determine whether the resource\
+              \ bundle returned really\n corresponds to the requested locale or is\
+              \ a fallback."
           - name: getObject
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
+              notes: the key for the desired object
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object for the given key
+            notes: "Gets an object for the given key from this resource bundle or\
+              \ one of its parents.\n This method first tries to obtain the object\
+              \ from this resource bundle using\n handleGetObject.\n If not successful,\
+              \ and the parent resource bundle is not null,\n it calls the parent's\
+              \ getObject method.\n If still not successful, it throws a MissingResourceException."
           - name: getString
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
+              notes: the key for the desired string
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the string for the given key
+            notes: "Gets a string for the given key from this resource bundle or one\
+              \ of its parents.\n Calling this method is equivalent to calling\n \n\
+              \ (String) getObject(key)."
           - name: getStringArray
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
+              notes: the key for the desired string array
             return:
               type:
-                basic: String[]
+                basic: String
                 full: java.lang.String[]
+              notes: the string array for the given key
+            notes: "Gets a string array for the given key from this resource bundle\
+              \ or one of its parents.\n Calling this method is equivalent to calling\n\
+              \ \n (String[]) getObject(key)."
+          - name: handleGetObject
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: key
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the key for the desired object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the object for the given key, or null
+            notes: "Gets an object for the given key from this resource bundle.\n\
+              \ Returns null if this resource bundle does not contain an\n object\
+              \ for the given key."
+          - name: handleKeySet
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+              notes: "a Set of the keys contained only in this\n        ResourceBundle"
+            notes: "Returns a Set of the keys contained only\n in this ResourceBundle.\n\
+              \n The default implementation returns a Set of the\n keys returned by\
+              \ the getKeys method except\n for the ones for which the handleGetObject\
+              \ method returns null. Once the\n Set has been created, the value is\
+              \ kept in this\n ResourceBundle in order to avoid producing the\n same\
+              \ Set in subsequent calls. Subclasses can\n override this method for\
+              \ faster handling."
           - name: keySet
             modifiers:
             - public
             return:
               type:
-                basic: Set<String>
+                basic: Set
                 full: java.util.Set<java.lang.String>
+              notes: "a Set of all keys contained in this\n         ResourceBundle\
+                \ and its parent bundles."
+            notes: "Returns a Set of all keys contained in this\n ResourceBundle and\
+              \ its parent bundles."
+          - name: setParent
+            modifiers:
+            - protected
+            parameters:
+            - name: parent
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: this bundle's parent bundle.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the parent bundle of this bundle.\n The parent bundle is\
+              \ searched by getObject\n when this bundle does not contain a particular\
+              \ resource."
           staticMethods:
-          - name: clearCache
+          - name: checkList
             modifiers:
-            - public
+            - private
             - static
-            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<?>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: checkNamedModule
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
             return:
               type:
                 basic: void
@@ -100,172 +471,952 @@ languages:
           - name: clearCache
             modifiers:
             - public
-            - static
             - final
-            parameters:
-            - name: arg0
-              type:
-                basic: ClassLoader
-                full: java.lang.ClassLoader
+            - static
             return:
               type:
                 basic: void
                 full: void
-          - name: getBundle
+            notes: "Removes all resource bundles from the cache that have been loaded\n\
+              \ by the caller's module."
+          - name: clearCache
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: loader
               type:
-                basic: String
-                full: java.lang.String
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+              notes: the class loader
             return:
               type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
+                basic: void
+                full: void
+            notes: "Removes all resource bundles from the cache that have been loaded\n\
+              \ by the given class loader."
+          - name: findBundle
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
+                basic: Module
+                full: java.lang.Module
             - name: arg1
               type:
                 basic: Module
                 full: java.lang.Module
-            return:
-              type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
-            modifiers:
-            - public
-            - static
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Locale
-                full: java.util.Locale
-            return:
-              type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
-            modifiers:
-            - public
-            - static
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Control
-                full: java.util.ResourceBundle$Control
-            return:
-              type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Locale
-                full: java.util.Locale
             - name: arg2
               type:
-                basic: ClassLoader
-                full: java.lang.ClassLoader
-            return:
-              type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Locale
-                full: java.util.Locale
-            - name: arg2
-              type:
-                basic: Module
-                full: java.lang.Module
-            return:
-              type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
-            modifiers:
-            - public
-            - static
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Locale
-                full: java.util.Locale
-            - name: arg2
-              type:
-                basic: Control
-                full: java.util.ResourceBundle$Control
-            return:
-              type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-          - name: getBundle
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Locale
-                full: java.util.Locale
-            - name: arg2
-              type:
-                basic: ClassLoader
-                full: java.lang.ClassLoader
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
             - name: arg3
               type:
-                basic: Control
+                basic: List
+                full: java.util.List<java.util.Locale>
+            - name: arg4
+              type:
+                basic: List
+                full: java.util.List<java.lang.String>
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            - name: arg7
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: findBundleInCache
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            - name: arg1
+              type:
+                basic: ResourceBundle.Control
                 full: java.util.ResourceBundle$Control
             return:
               type:
                 basic: ResourceBundle
                 full: java.util.ResourceBundle
-          javaType: class
-          extends: Object
+          - name: getBundle
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the base name of the resource bundle, a fully qualified class
+                name
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and the default locale
+            notes: "Gets a resource bundle using the specified base name, the default\
+              \ locale,\n and the caller module. Calling this method is equivalent\
+              \ to calling\n \n getBundle(baseName, Locale.getDefault(), callerModule),"
+          - name: getBundle
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the base name of the resource bundle, a fully qualified class\n\
+                \        name"
+            - name: control
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+              notes: "the control which gives information for the resource bundle\n\
+                \        loading process"
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and the default locale
+            notes: "Returns a resource bundle using the specified base name, the\n\
+              \ default locale and the specified control. Calling this method\n is\
+              \ equivalent to calling\n \n getBundle(baseName, Locale.getDefault(),\n\
+              \           this.getClass().getClassLoader(), control),\n \n except\
+              \ that getClassLoader() is run with the security\n privileges of ResourceBundle.\
+              \  See getBundle for the\n complete description of the resource bundle\
+              \ loading process with a\n ResourceBundle.Control."
+          - name: getBundle
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the base name of the resource bundle, a fully qualified class
+                name
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for which a resource bundle is desired
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and locale
+            notes: "Gets a resource bundle using the specified base name and locale,\n\
+              \ and the caller module. Calling this method is equivalent to calling\n\
+              \ \n getBundle(baseName, locale, callerModule),"
+          - name: getBundle
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the base name of the resource bundle,\n                 a fully\
+                \ qualified class name"
+            - name: module
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: the module for which the resource bundle is searched
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and the default locale
+            notes: "Gets a resource bundle using the specified base name and the default\
+              \ locale\n on behalf of the specified module. This method is equivalent\
+              \ to calling\n \n getBundle(baseName, Locale.getDefault(), module)"
+          - name: getBundle
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the base name of the resource bundle,\n                 a fully\
+                \ qualified class name"
+            - name: targetLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for which a resource bundle is desired
+            - name: module
+              type:
+                basic: Module
+                full: java.lang.Module
+              notes: the module for which the resource bundle is searched
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and locale in the module
+            notes: "Gets a resource bundle using the specified base name and locale\n\
+              \ on behalf of the specified module.\n\n  Resource bundles in named\
+              \ modules may be encapsulated.  When\n the resource bundle is loaded\
+              \ from a\n service provider, the caller module\n must have an appropriate\
+              \ uses clause in its module descriptor\n to declare that the module\
+              \ uses of ResourceBundleProvider\n for the named resource bundle.\n\
+              \ Otherwise, it will load the resource bundles that are local in the\n\
+              \ given module as if calling Module.getResourceAsStream(String)\n or\
+              \ that are visible to the class loader of the given module\n as if calling\
+              \ ClassLoader.getResourceAsStream(String).\n When the resource bundle\
+              \ is loaded from the specified module, it is\n subject to the encapsulation\
+              \ rules specified by\n Module.getResourceAsStream.\n\n \n If the given\
+              \ module is an unnamed module, then this method is\n equivalent to calling\
+              \ getBundle(baseName, targetLocale, module.getClassLoader() to load\n\
+              \ resource bundles that are visible to the class loader of the given\n\
+              \ unnamed module. Custom ResourceBundleControlProvider\n implementations,\
+              \ if present, will only be invoked if the specified\n module is an unnamed\
+              \ module."
+          - name: getBundle
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the base name of the resource bundle, a fully qualified\n  \
+                \      class name"
+            - name: targetLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for which a resource bundle is desired
+            - name: control
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+              notes: "the control which gives information for the resource\n     \
+                \   bundle loading process"
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: "a resource bundle for the given base name and a\n         Locale\
+                \ in locales"
+            notes: "Returns a resource bundle using the specified base name, target\n\
+              \ locale and control, and the caller's class loader. Calling this\n\
+              \ method is equivalent to calling\n \n getBundle(baseName, targetLocale,\
+              \ this.getClass().getClassLoader(),\n           control),\n \n except\
+              \ that getClassLoader() is run with the security\n privileges of ResourceBundle.\
+              \  See getBundle for the\n complete description of the resource bundle\
+              \ loading process with a\n ResourceBundle.Control."
+          - name: getBundle
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the base name of the resource bundle, a fully qualified class
+                name
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for which a resource bundle is desired
+            - name: loader
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+              notes: the class loader from which to load the resource bundle
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and locale
+            notes: "Gets a resource bundle using the specified base name, locale,\
+              \ and class\n loader.\n\n When this method is called from a named module\
+              \ and the given\n loader is the class loader of the caller module, this\
+              \ is equivalent\n to calling:\n \n getBundle(baseName, targetLocale,\
+              \ callerModule)\n \n\n otherwise, this is equivalent to calling:\n \n\
+              \ getBundle(baseName, targetLocale, loader, control)\n \n where control\
+              \ is the default instance of ResourceBundle.Control unless\n a Control\
+              \ instance is provided by\n ResourceBundleControlProvider SPI.  Refer\
+              \ to the\n description of modifying the default\n behavior. The following\
+              \ describes the default behavior.\n\n \n Resource Bundle Search and\
+              \ Loading Strategy\n\n getBundle uses the base name, the specified locale,\
+              \ and\n the default locale (obtained from Locale.getDefault) to generate\
+              \ a sequence of candidate bundle names.  If the specified\n locale's\
+              \ language, script, country, and variant are all empty strings,\n then\
+              \ the base name is the only candidate bundle name.  Otherwise, a list\n\
+              \ of candidate locales is generated from the attribute values of the\n\
+              \ specified locale (language, script, country and variant) and appended\
+              \ to\n the base name.  Typically, this will look like the following:\n\
+              \n \n     baseName + \"_\" + language + \"_\" + script + \"_\" + country\
+              \ + \"_\" + variant\n     baseName + \"_\" + language + \"_\" + script\
+              \ + \"_\" + country\n     baseName + \"_\" + language + \"_\" + script\n\
+              \     baseName + \"_\" + language + \"_\" + country + \"_\" + variant\n\
+              \     baseName + \"_\" + language + \"_\" + country\n     baseName +\
+              \ \"_\" + language\n \n\n Candidate bundle names where the final component\
+              \ is an empty string\n are omitted, along with the underscore.  For\
+              \ example, if country is an\n empty string, the second and the fifth\
+              \ candidate bundle names above\n would be omitted.  Also, if script\
+              \ is an empty string, the candidate names\n including script are omitted.\
+              \  For example, a locale with language \"de\"\n and variant \"JAVA\"\
+              \ will produce candidate names with base name\n \"MyResource\" below.\n\
+              \n \n     MyResource_de__JAVA\n     MyResource_de\n \n\n In the case\
+              \ that the variant contains one or more underscores ('_'), a\n sequence\
+              \ of bundle names generated by truncating the last underscore and\n\
+              \ the part following it is inserted after a candidate bundle name with\
+              \ the\n original variant.  For example, for a locale with language \"\
+              en\", script\n \"Latn, country \"US\" and variant \"WINDOWS_VISTA\"\
+              , and bundle base name\n \"MyResource\", the list of candidate bundle\
+              \ names below is generated:\n\n \n MyResource_en_Latn_US_WINDOWS_VISTA\n\
+              \ MyResource_en_Latn_US_WINDOWS\n MyResource_en_Latn_US\n MyResource_en_Latn\n\
+              \ MyResource_en_US_WINDOWS_VISTA\n MyResource_en_US_WINDOWS\n MyResource_en_US\n\
+              \ MyResource_en\n \n\n Note: For some Locales, the list of\n candidate\
+              \ bundle names contains extra names, or the order of bundle names\n\
+              \ is slightly modified.  See the description of the default implementation\n\
+              \ of getCandidateLocales for details.\n\n getBundle then iterates over\
+              \ the candidate bundle names\n to find the first one for which it can\
+              \ instantiate an actual\n resource bundle. It uses the default controls'\
+              \ getFormats method, which generates two bundle names for each generated\n\
+              \ name, the first a class name and the second a properties file name.\
+              \ For\n each candidate bundle name, it attempts to create a resource\
+              \ bundle:\n\n First, it attempts to load a class using the generated\
+              \ class name.\n If such a class can be found and loaded using the specified\
+              \ class\n loader, is assignment compatible with ResourceBundle, is accessible\
+              \ from\n ResourceBundle, and can be instantiated, getBundle creates\
+              \ a\n new instance of this class and uses it as the result resource\n\
+              \ bundle.\n\n Otherwise, getBundle attempts to locate a property\n resource\
+              \ file using the generated properties file name.  It generates a\n path\
+              \ name from the candidate bundle name by replacing all \".\" characters\n\
+              \ with \"/\" and appending the string \".properties\".  It attempts\
+              \ to find a\n \"resource\" with this name using ClassLoader.getResource.\
+              \  (Note that a \"resource\" in the sense of\n getResource has nothing\
+              \ to do with the contents of a\n resource bundle, it is just a container\
+              \ of data, such as a file.)  If it\n finds a \"resource\", it attempts\
+              \ to create a new PropertyResourceBundle instance from its contents.\
+              \  If successful, this\n instance becomes the result resource bundle.\
+              \  \n\n This continues until a result resource bundle is instantiated\
+              \ or the\n list of candidate bundle names is exhausted.  If no matching\
+              \ resource\n bundle is found, the default control's getFallbackLocale\
+              \ method is called, which returns the current default\n locale.  A new\
+              \ sequence of candidate locale names is generated using this\n locale\
+              \ and searched again, as above.\n\n If still no result bundle is found,\
+              \ the base name alone is looked up. If\n this still fails, a MissingResourceException\
+              \ is thrown.\n\n  Once a result resource bundle has been found,\n its\
+              \ parent chain is instantiated.  If the result bundle already\n has\
+              \ a parent (perhaps because it was returned from a cache) the chain\
+              \ is\n complete.\n\n Otherwise, getBundle examines the remainder of\
+              \ the\n candidate locale list that was used during the pass that generated\
+              \ the\n result resource bundle.  (As before, candidate bundle names\
+              \ where the\n final component is an empty string are omitted.)  When\
+              \ it comes to the\n end of the candidate list, it tries the plain bundle\
+              \ name.  With each of the\n candidate bundle names it attempts to instantiate\
+              \ a resource bundle (first\n looking for a class and then a properties\
+              \ file, as described above).\n\n Whenever it succeeds, it calls the\
+              \ previously instantiated resource\n bundle's setParent method\n with\
+              \ the new resource bundle.  This continues until the list of names\n\
+              \ is exhausted or the current bundle already has a non-null parent.\n\
+              \n Once the parent chain is complete, the bundle is returned.\n\n Note:\
+              \ getBundle caches instantiated resource\n bundles and might return\
+              \ the same resource bundle instance multiple times.\n\n Note:The baseName\
+              \ argument should be a fully\n qualified class name. However, for compatibility\
+              \ with earlier versions,\n Java SE Runtime Environments do not verify\
+              \ this, and so it is\n possible to access PropertyResourceBundles by\
+              \ specifying a\n path name (using \"/\") instead of a fully qualified\
+              \ class name (using\n \".\").\n\n \n Example:\n \n The following class\
+              \ and property files are provided:\n \n     MyResources.class\n    \
+              \ MyResources.properties\n     MyResources_fr.properties\n     MyResources_fr_CH.class\n\
+              \     MyResources_fr_CH.properties\n     MyResources_en.properties\n\
+              \     MyResources_es_ES.class\n \n\n The contents of all files are valid\
+              \ (that is, public non-abstract\n subclasses of ResourceBundle for the\
+              \ \".class\" files,\n syntactically correct \".properties\" files).\
+              \  The default locale is\n Locale(\"en\", \"GB\").\n\n Calling getBundle\
+              \ with the locale arguments below will\n instantiate resource bundles\
+              \ as follows:\n\n \n getBundle() locale to resource bundle mapping\n\
+              \ \n LocaleResource bundle\n \n \n Locale(\"fr\", \"CH\")MyResources_fr_CH.class,\
+              \ parent MyResources_fr.properties, parent MyResources.class\n Locale(\"\
+              fr\", \"FR\")MyResources_fr.properties, parent MyResources.class\n Locale(\"\
+              de\", \"DE\")MyResources_en.properties, parent MyResources.class\n Locale(\"\
+              en\", \"US\")MyResources_en.properties, parent MyResources.class\n Locale(\"\
+              es\", \"ES\")MyResources_es_ES.class, parent MyResources.class\n \n\
+              \ \n\n The file MyResources_fr_CH.properties is never used because it\
+              \ is\n hidden by the MyResources_fr_CH.class. Likewise, MyResources.properties\n\
+              \ is also hidden by MyResources.class."
+          - name: getBundle
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: baseName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the base name of the resource bundle, a fully qualified\n  \
+                \      class name"
+            - name: targetLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for which a resource bundle is desired
+            - name: loader
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+              notes: the class loader from which to load the resource bundle
+            - name: control
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+              notes: "the control which gives information for the resource\n     \
+                \   bundle loading process"
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: a resource bundle for the given base name and locale
+            notes: "Returns a resource bundle using the specified base name, target\n\
+              \ locale, class loader and control. Unlike the getBundle\n factory methods\
+              \ with no control argument, the given\n control specifies how to locate\
+              \ and instantiate resource\n bundles. Conceptually, the bundle loading\
+              \ process with the given\n control is performed in the following steps.\n\
+              \n \n This factory method looks up the resource bundle in the cache\
+              \ for\n the specified baseName, targetLocale and\n loader.  If the requested\
+              \ resource bundle instance is\n found in the cache and the time-to-live\
+              \ periods of the instance and\n all of its parent instances have not\
+              \ expired, the instance is returned\n to the caller. Otherwise, this\
+              \ factory method proceeds with the\n loading process below.\n\n The\
+              \ control.getFormats method is called to get resource bundle formats\n\
+              \ to produce bundle or resource names. The strings\n \"java.class\"\
+              \ and \"java.properties\"\n designate class-based and property-based\
+              \ resource bundles, respectively. Other strings\n starting with \"java.\"\
+              \ are reserved for future extensions\n and must not be used for application-defined\
+              \ formats. Other strings\n designate application-defined formats.\n\n\
+              \ The control.getCandidateLocales method is called with the target\n\
+              \ locale to get a list of candidate Locales for\n which resource bundles\
+              \ are searched.\n\n The control.newBundle method is called to\n instantiate\
+              \ a ResourceBundle for the base bundle name, a\n candidate locale, and\
+              \ a format. (Refer to the note on the cache\n lookup below.) This step\
+              \ is iterated over all combinations of the\n candidate locales and formats\
+              \ until the newBundle method\n returns a ResourceBundle instance or\
+              \ the iteration has\n used up all the combinations. For example, if\
+              \ the candidate locales\n are Locale(\"de\", \"DE\"), Locale(\"de\"\
+              ) and\n Locale(\"\") and the formats are \"java.class\"\n and \"java.properties\"\
+              , then the following is the\n sequence of locale-format combinations\
+              \ to be used to call\n control.newBundle.\n\n \n locale-format combinations\
+              \ for newBundle\n \n \n Index\n Locale\n format\n \n \n \n \n 1\n Locale(\"\
+              de\", \"DE\")\n java.class\n \n \n 2\n Locale(\"de\", \"DE\")\n java.properties\n\
+              \ \n \n 3\n Locale(\"de\")\n java.class\n \n \n 4\n Locale(\"de\")\n\
+              \ java.properties\n \n \n 5\n Locale(\"\")\n java.class\n \n \n 6\n\
+              \ Locale(\"\")\n java.properties\n \n \n \n \n\n If the previous step\
+              \ has found no resource bundle, proceed to\n Step 6. If a bundle has\
+              \ been found that is a base bundle (a bundle\n for Locale(\"\")), and\
+              \ the candidate locale list only contained\n Locale(\"\"), return the\
+              \ bundle to the caller. If a bundle\n has been found that is a base\
+              \ bundle, but the candidate locale list\n contained locales other than\
+              \ Locale(\"\"), put the bundle on hold and\n proceed to Step 6. If a\
+              \ bundle has been found that is not a base\n bundle, proceed to Step\
+              \ 7.\n\n The control.getFallbackLocale method is called to get a fallback\n\
+              \ locale (alternative to the current target locale) to try further\n\
+              \ finding a resource bundle. If the method returns a non-null locale,\n\
+              \ it becomes the next target locale and the loading process starts over\n\
+              \ from Step 3. Otherwise, if a base bundle was found and put on hold\
+              \ in\n a previous Step 5, it is returned to the caller now. Otherwise,\
+              \ a\n MissingResourceException is thrown.\n\n At this point, we have\
+              \ found a resource bundle that's not the\n base bundle. If this bundle\
+              \ set its parent during its instantiation,\n it is returned to the caller.\
+              \ Otherwise, its parent chain is\n instantiated based on the list of\
+              \ candidate locales from which it was\n found. Finally, the bundle is\
+              \ returned to the caller.\n \n\n During the resource bundle loading\
+              \ process above, this factory\n method looks up the cache before calling\
+              \ the control.newBundle method.  If the time-to-live period of the\n\
+              \ resource bundle found in the cache has expired, the factory method\n\
+              \ calls the control.needsReload\n method to determine whether the resource\
+              \ bundle needs to be reloaded.\n If reloading is required, the factory\
+              \ method calls\n control.newBundle to reload the resource bundle.  If\n\
+              \ control.newBundle returns null, the factory\n method puts a dummy\
+              \ resource bundle in the cache as a mark of\n nonexistent resource bundles\
+              \ in order to avoid lookup overhead for\n subsequent requests. Such\
+              \ dummy resource bundles are under the same\n expiration control as\
+              \ specified by control.\n\n All resource bundles loaded are cached by\
+              \ default. Refer to\n control.getTimeToLive for details.\n\n The following\
+              \ is an example of the bundle loading process with the\n default ResourceBundle.Control\
+              \ implementation.\n\n Conditions:\n \n Base bundle name: foo.bar.Messages\n\
+              \ Requested Locale: Locale.ITALY\n Default Locale: Locale.FRENCH\n Available\
+              \ resource bundles:\n foo/bar/Messages_fr.properties and\n foo/bar/Messages.properties\n\
+              \ \n\n First, getBundle tries loading a resource bundle in\n the following\
+              \ sequence.\n\n \n class foo.bar.Messages_it_IT\n file foo/bar/Messages_it_IT.properties\n\
+              \ class foo.bar.Messages_it\n file foo/bar/Messages_it.properties\n\
+              \ class foo.bar.Messages\n file foo/bar/Messages.properties\n \n\n At\
+              \ this point, getBundle finds\n foo/bar/Messages.properties, which is\
+              \ put on hold\n because it's the base bundle.  getBundle calls control.getFallbackLocale(\"\
+              foo.bar.Messages\", Locale.ITALY) which\n returns Locale.FRENCH. Next,\
+              \ getBundle\n tries loading a bundle in the following sequence.\n\n\
+              \ \n class foo.bar.Messages_fr\n file foo/bar/Messages_fr.properties\n\
+              \ class foo.bar.Messages\n file foo/bar/Messages.properties\n \n\n getBundle\
+              \ finds\n foo/bar/Messages_fr.properties and creates a\n ResourceBundle\
+              \ instance. Then, getBundle\n sets up its parent chain from the list\
+              \ of the candidate locales.  Only\n foo/bar/Messages.properties is found\
+              \ in the list and\n getBundle creates a ResourceBundle instance\n that\
+              \ becomes the parent of the instance for\n foo/bar/Messages_fr.properties."
+          - name: getBundleFromModule
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg3
+              type:
+                basic: Locale
+                full: java.util.Locale
+            - name: arg4
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: getBundleImpl
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Locale
+                full: java.util.Locale
+            - name: arg2
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg3
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: getBundleImpl
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Locale
+                full: java.util.Locale
+            - name: arg2
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg3
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            - name: arg4
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: getBundleImpl
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg3
+              type:
+                basic: Locale
+                full: java.util.Locale
+            - name: arg4
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: getDefaultControl
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+          - name: getDefaultControl
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+          - name: getLoader
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+          - name: getLoaderForControl
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+          - name: getResourceBundleProviderType
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<java.util.spi.ResourceBundleProvider>
+          - name: getServiceLoader
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: ServiceLoader
+                full: java.util.ServiceLoader<java.util.spi.ResourceBundleProvider>
+          - name: hasValidParentChain
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isValidBundle
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$clearCache$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class
+            - name: arg1
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$clearCache$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            - name: arg1
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: loadBundle
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            - name: arg1
+              type:
+                basic: List
+                full: java.util.List<java.lang.String>
+            - name: arg2
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            - name: arg3
+              type:
+                basic: Module
+                full: java.lang.Module
+            - name: arg4
+              type:
+                basic: Module
+                full: java.lang.Module
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: loadBundle
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            - name: arg1
+              type:
+                basic: List
+                full: java.util.List<java.lang.String>
+            - name: arg2
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: loadBundleFromProviders
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Locale
+                full: java.util.Locale
+            - name: arg2
+              type:
+                basic: ServiceLoader
+                full: java.util.ServiceLoader<java.util.spi.ResourceBundleProvider>
+            - name: arg3
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: putBundleInCache
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            - name: arg1
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+            - name: arg2
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            return:
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+          - name: setExpirationTime
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBundle.CacheKey
+                full: java.util.ResourceBundle$CacheKey
+            - name: arg1
+              type:
+                basic: ResourceBundle.Control
+                full: java.util.ResourceBundle$Control
+            return:
+              type:
+                basic: void
+                full: void
+          - name: throwMissingResourceException
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Locale
+                full: java.util.Locale
+            - name: arg2
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: trace
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: uncheckedThrow
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: void
+                full: void

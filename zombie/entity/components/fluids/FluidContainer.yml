@@ -4,27 +4,180 @@ languages:
     packages:
       zombie.entity.components.fluids:
         FluidContainer:
+          extends: zombie.entity.Component
+          modifiers:
+          - public
+          fields:
+            amountCache:
+              name: amountCache
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            blacklist:
+              name: blacklist
+              modifiers:
+              - private
+              type:
+                basic: FluidFilter
+                full: zombie.entity.components.fluids.FluidFilter
+            cacheInvalidated:
+              name: cacheInvalidated
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            canPlayerEmpty:
+              name: canPlayerEmpty
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            capacity:
+              name: capacity
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            color:
+              name: color
+              modifiers:
+              - private
+              type:
+                basic: Color
+                full: zombie.core.Color
+            containerName:
+              name: containerName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            customDrinkSound:
+              name: customDrinkSound
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            fillsWithCleanWater:
+              name: fillsWithCleanWater
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            fluids:
+              name: fluids
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.entity.components.fluids.FluidInstance>
+            hiddenAmount:
+              name: hiddenAmount
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            inputLocked:
+              name: inputLocked
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            nameCache:
+              name: nameCache
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            propertiesCache:
+              name: propertiesCache
+              modifiers:
+              - private
+              type:
+                basic: SealedFluidProperties
+                full: zombie.entity.components.fluids.SealedFluidProperties
+            rainCatcher:
+              name: rainCatcher
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            temperature:
+              name: temperature
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            translatedContainerName:
+              name: translatedContainerName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            whitelist:
+              name: whitelist
+              modifiers:
+              - private
+              type:
+                basic: FluidFilter
+                full: zombie.entity.components.fluids.FluidFilter
           staticFields:
             DEF_CONTAINER_NAME:
               name: DEF_CONTAINER_NAME
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
             MAX_FLUIDS:
               name: MAX_FLUIDS
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+            colorDef:
+              name: colorDef
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Color
+                full: zombie.core.Color
+            df:
+              name: df
+              modifiers:
+              - private
+              - static
+              type:
+                basic: DecimalFormat
+                full: java.text.DecimalFormat
+            tempFluidUI:
+              name: tempFluidUI
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.entity.components.fluids.FluidInstance>
+          constructors:
+          - modifiers:
+            - private
           methods:
           - name: DoTooltip
             modifiers:
@@ -48,7 +201,7 @@ languages:
                 full: zombie.ui.ObjectTooltip
             - name: arg1
               type:
-                basic: Layout
+                basic: ObjectTooltip.Layout
                 full: zombie.ui.ObjectTooltip$Layout
             return:
               type:
@@ -95,8 +248,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Fluid
-                full: zombie.entity.components.fluids.Fluid
+                basic: FluidType
+                full: zombie.entity.components.fluids.FluidType
             - name: arg1
               type:
                 basic: float
@@ -111,12 +264,48 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: FluidType
-                full: zombie.entity.components.fluids.FluidType
+                basic: Fluid
+                full: zombie.entity.components.fluids.Fluid
             - name: arg1
               type:
                 basic: float
                 full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addFluid
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: FluidInstance
+                full: zombie.entity.components.fluids.FluidInstance
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addInitialFluid
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: FluidContainerScript.FluidScript
+                full: zombie.scripting.entity.components.fluids.FluidContainerScript$FluidScript
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
@@ -234,6 +423,26 @@ languages:
               type:
                 basic: FluidSample
                 full: zombie.entity.components.fluids.FluidSample
+          - name: doToolTipProp
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectTooltip.Layout
+                full: zombie.ui.ObjectTooltip$Layout
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: getAmount
             modifiers:
             - public
@@ -283,6 +492,18 @@ languages:
               type:
                 basic: float
                 full: float
+          - name: getFluidInstance
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Fluid
+                full: zombie.entity.components.fluids.Fluid
+            return:
+              type:
+                basic: FluidInstance
+                full: zombie.entity.components.fluids.FluidInstance
           - name: getFreeCapacity
             modifiers:
             - public
@@ -290,13 +511,13 @@ languages:
               type:
                 basic: float
                 full: float
-          - name: getMetaIsOutside
+          - name: getPoisonAmount
             modifiers:
-            - public
+            - private
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: float
+                full: float
           - name: getPoisonEffect
             modifiers:
             - public
@@ -384,6 +605,13 @@ languages:
               type:
                 basic: FluidFilter
                 full: zombie.entity.components.fluids.FluidFilter
+          - name: invalidateColor
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
           - name: isAllCategory
             modifiers:
             - public
@@ -499,6 +727,13 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: isTaintedStatusKnown
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: load
             modifiers:
             - public
@@ -511,6 +746,85 @@ languages:
               type:
                 basic: int
                 full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadSyncData
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onReceivePacket
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            - name: arg1
+              type:
+                basic: EntityPacketType
+                full: zombie.entity.network.EntityPacketType
+            - name: arg2
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: readFromScript
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ComponentScript
+                full: zombie.scripting.entity.ComponentScript
+            return:
+              type:
+                basic: void
+                full: void
+          - name: recalculateCaches
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: recalculateCaches
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: recalculateCaches
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
@@ -582,9 +896,40 @@ languages:
               type:
                 basic: FluidConsume
                 full: zombie.entity.components.fluids.FluidConsume
+          - name: removeFluidInstanceIfEmpty
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: FluidInstance
+                full: zombie.entity.components.fluids.FluidInstance
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: reset
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
           - name: save
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: saveSyncData
+            modifiers:
+            - protected
             parameters:
             - name: arg0
               type:
@@ -876,5 +1221,3 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Component

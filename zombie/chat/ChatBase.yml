@@ -4,28 +4,155 @@ languages:
     packages:
       zombie.chat:
         ChatBase:
+          extends: java.lang.Object
           modifiers:
           - public
           - abstract
+          fields:
+            chatOwner:
+              name: chatOwner
+              modifiers:
+              - private
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+            chatTab:
+              name: chatTab
+              modifiers:
+              - private
+              type:
+                basic: ChatTab
+                full: zombie.chat.ChatTab
+            customSettings:
+              name: customSettings
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            id:
+              name: id
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            justAddedMembers:
+              name: justAddedMembers
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.Short>
+            justRemovedMembers:
+              name: justRemovedMembers
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.Short>
+            memberLock:
+              name: memberLock
+              modifiers:
+              - private
+              type:
+                basic: Lock
+                full: java.util.concurrent.locks.Lock
+            members:
+              name: members
+              modifiers:
+              - protected
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.Short>
+            messages:
+              name: messages
+              modifiers:
+              - protected
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.chat.ChatMessage>
+            mode:
+              name: mode
+              modifiers:
+              - private
+              type:
+                basic: ChatMode
+                full: zombie.chat.ChatMode
+            serverConnection:
+              name: serverConnection
+              modifiers:
+              - private
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            settings:
+              name: settings
+              modifiers:
+              - private
+              type:
+                basic: ChatSettings
+                full: zombie.chat.ChatSettings
+            titleID:
+              name: titleID
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            translatedTitle:
+              name: translatedTitle
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: ChatType
+                full: zombie.network.chat.ChatType
+          staticFields:
+            ID_NOT_SET:
+              name: ID_NOT_SET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ChatType
+                full: zombie.network.chat.ChatType
           - modifiers:
             - public
             parameters:
             - name: bb
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
               notes: package from server that describe how chat should look and work
             - name: type
               type:
                 basic: ChatType
+                full: zombie.network.chat.ChatType
               notes: meta information about chat. Many parameters depends on that
             - name: tab
               type:
                 basic: ChatTab
+                full: zombie.chat.ChatTab
               notes: tab where chat should show their info
             - name: owner
               type:
                 basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
               notes: actual player instance
             notes: Should called only on client side of chat system
           - modifiers:
@@ -34,15 +161,18 @@ languages:
             - name: id
               type:
                 basic: int
+                full: int
               notes: unique id of chat. It will be used to identify chat in client-server
                 communication
             - name: type
               type:
                 basic: ChatType
+                full: zombie.network.chat.ChatType
               notes: meta information about chat. Many parameters depends on that
             - name: tab
               type:
                 basic: ChatTab
+                full: zombie.chat.ChatTab
               notes: this tab will transferred to clients when it will connecting
             notes: Should be called only on server side of chat system
           methods:
@@ -53,15 +183,18 @@ languages:
             - name: playerID
               type:
                 basic: short
+                full: short
             return:
               type:
                 basic: void
+                full: void
           - name: close
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: createMessage
             modifiers:
             - public
@@ -69,12 +202,30 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: text of the message
             return:
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
               notes: corresponding object to message
             notes: Message creator. Every chat know how to create its own message
+          - name: createMessage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: ChatMessage
+                full: zombie.chat.ChatMessage
           - name: createServerMessage
             modifiers:
             - public
@@ -82,33 +233,93 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: ServerChatMessage
+                full: zombie.chat.ServerChatMessage
+          - name: getChatOwner
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+          - name: getChatOwnerName
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getChatSettingsTags
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getColor
             modifiers:
             - public
             return:
               type:
                 basic: Color
+                full: zombie.core.Color
+          - name: getColorTag
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getColorTag
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: Color
+                full: zombie.core.Color
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getFontSize
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getFontSizeTag
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getID
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getJustAddedMembers
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<java.lang.Short>
           - name: getJustRemovedMembers
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<java.lang.Short>
           - name: getMessagePrefix
             modifiers:
             - public
@@ -116,9 +327,11 @@ languages:
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getMessageTextWithPrefix
             modifiers:
             - public
@@ -126,57 +339,163 @@ languages:
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getMode
             modifiers:
             - public
             return:
               type:
                 basic: ChatMode
+                full: zombie.chat.ChatMode
           - name: getRange
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
           - name: getTabID
             modifiers:
             - public
             return:
               type:
                 basic: short
+                full: short
+          - name: getTitle
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getTitleID
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getType
             modifiers:
             - public
             return:
               type:
                 basic: ChatType
+                full: zombie.network.chat.ChatType
           - name: getZombieAttractionRange
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
+          - name: hasChatTab
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: hasMember
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Short
+                full: java.lang.Short
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isAllowBBcode
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isAllowChatIcons
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isAllowColors
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isAllowFonts
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isAllowImages
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isCustomSettings
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isEnabled
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isEqualizeLineHeights
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isSendingToRadio
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isShowAuthor
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isShowTimestamp
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isShowTitle
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: leaveMember
             modifiers:
             - public
@@ -184,9 +503,23 @@ languages:
             - name: playerID
               type:
                 basic: Short
+                full: java.lang.Short
             return:
               type:
                 basic: void
+                full: void
+          - name: packChat
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBufferWriter
+                full: zombie.core.network.ByteBufferWriter
+            return:
+              type:
+                basic: void
+                full: void
           - name: packMessage
             modifiers:
             - public
@@ -194,12 +527,15 @@ languages:
             - name: b
               type:
                 basic: ByteBufferWriter
+                full: zombie.core.network.ByteBufferWriter
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: void
+                full: void
           - name: removeMember
             modifiers:
             - public
@@ -207,9 +543,43 @@ languages:
             - name: playerID
               type:
                 basic: Short
+                full: java.lang.Short
             return:
               type:
                 basic: void
+                full: void
+          - name: sendChatMessageFromPlayer
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            - name: arg1
+              type:
+                basic: ChatMessage
+                full: zombie.chat.ChatMessage
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sendChatMessageToPlayer
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            - name: arg1
+              type:
+                basic: ChatMessage
+                full: zombie.chat.ChatMessage
+            return:
+              type:
+                basic: void
+                full: void
           - name: sendMessageToChatMembers
             modifiers:
             - public
@@ -217,9 +587,11 @@ languages:
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: void
+                full: void
           - name: sendMessageToChatMembers
             modifiers:
             - public
@@ -227,9 +599,11 @@ languages:
             - name: msg
               type:
                 basic: ServerChatMessage
+                full: zombie.chat.ServerChatMessage
             return:
               type:
                 basic: void
+                full: void
           - name: sendMessageToPlayer
             modifiers:
             - public
@@ -237,12 +611,15 @@ languages:
             - name: connection
               type:
                 basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: void
+                full: void
           - name: sendMessageToPlayer
             modifiers:
             - public
@@ -250,12 +627,15 @@ languages:
             - name: playerID
               type:
                 basic: short
+                full: short
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: void
+                full: void
           - name: sendPlayerJoinChatPacket
             modifiers:
             - public
@@ -263,9 +643,11 @@ languages:
             - name: playerConnection
               type:
                 basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
             return:
               type:
                 basic: void
+                full: void
           - name: sendPlayerLeaveChatPacket
             modifiers:
             - public
@@ -273,9 +655,11 @@ languages:
             - name: playerID
               type:
                 basic: short
+                full: short
             return:
               type:
                 basic: void
+                full: void
           - name: sendPlayerLeaveChatPacket
             modifiers:
             - public
@@ -283,9 +667,11 @@ languages:
             - name: connection
               type:
                 basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
             return:
               type:
                 basic: void
+                full: void
           - name: sendToServer
             modifiers:
             - public
@@ -293,12 +679,15 @@ languages:
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             - name: deviceData
               type:
                 basic: DeviceData
+                full: zombie.radio.devices.DeviceData
             return:
               type:
                 basic: void
+                full: void
           - name: setFontSize
             modifiers:
             - public
@@ -306,9 +695,11 @@ languages:
             - name: fontSize
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: setSettings
             modifiers:
             - public
@@ -316,9 +707,11 @@ languages:
             - name: settings
               type:
                 basic: ChatSettings
+                full: zombie.chat.ChatSettings
             return:
               type:
                 basic: void
+                full: void
           - name: setShowTimestamp
             modifiers:
             - public
@@ -326,9 +719,11 @@ languages:
             - name: showTimestamp
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: setShowTitle
             modifiers:
             - public
@@ -336,9 +731,11 @@ languages:
             - name: showTitle
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: showMessage
             modifiers:
             - public
@@ -346,12 +743,15 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: author
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: showMessage
             modifiers:
             - public
@@ -359,9 +759,23 @@ languages:
             - name: msg
               type:
                 basic: ChatMessage
+                full: zombie.chat.ChatMessage
             return:
               type:
                 basic: void
+                full: void
+          - name: syncMembers
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.Short>
+            return:
+              type:
+                basic: void
+                full: void
           - name: syncMembersByUsernames
             modifiers:
             - public
@@ -369,10 +783,11 @@ languages:
             - name: players
               type:
                 basic: ArrayList
-                full: ArrayList<String>
+                full: java.util.ArrayList<java.lang.String>
             return:
               type:
                 basic: void
+                full: void
           - name: unpackMessage
             modifiers:
             - public
@@ -380,8 +795,8 @@ languages:
             - name: bb
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             return:
               type:
                 basic: ChatMessage
-          javaType: class
-          extends: Object
+                full: zombie.chat.ChatMessage

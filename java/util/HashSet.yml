@@ -4,25 +4,111 @@ languages:
     packages:
       java.util:
         HashSet:
+          extends: java.util.AbstractSet<E>
+          modifiers:
+          - public
+          notes: "This class implements the Set interface, backed by a hash table\n\
+            \ (actually a HashMap instance).  It makes no guarantees as to the\n iteration\
+            \ order of the set; in particular, it does not guarantee that the\n order\
+            \ will remain constant over time.  This class permits the null\n element.\n\
+            \n This class offers constant time performance for the basic operations\n\
+            \ (add, remove, contains and size),\n assuming the hash function disperses\
+            \ the elements properly among the\n buckets.  Iterating over this set\
+            \ requires time proportional to the sum of\n the HashSet instance's size\
+            \ (the number of elements) plus the\n \"capacity\" of the backing HashMap\
+            \ instance (the number of\n buckets).  Thus, it's very important not to\
+            \ set the initial capacity too\n high (or the load factor too low) if\
+            \ iteration performance is important.\n\n Note that this implementation\
+            \ is not synchronized.\n If multiple threads access a hash set concurrently,\
+            \ and at least one of\n the threads modifies the set, it must be synchronized\
+            \ externally.\n This is typically accomplished by synchronizing on some\
+            \ object that\n naturally encapsulates the set.\n\n If no such object\
+            \ exists, the set should be \"wrapped\" using the\n Collections.synchronizedSet\n\
+            \ method.  This is best done at creation time, to prevent accidental\n\
+            \ unsynchronized access to the set:\n   Set s = Collections.synchronizedSet(new\
+            \ HashSet(...));\n\n The iterators returned by this class's iterator method\
+            \ are\n fail-fast: if the set is modified at any time after the iterator\
+            \ is\n created, in any way except through the iterator's own remove\n\
+            \ method, the Iterator throws a ConcurrentModificationException.\n Thus,\
+            \ in the face of concurrent modification, the iterator fails quickly\n\
+            \ and cleanly, rather than risking arbitrary, non-deterministic behavior\
+            \ at\n an undetermined time in the future.\n\n Note that the fail-fast\
+            \ behavior of an iterator cannot be guaranteed\n as it is, generally speaking,\
+            \ impossible to make any hard guarantees in the\n presence of unsynchronized\
+            \ concurrent modification.  Fail-fast iterators\n throw ConcurrentModificationException\
+            \ on a best-effort basis.\n Therefore, it would be wrong to write a program\
+            \ that depended on this\n exception for its correctness: the fail-fast\
+            \ behavior of iterators\n should be used only to detect bugs.\n\n This\
+            \ class is a member of the\n \n Java Collections Framework."
+          fields:
+            map:
+              name: map
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<E, java.lang.Object>
+          staticFields:
+            PRESENT:
+              name: PRESENT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - package
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: "Constructs a new, empty set; the backing HashMap instance has\n\
+              \ default initial capacity (16) and load factor (0.75)."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends E>
+              notes: the collection whose elements are to be placed into this set
+            notes: "Constructs a new set containing the elements in the specified\n\
+              \ collection.  The HashMap is created with default load factor\n (0.75)\
+              \ and an initial capacity sufficient to contain the elements in\n the\
+              \ specified collection."
+          - modifiers:
+            - public
+            parameters:
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
+              notes: the initial capacity of the hash map
+            - name: loadFactor
+              type:
+                basic: float
+                full: float
+              notes: the load factor of the hash map
+            notes: "Constructs a new, empty set; the backing HashMap instance has\n\
+              \ the specified initial capacity and the specified load factor."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
-                basic: Collection<? extends E>
-                full: java.util.Collection<? extends E>
+                basic: int
+                full: int
+              notes: the initial capacity of the hash table
+            notes: "Constructs a new, empty set; the backing HashMap instance has\n\
+              \ the specified initial capacity and default load factor (0.75)."
           - modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
@@ -32,43 +118,30 @@ languages:
               type:
                 basic: float
                 full: float
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
           methods:
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: element to be added to this set
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: add
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: addAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<? extends E>
-                full: java.util.Collection<? extends E>
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if this set did not already contain the specified\n element"
+            notes: "Adds the specified element to this set if it is not already present.\n\
+              \ More formally, adds the specified element e to this set if\n this\
+              \ set contains no element e2 such that\n Objects.equals(e, e2).\n If\
+              \ this set already contains the element, the call leaves the set\n unchanged\
+              \ and returns false."
           - name: clear
             modifiers:
             - public
@@ -76,13 +149,8 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: clear
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Removes all of the elements from this set.\n The set will be empty\
+              \ after this call returns."
           - name: clone
             modifiers:
             - public
@@ -90,61 +158,26 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a shallow copy of this set
+            notes: "Returns a shallow copy of this HashSet instance: the elements\n\
+              \ themselves are not cloned."
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element whose presence in this set is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: containsAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<?>
-                full: java.util.Collection<?>
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: hashCode
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: true if this set contains the specified element
+            notes: "Returns true if this set contains the specified element.\n More\
+              \ formally, returns true if and only if this set\n contains an element\
+              \ e such that\n Objects.equals(o, e)."
           - name: isEmpty
             modifiers:
             - public
@@ -152,75 +185,50 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isEmpty
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if this set contains no elements
+            notes: Returns true if this set contains no elements.
           - name: iterator
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<E>
+                basic: Iterator
                 full: java.util.Iterator<E>
-          - name: iterator
+              notes: an Iterator over the elements in this set
+            notes: "Returns an iterator over the elements in this set.  The elements\n\
+              \ are returned in no particular order."
+          - name: readObject
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
-                basic: Iterator<E>
-                full: java.util.Iterator<E>
+                basic: void
+                full: void
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: object to be removed from this set, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: removeAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<?>
-                full: java.util.Collection<?>
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: retainAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<?>
-                full: java.util.Collection<?>
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the set contained the specified element
+            notes: "Removes the specified element from this set if it is present.\n\
+              \ More formally, removes an element e such that\n Objects.equals(o,\
+              \ e),\n if this set contains such an element.  Returns true if\n this\
+              \ set contained the element (or equivalently, if this set\n changed\
+              \ as a result of the call).  (This set will not contain the\n element\
+              \ once the call returns.)"
           - name: size
             modifiers:
             - public
@@ -228,409 +236,56 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: size
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the number of elements in this set (its cardinality)
+            notes: Returns the number of elements in this set (its cardinality).
           - name: spliterator
             modifiers:
             - public
             return:
               type:
-                basic: Spliterator<E>
+                basic: Spliterator
                 full: java.util.Spliterator<E>
-          - name: spliterator
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Spliterator<E>
-                full: java.util.Spliterator<E>
+              notes: a Spliterator over the elements in this set
+            notes: "Creates a late-binding\n and fail-fast Spliterator over the elements\
+              \ in this\n set.\n\n The Spliterator reports Spliterator.SIZED and\n\
+              \ Spliterator.DISTINCT.  Overriding implementations should document\n\
+              \ the reporting of additional characteristic values."
           - name: toArray
             modifiers:
             - public
             return:
               type:
-                basic: T[]
-                full: T[]
-          - name: toArray
-            modifiers:
-            - public
-            return:
-              type:
-                basic: T[]
-                full: T[]
+                basic: Object
+                full: java.lang.Object[]
+              notes: "an array, whose runtime component\n type is Object, containing\
+                \ all of the elements in this collection"
+            notes: 'Description copied from class: AbstractCollection'
           - name: toArray
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: a
               type:
-                basic: T[]
+                basic: T
                 full: T[]
+              notes: "the array into which the elements of this collection are to\
+                \ be\n        stored, if it is big enough; otherwise, a new array\
+                \ of the same\n        runtime type is allocated for this purpose."
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          - name: toArray
+              notes: an array containing all of the elements in this collection
+            notes: 'Description copied from class: AbstractCollection'
+          - name: writeObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: T[]
-                full: T[]
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
-                basic: T[]
-                full: T[]
-          staticMethods:
-          - name: copyOf
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Collection<? extends E>
-                full: java.util.Collection<? extends E>
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E[]
-                full: E[]
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            - name: arg5
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            - name: arg5
-              type:
-                basic: E
-                full: E
-            - name: arg6
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            - name: arg5
-              type:
-                basic: E
-                full: E
-            - name: arg6
-              type:
-                basic: E
-                full: E
-            - name: arg7
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            - name: arg5
-              type:
-                basic: E
-                full: E
-            - name: arg6
-              type:
-                basic: E
-                full: E
-            - name: arg7
-              type:
-                basic: E
-                full: E
-            - name: arg8
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            - name: arg5
-              type:
-                basic: E
-                full: E
-            - name: arg6
-              type:
-                basic: E
-                full: E
-            - name: arg7
-              type:
-                basic: E
-                full: E
-            - name: arg8
-              type:
-                basic: E
-                full: E
-            - name: arg9
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: Set<E>
-                full: java.util.Set<E>
-          javaType: class
-          extends: AbstractSet<E>
+                basic: void
+                full: void

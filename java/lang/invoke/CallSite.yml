@@ -1,0 +1,328 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.lang.invoke:
+        CallSite:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A CallSite is a holder for a variable MethodHandle,\n which is called\
+            \ its target.\n An invokedynamic instruction linked to a CallSite delegates\n\
+            \ all calls to the site's current target.\n A CallSite may be associated\
+            \ with several invokedynamic\n instructions, or it may be \"free floating\"\
+            , associated with none.\n In any case, it may be invoked through an associated\
+            \ method handle\n called its dynamic invoker.\n \n CallSite is an abstract\
+            \ class which does not allow\n direct subclassing by users.  It has three\
+            \ immediate,\n concrete subclasses that may be either instantiated or\
+            \ subclassed.\n \n If a mutable target is not required, an invokedynamic\
+            \ instruction\n may be permanently bound by means of a constant call site.\n\
+            \ If a mutable target is required which has volatile variable semantics,\n\
+            \ because updates to the target must be immediately and reliably witnessed\
+            \ by other threads,\n a volatile call site may be used.\n Otherwise, if\
+            \ a mutable target is required,\n a mutable call site may be used.\n \n\
+            \ \n A non-constant call site may be relinked by changing its target.\n\
+            \ The new target must have the same type\n as the previous target.\n Thus,\
+            \ though a call site can be relinked to a series of\n successive targets,\
+            \ it cannot change its type.\n \n Here is a sample use of call sites and\
+            \ bootstrap methods which links every\n dynamic call site to print its\
+            \ arguments:\n<code>\nstatic void test() throws Throwable {\n    // THE\
+            \ FOLLOWING LINE IS PSEUDOCODE FOR A JVM INSTRUCTION\n    InvokeDynamic[#bootstrapDynamic].baz(\"\
+            baz arg\", 2, 3.14);\n}\nprivate static void printArgs(Object... args)\
+            \ {\n  System.out.println(java.util.Arrays.deepToString(args));\n}\nprivate\
+            \ static final MethodHandle printArgs;\nstatic {\n  MethodHandles.Lookup\
+            \ lookup = MethodHandles.lookup();\n  Class thisClass = lookup.lookupClass();\
+            \  // (who am I?)\n  printArgs = lookup.findStatic(thisClass,\n      \"\
+            printArgs\", MethodType.methodType(void.class, Object[].class));\n}\n\
+            private static CallSite bootstrapDynamic(MethodHandles.Lookup caller,\
+            \ String name, MethodType type) {\n  // ignore caller and name, but match\
+            \ the type:\n  return new ConstantCallSite(printArgs.asType(type));\n\
+            }\n</code>"
+          fields:
+            context:
+              name: context
+              modifiers:
+              - private
+              type:
+                basic: MethodHandleNatives.CallSiteContext
+                full: java.lang.invoke.MethodHandleNatives$CallSiteContext
+            target:
+              name: target
+              modifiers:
+              - package
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            GET_TARGET:
+              name: GET_TARGET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            TARGET_OFFSET:
+              name: TARGET_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            THROW_UCS:
+              name: THROW_UCS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg1
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          methods:
+          - name: checkTargetChange
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            return:
+              type:
+                basic: void
+                full: void
+          - name: dynamicInvoker
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+              notes: a method handle which always invokes this call site's current
+                target
+            notes: "Produces a method handle equivalent to an invokedynamic instruction\n\
+              \ which has been linked to this call site.\n \n This method is equivalent\
+              \ to the following code:\n <code>\n MethodHandle getTarget, invoker,\
+              \ result;\n getTarget = MethodHandles.publicLookup().bind(this, \"getTarget\"\
+              , MethodType.methodType(MethodHandle.class));\n invoker = MethodHandles.exactInvoker(this.type());\n\
+              \ result = MethodHandles.foldArguments(invoker, getTarget)\n </code>"
+          - name: getTarget
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+              notes: the current linkage state of the call site, its target method
+                handle
+            notes: "Returns the target method of the call site, according to the\n\
+              \ behavior defined by this call site's specific class.\n The immediate\
+              \ subclasses of CallSite document the\n class-specific behaviors of\
+              \ this method."
+          - name: getTargetVolatile
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: makeDynamicInvoker
+            modifiers:
+            - package
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: makeUninitializedCallSite
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: setTarget
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: newTarget
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+              notes: the new target
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Updates the target method of this call site, according to the\n\
+              \ behavior defined by this call site's specific class.\n The immediate\
+              \ subclasses of CallSite document the\n class-specific behaviors of\
+              \ this method.\n \n The type of the new target must be equal to\n the\
+              \ type of the old target."
+          - name: setTargetNormal
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setTargetVolatile
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            return:
+              type:
+                basic: void
+                full: void
+          - name: type
+            modifiers:
+            - public
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+              notes: the type of the current target, which is also the type of any
+                future target
+            notes: "Returns the type of this call site's target.\n Although targets\
+              \ may change, any call site's type is permanent, and can never change\
+              \ to an unequal type.\n The setTarget method enforces this invariant\
+              \ by refusing any new target that does\n not have the previous target's\
+              \ type."
+          staticMethods:
+          - name: getTargetHandle
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: getTargetOffset
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: long
+                full: long
+          - name: makeSite
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            - name: arg3
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg4
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: CallSite
+                full: java.lang.invoke.CallSite
+          - name: uninitializedCallSite
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: uninitializedCallSiteHandle
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: wrongTargetType
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+            - name: arg1
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+            return:
+              type:
+                basic: WrongMethodTypeException
+                full: java.lang.invoke.WrongMethodTypeException

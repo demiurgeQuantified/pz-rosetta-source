@@ -4,31 +4,206 @@ languages:
     packages:
       javax.swing:
         Timer:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "Fires one or more ActionEvents at specified\n intervals. An example\
+            \ use is an animation object that uses a\n Timer as the trigger for drawing\
+            \ its frames.\n\n Setting up a timer\n involves creating a Timer object,\n\
+            \ registering one or more action listeners on it,\n and starting the timer\
+            \ using\n the start method.\n For example,\n the following code creates\
+            \ and starts a timer\n that fires an action event once per second\n (as\
+            \ specified by the first argument to the Timer constructor).\n The second\
+            \ argument to the Timer constructor\n specifies a listener to receive\
+            \ the timer's action events.\n\n\n  int delay = 1000; //milliseconds\n\
+            \  ActionListener taskPerformer = new ActionListener() {\n      public\
+            \ void actionPerformed(ActionEvent evt) {\n          <em>//...Perform\
+            \ a task...</em>\n      }\n  };\n  new Timer(delay, taskPerformer).start();\n\
+            \n \n Timers are constructed by specifying both a delay parameter\n and\
+            \ an ActionListener. The delay parameter is used\n to set both the initial\
+            \ delay and the delay between event\n firing, in milliseconds. Once the\
+            \ timer has been started,\n it waits for the initial delay before firing\
+            \ its\n first ActionEvent to registered listeners.\n After this first\
+            \ event, it continues to fire events\n every time the between-event delay\
+            \ has elapsed, until it\n is stopped.\n \n After construction, the initial\
+            \ delay and the between-event\n delay can be changed independently, and\
+            \ additional\n ActionListeners may be added.\n \n If you want the timer\
+            \ to fire only the first time and then stop,\n invoke setRepeats(false)\
+            \ on the timer.\n \n Although all Timers perform their waiting\n using\
+            \ a single, shared thread\n (created by the first Timer object that executes),\n\
+            \ the action event handlers for Timers\n execute on another thread --\
+            \ the event-dispatching thread.\n This means that the action handlers\
+            \ for Timers\n can safely perform operations on Swing components.\n However,\
+            \ it also means that the handlers must execute quickly\n to keep the GUI\
+            \ responsive.\n\n \n In v 1.3, another Timer class was added\n to the\
+            \ Java platform: java.util.Timer.\n Both it and javax.swing.Timer\n provide\
+            \ the same basic functionality,\n but java.util.Timer\n is more general\
+            \ and has more features.\n The javax.swing.Timer has two features\n that\
+            \ can make it a little easier to use with GUIs.\n First, its event handling\
+            \ metaphor is familiar to GUI programmers\n and can make dealing with\
+            \ the event-dispatching thread\n a bit simpler.\n Second, its\n automatic\
+            \ thread sharing means that you don't have to\n take special steps to\
+            \ avoid spawning\n too many threads.\n Instead, your timer uses the same\
+            \ thread\n used to make cursors blink,\n tool tips appear,\n and so on.\n\
+            \n \n You can find further documentation\n and several examples of using\
+            \ timers by visiting\n How to Use Timers,\n a section in The Java Tutorial.\n\
+            \ \n Warning:\n Serialized objects of this class will not be compatible\
+            \ with\n future Swing releases. The current serialization support is\n\
+            \ appropriate for short term storage or RMI between applications running\n\
+            \ the same version of Swing.  As of 1.4, support for long term storage\n\
+            \ of all JavaBeans\n has been added to the java.beans package.\n Please\
+            \ see XMLEncoder."
+          fields:
+            acc:
+              name: acc
+              modifiers:
+              - private
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            actionCommand:
+              name: actionCommand
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            coalesce:
+              name: coalesce
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            delay:
+              name: delay
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            delayedTimer:
+              name: delayedTimer
+              modifiers:
+              - package
+              type:
+                basic: TimerQueue.DelayedTimer
+                full: javax.swing.TimerQueue$DelayedTimer
+            doPostEvent:
+              name: doPostEvent
+              modifiers:
+              - private
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            initialDelay:
+              name: initialDelay
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            listenerList:
+              name: listenerList
+              modifiers:
+              - protected
+              type:
+                basic: EventListenerList
+                full: javax.swing.event.EventListenerList
+              notes: The collection of registered listeners
+            lock:
+              name: lock
+              modifiers:
+              - private
+              type:
+                basic: Lock
+                full: java.util.concurrent.locks.Lock
+            notify:
+              name: notify
+              modifiers:
+              - private
+              type:
+                basic: AtomicBoolean
+                full: java.util.concurrent.atomic.AtomicBoolean
+            repeats:
+              name: repeats
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            logTimers:
+              name: logTimers
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: delay
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: milliseconds for the initial and between-event delay
+            - name: listener
               type:
                 basic: ActionListener
                 full: java.awt.event.ActionListener
+              notes: an initial listener; can be null
+            notes: "Creates a Timer and initializes both the initial delay and\n between-event\
+              \ delay to delay milliseconds. If delay\n is less than or equal to zero,\
+              \ the timer fires as soon as it\n is started. If listener is not null,\n\
+              \ it's registered as an action listener on the timer."
           methods:
           - name: addActionListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: listener
               type:
                 basic: ActionListener
                 full: java.awt.event.ActionListener
+              notes: the listener to add
             return:
               type:
                 basic: void
                 full: void
+            notes: Adds an action listener to the Timer.
+          - name: cancelEvent
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: fireActionPerformed
+            modifiers:
+            - protected
+            parameters:
+            - name: e
+              type:
+                basic: ActionEvent
+                full: java.awt.event.ActionEvent
+              notes: the action event to fire
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Notifies all listeners that have registered interest for\n notification\
+              \ on this event type."
+          - name: getAccessControlContext
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
           - name: getActionCommand
             modifiers:
             - public
@@ -36,13 +211,21 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the action command used in firing events
+            notes: "Returns the string that will be delivered as the action command\n\
+              \ in ActionEvents fired by this timer. May be\n null, which is also\
+              \ the default."
           - name: getActionListeners
             modifiers:
             - public
             return:
               type:
-                basic: ActionListener[]
+                basic: ActionListener
                 full: java.awt.event.ActionListener[]
+              notes: "all of the timer's ActionListeners or an empty\n         array\
+                \ if no action listeners are currently registered"
+            notes: "Returns an array of all the action listeners registered\n on this\
+              \ timer."
           - name: getDelay
             modifiers:
             - public
@@ -50,6 +233,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the delay, in milliseconds, between firings of action events
+            notes: "Returns the delay, in milliseconds,\n between firings of action\
+              \ events."
           - name: getInitialDelay
             modifiers:
             - public
@@ -57,18 +243,39 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the Timer's intial delay, in milliseconds
+            notes: Returns the Timer's initial delay.
           - name: getListeners
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: listenerType
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the type of listeners requested;\n          this parameter should\
+                \ specify an interface\n          that descends from java.util.EventListener"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
+              notes: "an array of all objects registered as\n          FooListeners\n\
+                \          on this timer,\n          or an empty array if no such\n\
+                \          listeners have been added"
+            notes: "Returns an array of all the objects currently registered as\n\
+              \ FooListeners\n upon this Timer.\n FooListeners\n are registered using\
+              \ the addFooListener method.\n \n You can specify the listenerType argument\n\
+              \ with a class literal, such as FooListener.class.\n For example, you\
+              \ can query a Timer\n instance t\n for its action listeners\n with the\
+              \ following code:\n\n ActionListener[] als = (ActionListener[])(t.getListeners(ActionListener.class));\n\
+              \n If no such listeners exist,\n this method returns an empty array."
+          - name: getLock
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Lock
+                full: java.util.concurrent.locks.Lock
           - name: isCoalesce
             modifiers:
             - public
@@ -76,6 +283,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the Timer coalesces multiple pending\n             \
+                \ action events"
+            notes: "Returns true if the Timer coalesces\n multiple pending action\
+              \ events."
           - name: isRepeats
             modifiers:
             - public
@@ -83,6 +294,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the Timer will send an action event to its\n       \
+                \       listeners multiple times"
+            notes: "Returns true (the default)\n if the Timer will send\n an action\
+              \ event\n to its listeners multiple times."
           - name: isRunning
             modifiers:
             - public
@@ -90,18 +305,48 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: removeActionListener
+              notes: true if the Timer is running, false otherwise
+            notes: Returns true if the Timer is running.
+          - name: post
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ActionListener
-                full: java.awt.event.ActionListener
+            - package
             return:
               type:
                 basic: void
                 full: void
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readResolve
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: removeActionListener
+            modifiers:
+            - public
+            parameters:
+            - name: listener
+              type:
+                basic: ActionListener
+                full: java.awt.event.ActionListener
+              notes: the listener to remove
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Removes the specified action listener from the Timer.
           - name: restart
             modifiers:
             - public
@@ -109,66 +354,94 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Restarts the Timer,\n canceling any pending firings and causing\n\
+              \ it to fire with its initial delay."
           - name: setActionCommand
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: command
               type:
                 basic: String
                 full: java.lang.String
+              notes: the action command
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the string that will be delivered as the action command\n\
+              \ in ActionEvents fired by this timer.\n null is an acceptable value."
           - name: setCoalesce
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: flag
               type:
                 basic: boolean
                 full: boolean
+              notes: specify false to turn off coalescing
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets whether the Timer coalesces multiple pending\n ActionEvent\
+              \ firings.\n A busy application may not be able\n to keep up with a\
+              \ Timer's event generation,\n causing multiple\n action events to be\
+              \ queued.  When processed,\n the application sends these events one\
+              \ after the other, causing the\n Timer's listeners to receive a sequence\
+              \ of\n events with no delay between them. Coalescing avoids this situation\n\
+              \ by reducing multiple pending events to a single event.\n Timers\n\
+              \ coalesce events by default."
           - name: setDelay
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: delay
               type:
                 basic: int
                 full: int
+              notes: the delay in milliseconds
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the Timer's between-event delay, the number of milliseconds\n\
+              \ between successive action events. This does not affect the initial\
+              \ delay\n property, which can be set by the setInitialDelay method."
           - name: setInitialDelay
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialDelay
               type:
                 basic: int
                 full: int
+              notes: the initial delay, in milliseconds
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the Timer's initial delay, the time\n in milliseconds to\
+              \ wait after the timer is started\n before firing the first event. Upon\
+              \ construction, this\n is set to be the same as the between-event delay,\n\
+              \ but then its value is independent and remains unaffected\n by changes\
+              \ to the between-event delay."
           - name: setRepeats
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: flag
               type:
                 basic: boolean
                 full: boolean
+              notes: "specify false to make the timer\n             stop after sending\
+                \ its first action event"
             return:
               type:
                 basic: void
                 full: void
+            notes: "If flag is false,\n instructs the Timer to send only one\n action\
+              \ event to its listeners."
           - name: start
             modifiers:
             - public
@@ -176,6 +449,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Starts the Timer,\n causing it to start sending action events\n\
+              \ to its listeners."
           - name: stop
             modifiers:
             - public
@@ -183,7 +458,33 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Stops the Timer,\n causing it to stop sending action events\n\
+              \ to its listeners."
+          - name: timerQueue
+            modifiers:
+            - private
+            return:
+              type:
+                basic: TimerQueue
+                full: javax.swing.TimerQueue
           staticMethods:
+          - name: checkDelay
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
           - name: getLogTimers
             modifiers:
             - public
@@ -192,18 +493,21 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if logging is enabled; otherwise, false
+            notes: Returns true if logging is enabled.
           - name: setLogTimers
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: flag
               type:
                 basic: boolean
                 full: boolean
+              notes: true to enable logging
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Enables or disables the timer log. When enabled, a message\n is\
+              \ posted to System.out whenever the timer goes off."

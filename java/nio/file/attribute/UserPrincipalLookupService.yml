@@ -4,30 +4,63 @@ languages:
     packages:
       java.nio.file.attribute:
         UserPrincipalLookupService:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "An object to lookup user and group principals by name. A UserPrincipal\n\
+            \ represents an identity that may be used to determine access rights to\
+            \ objects\n in a file system. A GroupPrincipal represents a group identity.\n\
+            \ A UserPrincipalLookupService defines methods to lookup identities by\n\
+            \ name or group name (which are typically user or account names). Whether\
+            \ names\n and group names are case sensitive or not depends on the implementation.\n\
+            \ The exact definition of a group is implementation specific but typically\
+            \ a\n group represents an identity created for administrative purposes\
+            \ so as to\n determine the access rights for the members of the group.\
+            \ In particular it is\n implementation specific if the namespace for names\
+            \ and groups is the\n same or is distinct. To ensure consistent and correct\
+            \ behavior across\n platforms it is recommended that this API be used\
+            \ as if the namespaces are\n distinct. In other words, the lookupPrincipalByName\
+            \ should be used to lookup users, and lookupPrincipalByGroupName should\
+            \ be used to\n lookup groups."
+          constructors:
+          - modifiers:
+            - protected
+            notes: Initializes a new instance of this class.
           methods:
           - name: lookupPrincipalByGroupName
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: group
               type:
                 basic: String
                 full: java.lang.String
+              notes: the string representation of the group to lookup
             return:
               type:
                 basic: GroupPrincipal
                 full: java.nio.file.attribute.GroupPrincipal
+              notes: a group principal
+            notes: "Lookup a group principal by group name.\n\n  Where an implementation\
+              \ does not support any notion of group then\n this method always throws\
+              \ UserPrincipalNotFoundException. Where\n the namespace for user accounts\
+              \ and groups is the same, then this method\n is identical to invoking\
+              \ lookupPrincipalByName."
           - name: lookupPrincipalByName
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: the string representation of the user principal to lookup
             return:
               type:
                 basic: UserPrincipal
                 full: java.nio.file.attribute.UserPrincipal
-          javaType: class
-          extends: Object
+              notes: a user principal
+            notes: Lookup a user principal by name.

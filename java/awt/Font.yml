@@ -4,188 +4,523 @@ languages:
     packages:
       java.awt:
         Font:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The Font class represents fonts, which are used to\n render text\
+            \ in a visible way.\n A font provides the information needed to map sequences\
+            \ of\n characters to sequences of glyphs\n and to render sequences of\
+            \ glyphs on Graphics and\n Component objects.\n\n Characters and Glyphs\n\
+            \n A character is a symbol that represents an item such as a letter,\n\
+            \ a digit, or punctuation in an abstract way. For example, 'g',\n LATIN\
+            \ SMALL LETTER G, is a character.\n \n A glyph is a shape used to render\
+            \ a character or a sequence of\n characters. In simple writing systems,\
+            \ such as Latin, typically one glyph\n represents one character. In general,\
+            \ however, characters and glyphs do not\n have one-to-one correspondence.\
+            \ For example, the character '&aacute;'\n LATIN SMALL LETTER A WITH ACUTE,\
+            \ can be represented by\n two glyphs: one for 'a' and one for '&acute;'.\
+            \ On the other hand, the\n two-character string \"fi\" can be represented\
+            \ by a single glyph, an\n \"fi\" ligature. In complex writing systems,\
+            \ such as Arabic or the South\n and South-East Asian writing systems,\
+            \ the relationship between characters\n and glyphs can be more complicated\
+            \ and involve context-dependent selection\n of glyphs as well as glyph\
+            \ reordering.\n\n A font encapsulates the collection of glyphs needed\
+            \ to render a selected set\n of characters as well as the tables needed\
+            \ to map sequences of characters to\n corresponding sequences of glyphs.\n\
+            \n Physical and Logical Fonts\n\n The Java Platform distinguishes between\
+            \ two kinds of fonts:\n physical fonts and logical fonts.\n \n Physical\
+            \ fonts are the actual font libraries containing glyph data\n and tables\
+            \ to map from character sequences to glyph sequences, using a font\n technology\
+            \ such as TrueType or PostScript Type 1.\n All implementations of the\
+            \ Java Platform must support TrueType fonts;\n support for other font\
+            \ technologies is implementation dependent.\n Physical fonts may use names\
+            \ such as Helvetica, Palatino, HonMincho, or\n any number of other font\
+            \ names.\n Typically, each physical font supports only a limited set of\
+            \ writing\n systems, for example, only Latin characters or only Japanese\
+            \ and Basic\n Latin.\n The set of available physical fonts varies between\
+            \ configurations.\n Applications that require specific fonts can bundle\
+            \ them and instantiate\n them using the createFont method.\n \n Logical\
+            \ fonts are the five font families defined by the Java\n platform which\
+            \ must be supported by any Java runtime environment:\n Serif, SansSerif,\
+            \ Monospaced, Dialog, and DialogInput.\n These logical fonts are not actual\
+            \ font libraries. Instead, the logical\n font names are mapped to physical\
+            \ fonts by the Java runtime environment.\n The mapping is implementation\
+            \ and usually locale dependent, so the look\n and the metrics provided\
+            \ by them vary.\n Typically, each logical font name maps to several physical\
+            \ fonts in order to\n cover a large range of characters.\n \n Peered AWT\
+            \ components, such as Label and\n TextField, can only use logical fonts.\n\
+            \ \n For a discussion of the relative advantages and disadvantages of\
+            \ using\n physical or logical fonts, see the\n \n    Physical and Logical\
+            \ Fonts\n in The Java Tutorials\n document.\n\n Font Faces and Names\n\
+            \n A Font\n can have many faces, such as heavy, medium, oblique, gothic\
+            \ and\n regular. All of these faces have similar typographic design.\n\
+            \ \n There are three different names that you can get from a\n Font object.\
+            \  The logical font name is simply the\n name that was used to construct\
+            \ the font.\n The font face name, or just font name for\n short, is the\
+            \ name of a particular font face, like Helvetica Bold. The\n family name\
+            \ is the name of the font family that determines the\n typographic design\
+            \ across several faces, like Helvetica.\n \n The Font class represents\
+            \ an instance of a font face from\n a collection of  font faces that are\
+            \ present in the system resources\n of the host system.  As examples,\
+            \ Arial Bold and Courier Bold Italic\n are font faces.  There can be several\
+            \ Font objects\n associated with a font face, each differing in size,\
+            \ style, transform\n and font features.\n \n Glyphs may not always be\
+            \ rendered with the requested properties (e.g, font\n and style) due to\
+            \ platform limitations such as the absence of suitable\n platform fonts\
+            \ to implement a logical font.\n \n The getAllFonts method\n of the GraphicsEnvironment\
+            \ class returns an\n array of all font faces available in the system.\
+            \ These font faces are\n returned as Font objects with a size of 1, identity\n\
+            \ transform and default font features. These\n base fonts can then be\
+            \ used to derive new Font objects\n with varying sizes, styles, transforms\
+            \ and font features via the\n deriveFont methods in this class.\n\n Font\
+            \ and TextAttribute\n\n Font supports most\n TextAttributes.  This makes\
+            \ some operations, such as\n rendering underlined text, convenient since\
+            \ it is not\n necessary to explicitly construct a TextLayout object.\n\
+            \ Attributes can be set on a Font by constructing or deriving it\n using\
+            \ a Map of TextAttribute values.\n\n The values of some TextAttributes\
+            \ are not\n serializable, and therefore attempting to serialize an instance\
+            \ of\n Font that has such values will not serialize them.\n This means\
+            \ a Font deserialized from such a stream will not compare\n equal to the\
+            \ original Font that contained the non-serializable\n attributes.  This\
+            \ should very rarely pose a problem\n since these attributes are typically\
+            \ used only in special\n circumstances and are unlikely to be serialized.\n\
+            \n \n FOREGROUND and BACKGROUND use\n Paint values. The subclass Color\
+            \ is\n serializable, while GradientPaint and\n TexturePaint are not.\n\
+            \ CHAR_REPLACEMENT uses\n GraphicAttribute values.  The subclasses\n ShapeGraphicAttribute\
+            \ and\n ImageGraphicAttribute are not serializable.\n INPUT_METHOD_HIGHLIGHT\
+            \ uses\n InputMethodHighlight values, which are\n not serializable.  See\
+            \ InputMethodHighlight.\n \n\n Clients who create custom subclasses of\
+            \ Paint and\n GraphicAttribute can make them serializable and\n avoid\
+            \ this problem.  Clients who use input method highlights can\n convert\
+            \ these to the platform-specific attributes for that\n highlight on the\
+            \ current platform and set them on the Font as\n a workaround.\n\n The\
+            \ Map-based constructor and\n deriveFont APIs ignore the FONT attribute,\
+            \ and it is\n not retained by the Font; the static getFont(java.util.Map<?\
+            \ extends java.text.AttributedCharacterIterator.Attribute, ?>) method\
+            \ should\n be used if the FONT attribute might be present.  See TextAttribute.FONT\
+            \ for more information.\n\n Several attributes will cause additional rendering\
+            \ overhead\n and potentially invoke layout.  If a Font has such\n attributes,\
+            \ the hasLayoutAttributes() method\n will return true.\n\n Note: Font\
+            \ rotations can cause text baselines to be rotated.  In\n order to account\
+            \ for this (rare) possibility, font APIs are\n specified to return metrics\
+            \ and take parameters 'in\n baseline-relative coordinates'.  This maps\
+            \ the 'x' coordinate to\n the advance along the baseline, (positive x\
+            \ is forward along the\n baseline), and the 'y' coordinate to a distance\
+            \ along the\n perpendicular to the baseline at 'x' (positive y is 90 degrees\n\
+            \ clockwise from the baseline vector).  APIs for which this is\n especially\
+            \ important are called out as having 'baseline-relative\n coordinates.'"
+          fields:
+            createdFont:
+              name: createdFont
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            fRequestedAttributes:
+              name: fRequestedAttributes
+              modifiers:
+              - private
+              type:
+                basic: Hashtable
+                full: java.util.Hashtable<java.lang.Object, java.lang.Object>
+            flmref:
+              name: flmref
+              modifiers:
+              - private
+              type:
+                basic: SoftReference
+                full: java.lang.ref.SoftReference<sun.font.FontLineMetrics>
+            font2DHandle:
+              name: font2DHandle
+              modifiers:
+              - private
+              type:
+                basic: Font2DHandle
+                full: sun.font.Font2DHandle
+            fontSerializedDataVersion:
+              name: fontSerializedDataVersion
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            hasLayoutAttributes:
+              name: hasLayoutAttributes
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            hash:
+              name: hash
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            name:
+              name: name
+              modifiers:
+              - protected
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The logical name of this Font, as passed to the\n constructor."
+            nonIdentityTx:
+              name: nonIdentityTx
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            pData:
+              name: pData
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            peer:
+              name: peer
+              modifiers:
+              - private
+              type:
+                basic: FontPeer
+                full: java.awt.peer.FontPeer
+            pointSize:
+              name: pointSize
+              modifiers:
+              - protected
+              type:
+                basic: float
+                full: float
+              notes: The point size of this Font in float.
+            size:
+              name: size
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The point size of this Font, rounded to integer.
+            style:
+              name: style
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The style of this Font, as passed to the constructor.\n This\
+                \ style can be PLAIN, BOLD, ITALIC, or BOLD+ITALIC."
+            values:
+              name: values
+              modifiers:
+              - private
+              type:
+                basic: AttributeValues
+                full: sun.font.AttributeValues
           staticFields:
             BOLD:
               name: BOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The bold style constant.  This can be combined with the other\
+                \ style\n constants (except PLAIN) for mixed styles."
             CENTER_BASELINE:
               name: CENTER_BASELINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The baseline used in ideographic scripts like Chinese, Japanese,\n\
+                \ and Korean when laying out text."
             DIALOG:
               name: DIALOG
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "A String constant for the canonical family name of the\n logical\
+                \ font \"Dialog\". It is useful in Font construction\n to provide\
+                \ compile-time verification of the name."
             DIALOG_INPUT:
               name: DIALOG_INPUT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "A String constant for the canonical family name of the\n logical\
+                \ font \"DialogInput\". It is useful in Font construction\n to provide\
+                \ compile-time verification of the name."
+            EXTRA_MASK:
+              name: EXTRA_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             HANGING_BASELINE:
               name: HANGING_BASELINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The baseline used in Devanagari and similar scripts when laying\n\
+                \ out text."
             ITALIC:
               name: ITALIC
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The italicized style constant.  This can be combined with the\
+                \ other\n style constants (except PLAIN) for mixed styles."
             LAYOUT_LEFT_TO_RIGHT:
               name: LAYOUT_LEFT_TO_RIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag to layoutGlyphVector indicating that text is left-to-right\
+                \ as\n determined by Bidi analysis."
+            LAYOUT_MASK:
+              name: LAYOUT_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             LAYOUT_NO_LIMIT_CONTEXT:
               name: LAYOUT_NO_LIMIT_CONTEXT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag to layoutGlyphVector indicating that text in the char\
+                \ array\n after the indicated limit should not be examined."
             LAYOUT_NO_START_CONTEXT:
               name: LAYOUT_NO_START_CONTEXT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag to layoutGlyphVector indicating that text in the char\
+                \ array\n before the indicated start should not be examined."
             LAYOUT_RIGHT_TO_LEFT:
               name: LAYOUT_RIGHT_TO_LEFT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag to layoutGlyphVector indicating that text is right-to-left\
+                \ as\n determined by Bidi analysis."
             MONOSPACED:
               name: MONOSPACED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "A String constant for the canonical family name of the\n logical\
+                \ font \"Monospaced\". It is useful in Font construction\n to provide\
+                \ compile-time verification of the name."
             PLAIN:
               name: PLAIN
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The plain style constant.
+            PRIMARY_MASK:
+              name: PRIMARY_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            RECOGNIZED_MASK:
+              name: RECOGNIZED_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             ROMAN_BASELINE:
               name: ROMAN_BASELINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The baseline used in most Roman scripts when laying out text.
             SANS_SERIF:
               name: SANS_SERIF
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "A String constant for the canonical family name of the\n logical\
+                \ font \"SansSerif\". It is useful in Font construction\n to provide\
+                \ compile-time verification of the name."
+            SECONDARY_MASK:
+              name: SECONDARY_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             SERIF:
               name: SERIF
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "A String constant for the canonical family name of the\n logical\
+                \ font \"Serif\". It is useful in Font construction\n to provide compile-time\
+                \ verification of the name."
             TRUETYPE_FONT:
               name: TRUETYPE_FONT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Identify a font resource of type TRUETYPE.\n Used to specify\
+                \ a TrueType font resource to the\n createFont(int, java.io.InputStream)\
+                \ method.\n The TrueType format was extended to become the OpenType\n\
+                \ format, which adds support for fonts with Postscript outlines,\n\
+                \ this tag therefore references these fonts, as well as those\n with\
+                \ TrueType outlines."
             TYPE1_FONT:
               name: TYPE1_FONT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Identify a font resource of type TYPE1.\n Used to specify a\
+                \ Type1 font resource to the\n createFont(int, java.io.InputStream)\
+                \ method."
+            identityTx:
+              name: identityTx
+              modifiers:
+              - private
+              - static
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            ssinfo:
+              name: ssinfo
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float[]
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
-                basic: Attribute, ?>
-                full: java.util.Map<? extends java.text.AttributedCharacterIterator$Attribute,
-                  ?>
+                basic: String
+                full: java.lang.String
+              notes: "the font name.  This can be a font face name or a font\n family\
+                \ name, and may represent either a logical font or a physical\n font\
+                \ found in this GraphicsEnvironment.\n The family names for logical\
+                \ fonts are: Dialog, DialogInput,\n Monospaced, Serif, or SansSerif.\
+                \ Pre-defined String constants exist\n for all of these names, for\
+                \ example, DIALOG. If name is\n null, the logical font name of the\
+                \ new\n Font as returned by getName() is set to\n the name \"Default\"\
+                ."
+            - name: style
+              type:
+                basic: int
+                full: int
+              notes: "the style constant for the Font\n The style argument is an integer\
+                \ bitmask that may\n be PLAIN, or a bitwise union of BOLD and/or\n\
+                \ ITALIC (for example, ITALIC or BOLD|ITALIC).\n If the style argument\
+                \ does not conform to one of the expected\n integer bitmasks then\
+                \ the style is set to PLAIN."
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the point size of the Font
+            notes: "Creates a new Font from the specified name, style and\n point\
+              \ size.\n \n The font name can be a font face name or a font family\
+              \ name.\n It is used together with the style to find an appropriate\
+              \ font face.\n When a font family name is specified, the style argument\
+              \ is used to\n select the most appropriate face from the family. When\
+              \ a font face\n name is specified, the face's style and the style argument\
+              \ are\n merged to locate the best matching font from the same family.\n\
+              \ For example if face name \"Arial Bold\" is specified with style\n\
+              \ Font.ITALIC, the font system looks for a face in the\n \"Arial\" family\
+              \ that is bold and italic, and may associate the font\n instance with\
+              \ the physical font face \"Arial Bold Italic\".\n The style argument\
+              \ is merged with the specified face's style, not\n added or subtracted.\n\
+              \ This means, specifying a bold face and a bold style does not\n double-embolden\
+              \ the font, and specifying a bold face and a plain\n style does not\
+              \ lighten the font.\n \n If no face for the requested style can be found,\
+              \ the font system\n may apply algorithmic styling to achieve the desired\
+              \ style.\n For example, if ITALIC is requested, but no italic\n face\
+              \ is available, glyphs from the plain face may be algorithmically\n\
+              \ obliqued (slanted).\n \n Font name lookup is case insensitive, using\
+              \ the case folding\n rules of the US locale.\n \n If the name parameter\
+              \ represents something other than a\n logical font, i.e. is interpreted\
+              \ as a physical font face or family, and\n this cannot be mapped by\
+              \ the implementation to a physical font or a\n compatible alternative,\
+              \ then the font system will map the Font\n instance to \"Dialog\", such\
+              \ that for example, the family as reported\n by getFamily will be \"\
+              Dialog\"."
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -197,16 +532,99 @@ languages:
                 full: int
             - name: arg2
               type:
-                basic: int
-                full: int
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+                basic: float
+                full: float
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
               type:
                 basic: String
                 full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: Font2DHandle
+                full: sun.font.Font2DHandle
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: File
+                full: java.io.File
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: CreatedFontTracker
+                full: sun.font.CreatedFontTracker
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AttributeValues
+                full: sun.font.AttributeValues
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: Font2DHandle
+                full: sun.font.Font2DHandle
+          - modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<? extends java.text.AttributedCharacterIterator$Attribute,
+                  ?>
+          - modifiers:
+            - protected
+            parameters:
+            - name: font
+              type:
+                basic: Font
+                full: java.awt.Font
+              notes: from which to create this Font.
+            notes: "Creates a new Font from the specified font.\n This constructor\
+              \ is intended for use by subclasses."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Font2D
+                full: sun.font.Font2D
+          methods:
           - name: canDisplay
             modifiers:
             - public
@@ -249,7 +667,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: char[]
+                basic: char
                 full: char[]
             - name: arg1
               type:
@@ -293,40 +711,24 @@ languages:
                 full: java.awt.font.FontRenderContext
             - name: arg1
               type:
-                basic: char[]
-                full: char[]
-            return:
-              type:
-                basic: GlyphVector
-                full: java.awt.font.GlyphVector
-          - name: createGlyphVector
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: FontRenderContext
-                full: java.awt.font.FontRenderContext
-            - name: arg1
-              type:
-                basic: int[]
-                full: int[]
-            return:
-              type:
-                basic: GlyphVector
-                full: java.awt.font.GlyphVector
-          - name: createGlyphVector
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: FontRenderContext
-                full: java.awt.font.FontRenderContext
-            - name: arg1
-              type:
                 basic: String
                 full: java.lang.String
+            return:
+              type:
+                basic: GlyphVector
+                full: java.awt.font.GlyphVector
+          - name: createGlyphVector
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
+            - name: arg1
+              type:
+                basic: char
+                full: char[]
             return:
               type:
                 basic: GlyphVector
@@ -347,11 +749,43 @@ languages:
               type:
                 basic: GlyphVector
                 full: java.awt.font.GlyphVector
+          - name: createGlyphVector
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            return:
+              type:
+                basic: GlyphVector
+                full: java.awt.font.GlyphVector
+          - name: defaultLineMetrics
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
+            return:
+              type:
+                basic: FontLineMetrics
+                full: sun.font.FontLineMetrics
           - name: deriveFont
             modifiers:
             - public
             parameters:
             - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
               type:
                 basic: float
                 full: float
@@ -367,6 +801,22 @@ languages:
               type:
                 basic: int
                 full: int
+            - name: arg1
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+            return:
+              type:
+                basic: Font
+                full: java.awt.Font
+          - name: deriveFont
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
             return:
               type:
                 basic: Font
@@ -389,41 +839,21 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Attribute, ?>
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Font
+                full: java.awt.Font
+          - name: deriveFont
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
                 full: java.util.Map<? extends java.text.AttributedCharacterIterator$Attribute,
                   ?>
-            return:
-              type:
-                basic: Font
-                full: java.awt.Font
-          - name: deriveFont
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: float
-                full: float
-            return:
-              type:
-                basic: Font
-                full: java.awt.Font
-          - name: deriveFont
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
             return:
               type:
                 basic: Font
@@ -440,19 +870,26 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: getAttributeValues
+            modifiers:
+            - private
+            return:
+              type:
+                basic: AttributeValues
+                full: sun.font.AttributeValues
           - name: getAttributes
             modifiers:
             - public
             return:
               type:
-                basic: Map<TextAttribute, ?>
+                basic: Map
                 full: java.util.Map<java.awt.font.TextAttribute, ?>
           - name: getAvailableAttributes
             modifiers:
             - public
             return:
               type:
-                basic: Attribute[]
+                basic: AttributedCharacterIterator.Attribute
                 full: java.text.AttributedCharacterIterator$Attribute[]
           - name: getBaselineFor
             modifiers:
@@ -485,6 +922,21 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+          - name: getFamily_NoClientCode
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getFont2D
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Font2D
+                full: sun.font.Font2D
           - name: getFontName
             modifiers:
             - public
@@ -504,9 +956,28 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+          - name: getFontPeer
+            modifiers:
+            - private
+            return:
+              type:
+                basic: FontPeer
+                full: java.awt.peer.FontPeer
           - name: getItalicAngle
             modifiers:
             - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getItalicAngle
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
             return:
               type:
                 basic: float
@@ -533,8 +1004,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: char[]
-                full: char[]
+                basic: String
+                full: java.lang.String
             - name: arg1
               type:
                 basic: int
@@ -557,8 +1028,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
+                basic: char
+                full: char[]
             - name: arg1
               type:
                 basic: int
@@ -675,8 +1146,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: char[]
-                full: char[]
+                basic: String
+                full: java.lang.String
             - name: arg1
               type:
                 basic: int
@@ -699,8 +1170,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
+                basic: char
+                full: char[]
             - name: arg1
               type:
                 basic: int
@@ -776,6 +1247,18 @@ languages:
               type:
                 basic: int
                 full: int
+          - name: initFromValues
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AttributeValues
+                full: sun.font.AttributeValues
+            return:
+              type:
+                basic: void
+                full: void
           - name: isBold
             modifiers:
             - public
@@ -814,7 +1297,7 @@ languages:
                 full: java.awt.font.FontRenderContext
             - name: arg1
               type:
-                basic: char[]
+                basic: char
                 full: char[]
             - name: arg2
               type:
@@ -832,10 +1315,75 @@ languages:
               type:
                 basic: GlyphVector
                 full: java.awt.font.GlyphVector
-          staticMethods:
-          - name: createFont
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
             modifiers:
             - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: applyStyle
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: AttributeValues
+                full: sun.font.AttributeValues
+            return:
+              type:
+                basic: void
+                full: void
+          - name: applyTransform
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+            - name: arg1
+              type:
+                basic: AttributeValues
+                full: sun.font.AttributeValues
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkFontFile
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -848,8 +1396,8 @@ languages:
                 full: java.io.File
             return:
               type:
-                basic: Font
-                full: java.awt.Font
+                basic: File
+                full: java.io.File
           - name: createFont
             modifiers:
             - public
@@ -867,18 +1415,47 @@ languages:
               type:
                 basic: Font
                 full: java.awt.Font
-          - name: createFonts
+          - name: createFont
             modifiers:
             - public
             - static
             parameters:
             - name: arg0
               type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
                 basic: File
                 full: java.io.File
             return:
               type:
-                basic: Font[]
+                basic: Font
+                full: java.awt.Font
+          - name: createFont0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: CreatedFontTracker
+                full: sun.font.CreatedFontTracker
+            return:
+              type:
+                basic: Font
                 full: java.awt.Font[]
           - name: createFonts
             modifiers:
@@ -891,7 +1468,20 @@ languages:
                 full: java.io.InputStream
             return:
               type:
-                basic: Font[]
+                basic: Font
+                full: java.awt.Font[]
+          - name: createFonts
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: File
+                full: java.io.File
+            return:
+              type:
+                basic: Font
                 full: java.awt.Font[]
           - name: decode
             modifiers:
@@ -913,20 +1503,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: Font
-                full: java.awt.Font
-          - name: getFont
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Attribute, ?>
+                basic: Map
                 full: java.util.Map<? extends java.text.AttributedCharacterIterator$Attribute,
                   ?>
             return:
@@ -942,6 +1519,19 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            return:
+              type:
+                basic: Font
+                full: java.awt.Font
+          - name: getFont
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
             - name: arg1
               type:
                 basic: Font
@@ -950,6 +1540,22 @@ languages:
               type:
                 basic: Font
                 full: java.awt.Font
+          - name: hasTempPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
           - name: textRequiresLayout
             modifiers:
             - public
@@ -957,7 +1563,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: char[]
+                basic: char
                 full: char[]
             - name: arg1
               type:
@@ -971,5 +1577,3 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object

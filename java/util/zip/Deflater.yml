@@ -4,218 +4,968 @@ languages:
     packages:
       java.util.zip:
         Deflater:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class provides support for general purpose compression using\
+            \ the\n popular ZLIB compression library. The ZLIB compression library\
+            \ was\n initially developed as part of the PNG graphics standard and is\
+            \ not\n protected by patents. It is fully described in the specifications\
+            \ at\n the java.util.zip\n package description.\n \n This class deflates\
+            \ sequences of bytes into ZLIB compressed data format.\n The input byte\
+            \ sequence is provided in either byte array or byte buffer,\n via one\
+            \ of the setInput() methods. The output byte sequence is\n written to\
+            \ the output byte array or byte buffer passed to the\n deflate() methods.\n\
+            \ \n The following code fragment demonstrates a trivial compression\n\
+            \ and decompression of a string using Deflater and\n Inflater.\n\n \n\
+            \ try {\n     // Encode a String into bytes\n     String inputString =\
+            \ \"blahblahblah\";\n     byte[] input = inputString.getBytes(\"UTF-8\"\
+            );\n\n     // Compress the bytes\n     byte[] output = new byte[100];\n\
+            \     Deflater compresser = new Deflater();\n     compresser.setInput(input);\n\
+            \     compresser.finish();\n     int compressedDataLength = compresser.deflate(output);\n\
+            \     compresser.end();\n\n     // Decompress the bytes\n     Inflater\
+            \ decompresser = new Inflater();\n     decompresser.setInput(output, 0,\
+            \ compressedDataLength);\n     byte[] result = new byte[100];\n     int\
+            \ resultLength = decompresser.inflate(result);\n     decompresser.end();\n\
+            \n     // Decode the bytes into a String\n     String outputString = new\
+            \ String(result, 0, resultLength, \"UTF-8\");\n } catch (java.io.UnsupportedEncodingException\
+            \ ex) {\n     // handle\n } catch (java.util.zip.DataFormatException ex)\
+            \ {\n     // handle\n }"
+          fields:
+            bytesRead:
+              name: bytesRead
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            bytesWritten:
+              name: bytesWritten
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            finish:
+              name: finish
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            finished:
+              name: finished
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            input:
+              name: input
+              modifiers:
+              - private
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            inputArray:
+              name: inputArray
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            inputLim:
+              name: inputLim
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            inputPos:
+              name: inputPos
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            level:
+              name: level
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            setParams:
+              name: setParams
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            strategy:
+              name: strategy
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            zsRef:
+              name: zsRef
+              modifiers:
+              - private
+              type:
+                basic: Deflater.DeflaterZStreamRef
+                full: java.util.zip.Deflater$DeflaterZStreamRef
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
             BEST_COMPRESSION:
               name: BEST_COMPRESSION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Compression level for best compression.
             BEST_SPEED:
               name: BEST_SPEED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Compression level for fastest compression.
             DEFAULT_COMPRESSION:
               name: DEFAULT_COMPRESSION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Default compression level.
             DEFAULT_STRATEGY:
               name: DEFAULT_STRATEGY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Default compression strategy.
             DEFLATED:
               name: DEFLATED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Compression method for the deflate algorithm (the only one currently\n\
+                \ supported)."
             FILTERED:
               name: FILTERED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Compression strategy best used for data consisting mostly of\
+                \ small\n values with a somewhat random distribution. Forces more\
+                \ Huffman coding\n and less string matching."
+            FINISH:
+              name: FINISH
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             FULL_FLUSH:
               name: FULL_FLUSH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Compression flush mode used to flush out all pending output\
+                \ and\n reset the deflater. Using this mode too often can seriously\
+                \ degrade\n compression."
             HUFFMAN_ONLY:
               name: HUFFMAN_ONLY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Compression strategy for Huffman coding only.
             NO_COMPRESSION:
               name: NO_COMPRESSION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Compression level for no compression.
             NO_FLUSH:
               name: NO_FLUSH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Compression flush mode used to achieve best compression result.
             SYNC_FLUSH:
               name: SYNC_FLUSH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Compression flush mode used to flush out all pending output;\
+                \ may\n degrade compression for some compression algorithms."
           constructors:
           - modifiers:
             - public
-          - modifiers:
-            - public
             parameters:
-            - name: arg0
+            - name: level
               type:
                 basic: int
                 full: int
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
+              notes: the compression level (0-9)
+            - name: nowrap
               type:
                 basic: boolean
                 full: boolean
+              notes: if true then use GZIP compatible compression
+            notes: "Creates a new compressor using the specified compression level.\n\
+              \ If 'nowrap' is true then the ZLIB header and checksum fields will\n\
+              \ not be used in order to support the compression format used in\n both\
+              \ GZIP and PKZIP."
+          - modifiers:
+            - public
+            parameters:
+            - name: level
+              type:
+                basic: int
+                full: int
+              notes: the compression level (0-9)
+            notes: "Creates a new compressor using the specified compression level.\n\
+              \ Compressed data will be generated in ZLIB format."
+          - modifiers:
+            - public
+            notes: "Creates a new compressor with the default compression level.\n\
+              \ Compressed data will be generated in ZLIB format."
           methods:
-          - name: __end__
+          - name: deflate
+            modifiers:
+            - public
+            parameters:
+            - name: output
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer for the compressed data
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the maximum number of bytes of compressed data
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the actual number of bytes of compressed data written to the\n\
+                \         output buffer"
+            notes: "Compresses the input data and fills specified buffer with compressed\n\
+              \ data. Returns actual number of bytes of compressed data. A return\
+              \ value\n of 0 indicates that needsInput should be called\n in order\
+              \ to determine if more input data is required.\n\n This method uses\
+              \ NO_FLUSH as its compression flush mode.\n An invocation of this method\
+              \ of the form deflater.deflate(b, off, len)\n yields the same result\
+              \ as the invocation of\n deflater.deflate(b, off, len, Deflater.NO_FLUSH)."
+          - name: deflate
+            modifiers:
+            - public
+            parameters:
+            - name: output
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer for the compressed data
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the actual number of bytes of compressed data written to the\n\
+                \         output buffer"
+            notes: "Compresses the input data and fills specified buffer with compressed\n\
+              \ data. Returns actual number of bytes of compressed data. A return\
+              \ value\n of 0 indicates that needsInput should be called\n in order\
+              \ to determine if more input data is required.\n\n This method uses\
+              \ NO_FLUSH as its compression flush mode.\n An invocation of this method\
+              \ of the form deflater.deflate(b)\n yields the same result as the invocation\
+              \ of\n deflater.deflate(b, 0, b.length, Deflater.NO_FLUSH)."
+          - name: deflate
+            modifiers:
+            - public
+            parameters:
+            - name: output
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: the buffer for the compressed data
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the actual number of bytes of compressed data written to the\n\
+                \         output buffer"
+            notes: "Compresses the input data and fills specified buffer with compressed\n\
+              \ data. Returns actual number of bytes of compressed data. A return\
+              \ value\n of 0 indicates that needsInput should be called\n in order\
+              \ to determine if more input data is required.\n\n This method uses\
+              \ NO_FLUSH as its compression flush mode.\n An invocation of this method\
+              \ of the form deflater.deflate(output)\n yields the same result as the\
+              \ invocation of\n deflater.deflate(output, Deflater.NO_FLUSH)."
+          - name: deflate
+            modifiers:
+            - public
+            parameters:
+            - name: output
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer for the compressed data
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the maximum number of bytes of compressed data
+            - name: flush
+              type:
+                basic: int
+                full: int
+              notes: the compression flush mode
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the actual number of bytes of compressed data written to\n \
+                \        the output buffer"
+            notes: "Compresses the input data and fills the specified buffer with\
+              \ compressed\n data. Returns actual number of bytes of data compressed.\n\
+              \n Compression flush mode is one of the following three modes:\n\n \n\
+              \ NO_FLUSH: allows the deflater to decide how much data\n to accumulate,\
+              \ before producing output, in order to achieve the best\n compression\
+              \ (should be used in normal use scenario). A return value\n of 0 in\
+              \ this flush mode indicates that needsInput() should\n be called in\
+              \ order to determine if more input data is required.\n\n SYNC_FLUSH:\
+              \ all pending output in the deflater is flushed,\n to the specified\
+              \ output buffer, so that an inflater that works on\n compressed data\
+              \ can get all input data available so far (In particular\n the needsInput()\
+              \ returns true after this invocation\n if enough output space is provided).\
+              \ Flushing with SYNC_FLUSH\n may degrade compression for some compression\
+              \ algorithms and so it\n should be used only when necessary.\n\n FULL_FLUSH:\
+              \ all pending output is flushed out as with\n SYNC_FLUSH. The compression\
+              \ state is reset so that the inflater\n that works on the compressed\
+              \ output data can restart from this point\n if previous compressed data\
+              \ has been damaged or if random access is\n desired. Using FULL_FLUSH\
+              \ too often can seriously degrade\n compression.\n \n\n In the case\
+              \ of FULL_FLUSH or SYNC_FLUSH, if\n the return value is len, the space\
+              \ available in output\n buffer b, this method should be invoked again\
+              \ with the same\n flush parameter and more output space. Make sure that\n\
+              \ len is greater than 6 to avoid flush marker (5 bytes) being\n repeatedly\
+              \ output to the output buffer every time this method is\n invoked.\n\
+              \n If the setInput(ByteBuffer) method was called to provide a buffer\n\
+              \ for input, the input buffer's position will be advanced by the number\
+              \ of bytes\n consumed by this operation."
+          - name: deflate
+            modifiers:
+            - public
+            parameters:
+            - name: output
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: the buffer for the compressed data
+            - name: flush
+              type:
+                basic: int
+                full: int
+              notes: the compression flush mode
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the actual number of bytes of compressed data written to\n \
+                \        the output buffer"
+            notes: "Compresses the input data and fills the specified buffer with\
+              \ compressed\n data. Returns actual number of bytes of data compressed.\n\
+              \n Compression flush mode is one of the following three modes:\n\n \n\
+              \ NO_FLUSH: allows the deflater to decide how much data\n to accumulate,\
+              \ before producing output, in order to achieve the best\n compression\
+              \ (should be used in normal use scenario). A return value\n of 0 in\
+              \ this flush mode indicates that needsInput() should\n be called in\
+              \ order to determine if more input data is required.\n\n SYNC_FLUSH:\
+              \ all pending output in the deflater is flushed,\n to the specified\
+              \ output buffer, so that an inflater that works on\n compressed data\
+              \ can get all input data available so far (In particular\n the needsInput()\
+              \ returns true after this invocation\n if enough output space is provided).\
+              \ Flushing with SYNC_FLUSH\n may degrade compression for some compression\
+              \ algorithms and so it\n should be used only when necessary.\n\n FULL_FLUSH:\
+              \ all pending output is flushed out as with\n SYNC_FLUSH. The compression\
+              \ state is reset so that the inflater\n that works on the compressed\
+              \ output data can restart from this point\n if previous compressed data\
+              \ has been damaged or if random access is\n desired. Using FULL_FLUSH\
+              \ too often can seriously degrade\n compression.\n \n\n In the case\
+              \ of FULL_FLUSH or SYNC_FLUSH, if\n the return value is equal to the\
+              \ remaining space\n of the buffer, this method should be invoked again\
+              \ with the same\n flush parameter and more output space. Make sure that\n\
+              \ the buffer has at least 6 bytes of remaining space to avoid the\n\
+              \ flush marker (5 bytes) being repeatedly output to the output buffer\n\
+              \ every time this method is invoked.\n\n On success, the position of\
+              \ the given output byte buffer will be\n advanced by as many bytes as\
+              \ were produced by the operation, which is equal\n to the number returned\
+              \ by this method.\n\n If the setInput(ByteBuffer) method was called\
+              \ to provide a buffer\n for input, the input buffer's position will\
+              \ be advanced by the number of bytes\n consumed by this operation."
+          - name: deflateBufferBuffer
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long
+          - name: deflateBufferBytes
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: int
+                full: int
+            - name: arg7
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long
+          - name: deflateBytesBuffer
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: long
+                full: long
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: int
+                full: int
+            - name: arg7
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long
+          - name: deflateBytesBytes
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: int
+                full: int
+            - name: arg7
+              type:
+                basic: int
+                full: int
+            - name: arg8
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long
+          - name: end
             modifiers:
             - public
             return:
               type:
                 basic: void
                 full: void
-          - name: deflate
+            notes: "Closes the compressor and discards any unprocessed input.\n\n\
+              \ This method should be called when the compressor is no longer\n being\
+              \ used. Once this method is called, the behavior of the\n Deflater object\
+              \ is undefined."
+          - name: ensureOpen
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: finish
             modifiers:
             - public
-            parameters:
-            - name: arg0
+            return:
               type:
-                basic: byte[]
-                full: byte[]
+                basic: void
+                full: void
+            notes: "When called, indicates that compression should end with the current\n\
+              \ contents of the input buffer."
+          - name: finished
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the end of the compressed data output stream has\n been\
+                \ reached"
+            notes: "Returns true if the end of the compressed data output stream has\n\
+              \ been reached."
+          - name: getAdler
+            modifiers:
+            - public
             return:
               type:
                 basic: int
                 full: int
-          - name: deflate
+              notes: the ADLER-32 value of the uncompressed data
+            notes: Returns the ADLER-32 value of the uncompressed data.
+          - name: getBytesRead
+            modifiers:
+            - public
+            return:
+              type:
+                basic: long
+                full: long
+              notes: the total (non-negative) number of uncompressed bytes input so
+                far
+            notes: Returns the total number of uncompressed bytes input so far.
+          - name: getBytesWritten
+            modifiers:
+            - public
+            return:
+              type:
+                basic: long
+                full: long
+              notes: the total (non-negative) number of compressed bytes output so
+                far
+            notes: Returns the total number of compressed bytes output so far.
+          - name: getTotalIn
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the total number of uncompressed bytes input so far
+            notes: "Returns the total number of uncompressed bytes input so far.\n\
+              \n Since the number of bytes may be greater than\n Integer.MAX_VALUE,\
+              \ the getBytesRead() method is now\n the preferred means of obtaining\
+              \ this information."
+          - name: getTotalOut
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the total number of compressed bytes output so far
+            notes: "Returns the total number of compressed bytes output so far.\n\n\
+              \ Since the number of bytes may be greater than\n Integer.MAX_VALUE,\
+              \ the getBytesWritten() method is now\n the preferred means of obtaining\
+              \ this information."
+          - name: needsInput
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the input data buffer is empty and setInput()\n should\
+                \ be called in order to provide more input"
+            notes: "Returns true if no data remains in the input buffer. This can\n\
+              \ be used to determine if one of the setInput() methods should be\n\
+              \ called in order to provide more input."
+          - name: reset
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Resets deflater so that a new set of input data can be processed.\n\
+              \ Keeps current compression level and strategy settings."
+          - name: setDictionary
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dictionary
+              type:
+                basic: byte
+                full: byte[]
+              notes: the dictionary data bytes
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the length of the data
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets preset dictionary for compression. A preset dictionary is\
+              \ used\n when the history buffer can be predetermined. When the data\
+              \ is later\n uncompressed with Inflater.inflate(), Inflater.getAdler()\
+              \ can be called\n in order to get the Adler-32 value of the dictionary\
+              \ required for\n decompression."
+          - name: setDictionary
+            modifiers:
+            - public
+            parameters:
+            - name: dictionary
+              type:
+                basic: byte
+                full: byte[]
+              notes: the dictionary data bytes
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets preset dictionary for compression. A preset dictionary is\
+              \ used\n when the history buffer can be predetermined. When the data\
+              \ is later\n uncompressed with Inflater.inflate(), Inflater.getAdler()\
+              \ can be called\n in order to get the Adler-32 value of the dictionary\
+              \ required for\n decompression."
+          - name: setDictionary
+            modifiers:
+            - public
+            parameters:
+            - name: dictionary
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: the dictionary data bytes
             return:
               type:
-                basic: int
-                full: int
-          - name: deflate
+                basic: void
+                full: void
+            notes: "Sets preset dictionary for compression. A preset dictionary is\
+              \ used\n when the history buffer can be predetermined. When the data\
+              \ is later\n uncompressed with Inflater.inflate(), Inflater.getAdler()\
+              \ can be called\n in order to get the Adler-32 value of the dictionary\
+              \ required for\n decompression.\n \n The bytes in given byte buffer\
+              \ will be fully consumed by this method.  On\n return, its position\
+              \ will equal its limit."
+          - name: setInput
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: input
+              type:
+                basic: byte
+                full: byte[]
+              notes: the input data bytes
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the length of the data
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets input data for compression.\n \n One of the setInput() methods\
+              \ should be called whenever\n needsInput() returns true indicating that\
+              \ more input data\n is required."
+          - name: setInput
+            modifiers:
+            - public
+            parameters:
+            - name: input
+              type:
+                basic: byte
+                full: byte[]
+              notes: the input data bytes
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets input data for compression.\n \n One of the setInput() methods\
+              \ should be called whenever\n needsInput() returns true indicating that\
+              \ more input data\n is required."
+          - name: setInput
+            modifiers:
+            - public
+            parameters:
+            - name: input
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
-            - name: arg1
+              notes: the input data bytes
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets input data for compression.\n \n One of the setInput() methods\
+              \ should be called whenever\n needsInput() returns true indicating that\
+              \ more input data\n is required.\n \n The given buffer's position will\
+              \ be advanced as deflate\n operations are performed, up to the buffer's\
+              \ limit.\n The input buffer may be modified (refilled) between deflate\n\
+              \ operations; doing so is equivalent to creating a new buffer\n and\
+              \ setting it with this method.\n \n Modifying the input buffer's contents,\
+              \ position, or limit\n concurrently with an deflate operation will result\
+              \ in\n undefined behavior, which may include incorrect operation\n results\
+              \ or operation failure."
+          - name: setLevel
+            modifiers:
+            - public
+            parameters:
+            - name: level
               type:
                 basic: int
                 full: int
+              notes: the new compression level (0-9)
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the compression level to the specified value.\n\n  If the\
+              \ compression level is changed, the next invocation\n of deflate will\
+              \ compress the input available so far\n with the old level (and may\
+              \ be flushed); the new level will\n take effect only after that invocation."
+          - name: setStrategy
+            modifiers:
+            - public
+            parameters:
+            - name: strategy
+              type:
+                basic: int
+                full: int
+              notes: the new compression strategy
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the compression strategy to the specified value.\n\n  If\
+              \ the compression strategy is changed, the next invocation\n of deflate\
+              \ will compress the input available so far with\n the old strategy (and\
+              \ may be flushed); the new strategy will take\n effect only after that\
+              \ invocation."
+          staticMethods:
+          - name: end
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getAdler
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
             return:
               type:
                 basic: int
                 full: int
-          - name: deflate
+          - name: init
             modifiers:
-            - public
+            - private
+            - static
             parameters:
             - name: arg0
               type:
-                basic: byte[]
-                full: byte[]
+                basic: int
+                full: int
             - name: arg1
               type:
                 basic: int
                 full: int
             - name: arg2
               type:
-                basic: int
-                full: int
+                basic: boolean
+                full: boolean
             return:
               type:
-                basic: int
-                full: int
-          - name: deflate
+                basic: long
+                full: long
+          - name: reset
             modifiers:
-            - public
+            - private
+            - static
             parameters:
             - name: arg0
               type:
-                basic: byte[]
-                full: byte[]
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setDictionary
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
             - name: arg1
               type:
-                basic: int
-                full: int
+                basic: byte
+                full: byte[]
             - name: arg2
               type:
                 basic: int
@@ -226,107 +976,21 @@ languages:
                 full: int
             return:
               type:
-                basic: int
-                full: int
-          - name: finish
-            modifiers:
-            - public
-            return:
-              type:
                 basic: void
                 full: void
-          - name: finished
+          - name: setDictionaryBuffer
             modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: getAdler
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: getBytesRead
-            modifiers:
-            - public
-            return:
+            - private
+            - static
+            parameters:
+            - name: arg0
               type:
                 basic: long
                 full: long
-          - name: getBytesWritten
-            modifiers:
-            - public
-            return:
-              type:
-                basic: long
-                full: long
-          - name: getTotalIn
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: getTotalOut
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: needsInput
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: reset
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setDictionary
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setDictionary
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setDictionary
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
             - name: arg1
               type:
-                basic: int
-                full: int
+                basic: long
+                full: long
             - name: arg2
               type:
                 basic: int
@@ -335,73 +999,3 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: setInput
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setInput
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setInput
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setLevel
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setStrategy
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          javaType: class
-          extends: Object

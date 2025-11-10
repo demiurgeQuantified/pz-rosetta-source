@@ -1,0 +1,331 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent.locks:
+        ReentrantReadWriteLock:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          fields:
+            readerLock:
+              name: readerLock
+              modifiers:
+              - private
+              type:
+                basic: ReentrantReadWriteLock.ReadLock
+                full: java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock
+            sync:
+              name: sync
+              modifiers:
+              - package
+              type:
+                basic: ReentrantReadWriteLock.Sync
+                full: java.util.concurrent.locks.ReentrantReadWriteLock$Sync
+            writerLock:
+              name: writerLock
+              modifiers:
+              - private
+              type:
+                basic: ReentrantReadWriteLock.WriteLock
+                full: java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: "Creates a new ReentrantReadWriteLock with\n default (nonfair)\
+              \ ordering properties."
+          - modifiers:
+            - public
+            parameters:
+            - name: fair
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this lock should use a fair ordering policy
+            notes: "Creates a new ReentrantReadWriteLock with\n the given fairness\
+              \ policy."
+          methods:
+          - name: getOwner
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: the owner, or null if not owned
+            notes: "Returns the thread that currently owns the write lock, or\n null\
+              \ if not owned. When this method is called by a\n thread that is not\
+              \ the owner, the return value reflects a\n best-effort approximation\
+              \ of current lock status. For example,\n the owner may be momentarily\
+              \ null even if there are\n threads trying to acquire the lock but have\
+              \ not yet done so.\n This method is designed to facilitate construction\
+              \ of\n subclasses that provide more extensive lock monitoring\n facilities."
+          - name: getQueueLength
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the estimated number of threads waiting for this lock
+            notes: "Returns an estimate of the number of threads waiting to acquire\n\
+              \ either the read or write lock.  The value is only an estimate\n because\
+              \ the number of threads may change dynamically while this\n method traverses\
+              \ internal data structures.  This method is\n designed for use in monitoring\
+              \ system state, not for\n synchronization control."
+          - name: getQueuedReaderThreads
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire the read lock.  Because the actual set of threads may\n change\
+              \ dynamically while constructing this result, the returned\n collection\
+              \ is only a best-effort estimate.  The elements of the\n returned collection\
+              \ are in no particular order.  This method is\n designed to facilitate\
+              \ construction of subclasses that provide\n more extensive lock monitoring\
+              \ facilities."
+          - name: getQueuedThreads
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire either the read or write lock.  Because the actual set\n of\
+              \ threads may change dynamically while constructing this\n result, the\
+              \ returned collection is only a best-effort estimate.\n The elements\
+              \ of the returned collection are in no particular\n order.  This method\
+              \ is designed to facilitate construction of\n subclasses that provide\
+              \ more extensive monitoring facilities."
+          - name: getQueuedWriterThreads
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing threads that may be waiting to\n\
+              \ acquire the write lock.  Because the actual set of threads may\n change\
+              \ dynamically while constructing this result, the returned\n collection\
+              \ is only a best-effort estimate.  The elements of the\n returned collection\
+              \ are in no particular order.  This method is\n designed to facilitate\
+              \ construction of subclasses that provide\n more extensive lock monitoring\
+              \ facilities."
+          - name: getReadHoldCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the number of holds on the read lock by the current thread,\n\
+                \         or zero if the read lock is not held by the current thread"
+            notes: "Queries the number of reentrant read holds on this lock by the\n\
+              \ current thread.  A reader thread has a hold on a lock for\n each lock\
+              \ action that is not matched by an unlock action."
+          - name: getReadLockCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of read locks held
+            notes: "Queries the number of read locks held for this lock. This\n method\
+              \ is designed for use in monitoring system state, not for\n synchronization\
+              \ control."
+          - name: getWaitQueueLength
+            modifiers:
+            - public
+            parameters:
+            - name: condition
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+              notes: the condition
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the estimated number of waiting threads
+            notes: "Returns an estimate of the number of threads waiting on the\n\
+              \ given condition associated with the write lock. Note that because\n\
+              \ timeouts and interrupts may occur at any time, the estimate\n serves\
+              \ only as an upper bound on the actual number of waiters.\n This method\
+              \ is designed for use in monitoring of the system\n state, not for synchronization\
+              \ control."
+          - name: getWaitingThreads
+            modifiers:
+            - protected
+            parameters:
+            - name: condition
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+              notes: the condition
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing those threads that may be\n waiting\
+              \ on the given condition associated with the write lock.\n Because the\
+              \ actual set of threads may change dynamically while\n constructing\
+              \ this result, the returned collection is only a\n best-effort estimate.\
+              \ The elements of the returned collection\n are in no particular order.\
+              \  This method is designed to\n facilitate construction of subclasses\
+              \ that provide more\n extensive condition monitoring facilities."
+          - name: getWriteHoldCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the number of holds on the write lock by the current thread,\n\
+                \         or zero if the write lock is not held by the current thread"
+            notes: "Queries the number of reentrant write holds on this lock by the\n\
+              \ current thread.  A writer thread has a hold on a lock for\n each lock\
+              \ action that is not matched by an unlock action."
+          - name: hasQueuedThread
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: thread
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: the thread
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the given thread is queued waiting for this lock
+            notes: "Queries whether the given thread is waiting to acquire either\n\
+              \ the read or write lock. Note that because cancellations may\n occur\
+              \ at any time, a true return does not guarantee\n that this thread will\
+              \ ever acquire a lock.  This method is\n designed primarily for use\
+              \ in monitoring of the system state."
+          - name: hasQueuedThreads
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if there may be other threads waiting to\n         acquire\
+                \ the lock"
+            notes: "Queries whether any threads are waiting to acquire the read or\n\
+              \ write lock. Note that because cancellations may occur at any\n time,\
+              \ a true return does not guarantee that any other\n thread will ever\
+              \ acquire a lock.  This method is designed\n primarily for use in monitoring\
+              \ of the system state."
+          - name: hasWaiters
+            modifiers:
+            - public
+            parameters:
+            - name: condition
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+              notes: the condition
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there are any waiting threads
+            notes: "Queries whether any threads are waiting on the given condition\n\
+              \ associated with the write lock. Note that because timeouts and\n interrupts\
+              \ may occur at any time, a true return does\n not guarantee that a future\
+              \ signal will awaken any\n threads.  This method is designed primarily\
+              \ for use in\n monitoring of the system state."
+          - name: isFair
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this lock has fairness set true
+            notes: Returns true if this lock has fairness set true.
+          - name: isWriteLocked
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if any thread holds the write lock and\n         false\
+                \ otherwise"
+            notes: "Queries if the write lock is held by any thread. This method is\n\
+              \ designed for use in monitoring system state, not for\n synchronization\
+              \ control."
+          - name: isWriteLockedByCurrentThread
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the current thread holds the write lock and\n      \
+                \   false otherwise"
+            notes: Queries if the write lock is held by the current thread.
+          - name: readLock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ReentrantReadWriteLock.ReadLock
+                full: java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock
+              notes: the lock used for reading
+            notes: 'Description copied from interface: ReadWriteLock'
+          - name: readLock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Lock
+                full: java.util.concurrent.locks.Lock
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeLock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ReentrantReadWriteLock.WriteLock
+                full: java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock
+              notes: the lock used for writing
+            notes: 'Description copied from interface: ReadWriteLock'
+          - name: writeLock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Lock
+                full: java.util.concurrent.locks.Lock

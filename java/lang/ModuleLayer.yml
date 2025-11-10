@@ -4,14 +4,153 @@ languages:
     packages:
       java.lang:
         ModuleLayer:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A layer of modules in the Java virtual machine.\n\n  A layer is\
+            \ created from a graph of modules in a Configuration\n and a function\
+            \ that maps each module to a ClassLoader.\n Creating a layer informs the\
+            \ Java virtual machine about the classes that\n may be loaded from the\
+            \ modules so that the Java virtual machine knows which\n module that each\
+            \ class is a member of. \n\n  Creating a layer creates a Module object\
+            \ for each ResolvedModule in the configuration. For each resolved module\
+            \ that is\n read, the Module reads the corresponding run-time Module,\
+            \ which may\n be in the same layer or a parent layer. \n\n  The defineModulesWithOneLoader\
+            \ and\n defineModulesWithManyLoaders methods\n provide convenient ways\
+            \ to create a module layer where all modules are\n mapped to a single\
+            \ class loader or where each module is mapped to its own\n class loader.\
+            \ The defineModules method is for more\n advanced cases where modules\
+            \ are mapped to custom class loaders by means of\n a function specified\
+            \ to the method. Each of these methods has an instance\n and static variant.\
+            \ The instance methods create a layer with the receiver\n as the parent\
+            \ layer. The static methods are for more advanced cases where\n there\
+            \ can be more than one parent layer or where a Controller is needed to\
+            \ control modules in the layer\n \n\n  A Java virtual machine has at least\
+            \ one non-empty layer, the boot layer, that is created when the Java virtual\
+            \ machine is\n started. The boot layer contains module java.base and is\
+            \ the only\n layer in the Java virtual machine with a module named \"\
+            java.base\".\n The modules in the boot layer are mapped to the bootstrap\
+            \ class loader and\n other class loaders that are \n built-in into the\
+            \ Java virtual machine. The boot layer will often be\n the parent when\
+            \ creating additional layers. \n\n  Each Module in a layer is created\
+            \ so that it exports and opens\n the packages described by its ModuleDescriptor.\
+            \ Qualified exports\n (where a package is exported to a set of target\
+            \ modules rather than all\n modules) are reified when creating the layer\
+            \ as follows: \n \n      If module X exports a package to Y, and if the\n\
+            \     runtime Module X reads Module Y, then\n     the package is exported\
+            \ to Module Y (which may be in\n     the same layer as X or a parent layer).\
+            \ \n\n      If module X exports a package to Y, and if the\n     runtime\
+            \ Module X does not read Y then target\n     Y is located as if by invoking\
+            \ findModule to find the module in the layer or its parent layers. If\n\
+            \     Y is found then the package is exported to the instance of\n   \
+            \  Y that was found. If Y is not found then the qualified\n     export\
+            \ is ignored. \n \n\n  Qualified opens are handled in same way as qualified\
+            \ exports. \n\n  As when creating a Configuration,\n automatic modules\
+            \ receive special\n treatment when creating a layer. An automatic module\
+            \ is created in the\n Java virtual machine as a Module that reads every\
+            \ unnamed \n Module in the Java virtual machine. \n\n  Unless otherwise\
+            \ specified, passing a null argument to a method\n in this class causes\
+            \ a NullPointerException to\n be thrown. \n\n  Example usage: \n\n  This\
+            \ example creates a configuration by resolving a module named\n \"myapp\"\
+            \ with the configuration for the boot layer as the parent. It\n then creates\
+            \ a new layer with the modules in this configuration. All modules\n are\
+            \ defined to the same class loader. \n\n <code>\n     ModuleFinder finder\
+            \ = ModuleFinder.of(dir1, dir2, dir3);\n\n     ModuleLayer parent = ModuleLayer.boot();\n\
+            \n     Configuration cf = parent.configuration().resolve(finder, ModuleFinder.of(),\
+            \ Set.of(\"myapp\"));\n\n     ClassLoader scl = ClassLoader.getSystemClassLoader();\n\
+            \n     ModuleLayer layer = parent.defineModulesWithOneLoader(cf, scl);\n\
+            \n     Class<?> c = layer.findLoader(\"myapp\").loadClass(\"app.Main\"\
+            );\n </code>"
+          fields:
+            allLayers:
+              name: allLayers
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.ModuleLayer>
+            cf:
+              name: cf
+              modifiers:
+              - private
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            modules:
+              name: modules
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Module>
+            nameToModule:
+              name: nameToModule
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Module>
+            parents:
+              name: parents
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.ModuleLayer>
+            servicesCatalog:
+              name: servicesCatalog
+              modifiers:
+              - private
+              type:
+                basic: ServicesCatalog
+                full: jdk.internal.module.ServicesCatalog
+          staticFields:
+            CLV:
+              name: CLV
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ClassLoaderValue
+                full: jdk.internal.loader.ClassLoaderValue<java.util.List<java.lang.ModuleLayer>>
+            EMPTY_LAYER:
+              name: EMPTY_LAYER
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            - name: arg1
+              type:
+                basic: List
+                full: java.util.List<java.lang.ModuleLayer>
+            - name: arg2
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.String, java.lang.ClassLoader>
           methods:
-          - name: __toString__
+          - name: bindToLoader
             modifiers:
-            - public
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: void
+                full: void
           - name: configuration
             modifiers:
             - public
@@ -19,92 +158,174 @@ languages:
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
+              notes: The configuration for this layer
+            notes: Returns the configuration for this layer.
           - name: defineModules
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cf
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
-            - name: arg1
+              notes: The configuration for the layer
+            - name: clf
               type:
-                basic: Function<String, ClassLoader>
+                basic: Function
                 full: java.util.function.Function<java.lang.String, java.lang.ClassLoader>
+              notes: The function to map a module name to a class loader
             return:
               type:
                 basic: ModuleLayer
                 full: java.lang.ModuleLayer
+              notes: The newly created layer
+            notes: "Creates a new module layer, with this layer as its parent, by\
+              \ defining the\n modules in the given Configuration to the Java virtual\
+              \ machine.\n Each module is mapped, by name, to its class loader by\
+              \ means of the\n given function. This method works exactly as specified\
+              \ by the static\n defineModules\n method when invoked with this layer\
+              \ as the parent. In other words, if\n this layer is thisLayer then this\
+              \ method is equivalent to\n invoking:\n  <code>\n     ModuleLayer.defineModules(cf,\
+              \ List.of(thisLayer), clf).layer();\n </code>"
           - name: defineModulesWithManyLoaders
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cf
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
-            - name: arg1
+              notes: The configuration for the layer
+            - name: parentLoader
               type:
                 basic: ClassLoader
                 full: java.lang.ClassLoader
+              notes: "The parent class loader for each of the class loaders created\
+                \ by\n         this method; may be null for the bootstrap class loader"
             return:
               type:
                 basic: ModuleLayer
                 full: java.lang.ModuleLayer
+              notes: The newly created layer
+            notes: "Creates a new module layer, with this layer as its parent, by\
+              \ defining the\n modules in the given Configuration to the Java virtual\
+              \ machine.\n Each module is defined to its own ClassLoader created by\
+              \ this\n method. The parent of each class loader\n is the given parent\
+              \ class loader. This method works exactly as specified\n by the static\
+              \ defineModulesWithManyLoaders method when invoked with this layer as\
+              \ the\n parent. In other words, if this layer is thisLayer then this\n\
+              \ method is equivalent to invoking:\n  <code>\n     ModuleLayer.defineModulesWithManyLoaders(cf,\
+              \ List.of(thisLayer), parentLoader).layer();\n </code>"
           - name: defineModulesWithOneLoader
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cf
               type:
                 basic: Configuration
                 full: java.lang.module.Configuration
-            - name: arg1
+              notes: The configuration for the layer
+            - name: parentLoader
               type:
                 basic: ClassLoader
                 full: java.lang.ClassLoader
+              notes: "The parent class loader for the class loader created by this\n\
+                \         method; may be null for the bootstrap class loader"
             return:
               type:
                 basic: ModuleLayer
                 full: java.lang.ModuleLayer
+              notes: The newly created layer
+            notes: "Creates a new module layer, with this layer as its parent, by\
+              \ defining the\n modules in the given Configuration to the Java virtual\
+              \ machine.\n This method creates one class loader and defines all modules\
+              \ to that\n class loader. The parent of each class\n loader is the given\
+              \ parent class loader. This method works exactly as\n specified by the\
+              \ static defineModulesWithOneLoader method when invoked with this layer\
+              \ as the\n parent. In other words, if this layer is thisLayer then this\n\
+              \ method is equivalent to invoking:\n  <code>\n     ModuleLayer.defineModulesWithOneLoader(cf,\
+              \ List.of(thisLayer), parentLoader).layer();\n </code>"
           - name: findLoader
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the module to find
             return:
               type:
                 basic: ClassLoader
                 full: java.lang.ClassLoader
+              notes: The ClassLoader that the module is defined to
+            notes: "Returns the ClassLoader for the module with the given name. If\n\
+              \ a module of the given name is not in this layer then the parent layers\
+              \ are searched in the manner specified by findModule.\n\n  If there\
+              \ is a security manager then its checkPermission\n method is called\
+              \ with a RuntimePermission(\"getClassLoader\")\n permission to check\
+              \ that the caller is allowed to get access to the\n class loader."
           - name: findModule
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the module to find
             return:
               type:
-                basic: Optional<Module>
+                basic: Optional
                 full: java.util.Optional<java.lang.Module>
+              notes: "The module with the given name or an empty Optional\n      \
+                \   if there isn't a module with this name in this layer or any\n\
+                \         parent layer"
+            notes: "Returns the module with the given name in this layer, or if not\
+              \ in this\n layer, the parent layers. Finding a module in\n parent layers\
+              \ is equivalent to invoking findModule on each\n parent, in search order,\
+              \ until the module is found or all parents have\n been searched. In\
+              \ a tree of layers  then this is equivalent to\n a depth-first search."
+          - name: getServicesCatalog
+            modifiers:
+            - package
+            return:
+              type:
+                basic: ServicesCatalog
+                full: jdk.internal.module.ServicesCatalog
+          - name: layers
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Stream
+                full: java.util.stream.Stream<java.lang.ModuleLayer>
           - name: modules
             modifiers:
             - public
             return:
               type:
-                basic: Set<Module>
+                basic: Set
                 full: java.util.Set<java.lang.Module>
+              notes: A possibly-empty unmodifiable set of the modules in this layer
+            notes: Returns an unmodifiable set of the modules in this layer.
           - name: parents
             modifiers:
             - public
             return:
               type:
-                basic: List<ModuleLayer>
+                basic: List
                 full: java.util.List<java.lang.ModuleLayer>
+              notes: A possibly-empty unmodifiable list of this layer's parents
+            notes: "Returns an unmodifiable list of this layer's parents, in search\n\
+              \ order. If this is the empty layer then an\n empty list is returned."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: boot
             modifiers:
@@ -114,6 +335,59 @@ languages:
               type:
                 basic: ModuleLayer
                 full: java.lang.ModuleLayer
+              notes: The boot layer
+            notes: "Returns the boot layer. The boot layer contains at least one module,\n\
+              \ java.base. Its parent is the empty layer."
+          - name: checkConfiguration
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            - name: arg1
+              type:
+                basic: List
+                full: java.util.List<java.lang.ModuleLayer>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkCreateClassLoaderPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkForDuplicatePkgs
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Configuration
+                full: java.lang.module.Configuration
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.String, java.lang.ClassLoader>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkGetClassLoaderPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
           - name: defineModules
             modifiers:
             - public
@@ -125,15 +399,15 @@ languages:
                 full: java.lang.module.Configuration
             - name: arg1
               type:
-                basic: List<ModuleLayer>
+                basic: List
                 full: java.util.List<java.lang.ModuleLayer>
             - name: arg2
               type:
-                basic: Function<String, ClassLoader>
+                basic: Function
                 full: java.util.function.Function<java.lang.String, java.lang.ClassLoader>
             return:
               type:
-                basic: Controller
+                basic: ModuleLayer.Controller
                 full: java.lang.ModuleLayer$Controller
           - name: defineModulesWithManyLoaders
             modifiers:
@@ -146,7 +420,7 @@ languages:
                 full: java.lang.module.Configuration
             - name: arg1
               type:
-                basic: List<ModuleLayer>
+                basic: List
                 full: java.util.List<java.lang.ModuleLayer>
             - name: arg2
               type:
@@ -154,7 +428,7 @@ languages:
                 full: java.lang.ClassLoader
             return:
               type:
-                basic: Controller
+                basic: ModuleLayer.Controller
                 full: java.lang.ModuleLayer$Controller
           - name: defineModulesWithOneLoader
             modifiers:
@@ -167,7 +441,7 @@ languages:
                 full: java.lang.module.Configuration
             - name: arg1
               type:
-                basic: List<ModuleLayer>
+                basic: List
                 full: java.util.List<java.lang.ModuleLayer>
             - name: arg2
               type:
@@ -175,7 +449,7 @@ languages:
                 full: java.lang.ClassLoader
             return:
               type:
-                basic: Controller
+                basic: ModuleLayer.Controller
                 full: java.lang.ModuleLayer$Controller
           - name: empty
             modifiers:
@@ -185,5 +459,83 @@ languages:
               type:
                 basic: ModuleLayer
                 full: java.lang.ModuleLayer
-          javaType: class
-          extends: Object
+              notes: The empty layer
+            notes: "Returns the empty layer. There are no modules in the empty\n layer.\
+              \ It has no parents."
+          - name: fail
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: LayerInstantiationException
+                full: java.lang.LayerInstantiationException
+          - name: lambda$checkForDuplicatePkgs$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            return:
+              type:
+                basic: Set
+                full: java.util.Set
+          - name: lambda$defineModulesWithOneLoader$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Loader
+                full: jdk.internal.loader.Loader
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+          - name: lambda$findModule$2
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            return:
+              type:
+                basic: Module
+                full: java.lang.Module
+          - name: layers
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            return:
+              type:
+                basic: Stream
+                full: java.util.stream.Stream<java.lang.ModuleLayer>

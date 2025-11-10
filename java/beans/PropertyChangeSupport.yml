@@ -4,120 +4,454 @@ languages:
     packages:
       java.beans:
         PropertyChangeSupport:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This is a utility class that can be used by beans that support bound\n\
+            \ properties.  It manages a list of listeners and dispatches\n PropertyChangeEvents\
+            \ to them.  You can use an instance of this class\n as a member field\
+            \ of your bean and delegate these types of work to it.\n The PropertyChangeListener\
+            \ can be registered for all properties\n or for a property specified by\
+            \ name.\n \n Here is an example of PropertyChangeSupport usage that follows\n\
+            \ the rules and recommendations laid out in the JavaBeans specification:\n\
+            \ \n public class MyBean {\n     private final PropertyChangeSupport pcs\
+            \ = new PropertyChangeSupport(this);\n\n     public void addPropertyChangeListener(PropertyChangeListener\
+            \ listener) {\n         this.pcs.addPropertyChangeListener(listener);\n\
+            \     }\n\n     public void removePropertyChangeListener(PropertyChangeListener\
+            \ listener) {\n         this.pcs.removePropertyChangeListener(listener);\n\
+            \     }\n\n     private String value;\n\n     public String getValue()\
+            \ {\n         return this.value;\n     }\n\n     public void setValue(String\
+            \ newValue) {\n         String oldValue = this.value;\n         this.value\
+            \ = newValue;\n         this.pcs.firePropertyChange(\"value\", oldValue,\
+            \ newValue);\n     }\n\n     [...]\n }\n \n \n A PropertyChangeSupport\
+            \ instance is thread-safe.\n \n This class is serializable.  When it is\
+            \ serialized it will save\n (and restore) any listeners that are themselves\
+            \ serializable.  Any\n non-serializable listeners will be skipped during\
+            \ serialization."
+          fields:
+            map:
+              name: map
+              modifiers:
+              - private
+              type:
+                basic: PropertyChangeSupport.PropertyChangeListenerMap
+                full: java.beans.PropertyChangeSupport$PropertyChangeListenerMap
+            source:
+              name: source
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+          staticFields:
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: sourceBean
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: The bean to be given as the source for any events.
+            notes: Constructs a PropertyChangeSupport object.
           methods:
           - name: addPropertyChangeListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: listener
               type:
                 basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener
+              notes: The PropertyChangeListener to be added
             return:
               type:
                 basic: void
                 full: void
+            notes: "Add a PropertyChangeListener to the listener list.\n The listener\
+              \ is registered for all properties.\n The same listener object may be\
+              \ added more than once, and will be called\n as many times as it is\
+              \ added.\n If listener is null, no exception is thrown and no action\n\
+              \ is taken."
           - name: addPropertyChangeListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: propertyName
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: The name of the property to listen on.
+            - name: listener
               type:
                 basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener
+              notes: The PropertyChangeListener to be added
             return:
               type:
                 basic: void
                 full: void
+            notes: "Add a PropertyChangeListener for a specific property.  The listener\n\
+              \ will be invoked only when a call on firePropertyChange names that\n\
+              \ specific property.\n The same listener object may be added more than\
+              \ once.  For each\n property,  the listener will be invoked the number\
+              \ of times it was added\n for that property.\n If propertyName or listener\
+              \ is null, no\n exception is thrown and no action is taken."
           - name: fireIndexedPropertyChange
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: propertyName
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the programmatic name of the property that was changed
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: boolean
-                full: boolean
-            - name: arg3
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: fireIndexedPropertyChange
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: fireIndexedPropertyChange
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
+              notes: the index of the property element that was changed
+            - name: oldValue
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg3
+              notes: the old value of the property
+            - name: newValue
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the new value of the property
             return:
               type:
                 basic: void
                 full: void
+            notes: "Reports a bound indexed property update to listeners\n that have\
+              \ been registered to track updates of\n all properties or a property\
+              \ with the specified name.\n \n No event is fired if old and new values\
+              \ are equal and non-null.\n \n This is merely a convenience wrapper\
+              \ around the more general\n firePropertyChange(PropertyChangeEvent)\
+              \ method."
+          - name: fireIndexedPropertyChange
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the programmatic name of the property that was changed
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: the index of the property element that was changed
+            - name: oldValue
+              type:
+                basic: int
+                full: int
+              notes: the old value of the property
+            - name: newValue
+              type:
+                basic: int
+                full: int
+              notes: the new value of the property
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports an integer bound indexed property update to listeners\n\
+              \ that have been registered to track updates of\n all properties or\
+              \ a property with the specified name.\n \n No event is fired if old\
+              \ and new values are equal.\n \n This is merely a convenience wrapper\
+              \ around the more general\n fireIndexedPropertyChange(String, int, Object,\
+              \ Object) method."
+          - name: fireIndexedPropertyChange
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the programmatic name of the property that was changed
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: the index of the property element that was changed
+            - name: oldValue
+              type:
+                basic: boolean
+                full: boolean
+              notes: the old value of the property
+            - name: newValue
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value of the property
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports a boolean bound indexed property update to listeners\n\
+              \ that have been registered to track updates of\n all properties or\
+              \ a property with the specified name.\n \n No event is fired if old\
+              \ and new values are equal.\n \n This is merely a convenience wrapper\
+              \ around the more general\n fireIndexedPropertyChange(String, int, Object,\
+              \ Object) method."
           - name: firePropertyChange
             modifiers:
             - public
             parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the programmatic name of the property that was changed
+            - name: oldValue
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the old value of the property
+            - name: newValue
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the new value of the property
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports a bound property update to listeners\n that have been\
+              \ registered to track updates of\n all properties or a property with\
+              \ the specified name.\n \n No event is fired if old and new values are\
+              \ equal and non-null.\n \n This is merely a convenience wrapper around\
+              \ the more general\n firePropertyChange(PropertyChangeEvent) method."
+          - name: firePropertyChange
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the programmatic name of the property that was changed
+            - name: oldValue
+              type:
+                basic: int
+                full: int
+              notes: the old value of the property
+            - name: newValue
+              type:
+                basic: int
+                full: int
+              notes: the new value of the property
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports an integer bound property update to listeners\n that have\
+              \ been registered to track updates of\n all properties or a property\
+              \ with the specified name.\n \n No event is fired if old and new values\
+              \ are equal.\n \n This is merely a convenience wrapper around the more\
+              \ general\n firePropertyChange(String, Object, Object)  method."
+          - name: firePropertyChange
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the programmatic name of the property that was changed
+            - name: oldValue
+              type:
+                basic: boolean
+                full: boolean
+              notes: the old value of the property
+            - name: newValue
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value of the property
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports a boolean bound property update to listeners\n that have\
+              \ been registered to track updates of\n all properties or a property\
+              \ with the specified name.\n \n No event is fired if old and new values\
+              \ are equal.\n \n This is merely a convenience wrapper around the more\
+              \ general\n firePropertyChange(String, Object, Object)  method."
+          - name: firePropertyChange
+            modifiers:
+            - public
+            parameters:
+            - name: event
+              type:
+                basic: PropertyChangeEvent
+                full: java.beans.PropertyChangeEvent
+              notes: the PropertyChangeEvent to be fired
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Fires a property change event to listeners\n that have been registered\
+              \ to track updates of\n all properties or a property with the specified\
+              \ name.\n \n No event is fired if the given event's old and new values\
+              \ are equal and non-null."
+          - name: getPropertyChangeListeners
+            modifiers:
+            - public
+            return:
+              type:
+                basic: PropertyChangeListener
+                full: java.beans.PropertyChangeListener[]
+              notes: "all of the PropertyChangeListeners added or an\n         empty\
+                \ array if no listeners have been added"
+            notes: "Returns an array of all the listeners that were added to the\n\
+              \ PropertyChangeSupport object with addPropertyChangeListener().\n \n\
+              \ If some listeners have been added with a named property, then\n the\
+              \ returned array will be a mixture of PropertyChangeListeners\n and\
+              \ PropertyChangeListenerProxys. If the calling\n method is interested\
+              \ in distinguishing the listeners then it must\n test each element to\
+              \ see if it's a\n PropertyChangeListenerProxy, perform the cast, and\
+              \ examine\n the parameter.\n\n <code>\n PropertyChangeListener[] listeners\
+              \ = bean.getPropertyChangeListeners();\n for (int i = 0; i < listeners.length;\
+              \ i++) {\n   if (listeners[i] instanceof PropertyChangeListenerProxy)\
+              \ {\n     PropertyChangeListenerProxy proxy =\n                    (PropertyChangeListenerProxy)listeners[i];\n\
+              \     if (proxy.getPropertyName().equals(\"foo\")) {\n       // proxy\
+              \ is a PropertyChangeListener which was associated\n       // with the\
+              \ property named \"foo\"\n     }\n   }\n }\n </code>"
+          - name: getPropertyChangeListeners
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The name of the property being listened to
+            return:
+              type:
+                basic: PropertyChangeListener
+                full: java.beans.PropertyChangeListener[]
+              notes: "all of the PropertyChangeListeners associated with\n       \
+                \  the named property.  If no such listeners have been added,\n  \
+                \       or if propertyName is null, an empty array is\n         returned."
+            notes: "Returns an array of all the listeners which have been associated\n\
+              \ with the named property."
+          - name: hasListeners
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the property name.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there are one or more listeners for the given property
+            notes: "Check if there are any listeners for a specific property, including\n\
+              \ those registered on all properties.  If propertyName\n is null, only\
+              \ check for listeners registered on all properties."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
             - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removePropertyChangeListener
+            modifiers:
+            - public
+            parameters:
+            - name: listener
+              type:
+                basic: PropertyChangeListener
+                full: java.beans.PropertyChangeListener
+              notes: The PropertyChangeListener to be removed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Remove a PropertyChangeListener from the listener list.\n This\
+              \ removes a PropertyChangeListener that was registered\n for all properties.\n\
+              \ If listener was added more than once to the same event\n source, it\
+              \ will be notified one less time after being removed.\n If listener\
+              \ is null, or was never added, no exception is\n thrown and no action\
+              \ is taken."
+          - name: removePropertyChangeListener
+            modifiers:
+            - public
+            parameters:
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The name of the property that was listened on.
+            - name: listener
+              type:
+                basic: PropertyChangeListener
+                full: java.beans.PropertyChangeListener
+              notes: The PropertyChangeListener to be removed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Remove a PropertyChangeListener for a specific property.\n If\
+              \ listener was added more than once to the same event\n source for the\
+              \ specified property, it will be notified one less time\n after being\
+              \ removed.\n If propertyName is null,  no exception is thrown and no\n\
+              \ action is taken.\n If listener is null, or was never added for the\
+              \ specified\n property, no exception is thrown and no action is taken."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: fire
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: PropertyChangeListener
+                full: java.beans.PropertyChangeListener[]
+            - name: arg1
               type:
                 basic: PropertyChangeEvent
                 full: java.beans.PropertyChangeEvent
@@ -125,124 +459,3 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: firePropertyChange
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: boolean
-                full: boolean
-            - name: arg2
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: firePropertyChange
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: firePropertyChange
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg2
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: void
-                full: void
-          - name: getPropertyChangeListeners
-            modifiers:
-            - public
-            return:
-              type:
-                basic: PropertyChangeListener[]
-                full: java.beans.PropertyChangeListener[]
-          - name: getPropertyChangeListeners
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: PropertyChangeListener[]
-                full: java.beans.PropertyChangeListener[]
-          - name: hasListeners
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: removePropertyChangeListener
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: PropertyChangeListener
-                full: java.beans.PropertyChangeListener
-            return:
-              type:
-                basic: void
-                full: void
-          - name: removePropertyChangeListener
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: PropertyChangeListener
-                full: java.beans.PropertyChangeListener
-            return:
-              type:
-                basic: void
-                full: void
-          javaType: class
-          extends: Object

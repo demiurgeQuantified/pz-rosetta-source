@@ -4,269 +4,563 @@ languages:
     packages:
       java.awt.event:
         MouseEvent:
+          extends: java.awt.event.InputEvent
+          modifiers:
+          - public
+          notes: "An event which indicates that a mouse action occurred in a component.\n\
+            \ A mouse action is considered to occur in a particular component if and\
+            \ only\n if the mouse cursor is over the unobscured part of the component's\
+            \ bounds\n when the action happens.\n For lightweight components, such\
+            \ as Swing's components, mouse events\n are only dispatched to the component\
+            \ if the mouse event type has been\n enabled on the component. A mouse\
+            \ event type is enabled by adding the\n appropriate mouse-based EventListener\
+            \ to the component\n (MouseListener or MouseMotionListener), or by invoking\n\
+            \ Component.enableEvents(long) with the appropriate mask parameter\n (AWTEvent.MOUSE_EVENT_MASK\
+            \ or AWTEvent.MOUSE_MOTION_EVENT_MASK).\n If the mouse event type has\
+            \ not been enabled on the component, the\n corresponding mouse events\
+            \ are dispatched to the first ancestor that\n has enabled the mouse event\
+            \ type.\n\n For example, if a MouseListener has been added to a component,\
+            \ or\n enableEvents(AWTEvent.MOUSE_EVENT_MASK) has been invoked, then\
+            \ all\n the events defined by MouseListener are dispatched to the component.\n\
+            \ On the other hand, if a MouseMotionListener has not been added and\n\
+            \ enableEvents has not been invoked with\n AWTEvent.MOUSE_MOTION_EVENT_MASK,\
+            \ then mouse motion events are not\n dispatched to the component. Instead\
+            \ the mouse motion events are\n dispatched to the first ancestors that\
+            \ has enabled mouse motion\n events.\n \n This low-level event is generated\
+            \ by a component object for:\n \n Mouse Events\n     \n     a mouse button\
+            \ is pressed\n     a mouse button is released\n     a mouse button is\
+            \ clicked (pressed and released)\n     the mouse cursor enters the unobscured\
+            \ part of component's geometry\n     the mouse cursor exits the unobscured\
+            \ part of component's geometry\n     \n  Mouse Motion Events\n     \n\
+            \     the mouse is moved\n     the mouse is dragged\n     \n \n \n A MouseEvent\
+            \ object is passed to every\n MouseListener\n or MouseAdapter object which\
+            \ is registered to receive\n the \"interesting\" mouse events using the\
+            \ component's\n addMouseListener method.\n (MouseAdapter objects implement\
+            \ the\n MouseListener interface.) Each such listener object\n gets a MouseEvent\
+            \ containing the mouse event.\n \n A MouseEvent object is also passed\
+            \ to every\n MouseMotionListener or\n MouseMotionAdapter object which\
+            \ is registered to receive\n mouse motion events using the component's\n\
+            \ addMouseMotionListener\n method. (MouseMotionAdapter objects implement\
+            \ the\n MouseMotionListener interface.) Each such listener object\n gets\
+            \ a MouseEvent containing the mouse motion event.\n \n When a mouse button\
+            \ is clicked, events are generated and sent to the\n registered MouseListeners.\n\
+            \ The state of modal keys can be retrieved using InputEvent.getModifiers()\n\
+            \ and InputEvent.getModifiersEx().\n The button mask returned by InputEvent.getModifiers()\
+            \ reflects\n only the button that changed state, not the current state\
+            \ of all buttons.\n (Note: Due to overlap in the values of ALT_MASK/BUTTON2_MASK\
+            \ and\n META_MASK/BUTTON3_MASK, this is not always true for mouse events\
+            \ involving\n modifier keys).\n To get the state of all buttons and modifier\
+            \ keys, use\n InputEvent.getModifiersEx().\n The button which has changed\
+            \ state is returned by getButton()\n \n For example, if the first mouse\
+            \ button is pressed, events are sent in the\n following order:\n <b>\n\
+            \    id              modifiers    button</b><code>\n    MOUSE_PRESSED:\
+            \  BUTTON1_MASK BUTTON1\n    MOUSE_RELEASED: BUTTON1_MASK BUTTON1\n  \
+            \  MOUSE_CLICKED:  BUTTON1_MASK BUTTON1\n </code>\n When multiple mouse\
+            \ buttons are pressed, each press, release, and click\n results in a separate\
+            \ event.\n \n For example, if the user presses button 1 followed by\n\
+            \ button 2, and then releases them in the same order,\n the following\
+            \ sequence of events is generated:\n <b>\n    id              modifiers\
+            \    button</b><code>\n    MOUSE_PRESSED:  BUTTON1_MASK BUTTON1\n    MOUSE_PRESSED:\
+            \  BUTTON2_MASK BUTTON2\n    MOUSE_RELEASED: BUTTON1_MASK BUTTON1\n  \
+            \  MOUSE_CLICKED:  BUTTON1_MASK BUTTON1\n    MOUSE_RELEASED: BUTTON2_MASK\
+            \ BUTTON2\n    MOUSE_CLICKED:  BUTTON2_MASK BUTTON2\n </code>\n If button\
+            \ 2 is released first, the\n MOUSE_RELEASED/MOUSE_CLICKED pair\n for BUTTON2_MASK\
+            \ arrives first,\n followed by the pair for BUTTON1_MASK.\n \n Some extra\
+            \ mouse buttons are added to extend the standard set of buttons\n represented\
+            \ by the following constants:BUTTON1, BUTTON2, and BUTTON3.\n Extra buttons\
+            \ have no assigned BUTTONx\n constants as well as their button masks have\
+            \ no assigned BUTTONx_DOWN_MASK\n constants. Nevertheless, ordinal numbers\
+            \ starting from 4 may be\n used as button numbers (button ids). Values\
+            \ obtained by the\n getMaskForButton(button) method may be used\n as button\
+            \ masks.\n \n MOUSE_DRAGGED events are delivered to the Component\n in\
+            \ which the mouse button was pressed until the mouse button is released\n\
+            \ (regardless of whether the mouse position is within the bounds of the\n\
+            \ Component).  Due to platform-dependent Drag&Drop implementations,\n\
+            \ MOUSE_DRAGGED events may not be delivered during a native\n Drag&Drop\
+            \ operation.\n\n In a multi-screen environment mouse drag events are delivered\
+            \ to the\n Component even if the mouse position is outside the bounds\
+            \ of the\n GraphicsConfiguration associated with that\n Component. However,\
+            \ the reported position for mouse drag events\n in this case may differ\
+            \ from the actual mouse position:\n \n In a multi-screen environment without\
+            \ a virtual device:\n \n The reported coordinates for mouse drag events\
+            \ are clipped to fit within the\n bounds of the GraphicsConfiguration\
+            \ associated with\n the Component.\n In a multi-screen environment with\
+            \ a virtual device:\n \n The reported coordinates for mouse drag events\
+            \ are clipped to fit within the\n bounds of the virtual device associated\
+            \ with the Component.\n \n \n An unspecified behavior will be caused if\
+            \ the id parameter\n of any particular MouseEvent instance is not\n in\
+            \ the range from MOUSE_FIRST to MOUSE_LAST-1\n (MOUSE_WHEEL is not acceptable)."
+          fields:
+            button:
+              name: button
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            causedByTouchEvent:
+              name: causedByTouchEvent
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            clickCount:
+              name: clickCount
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            popupTrigger:
+              name: popupTrigger
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            shouldExcludeButtonFromExtModifiers:
+              name: shouldExcludeButtonFromExtModifiers
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            x:
+              name: x
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            xAbs:
+              name: xAbs
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            y:
+              name: y
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            yAbs:
+              name: yAbs
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
             BUTTON1:
               name: BUTTON1
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: 'Indicates mouse button #1; used by getButton().'
             BUTTON2:
               name: BUTTON2
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: 'Indicates mouse button #2; used by getButton().'
             BUTTON3:
               name: BUTTON3
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: 'Indicates mouse button #3; used by getButton().'
             MOUSE_CLICKED:
               name: MOUSE_CLICKED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse clicked\" event. This MouseEvent\n occurs when a\
+                \ mouse button is pressed and released."
             MOUSE_DRAGGED:
               name: MOUSE_DRAGGED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse dragged\" event. This MouseEvent\n occurs when the\
+                \ mouse position changes while a mouse button is pressed."
             MOUSE_ENTERED:
               name: MOUSE_ENTERED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse entered\" event. This MouseEvent\n occurs when the\
+                \ mouse cursor enters the unobscured part of component's\n geometry."
             MOUSE_EXITED:
               name: MOUSE_EXITED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse exited\" event. This MouseEvent\n occurs when the\
+                \ mouse cursor exits the unobscured part of component's\n geometry."
             MOUSE_FIRST:
               name: MOUSE_FIRST
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The first number in the range of ids used for mouse events.
             MOUSE_LAST:
               name: MOUSE_LAST
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The last number in the range of ids used for mouse events.
             MOUSE_MOVED:
               name: MOUSE_MOVED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse moved\" event. This MouseEvent\n occurs when the\
+                \ mouse position changes."
             MOUSE_PRESSED:
               name: MOUSE_PRESSED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse pressed\" event. This MouseEvent\n occurs when a\
+                \ mouse button is pushed down."
             MOUSE_RELEASED:
               name: MOUSE_RELEASED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse released\" event. This MouseEvent\n occurs when\
+                \ a mouse button is let up."
             MOUSE_WHEEL:
               name: MOUSE_WHEEL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The \"mouse wheel\" event.  This is the only MouseWheelEvent.\n\
+                \ It occurs when a mouse equipped with a wheel has its wheel rotated."
             NOBUTTON:
               name: NOBUTTON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Indicates no mouse buttons; used by getButton().
+            cachedNumberOfButtons:
+              name: cachedNumberOfButtons
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: Component
                 full: java.awt.Component
-            - name: arg1
+              notes: The Component that originated the event
+            - name: id
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "An integer indicating the type of event.\n                 \
+                \    For information on allowable values, see\n                  \
+                \   the class description for MouseEvent"
+            - name: when
               type:
                 basic: long
                 full: long
-            - name: arg3
+              notes: "A long integer that gives the time the event occurred.\n   \
+                \                  Passing negative or zero value\n              \
+                \       is not recommended"
+            - name: modifiers
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: "a modifier mask describing the modifier keys and mouse\n   \
+                \                  buttons (for example, shift, ctrl, alt, and meta)\
+                \ that\n                     are down during the event.\n        \
+                \             Only extended modifiers are allowed to be used as a\n\
+                \                     value for this parameter (see the InputEvent.getModifiersEx()\n\
+                \                     class for the description of extended modifiers).\n\
+                \                     Passing negative parameter\n               \
+                \      is not recommended.\n                     Zero value means\
+                \ that no modifiers were passed"
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: "The horizontal x coordinate for the mouse location.\n      \
+                \                 It is allowed to pass negative values"
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg6
+              notes: "The vertical y coordinate for the mouse location.\n        \
+                \               It is allowed to pass negative values"
+            - name: clickCount
               type:
                 basic: int
                 full: int
-            - name: arg7
+              notes: "The number of mouse clicks associated with event.\n        \
+                \               Passing negative value\n                       is\
+                \ not recommended"
+            - name: popupTrigger
               type:
                 basic: boolean
                 full: boolean
+              notes: "A boolean that equals true if this event\n                 \
+                \    is a trigger for a popup menu"
+            - name: button
+              type:
+                basic: int
+                full: int
+              notes: "An integer that indicates, which of the mouse buttons has\n\
+                \                     changed its state.\n The following rules are\
+                \ applied to this parameter:\n \n If support for the extended mouse\
+                \ buttons is\n disabled by Java\n then it is allowed to create MouseEvent\
+                \ objects only with the standard buttons:\n NOBUTTON, BUTTON1, BUTTON2,\
+                \ and\n BUTTON3.\n  If support for the extended mouse buttons is\n\
+                \ enabled by Java\n then it is allowed to create MouseEvent objects\
+                \ with\n the standard buttons.\n In case the support for extended\
+                \ mouse buttons is\n enabled by Java, then\n in addition to the standard\
+                \ buttons, MouseEvent objects can be created\n using buttons from\
+                \ the range starting from 4 to\n MouseInfo.getNumberOfButtons()\n\
+                \ if the mouse has more than three buttons."
+            notes: "Constructs a MouseEvent object with the\n specified source component,\n\
+              \ type, time, modifiers, coordinates, click count, popupTrigger flag,\n\
+              \ and button number.\n \n Creating an invalid event (such\n as by using\
+              \ more than one of the old _MASKs, or modifier/button\n values which\
+              \ don't match) results in unspecified behavior.\n An invocation of the\
+              \ form\n MouseEvent(source, id, when, modifiers, x, y, clickCount, popupTrigger,\
+              \ button)\n behaves in exactly the same way as the invocation\n MouseEvent(source,\
+              \ id, when, modifiers,\n x, y, xAbs, yAbs, clickCount, popupTrigger,\
+              \ button)\n where xAbs and yAbs defines as source's location on screen\
+              \ plus\n relative coordinates x and y.\n xAbs and yAbs are set to zero\
+              \ if the source is not showing.\n This method throws an\n IllegalArgumentException\
+              \ if source\n is null."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: Component
                 full: java.awt.Component
-            - name: arg1
+              notes: The Component that originated the event
+            - name: id
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "An integer indicating the type of event.\n                 \
+                \    For information on allowable values, see\n                  \
+                \   the class description for MouseEvent"
+            - name: when
               type:
                 basic: long
                 full: long
-            - name: arg3
+              notes: "A long integer that gives the time the event occurred.\n   \
+                \                  Passing negative or zero value\n              \
+                \       is not recommended"
+            - name: modifiers
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: "a modifier mask describing the modifier keys and mouse\n   \
+                \                  buttons (for example, shift, ctrl, alt, and meta)\
+                \ that\n                     are down during the event.\n        \
+                \             Only extended modifiers are allowed to be used as a\n\
+                \                     value for this parameter (see the InputEvent.getModifiersEx()\n\
+                \                     class for the description of extended modifiers).\n\
+                \                     Passing negative parameter\n               \
+                \      is not recommended.\n                     Zero value means\
+                \ that no modifiers were passed"
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: "The horizontal x coordinate for the mouse location.\n      \
+                \                 It is allowed to pass negative values"
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg6
+              notes: "The vertical y coordinate for the mouse location.\n        \
+                \               It is allowed to pass negative values"
+            - name: clickCount
               type:
                 basic: int
                 full: int
-            - name: arg7
+              notes: "The number of mouse clicks associated with event.\n        \
+                \               Passing negative value\n                       is\
+                \ not recommended"
+            - name: popupTrigger
               type:
                 basic: boolean
                 full: boolean
-            - name: arg8
-              type:
-                basic: int
-                full: int
+              notes: "A boolean that equals true if this event\n                 \
+                \    is a trigger for a popup menu"
+            notes: "Constructs a MouseEvent object with the\n specified source component,\n\
+              \ type, modifiers, coordinates, click count, and popupTrigger flag.\n\
+              \ An invocation of the form\n MouseEvent(source, id, when, modifiers,\
+              \ x, y, clickCount, popupTrigger)\n behaves in exactly the same way\
+              \ as the invocation\n MouseEvent(source, id, when, modifiers,\n x, y,\
+              \ xAbs, yAbs, clickCount, popupTrigger, MouseEvent.NOBUTTON)\n where\
+              \ xAbs and yAbs defines as source's location on screen plus\n relative\
+              \ coordinates x and y.\n xAbs and yAbs are set to zero if the source\
+              \ is not showing.\n This method throws an IllegalArgumentException\n\
+              \ if source is null."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: Component
                 full: java.awt.Component
-            - name: arg1
+              notes: The Component that originated the event
+            - name: id
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "An integer indicating the type of event.\n                 \
+                \    For information on allowable values, see\n                  \
+                \   the class description for MouseEvent"
+            - name: when
               type:
                 basic: long
                 full: long
-            - name: arg3
+              notes: "A long integer that gives the time the event occurred.\n   \
+                \                  Passing negative or zero value\n              \
+                \       is not recommended"
+            - name: modifiers
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: "a modifier mask describing the modifier keys and mouse\n   \
+                \                  buttons (for example, shift, ctrl, alt, and meta)\
+                \ that\n                     are down during the event.\n        \
+                \             Only extended modifiers are allowed to be used as a\n\
+                \                     value for this parameter (see the InputEvent.getModifiersEx()\n\
+                \                     class for the description of extended modifiers).\n\
+                \                     Passing negative parameter\n               \
+                \      is not recommended.\n                     Zero value means\
+                \ that no modifiers were passed"
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: "The horizontal x coordinate for the mouse location.\n      \
+                \                 It is allowed to pass negative values"
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg6
+              notes: "The vertical y coordinate for the mouse location.\n        \
+                \               It is allowed to pass negative values"
+            - name: xAbs
               type:
                 basic: int
                 full: int
-            - name: arg7
+              notes: "The absolute horizontal x coordinate for the mouse location\n\
+                \                       It is allowed to pass negative values"
+            - name: yAbs
               type:
                 basic: int
                 full: int
-            - name: arg8
+              notes: "The absolute vertical y coordinate for the mouse location\n\
+                \                       It is allowed to pass negative values"
+            - name: clickCount
               type:
                 basic: int
                 full: int
-            - name: arg9
+              notes: "The number of mouse clicks associated with event.\n        \
+                \               Passing negative value\n                       is\
+                \ not recommended"
+            - name: popupTrigger
               type:
                 basic: boolean
                 full: boolean
-            - name: arg10
+              notes: "A boolean that equals true if this event\n                 \
+                \    is a trigger for a popup menu"
+            - name: button
               type:
                 basic: int
                 full: int
+              notes: "An integer that indicates, which of the mouse buttons has\n\
+                \                     changed its state.\n The following rules are\
+                \ applied to this parameter:\n \n If support for the extended mouse\
+                \ buttons is\n disabled by Java\n then it is allowed to create MouseEvent\
+                \ objects only with the standard buttons:\n NOBUTTON, BUTTON1, BUTTON2,\
+                \ and\n BUTTON3.\n  If support for the extended mouse buttons is\n\
+                \ enabled by Java\n then it is allowed to create MouseEvent objects\
+                \ with\n the standard buttons.\n In case the support for extended\
+                \ mouse buttons is\n enabled by Java, then\n in addition to the standard\
+                \ buttons, MouseEvent objects can be created\n using buttons from\
+                \ the range starting from 4 to\n MouseInfo.getNumberOfButtons()\n\
+                \ if the mouse has more than three buttons."
+            notes: "Constructs a MouseEvent object with the\n specified source component,\n\
+              \ type, time, modifiers, coordinates, absolute coordinates, click count,\
+              \ popupTrigger flag,\n and button number.\n \n Creating an invalid event\
+              \ (such\n as by using more than one of the old _MASKs, or modifier/button\n\
+              \ values which don't match) results in unspecified behavior.\n Even\
+              \ if inconsistent values for relative and absolute coordinates are\n\
+              \ passed to the constructor, the mouse event instance is still\n created\
+              \ and no exception is thrown.\n This method throws an\n IllegalArgumentException\
+              \ if source\n is null."
           methods:
           - name: getButton
             modifiers:
@@ -275,6 +569,28 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "one of the values from 0 to MouseInfo.getNumberOfButtons()\n\
+                \         if support for the extended mouse buttons is enabled by\
+                \ Java.\n         That range includes NOBUTTON, BUTTON1, BUTTON2,\
+                \ BUTTON3;\n         \n         NOBUTTON, BUTTON1, BUTTON2 or BUTTON3\n\
+                \         if support for the extended mouse buttons is disabled by\
+                \ Java"
+            notes: "Returns which, if any, of the mouse buttons has changed state.\n\
+              \ The returned value is ranged\n from 0 to the MouseInfo.getNumberOfButtons()\n\
+              \ value.\n The returned value includes at least the following constants:\n\
+              \ \n  NOBUTTON\n  BUTTON1\n  BUTTON2\n  BUTTON3\n \n It is allowed to\
+              \ use those constants to compare with the returned button number in\
+              \ the application.\n For example,\n \n if (anEvent.getButton() == MouseEvent.BUTTON1)\
+              \ {\n \n In particular, for a mouse with one, two, or three buttons\
+              \ this method may return the following values:\n \n  0 (NOBUTTON)\n\
+              \  1 (BUTTON1)\n  2 (BUTTON2)\n  3 (BUTTON3)\n \n Button numbers greater\
+              \ than BUTTON3 have no constant identifier.\n So if a mouse with five\
+              \ buttons is\n installed, this method may return the following values:\n\
+              \ \n  0 (NOBUTTON)\n  1 (BUTTON1)\n  2 (BUTTON2)\n  3 (BUTTON3)\n  4\n\
+              \  5\n \n \n Note: If support for extended mouse buttons is disabled\
+              \ by Java\n then the AWT event subsystem does not produce mouse events\
+              \ for the extended mouse\n buttons. So it is not expected that this\
+              \ method returns anything except NOBUTTON, BUTTON1,\n BUTTON2, BUTTON3."
           - name: getClickCount
             modifiers:
             - public
@@ -282,6 +598,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: integer value for the number of clicks
+            notes: Returns the number of mouse clicks associated with this event.
           - name: getLocationOnScreen
             modifiers:
             - public
@@ -289,6 +607,13 @@ languages:
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: "a Point object containing the absolute  x\n  and y coordinates."
+            notes: "Returns the absolute x, y position of the event.\n In a virtual\
+              \ device multi-screen environment in which the\n desktop area could\
+              \ span multiple physical screen devices,\n these coordinates are relative\
+              \ to the virtual coordinate system.\n Otherwise, these coordinates are\
+              \ relative to the coordinate system\n associated with the Component's\
+              \ GraphicsConfiguration."
           - name: getModifiersEx
             modifiers:
             - public
@@ -303,6 +628,9 @@ languages:
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: "a Point object containing the x and y coordinates\n        \
+                \ relative to the source component"
+            notes: Returns the x,y position of the event relative to the source component.
           - name: getX
             modifiers:
             - public
@@ -310,6 +638,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "x  an integer indicating horizontal position relative to\n \
+                \           the component"
+            notes: "Returns the horizontal x position of the event relative to the\n\
+              \ source component."
           - name: getXOnScreen
             modifiers:
             - public
@@ -317,6 +649,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: x  an integer indicating absolute horizontal position.
+            notes: "Returns the absolute horizontal x position of the event.\n In\
+              \ a virtual device multi-screen environment in which the\n desktop area\
+              \ could span multiple physical screen devices,\n this coordinate is\
+              \ relative to the virtual coordinate system.\n Otherwise, this coordinate\
+              \ is relative to the coordinate system\n associated with the Component's\
+              \ GraphicsConfiguration."
           - name: getY
             modifiers:
             - public
@@ -324,6 +663,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "y  an integer indicating vertical position relative to\n   \
+                \         the component"
+            notes: "Returns the vertical y position of the event relative to the\n\
+              \ source component."
           - name: getYOnScreen
             modifiers:
             - public
@@ -331,6 +674,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: y  an integer indicating absolute vertical position.
+            notes: "Returns the absolute vertical y position of the event.\n In a\
+              \ virtual device multi-screen environment in which the\n desktop area\
+              \ could span multiple physical screen devices,\n this coordinate is\
+              \ relative to the virtual coordinate system.\n Otherwise, this coordinate\
+              \ is relative to the coordinate system\n associated with the Component's\
+              \ GraphicsConfiguration."
           - name: isPopupTrigger
             modifiers:
             - public
@@ -338,6 +688,13 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "boolean, true if this event is the popup menu trigger\n    \
+                \     for this platform"
+            notes: "Returns whether or not this mouse event is the popup menu\n trigger\
+              \ event for the platform.\n Note: Popup menus are triggered differently\n\
+              \ on different systems. Therefore, isPopupTrigger\n should be checked\
+              \ in both mousePressed\n and mouseReleased\n for proper cross-platform\
+              \ functionality."
           - name: paramString
             modifiers:
             - public
@@ -345,35 +702,91 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: translatePoint
+              notes: a string identifying the event and its attributes
+            notes: "Returns a parameter string identifying this event.\n This method\
+              \ is useful for event-logging and for debugging."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
                 full: void
+          - name: setNewModifiers
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setOldModifiers
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: translatePoint
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: "the horizontal x value to add to the current x\n          coordinate\
+                \ position"
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: "the vertical y value to add to the current y\n             \
+                \   coordinate position"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Translates the event's coordinates to a new position\n by adding\
+              \ specified x (horizontal) and y\n (vertical) offsets."
           staticMethods:
           - name: getMouseModifiersText
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: modifiers
               type:
                 basic: int
                 full: int
+              notes: "A modifier mask describing the modifier keys and\n         \
+                \         mouse buttons that were down during the event"
             return:
               type:
                 basic: String
                 full: java.lang.String
-          javaType: class
-          extends: InputEvent
+              notes: "string   string text description of the combination of modifier\n\
+                \                  keys and mouse buttons that were down during the\
+                \ event"
+            notes: "Returns a String instance describing the modifier keys and\n mouse\
+              \ buttons that were down during the event, such as \"Shift\",\n or \"\
+              Ctrl+Shift\". These strings can be localized by changing\n the awt.properties\
+              \ file.\n \n Note that the InputEvent.ALT_MASK and\n InputEvent.BUTTON2_MASK\
+              \ have equal values,\n so the \"Alt\" string is returned for both modifiers.\
+              \  Likewise,\n the InputEvent.META_MASK and\n InputEvent.BUTTON3_MASK\
+              \ have equal values,\n so the \"Meta\" string is returned for both modifiers.\n\
+              \ \n Note that passing negative parameter is incorrect,\n and will cause\
+              \ the returning an unspecified string.\n Zero parameter means that no\
+              \ modifiers were passed and will\n cause the returning an empty string."
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

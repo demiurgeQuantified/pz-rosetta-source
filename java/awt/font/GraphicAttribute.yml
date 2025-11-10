@@ -4,85 +4,124 @@ languages:
     packages:
       java.awt.font:
         GraphicAttribute:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class is used with the CHAR_REPLACEMENT attribute.\n \n The\
+            \ GraphicAttribute class represents a graphic embedded\n in text. Clients\
+            \ subclass this class to implement their own char\n replacement graphics.\
+            \  Clients wishing to embed shapes and images in\n text need not subclass\
+            \ this class.  Instead, clients can use the\n ShapeGraphicAttribute and\
+            \ ImageGraphicAttribute\n classes.\n \n Subclasses must ensure that their\
+            \ objects are immutable once they\n are constructed.  Mutating a GraphicAttribute\
+            \ that\n is used in a TextLayout results in undefined behavior from the\n\
+            \ TextLayout."
+          fields:
+            fAlignment:
+              name: fAlignment
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
             BOTTOM_ALIGNMENT:
               name: BOTTOM_ALIGNMENT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Aligns bottom of graphic to bottom of line.
             CENTER_BASELINE:
               name: CENTER_BASELINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Aligns origin of graphic to center baseline of line.
             HANGING_BASELINE:
               name: HANGING_BASELINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Aligns origin of graphic to hanging baseline of line.
             ROMAN_BASELINE:
               name: ROMAN_BASELINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Aligns origin of graphic to roman baseline of line.
             TOP_ALIGNMENT:
               name: TOP_ALIGNMENT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Aligns top of graphic to top of line.
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: alignment
+              type:
+                basic: int
+                full: int
+              notes: "an int representing one of the\n GraphicAttribute alignment\
+                \ fields"
+            notes: "Constructs a GraphicAttribute.\n Subclasses use this to define\
+              \ the alignment of the graphic."
           methods:
           - name: draw
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: graphics
               type:
                 basic: Graphics2D
                 full: java.awt.Graphics2D
-            - name: arg1
+              notes: "the Graphics2D into which to render the\n graphic"
+            - name: x
               type:
                 basic: float
                 full: float
-            - name: arg2
+              notes: the user-space X coordinate where the graphic is rendered
+            - name: y
               type:
                 basic: float
                 full: float
+              notes: the user-space Y coordinate where the graphic is rendered
             return:
               type:
                 basic: void
                 full: void
+            notes: "Renders this GraphicAttribute at the specified\n location."
           - name: getAdvance
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: float
                 full: float
+              notes: the advance of this GraphicAttribute.
+            notes: "Returns the advance of this GraphicAttribute.  The\n GraphicAttribute\
+              \ object's advance is the distance\n from the point at which the graphic\
+              \ is rendered and the point where\n the next character or graphic is\
+              \ rendered.  A graphic can be\n rendered beyond its advance"
           - name: getAlignment
             modifiers:
             - public
@@ -91,13 +130,21 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the alignment of this GraphicAttribute.
+            notes: "Returns the alignment of this GraphicAttribute.\n Alignment can\
+              \ be to a particular baseline, or to the absolute top\n or bottom of\
+              \ a line."
           - name: getAscent
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: float
                 full: float
+              notes: the ascent of this GraphicAttribute.
+            notes: "Returns the ascent of this GraphicAttribute.  A\n graphic can\
+              \ be rendered above its ascent."
           - name: getBounds
             modifiers:
             - public
@@ -105,13 +152,25 @@ languages:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that encloses all of the bits\n rendered by this\
+                \ GraphicAttribute."
+            notes: "Returns a Rectangle2D that encloses all of the\n bits drawn by\
+              \ this GraphicAttribute relative to the\n rendering position.\n A graphic\
+              \ may be rendered beyond its origin, ascent, descent,\n or advance;\
+              \  but if it is, this method's implementation must\n indicate where\
+              \ the graphic is rendered.\n Default bounds is the rectangle (0, -ascent,\
+              \ advance, ascent+descent)."
           - name: getDescent
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: float
                 full: float
+              notes: the descent of this GraphicAttribute.
+            notes: "Returns the descent of this GraphicAttribute.  A\n graphic can\
+              \ be rendered below its descent."
           - name: getJustificationInfo
             modifiers:
             - public
@@ -119,17 +178,30 @@ languages:
               type:
                 basic: GlyphJustificationInfo
                 full: java.awt.font.GlyphJustificationInfo
+              notes: "a GlyphJustificationInfo object that contains the\n justification\
+                \ information for this GraphicAttribute."
+            notes: "Returns the justification information for this\n GraphicAttribute.\
+              \  Subclasses\n can override this method to provide different justification\n\
+              \ information."
           - name: getOutline
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: tx
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an optional AffineTransform to apply to the\n   outline of this\
+                \ GraphicAttribute. This can be null."
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
-          javaType: class
-          extends: Object
+              notes: "a Shape representing this graphic attribute,\n   suitable for\
+                \ stroking or filling."
+            notes: "Return a Shape that represents the region that\n this GraphicAttribute\
+              \ renders.  This is used when a\n TextLayout is requested to return\
+              \ the outline of the text.\n The (untransformed) shape must not extend\
+              \ outside the rectangular\n bounds returned by getBounds.\n The default\
+              \ implementation returns the rectangle returned by\n getBounds(), transformed\
+              \ by the provided AffineTransform\n if present."

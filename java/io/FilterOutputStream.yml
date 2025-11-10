@@ -4,14 +4,55 @@ languages:
     packages:
       java.io:
         FilterOutputStream:
+          extends: java.io.OutputStream
+          modifiers:
+          - public
+          notes: "This class is the superclass of all classes that filter output\n\
+            \ streams. These streams sit on top of an already existing output\n stream\
+            \ (the underlying output stream) which it uses as its\n basic sink of\
+            \ data, but possibly transforming the data along the\n way or providing\
+            \ additional functionality.\n \n The class FilterOutputStream itself simply\
+            \ overrides\n all methods of OutputStream with versions that pass\n all\
+            \ requests to the underlying output stream. Subclasses of\n FilterOutputStream\
+            \ may further override some of these\n methods as well as provide additional\
+            \ methods and fields."
+          fields:
+            closeLock:
+              name: closeLock
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            out:
+              name: out
+              modifiers:
+              - protected
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: The underlying output stream to be filtered.
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
+              notes: "the underlying output stream to be assigned to\n           \
+                \     the field this.out for later use, or\n                null if\
+                \ this instance is to be\n                created without an underlying\
+                \ stream."
+            notes: "Creates an output stream filter built on top of the specified\n\
+              \ underlying output stream."
           methods:
           - name: close
             modifiers:
@@ -20,6 +61,10 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes this output stream and releases any system resources\n\
+              \ associated with the stream.\n \n When not already closed, the close\
+              \ method of \n FilterOutputStream calls its flush method, and then\n\
+              \ calls the close method of its underlying output stream."
           - name: flush
             modifiers:
             - public
@@ -27,49 +72,70 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Flushes this output stream and forces any buffered output bytes\n\
+              \ to be written out to the stream.\n \n The flush method of FilterOutputStream\n\
+              \ calls the flush method of its underlying output stream."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: int
+                full: int
+              notes: the byte.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes the specified byte to this output stream.\n \n The write\
+              \ method of FilterOutputStream\n calls the write method of its underlying\
+              \ output stream,\n that is, it performs out.write(b).\n \n Implements\
+              \ the abstract write method of OutputStream."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
                 full: byte[]
+              notes: the data to be written.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes b.length bytes to this output stream.\n \n The write method\
+              \ of FilterOutputStream\n calls its write method of three arguments\
+              \ with the\n arguments b, 0, and\n b.length.\n \n Note that this method\
+              \ does not call the one-argument\n write method of its underlying output\
+              \ stream with\n the single argument b."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the data.
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset in the data.
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the number of bytes to write.
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: OutputStream
+            notes: "Writes len bytes from the specified\n byte array starting at offset\
+              \ off to\n this output stream.\n \n The write method of FilterOutputStream\n\
+              \ calls the write method of one argument on each\n byte to output.\n\
+              \ \n Note that this method does not call the write method\n of its underlying\
+              \ output stream with the same arguments. Subclasses\n of FilterOutputStream\
+              \ should provide a more efficient\n implementation of this method."

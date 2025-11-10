@@ -4,23 +4,44 @@ languages:
     packages:
       java.lang.ref:
         Cleaner:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          fields:
+            impl:
+              name: impl
+              modifiers:
+              - package
+              type:
+                basic: CleanerImpl
+                full: jdk.internal.ref.CleanerImpl
+          constructors:
+          - modifiers:
+            - private
           methods:
           - name: register
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the object to monitor
+            - name: action
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: a Runnable to invoke when the object becomes phantom reachable
             return:
               type:
-                basic: Cleanable
+                basic: Cleaner.Cleanable
                 full: java.lang.ref.Cleaner$Cleanable
+              notes: a Cleanable instance
+            notes: "Registers an object and a cleaning action to run when the object\n\
+              \ becomes phantom reachable.\n Refer to the API Note above for\n cautions\
+              \ about the behavior of cleaning actions."
           staticMethods:
           - name: create
             modifiers:
@@ -30,18 +51,33 @@ languages:
               type:
                 basic: Cleaner
                 full: java.lang.ref.Cleaner
+              notes: a new Cleaner
+            notes: "Returns a new Cleaner.\n \n The cleaner creates a daemon thread\n\
+              \ to process the phantom reachable objects and to invoke cleaning actions.\n\
+              \ The context class loader\n of the thread is set to the\n system class\
+              \ loader.\n The thread has no permissions, enforced only if a\n SecurityManager\
+              \ is set.\n \n The cleaner terminates when it is phantom reachable and\
+              \ all of the\n registered cleaning actions are complete."
           - name: create
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: threadFactory
               type:
                 basic: ThreadFactory
                 full: java.util.concurrent.ThreadFactory
+              notes: "a ThreadFactory to return a new Thread\n                   \
+                \   to process cleaning actions"
             return:
               type:
                 basic: Cleaner
                 full: java.lang.ref.Cleaner
-          javaType: class
-          extends: Object
+              notes: a new Cleaner
+            notes: "Returns a new Cleaner using a Thread from the ThreadFactory.\n\
+              \ \n A thread from the thread factory's newThread\n method is set to\
+              \ be a daemon thread\n and started to process phantom reachable objects\
+              \ and invoke cleaning actions.\n On each call the thread factory\n must\
+              \ provide a Thread that is suitable for performing the cleaning actions.\n\
+              \ \n The cleaner terminates when it is phantom reachable and all of\
+              \ the\n registered cleaning actions are complete."

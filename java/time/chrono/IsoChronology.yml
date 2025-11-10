@@ -4,30 +4,132 @@ languages:
     packages:
       java.time.chrono:
         IsoChronology:
+          extends: java.time.chrono.AbstractChronology
+          modifiers:
+          - public
+          - final
+          notes: "The ISO calendar system.\n \n This chronology defines the rules\
+            \ of the ISO calendar system.\n This calendar system is based on the ISO-8601\
+            \ standard, which is the\n de facto world calendar.\n \n The fields are\
+            \ defined as follows:\n \n era - There are two eras, 'Current Era' (CE)\
+            \ and 'Before Current Era' (BCE).\n year-of-era - The year-of-era is the\
+            \ same as the proleptic-year for the current CE era.\n  For the BCE era\
+            \ before the ISO epoch the year increases from 1 upwards as time goes\
+            \ backwards.\n proleptic-year - The proleptic year is the same as the\
+            \ year-of-era for the\n  current era. For the previous era, years have\
+            \ zero, then negative values.\n month-of-year - There are 12 months in\
+            \ an ISO year, numbered from 1 to 12.\n day-of-month - There are between\
+            \ 28 and 31 days in each of the ISO month, numbered from 1 to 31.\n  Months\
+            \ 4, 6, 9 and 11 have 30 days, Months 1, 3, 5, 7, 8, 10 and 12 have 31\
+            \ days.\n  Month 2 has 28 days, or 29 in a leap year.\n day-of-year -\
+            \ There are 365 days in a standard ISO year and 366 in a leap year.\n\
+            \  The days are numbered from 1 to 365 or 1 to 366.\n leap-year - Leap\
+            \ years occur every 4 years, except where the year is divisble by 100\
+            \ and not divisble by 400."
           staticFields:
+            DAYS_0000_TO_1970:
+              name: DAYS_0000_TO_1970
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
             INSTANCE:
               name: INSTANCE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: IsoChronology
                 full: java.time.chrono.IsoChronology
-                nullable: true
+              notes: Singleton instance of the ISO chronology.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
           methods:
           - name: date
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: era
               type:
-                basic: TemporalAccessor
-                full: java.time.temporal.TemporalAccessor
+                basic: Era
+                full: java.time.chrono.Era
+              notes: the ISO era, not null
+            - name: yearOfEra
+              type:
+                basic: int
+                full: int
+              notes: the ISO year-of-era
+            - name: month
+              type:
+                basic: int
+                full: int
+              notes: the ISO month-of-year
+            - name: dayOfMonth
+              type:
+                basic: int
+                full: int
+              notes: the ISO day-of-month
             return:
               type:
                 basic: LocalDate
                 full: java.time.LocalDate
+              notes: the ISO local date, not null
+            notes: "Obtains an ISO local date from the era, year-of-era, month-of-year\n\
+              \ and day-of-month fields."
+          - name: date
+            modifiers:
+            - public
+            parameters:
+            - name: prolepticYear
+              type:
+                basic: int
+                full: int
+              notes: the ISO proleptic-year
+            - name: month
+              type:
+                basic: int
+                full: int
+              notes: the ISO month-of-year
+            - name: dayOfMonth
+              type:
+                basic: int
+                full: int
+              notes: the ISO day-of-month
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the ISO local date, not null
+            notes: "Obtains an ISO local date from the proleptic-year, month-of-year\n\
+              \ and day-of-month fields.\n \n This is equivalent to LocalDate.of(int,\
+              \ int, int)."
+          - name: date
+            modifiers:
+            - public
+            parameters:
+            - name: temporal
+              type:
+                basic: TemporalAccessor
+                full: java.time.temporal.TemporalAccessor
+              notes: the date-time object to convert, not null
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the ISO local date, not null
+            notes: "Obtains an ISO local date from another date-time object.\n \n\
+              \ This is equivalent to LocalDate.from(TemporalAccessor)."
           - name: date
             modifiers:
             - public
@@ -36,26 +138,6 @@ languages:
               type:
                 basic: TemporalAccessor
                 full: java.time.temporal.TemporalAccessor
-            return:
-              type:
-                basic: LocalDate
-                full: java.time.LocalDate
-          - name: date
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: ChronoLocalDate
@@ -102,44 +184,24 @@ languages:
                 full: int
             return:
               type:
-                basic: LocalDate
-                full: java.time.LocalDate
-          - name: date
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Era
-                full: java.time.chrono.Era
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: LocalDate
-                full: java.time.LocalDate
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
           - name: dateEpochDay
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: epochDay
               type:
                 basic: long
                 full: long
+              notes: the epoch day
             return:
               type:
-                basic: ChronoLocalDate
-                full: java.time.chrono.ChronoLocalDate
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the ISO local date, not null
+            notes: "Obtains an ISO local date from the epoch-day.\n \n This is equivalent\
+              \ to LocalDate.ofEpochDay(long)."
           - name: dateEpochDay
             modifiers:
             - public
@@ -157,27 +219,53 @@ languages:
             - public
             return:
               type:
-                basic: ChronoLocalDate
-                full: java.time.chrono.ChronoLocalDate
-          - name: dateNow
-            modifiers:
-            - public
-            return:
-              type:
-                basic: ChronoLocalDate
-                full: java.time.chrono.ChronoLocalDate
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the current ISO local date using the system clock and default
+                time-zone, not null
+            notes: "Obtains the current ISO local date from the system clock in the\
+              \ default time-zone.\n \n This will query the system clock in the default\n\
+              \ time-zone to obtain the current date.\n \n Using this method will\
+              \ prevent the ability to use an alternate clock for testing\n because\
+              \ the clock is hard-coded."
           - name: dateNow
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: zone
+              type:
+                basic: ZoneId
+                full: java.time.ZoneId
+              notes: the zone ID to use, not null
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the current ISO local date using the system clock, not null
+            notes: "Obtains the current ISO local date from the system clock in the\
+              \ specified time-zone.\n \n This will query the system clock to obtain\
+              \ the current date.\n Specifying the time-zone avoids dependence on\
+              \ the default time-zone.\n \n Using this method will prevent the ability\
+              \ to use an alternate clock for testing\n because the clock is hard-coded."
+          - name: dateNow
+            modifiers:
+            - public
+            parameters:
+            - name: clock
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: the clock to use, not null
             return:
               type:
-                basic: ChronoLocalDate
-                full: java.time.chrono.ChronoLocalDate
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the current ISO local date, not null
+            notes: "Obtains the current ISO local date from the specified clock.\n\
+              \ \n This will query the specified clock to obtain the current date\
+              \ - today.\n Using this method allows the use of an alternate clock\
+              \ for testing.\n The alternate clock may be introduced using dependency\
+              \ injection."
           - name: dateNow
             modifiers:
             - public
@@ -200,36 +288,62 @@ languages:
                 full: java.time.ZoneId
             return:
               type:
-                basic: LocalDate
-                full: java.time.LocalDate
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
           - name: dateNow
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ZoneId
-                full: java.time.ZoneId
-            return:
-              type:
-                basic: LocalDate
-                full: java.time.LocalDate
-          - name: dateYearDay
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: ChronoLocalDate
                 full: java.time.chrono.ChronoLocalDate
+          - name: dateYearDay
+            modifiers:
+            - public
+            parameters:
+            - name: era
+              type:
+                basic: Era
+                full: java.time.chrono.Era
+              notes: the ISO era, not null
+            - name: yearOfEra
+              type:
+                basic: int
+                full: int
+              notes: the ISO year-of-era
+            - name: dayOfYear
+              type:
+                basic: int
+                full: int
+              notes: the ISO day-of-year
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the ISO local date, not null
+            notes: Obtains an ISO local date from the era, year-of-era and day-of-year
+              fields.
+          - name: dateYearDay
+            modifiers:
+            - public
+            parameters:
+            - name: prolepticYear
+              type:
+                basic: int
+                full: int
+              notes: the ISO proleptic-year
+            - name: dayOfYear
+              type:
+                basic: int
+                full: int
+              notes: the ISO day-of-year
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the ISO local date, not null
+            notes: "Obtains an ISO local date from the proleptic-year and day-of-year\
+              \ fields.\n \n This is equivalent to LocalDate.ofYearDay(int, int)."
           - name: dateYearDay
             modifiers:
             - public
@@ -264,64 +378,71 @@ languages:
                 full: int
             return:
               type:
-                basic: LocalDate
-                full: java.time.LocalDate
-          - name: dateYearDay
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Era
-                full: java.time.chrono.Era
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: LocalDate
-                full: java.time.LocalDate
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
           - name: epochSecond
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: prolepticYear
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the year, from MIN_YEAR to MAX_YEAR
+            - name: month
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the month-of-year, from 1 to 12
+            - name: dayOfMonth
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the day-of-month, from 1 to 31
+            - name: hour
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the hour-of-day, from 0 to 23
+            - name: minute
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: the minute-of-hour, from 0 to 59
+            - name: second
               type:
                 basic: int
                 full: int
-            - name: arg6
+              notes: the second-of-minute, from 0 to 59
+            - name: zoneOffset
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the zone offset, not null
             return:
               type:
                 basic: long
                 full: long
+              notes: the number of seconds relative to 1970-01-01T00:00:00Z, may be
+                negative
+            notes: "Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.\n\
+              \ \n The number of seconds is calculated using the year,\n month, day-of-month,\
+              \ hour, minute, second, and zoneOffset."
+          - name: eraOf
+            modifiers:
+            - public
+            parameters:
+            - name: eraValue
+              type:
+                basic: int
+                full: int
+              notes: the era value
+            return:
+              type:
+                basic: IsoEra
+                full: java.time.chrono.IsoEra
+              notes: the calendar system era, not null
+            notes: 'Description copied from interface: Chronology'
           - name: eraOf
             modifiers:
             - public
@@ -332,27 +453,17 @@ languages:
                 full: int
             return:
               type:
-                basic: IsoEra
-                full: java.time.chrono.IsoEra
-          - name: eraOf
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: IsoEra
-                full: java.time.chrono.IsoEra
+                basic: Era
+                full: java.time.chrono.Era
           - name: eras
             modifiers:
             - public
             return:
               type:
-                basic: List<Era>
+                basic: List
                 full: java.util.List<java.time.chrono.Era>
+              notes: the list of eras for the chronology, may be immutable, not null
+            notes: 'Description copied from interface: Chronology'
           - name: getCalendarType
             modifiers:
             - public
@@ -360,6 +471,13 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the calendar system type - 'iso8601'
+            notes: "Gets the calendar type of the underlying calendar system - 'iso8601'.\n\
+              \ \n The calendar type is an identifier defined by the\n Unicode Locale\
+              \ Data Markup Language (LDML) specification.\n It can be used to lookup\
+              \ the Chronology using Chronology.of(String).\n It can also be used\
+              \ as part of a locale, accessible via\n Locale.getUnicodeLocaleType(String)\
+              \ with the key 'ca'."
           - name: getId
             modifiers:
             - public
@@ -367,18 +485,50 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the chronology ID - 'ISO'
+            notes: "Gets the ID of the chronology - 'ISO'.\n \n The ID uniquely identifies\
+              \ the Chronology.\n It can be used to lookup the Chronology using Chronology.of(String)."
           - name: isLeapYear
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: prolepticYear
               type:
                 basic: long
                 full: long
+              notes: the ISO proleptic year to check
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the year is leap, false otherwise
+            notes: "Checks if the year is a leap year, according to the ISO proleptic\n\
+              \ calendar system rules.\n \n This method applies the current rules\
+              \ for leap years across the whole time-line.\n In general, a year is\
+              \ a leap year if it is divisible by four without\n remainder. However,\
+              \ years divisible by 100, are not leap years, with\n the exception of\
+              \ years divisible by 400 which are.\n \n For example, 1904 is a leap\
+              \ year it is divisible by 4.\n 1900 was not a leap year as it is divisible\
+              \ by 100, however 2000 was a\n leap year as it is divisible by 400.\n\
+              \ \n The calculation is proleptic - applying the same rules into the\
+              \ far future and far past.\n This is historically inaccurate, but is\
+              \ correct for the ISO-8601 standard."
+          - name: localDateTime
+            modifiers:
+            - public
+            parameters:
+            - name: temporal
+              type:
+                basic: TemporalAccessor
+                full: java.time.temporal.TemporalAccessor
+              notes: the date-time object to convert, not null
+            return:
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+              notes: the ISO local date-time, not null
+            notes: "Obtains an ISO local date-time from another date-time object.\n\
+              \ \n This is equivalent to LocalDateTime.from(TemporalAccessor)."
           - name: localDateTime
             modifiers:
             - public
@@ -389,23 +539,11 @@ languages:
                 full: java.time.temporal.TemporalAccessor
             return:
               type:
-                basic: LocalDateTime
-                full: java.time.LocalDateTime
-          - name: localDateTime
+                basic: ChronoLocalDateTime
+                full: java.time.chrono.ChronoLocalDateTime
+          - name: numberOfDaysOfMonth
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAccessor
-                full: java.time.temporal.TemporalAccessor
-            return:
-              type:
-                basic: LocalDateTime
-                full: java.time.LocalDateTime
-          - name: period
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -415,14 +553,37 @@ languages:
               type:
                 basic: int
                 full: int
-            - name: arg2
+            return:
               type:
                 basic: int
                 full: int
+          - name: period
+            modifiers:
+            - public
+            parameters:
+            - name: years
+              type:
+                basic: int
+                full: int
+              notes: the number of years, may be negative
+            - name: months
+              type:
+                basic: int
+                full: int
+              notes: the number of years, may be negative
+            - name: days
+              type:
+                basic: int
+                full: int
+              notes: the number of years, may be negative
             return:
               type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
+                basic: Period
+                full: java.time.Period
+              notes: the ISO period, not null
+            notes: "Obtains a period for this chronology based on years, months and\
+              \ days.\n \n This returns a period tied to the ISO chronology using\
+              \ the specified\n years, months and days. See Period for further details."
           - name: period
             modifiers:
             - public
@@ -447,30 +608,136 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: era
               type:
                 basic: Era
                 full: java.time.chrono.Era
-            - name: arg1
+              notes: the era of the correct type for the chronology, not null
+            - name: yearOfEra
               type:
                 basic: int
                 full: int
+              notes: the chronology year-of-era
             return:
               type:
                 basic: int
                 full: int
+              notes: the proleptic-year
+            notes: 'Description copied from interface: Chronology'
           - name: range
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: ChronoField
                 full: java.time.temporal.ChronoField
+              notes: the field to get the range for, not null
             return:
               type:
                 basic: ValueRange
                 full: java.time.temporal.ValueRange
+              notes: the range of valid values for the field, not null
+            notes: 'Description copied from interface: Chronology'
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: resolveDate
+            modifiers:
+            - public
+            parameters:
+            - name: fieldValues
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+              notes: the map of fields to values, which can be updated, not null
+            - name: resolverStyle
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+              notes: the requested type of resolve, not null
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+              notes: the resolved date, null if insufficient information to create
+                a date
+            notes: "Resolves parsed ChronoField values into a date during parsing.\n\
+              \ \n Most TemporalField implementations are resolved using the\n resolve\
+              \ method on the field. By contrast, the ChronoField class\n defines\
+              \ fields that only have meaning relative to the chronology.\n As such,\
+              \ ChronoField date fields are resolved here in the\n context of a specific\
+              \ chronology.\n \n ChronoField instances on the ISO calendar system\
+              \ are resolved\n as follows.\n \n EPOCH_DAY - If present, this is converted\
+              \ to a LocalDate\n  and all other date fields are then cross-checked\
+              \ against the date.\n PROLEPTIC_MONTH - If present, then it is split\
+              \ into the\n  YEAR and MONTH_OF_YEAR. If the mode is strict or smart\n\
+              \  then the field is validated.\n YEAR_OF_ERA and ERA - If both are\
+              \ present, then they\n  are combined to form a YEAR. In lenient mode,\
+              \ the YEAR_OF_ERA\n  range is not validated, in smart and strict mode\
+              \ it is. The ERA is\n  validated for range in all three modes. If only\
+              \ the YEAR_OF_ERA is\n  present, and the mode is smart or lenient, then\
+              \ the current era (CE/AD)\n  is assumed. In strict mode, no era is assumed\
+              \ and the YEAR_OF_ERA is\n  left untouched. If only the ERA is present,\
+              \ then it is left untouched.\n YEAR, MONTH_OF_YEAR and DAY_OF_MONTH\
+              \ -\n  If all three are present, then they are combined to form a LocalDate.\n\
+              \  In all three modes, the YEAR is validated. If the mode is smart or\
+              \ strict,\n  then the month and day are validated, with the day validated\
+              \ from 1 to 31.\n  If the mode is lenient, then the date is combined\
+              \ in a manner equivalent to\n  creating a date on the first of January\
+              \ in the requested year, then adding\n  the difference in months, then\
+              \ the difference in days.\n  If the mode is smart, and the day-of-month\
+              \ is greater than the maximum for\n  the year-month, then the day-of-month\
+              \ is adjusted to the last day-of-month.\n  If the mode is strict, then\
+              \ the three fields must form a valid date.\n YEAR and DAY_OF_YEAR -\n\
+              \  If both are present, then they are combined to form a LocalDate.\n\
+              \  In all three modes, the YEAR is validated.\n  If the mode is lenient,\
+              \ then the date is combined in a manner equivalent to\n  creating a\
+              \ date on the first of January in the requested year, then adding\n\
+              \  the difference in days.\n  If the mode is smart or strict, then the\
+              \ two fields must form a valid date.\n YEAR, MONTH_OF_YEAR, ALIGNED_WEEK_OF_MONTH\
+              \ and\n  ALIGNED_DAY_OF_WEEK_IN_MONTH -\n  If all four are present,\
+              \ then they are combined to form a LocalDate.\n  In all three modes,\
+              \ the YEAR is validated.\n  If the mode is lenient, then the date is\
+              \ combined in a manner equivalent to\n  creating a date on the first\
+              \ of January in the requested year, then adding\n  the difference in\
+              \ months, then the difference in weeks, then in days.\n  If the mode\
+              \ is smart or strict, then the all four fields are validated to\n  their\
+              \ outer ranges. The date is then combined in a manner equivalent to\n\
+              \  creating a date on the first day of the requested year and month,\
+              \ then adding\n  the amount in weeks and days to reach their values.\
+              \ If the mode is strict,\n  the date is additionally validated to check\
+              \ that the day and week adjustment\n  did not change the month.\n YEAR,\
+              \ MONTH_OF_YEAR, ALIGNED_WEEK_OF_MONTH and\n  DAY_OF_WEEK - If all four\
+              \ are present, then they are combined to\n  form a LocalDate. The approach\
+              \ is the same as described above for\n  years, months and weeks in ALIGNED_DAY_OF_WEEK_IN_MONTH.\n\
+              \  The day-of-week is adjusted as the next or same matching day-of-week\
+              \ once\n  the years, months and weeks have been handled.\n YEAR, ALIGNED_WEEK_OF_YEAR\
+              \ and ALIGNED_DAY_OF_WEEK_IN_YEAR -\n  If all three are present, then\
+              \ they are combined to form a LocalDate.\n  In all three modes, the\
+              \ YEAR is validated.\n  If the mode is lenient, then the date is combined\
+              \ in a manner equivalent to\n  creating a date on the first of January\
+              \ in the requested year, then adding\n  the difference in weeks, then\
+              \ in days.\n  If the mode is smart or strict, then the all three fields\
+              \ are validated to\n  their outer ranges. The date is then combined\
+              \ in a manner equivalent to\n  creating a date on the first day of the\
+              \ requested year, then adding\n  the amount in weeks and days to reach\
+              \ their values. If the mode is strict,\n  the date is additionally validated\
+              \ to check that the day and week adjustment\n  did not change the year.\n\
+              \ YEAR, ALIGNED_WEEK_OF_YEAR and DAY_OF_WEEK -\n  If all three are present,\
+              \ then they are combined to form a LocalDate.\n  The approach is the\
+              \ same as described above for years and weeks in\n  ALIGNED_DAY_OF_WEEK_IN_YEAR.\
+              \ The day-of-week is adjusted as the\n  next or same matching day-of-week\
+              \ once the years and weeks have been handled."
           - name: resolveDate
             modifiers:
             - public
@@ -487,9 +754,41 @@ languages:
               type:
                 basic: ChronoLocalDate
                 full: java.time.chrono.ChronoLocalDate
-          - name: resolveDate
+          - name: resolveProlepticMonth
             modifiers:
-            - public
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: void
+                full: void
+          - name: resolveYMD
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+          - name: resolveYMD
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -503,30 +802,82 @@ languages:
               type:
                 basic: ChronoLocalDate
                 full: java.time.chrono.ChronoLocalDate
+          - name: resolveYearOfEra
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: LocalDate
+                full: java.time.LocalDate
+          - name: resolveYearOfEra
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: writeReplace
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: zonedDateTime
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: TemporalAccessor
                 full: java.time.temporal.TemporalAccessor
+              notes: the date-time object to convert, not null
             return:
               type:
-                basic: ChronoZonedDateTime
-                full: java.time.chrono.ChronoZonedDateTime
+                basic: ZonedDateTime
+                full: java.time.ZonedDateTime
+              notes: the ISO zoned date-time, not null
+            notes: "Obtains an ISO zoned date-time from another date-time object.\n\
+              \ \n This is equivalent to ZonedDateTime.from(TemporalAccessor)."
           - name: zonedDateTime
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: instant
               type:
-                basic: TemporalAccessor
-                full: java.time.temporal.TemporalAccessor
+                basic: Instant
+                full: java.time.Instant
+              notes: the instant to create the date-time from, not null
+            - name: zone
+              type:
+                basic: ZoneId
+                full: java.time.ZoneId
+              notes: the time-zone, not null
             return:
               type:
-                basic: ChronoZonedDateTime
-                full: java.time.chrono.ChronoZonedDateTime
+                basic: ZonedDateTime
+                full: java.time.ZonedDateTime
+              notes: the zoned date-time, not null
+            notes: "Obtains an ISO zoned date-time in this chronology from an Instant.\n\
+              \ \n This is equivalent to ZonedDateTime.ofInstant(Instant, ZoneId)."
           - name: zonedDateTime
             modifiers:
             - public
@@ -549,15 +900,9 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Instant
-                full: java.time.Instant
-            - name: arg1
-              type:
-                basic: ZoneId
-                full: java.time.ZoneId
+                basic: TemporalAccessor
+                full: java.time.temporal.TemporalAccessor
             return:
               type:
                 basic: ChronoZonedDateTime
                 full: java.time.chrono.ChronoZonedDateTime
-          javaType: class
-          extends: AbstractChronology

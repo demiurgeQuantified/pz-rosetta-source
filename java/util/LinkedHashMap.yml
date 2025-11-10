@@ -4,53 +4,215 @@ languages:
     packages:
       java.util:
         LinkedHashMap:
+          extends: java.util.HashMap<K, V>
+          modifiers:
+          - public
+          notes: "Hash table and linked list implementation of the Map interface,\n\
+            \ with predictable iteration order.  This implementation differs from\n\
+            \ HashMap in that it maintains a doubly-linked list running through\n\
+            \ all of its entries.  This linked list defines the iteration ordering,\n\
+            \ which is normally the order in which keys were inserted into the map\n\
+            \ (insertion-order).  Note that insertion order is not affected\n if a\
+            \ key is re-inserted into the map.  (A key k is\n reinserted into a map\
+            \ m if m.put(k, v) is invoked when\n m.containsKey(k) would return true\
+            \ immediately prior to\n the invocation.)\n\n This implementation spares\
+            \ its clients from the unspecified, generally\n chaotic ordering provided\
+            \ by HashMap (and Hashtable),\n without incurring the increased cost associated\
+            \ with TreeMap.  It\n can be used to produce a copy of a map that has\
+            \ the same order as the\n original, regardless of the original map's implementation:\n\
+            \ <code>\n     void foo(Map<String, Integer> m) {\n         Map<String,\
+            \ Integer> copy = new LinkedHashMap<>(m);\n         ...\n     }\n </code>\n\
+            \ This technique is particularly useful if a module takes a map on input,\n\
+            \ copies it, and later returns results whose order is determined by that\
+            \ of\n the copy.  (Clients generally appreciate having things returned\
+            \ in the same\n order they were presented.)\n\n A special constructor\
+            \ is\n provided to create a linked hash map whose order of iteration is\
+            \ the order\n in which its entries were last accessed, from least-recently\
+            \ accessed to\n most-recently (access-order).  This kind of map is well-suited\
+            \ to\n building LRU caches.  Invoking the put, putIfAbsent,\n get, getOrDefault,\
+            \ compute, computeIfAbsent,\n computeIfPresent, or merge methods results\n\
+            \ in an access to the corresponding entry (assuming it exists after the\n\
+            \ invocation completes). The replace methods only result in an access\n\
+            \ of the entry if the value is replaced.  The putAll method generates\
+            \ one\n entry access for each mapping in the specified map, in the order\
+            \ that\n key-value mappings are provided by the specified map's entry\
+            \ set iterator.\n No other methods generate entry accesses.  In particular,\
+            \ operations\n on collection-views do not affect the order of iteration\
+            \ of the\n backing map.\n\n The removeEldestEntry(Map.Entry) method may\
+            \ be overridden to\n impose a policy for removing stale mappings automatically\
+            \ when new mappings\n are added to the map.\n\n This class provides all\
+            \ of the optional Map operations, and\n permits null elements.  Like HashMap,\
+            \ it provides constant-time\n performance for the basic operations (add,\
+            \ contains and\n remove), assuming the hash function disperses elements\n\
+            \ properly among the buckets.  Performance is likely to be just slightly\n\
+            \ below that of HashMap, due to the added expense of maintaining the\n\
+            \ linked list, with one exception: Iteration over the collection-views\n\
+            \ of a LinkedHashMap requires time proportional to the size\n of the map,\
+            \ regardless of its capacity.  Iteration over a HashMap\n is likely to\
+            \ be more expensive, requiring time proportional to its\n capacity.\n\n\
+            \ A linked hash map has two parameters that affect its performance:\n\
+            \ initial capacity and load factor.  They are defined precisely\n as for\
+            \ HashMap.  Note, however, that the penalty for choosing an\n excessively\
+            \ high value for initial capacity is less severe for this class\n than\
+            \ for HashMap, as iteration times for this class are unaffected\n by capacity.\n\
+            \n Note that this implementation is not synchronized.\n If multiple threads\
+            \ access a linked hash map concurrently, and at least\n one of the threads\
+            \ modifies the map structurally, it must be\n synchronized externally.\
+            \  This is typically accomplished by\n synchronizing on some object that\
+            \ naturally encapsulates the map.\n\n If no such object exists, the map\
+            \ should be \"wrapped\" using the\n Collections.synchronizedMap\n method.\
+            \  This is best done at creation time, to prevent accidental\n unsynchronized\
+            \ access to the map:\n   Map m = Collections.synchronizedMap(new LinkedHashMap(...));\n\
+            \n A structural modification is any operation that adds or deletes one\
+            \ or more\n mappings or, in the case of access-ordered linked hash maps,\
+            \ affects\n iteration order.  In insertion-ordered linked hash maps, merely\
+            \ changing\n the value associated with a key that is already contained\
+            \ in the map is not\n a structural modification.  In access-ordered linked\
+            \ hash maps,\n merely querying the map with get is a structural modification.\n\
+            \ )\n\n The iterators returned by the iterator method of the collections\n\
+            \ returned by all of this class's collection view methods are\n fail-fast:\
+            \ if the map is structurally modified at any time after\n the iterator\
+            \ is created, in any way except through the iterator's own\n remove method,\
+            \ the iterator will throw a ConcurrentModificationException.  Thus, in\
+            \ the face of concurrent\n modification, the iterator fails quickly and\
+            \ cleanly, rather than risking\n arbitrary, non-deterministic behavior\
+            \ at an undetermined time in the future.\n\n Note that the fail-fast behavior\
+            \ of an iterator cannot be guaranteed\n as it is, generally speaking,\
+            \ impossible to make any hard guarantees in the\n presence of unsynchronized\
+            \ concurrent modification.  Fail-fast iterators\n throw ConcurrentModificationException\
+            \ on a best-effort basis.\n Therefore, it would be wrong to write a program\
+            \ that depended on this\n exception for its correctness:   the fail-fast\
+            \ behavior of iterators\n should be used only to detect bugs.\n\n The\
+            \ spliterators returned by the spliterator method of the collections\n\
+            \ returned by all of this class's collection view methods are\n late-binding,\n\
+            \ fail-fast, and additionally report Spliterator.ORDERED.\n\n This class\
+            \ is a member of the\n \n Java Collections Framework."
+          fields:
+            accessOrder:
+              name: accessOrder
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            head:
+              name: head
+              modifiers:
+              - package
+              type:
+                basic: LinkedHashMap.Entry
+                full: java.util.LinkedHashMap$Entry<K, V>
+            tail:
+              name: tail
+              modifiers:
+              - package
+              type:
+                basic: LinkedHashMap.Entry
+                full: java.util.LinkedHashMap$Entry<K, V>
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
-          - modifiers:
-            - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
+              notes: the initial capacity
+            - name: loadFactor
+              type:
+                basic: float
+                full: float
+              notes: the load factor
+            notes: "Constructs an empty insertion-ordered LinkedHashMap instance\n\
+              \ with the specified initial capacity and load factor."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
-                basic: Map<? extends K, ? extends V>
+                basic: int
+                full: int
+              notes: the initial capacity
+            notes: "Constructs an empty insertion-ordered LinkedHashMap instance\n\
+              \ with the specified initial capacity and a default load factor (0.75)."
+          - modifiers:
+            - public
+            notes: "Constructs an empty insertion-ordered LinkedHashMap instance\n\
+              \ with the default initial capacity (16) and load factor (0.75)."
+          - modifiers:
+            - public
+            parameters:
+            - name: m
+              type:
+                basic: Map
                 full: java.util.Map<? extends K, ? extends V>
+              notes: the map whose mappings are to be placed in this map
+            notes: "Constructs an insertion-ordered LinkedHashMap instance with\n\
+              \ the same mappings as the specified map.  The LinkedHashMap\n instance\
+              \ is created with a default load factor (0.75) and an initial\n capacity\
+              \ sufficient to hold the mappings in the specified map."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the initial capacity
+            - name: loadFactor
               type:
                 basic: float
                 full: float
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: float
-                full: float
-            - name: arg2
+              notes: the load factor
+            - name: accessOrder
               type:
                 basic: boolean
                 full: boolean
+              notes: the ordering mode
+            notes: "Constructs an empty LinkedHashMap instance with the\n specified\
+              \ initial capacity, load factor and ordering mode."
           methods:
-          - name: clear
+          - name: afterNodeAccess
             modifiers:
-            - public
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: afterNodeInsertion
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: afterNodeRemoval
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
             return:
               type:
                 basic: void
@@ -62,137 +224,39 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: compute
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: computeIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: Function<? super K, ? extends V>
-                full: java.util.function.Function<? super K, ? extends V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: computeIfPresent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: containsKey
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+            notes: "Removes all of the mappings from this map.\n The map will be empty\
+              \ after this call returns."
           - name: containsValue
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value whose presence in this map is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: containsValue
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if this map maps one or more keys to the\n         specified\
+                \ value"
+            notes: "Returns true if this map maps one or more keys to the\n specified\
+              \ value."
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<K, V>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<K, V>>
-          - name: entrySet
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Entry<K, V>>
-                full: java.util.Set<java.util.Map$Entry<K, V>>
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
           - name: forEach
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: BiConsumer<? super K, ? super V>
-                full: java.util.function.BiConsumer<? super K, ? super V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: forEach
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer<? super K, ? super V>
+                basic: BiConsumer
                 full: java.util.function.BiConsumer<? super K, ? super V>
             return:
               type:
@@ -202,26 +266,26 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the key whose associated value is to be returned
             return:
               type:
                 basic: V
                 full: V
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: V
-                full: V
+              notes: "the value to which the specified key is mapped, or\n       \
+                \  null if this map contains no mapping for the key"
+            notes: "Returns the value to which the specified key is mapped,\n or null\
+              \ if this map contains no mapping for the key.\n\n More formally, if\
+              \ this map contains a mapping from a key\n k to a value v such that\
+              \ (key==null ? k==null :\n key.equals(k)), then this method returns\
+              \ v; otherwise\n it returns null.  (There can be at most one such mapping.)\n\
+              \n A return value of null does not necessarily\n indicate that the map\
+              \ contains no mapping for the key; it's also\n possible that the map\
+              \ explicitly maps the key to null.\n The containsKey operation may be\
+              \ used to\n distinguish these two cases."
           - name: getOrDefault
             modifiers:
             - public
@@ -238,807 +302,218 @@ languages:
               type:
                 basic: V
                 full: V
-          - name: getOrDefault
+          - name: internalWriteEntries
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: V
-                full: V
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
-                basic: V
-                full: V
-          - name: hashCode
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: isEmpty
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
+                basic: void
+                full: void
           - name: keySet
             modifiers:
             - public
             return:
               type:
-                basic: Set<K>
+                basic: Set
                 full: java.util.Set<K>
-          - name: keySet
+              notes: a set view of the keys contained in this map
+            notes: "Returns a Set view of the keys contained in this map.\n The set\
+              \ is backed by the map, so changes to the map are\n reflected in the\
+              \ set, and vice-versa.  If the map is modified\n while an iteration\
+              \ over the set is in progress (except through\n the iterator's own remove\
+              \ operation), the results of\n the iteration are undefined.  The set\
+              \ supports element removal,\n which removes the corresponding mapping\
+              \ from the map, via the\n Iterator.remove, Set.remove,\n removeAll,\
+              \ retainAll, and clear\n operations.  It does not support the add or\
+              \ addAll\n operations.\n Its Spliterator typically provides faster sequential\n\
+              \ performance but much poorer parallel performance than that of\n HashMap."
+          - name: keysToArray
             modifiers:
-            - public
-            return:
-              type:
-                basic: Set<K>
-                full: java.util.Set<K>
-          - name: merge
-            modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: BiFunction<? super V, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super V, ? super V, ? extends
-                  V>
+                basic: T
+                full: T[]
             return:
               type:
-                basic: V
-                full: V
-          - name: put
+                basic: T
+                full: T[]
+          - name: linkNodeLast
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: putAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
+                basic: LinkedHashMap.Entry
+                full: java.util.LinkedHashMap$Entry<K, V>
             return:
               type:
                 basic: void
                 full: void
-          - name: putIfAbsent
+          - name: newNode
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: V
-                full: V
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: replaceAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: replaceAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: size
-            modifiers:
-            - public
-            return:
               type:
                 basic: int
                 full: int
-          - name: values
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Collection<V>
-                full: java.util.Collection<V>
-          - name: values
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Collection<V>
-                full: java.util.Collection<V>
-          staticMethods:
-          - name: copyOf
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: entry
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
+            - name: arg1
               type:
                 basic: K
                 full: K
-            - name: arg1
+            - name: arg2
               type:
                 basic: V
                 full: V
+            - name: arg3
+              type:
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
             return:
               type:
-                basic: Entry<K, V>
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
+          - name: newTreeNode
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: K
+                full: K
+            - name: arg2
+              type:
+                basic: V
+                full: V
+            - name: arg3
+              type:
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
+            return:
+              type:
+                basic: HashMap.TreeNode
+                full: java.util.HashMap$TreeNode<K, V>
+          - name: reinitialize
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeEldestEntry
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: Map.Entry
                 full: java.util.Map$Entry<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
+                basic: boolean
+                full: boolean
+          - name: replaceAll
             modifiers:
             - public
-            - static
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super K, ? super V, ? extends
+                  V>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: replacementNode
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
             - name: arg1
               type:
-                basic: V
-                full: V
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
+          - name: replacementTreeNode
             modifiers:
-            - public
-            - static
+            - package
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
             - name: arg1
               type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
+                basic: HashMap.Node
+                full: java.util.HashMap$Node<K, V>
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
+                basic: HashMap.TreeNode
+                full: java.util.HashMap$TreeNode<K, V>
+          - name: transferLinks
             modifiers:
-            - public
-            - static
+            - private
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
+                basic: LinkedHashMap.Entry
+                full: java.util.LinkedHashMap$Entry<K, V>
             - name: arg1
               type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
+                basic: LinkedHashMap.Entry
+                full: java.util.LinkedHashMap$Entry<K, V>
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
+                basic: void
+                full: void
+          - name: values
             modifiers:
             - public
-            - static
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<V>
+              notes: a view of the values contained in this map
+            notes: "Returns a Collection view of the values contained in this map.\n\
+              \ The collection is backed by the map, so changes to the map are\n reflected\
+              \ in the collection, and vice-versa.  If the map is\n modified while\
+              \ an iteration over the collection is in progress\n (except through\
+              \ the iterator's own remove operation),\n the results of the iteration\
+              \ are undefined.  The collection\n supports element removal, which removes\
+              \ the corresponding\n mapping from the map, via the Iterator.remove,\n\
+              \ Collection.remove, removeAll,\n retainAll and clear operations.  It\
+              \ does not\n support the add or addAll operations.\n Its Spliterator\
+              \ typically provides faster sequential\n performance but much poorer\
+              \ parallel performance than that of\n HashMap."
+          - name: valuesToArray
+            modifiers:
+            - package
+            - final
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
+                basic: T
+                full: T[]
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            - name: arg16
-              type:
-                basic: K
-                full: K
-            - name: arg17
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            - name: arg16
-              type:
-                basic: K
-                full: K
-            - name: arg17
-              type:
-                basic: V
-                full: V
-            - name: arg18
-              type:
-                basic: K
-                full: K
-            - name: arg19
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: ofEntries
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Entry<? extends K, ? extends V>[>
-                full: java.util.Map$Entry<? extends K, ? extends V>[]
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          javaType: class
-          extends: HashMap<K, V>
+                basic: T
+                full: T[]

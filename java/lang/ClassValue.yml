@@ -1,0 +1,329 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.lang:
+        ClassValue:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Lazily associate a computed value with (potentially) every type.\n\
+            \ For example, if a dynamic language needs to construct a message dispatch\n\
+            \ table for each class encountered at a message send call site,\n it can\
+            \ use a ClassValue to cache information needed to\n perform the message\
+            \ send quickly, for each class encountered."
+          fields:
+            hashCodeForCache:
+              name: hashCodeForCache
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            identity:
+              name: identity
+              modifiers:
+              - package
+              type:
+                basic: ClassValue.Identity
+                full: java.lang.ClassValue$Identity
+            version:
+              name: version
+              modifiers:
+              - private
+              type:
+                basic: ClassValue.Version
+                full: java.lang.ClassValue$Version<T>
+          staticFields:
+            CRITICAL_SECTION:
+              name: CRITICAL_SECTION
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+            EMPTY_CACHE:
+              name: EMPTY_CACHE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<?>[]
+            HASH_INCREMENT:
+              name: HASH_INCREMENT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            HASH_MASK:
+              name: HASH_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            UNSAFE:
+              name: UNSAFE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            nextHashCode:
+              name: nextHashCode
+              modifiers:
+              - private
+              - static
+              type:
+                basic: AtomicInteger
+                full: java.util.concurrent.atomic.AtomicInteger
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Sole constructor.  (For invocation by subclass constructors, typically\n\
+              \ implicit.)"
+          methods:
+          - name: bumpVersion
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: castEntry
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<?>
+            return:
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<T>
+          - name: computeValue
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: type
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: the type whose class value must be computed
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the newly computed value associated with this ClassValue, for
+                the given class or interface
+            notes: "Computes the given class's derived value for this ClassValue.\n\
+              \ \n This method will be invoked within the first thread that accesses\n\
+              \ the value with the get method.\n \n Normally, this method is invoked\
+              \ at most once per class,\n but it may be invoked again if there has\
+              \ been a call to\n remove.\n \n If this method throws an exception,\
+              \ the corresponding call to get\n will terminate abnormally with that\
+              \ exception, and no class value will be recorded."
+          - name: get
+            modifiers:
+            - public
+            parameters:
+            - name: type
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: the type whose class value must be computed or retrieved
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the current value associated with this ClassValue, for the given
+                class or interface
+            notes: "Returns the value for the given class.\n If no value has yet been\
+              \ computed, it is obtained by\n an invocation of the computeValue method.\n\
+              \ \n The actual installation of the value on the class\n is performed\
+              \ atomically.\n At that point, if several racing threads have\n computed\
+              \ values, one is chosen, and returned to\n all the racing threads.\n\
+              \ \n The type parameter is typically a class, but it may be any type,\n\
+              \ such as an interface, a primitive type (like int.class), or void.class.\n\
+              \ \n In the absence of remove calls, a class value has a simple\n state\
+              \ diagram:  uninitialized and initialized.\n When remove calls are made,\n\
+              \ the rules for value observation are more complex.\n See the documentation\
+              \ for remove for more information."
+          - name: getFromBackup
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<?>[]
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: T
+                full: T
+          - name: getFromHashMap
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: T
+                full: T
+          - name: match
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<?>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: put
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: T
+                full: T
+            return:
+              type:
+                basic: void
+                full: void
+          - name: remove
+            modifiers:
+            - public
+            parameters:
+            - name: type
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: the type whose class value must be removed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Removes the associated value for the given class.\n If this value\
+              \ is subsequently read for the same class,\n its value will be reinitialized\
+              \ by invoking its computeValue method.\n This may result in an additional\
+              \ invocation of the\n computeValue method for the given class.\n \n\
+              \ In order to explain the interaction between get and remove calls,\n\
+              \ we must model the state transitions of a class value to take into\
+              \ account\n the alternation between uninitialized and initialized states.\n\
+              \ To do this, number these states sequentially from zero, and note that\n\
+              \ uninitialized (or removed) states are numbered with even numbers,\n\
+              \ while initialized (or re-initialized) states have odd numbers.\n \n\
+              \ When a thread T removes a class value in state 2N,\n nothing happens,\
+              \ since the class value is already uninitialized.\n Otherwise, the state\
+              \ is advanced atomically to 2N+1.\n \n When a thread T queries a class\
+              \ value in state 2N,\n the thread first attempts to initialize the class\
+              \ value to state 2N+1\n by invoking computeValue and installing the\
+              \ resulting value.\n \n When T attempts to install the newly computed\
+              \ value,\n if the state is still at 2N, the class value will be initialized\n\
+              \ with the computed value, advancing it to state 2N+1.\n \n Otherwise,\
+              \ whether the new state is even or odd,\n T will discard the newly computed\
+              \ value\n and retry the get operation.\n \n Discarding and retrying\
+              \ is an important proviso,\n since otherwise T could potentially install\n\
+              \ a disastrously stale value.  For example:\n \n T calls CV.get(C) and\
+              \ sees state 2N\n T quickly computes a time-dependent value V0 and gets\
+              \ ready to install it\n T is hit by an unlucky paging or scheduling\
+              \ event, and goes to sleep for a long time\n ...meanwhile, T2 also calls\
+              \ CV.get(C) and sees state 2N\n T2 quickly computes a similar time-dependent\
+              \ value V1 and installs it on CV.get(C)\n T2 (or a third thread) then\
+              \ calls CV.remove(C), undoing T2's work\n  the previous actions of T2\
+              \ are repeated several times\n  also, the relevant computed values change\
+              \ over time: V1, V2, ...\n ...meanwhile, T wakes up and attempts to\
+              \ install V0; this must fail\n \n We can assume in the above scenario\
+              \ that CV.computeValue uses locks to properly\n observe the time-dependent\
+              \ states as it computes V1, etc.\n This does not remove the threat of\
+              \ a stale value, since there is a window of time\n between the return\
+              \ of computeValue in T and the installation\n of the new value.  No\
+              \ user synchronization is possible during this time."
+          - name: version
+            modifiers:
+            - package
+            return:
+              type:
+                basic: ClassValue.Version
+                full: java.lang.ClassValue$Version<T>
+          staticMethods:
+          - name: getCacheCarefully
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<?>[]
+          - name: getMap
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: ClassValue.ClassValueMap
+                full: java.lang.ClassValue$ClassValueMap
+          - name: initializeMap
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: ClassValue.ClassValueMap
+                full: java.lang.ClassValue$ClassValueMap
+          - name: makeEntry
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ClassValue.Version
+                full: java.lang.ClassValue$Version<T>
+            - name: arg1
+              type:
+                basic: T
+                full: T
+            return:
+              type:
+                basic: ClassValue.Entry
+                full: java.lang.ClassValue$Entry<T>

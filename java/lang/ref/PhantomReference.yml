@@ -1,0 +1,66 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.lang.ref:
+        PhantomReference:
+          extends: java.lang.ref.Reference<T>
+          modifiers:
+          - public
+          notes: "Phantom reference objects, which are enqueued after the collector\n\
+            \ determines that their referents may otherwise be reclaimed.  Phantom\n\
+            \ references are most often used to schedule post-mortem cleanup actions.\n\
+            \n  Suppose the garbage collector determines at a certain point in time\n\
+            \ that an object is \n phantom reachable.  At that time it will atomically\
+            \ clear\n all phantom references to that object and all phantom references\
+            \ to\n any other phantom-reachable objects from which that object is reachable.\n\
+            \ At the same time or at some later time it will enqueue those newly-cleared\n\
+            \ phantom references that are registered with reference queues.\n\n  In\
+            \ order to ensure that a reclaimable object remains so, the referent of\n\
+            \ a phantom reference may not be retrieved: The get method of a\n phantom\
+            \ reference always returns null.\n The refersTo method can be used to\
+            \ test\n whether some object is the referent of a phantom reference."
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: referent
+              type:
+                basic: T
+                full: T
+              notes: the object the new phantom reference will refer to
+            - name: q
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<? super T>
+              notes: "the queue with which the reference is to be registered,\n  \
+                \        or null if registration is not required"
+            notes: "Creates a new phantom reference that refers to the given object\
+              \ and\n is registered with the given queue.\n\n  It is possible to create\
+              \ a phantom reference with a null\n queue.  Such a reference will never\
+              \ be enqueued."
+          methods:
+          - name: get
+            modifiers:
+            - public
+            return:
+              type:
+                basic: T
+                full: T
+              notes: 'null'
+            notes: "Returns this reference object's referent.  Because the referent\
+              \ of a\n phantom reference is always inaccessible, this method always\
+              \ returns\n null."
+          - name: refersTo0
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean

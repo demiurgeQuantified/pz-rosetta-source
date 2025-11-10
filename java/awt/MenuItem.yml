@@ -4,40 +4,153 @@ languages:
     packages:
       java.awt:
         MenuItem:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.awt.MenuComponent
+          modifiers:
+          - public
+          notes: "All items in a menu must belong to the class\n MenuItem, or one\
+            \ of its subclasses.\n \n The default MenuItem object embodies\n a simple\
+            \ labeled menu item.\n \n This picture of a menu bar shows five menu items:\n\
+            \ \n \n The first two items are simple menu items, labeled\n \"Basic\"\
+            \ and \"Simple\".\n Following these two items is a separator, which is\
+            \ itself\n a menu item, created with the label \"-\".\n Next is an instance\
+            \ of CheckboxMenuItem\n labeled \"Check\". The final menu item is a\n\
+            \ submenu labeled \"More Examples\",\n and this submenu is an instance\
+            \ of Menu.\n \n When a menu item is selected, AWT sends an action event\
+            \ to\n the menu item. Since the event is an\n instance of ActionEvent,\
+            \ the processEvent\n method examines the event and passes it along to\n\
+            \ processActionEvent. The latter method redirects the\n event to any ActionListener\
+            \ objects that have\n registered an interest in action events generated\
+            \ by this\n menu item.\n \n Note that the subclass Menu overrides this\
+            \ behavior and\n does not send any event to the frame until one of its\
+            \ subitems is\n selected."
+          fields:
+            actionCommand:
+              name: actionCommand
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            actionListener:
+              name: actionListener
+              modifiers:
+              - private
+              type:
+                basic: ActionListener
+                full: java.awt.event.ActionListener
+            enabled:
+              name: enabled
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            eventMask:
+              name: eventMask
+              modifiers:
+              - package
+              type:
+                basic: long
+                full: long
+            label:
+              name: label
+              modifiers:
+              - package
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+            menuItemSerializedDataVersion:
+              name: menuItemSerializedDataVersion
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            shortcut:
+              name: shortcut
+              modifiers:
+              - private
               type:
                 basic: MenuShortcut
                 full: java.awt.MenuShortcut
+          staticFields:
+            base:
+              name: base
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            nameCounter:
+              name: nameCounter
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: "Constructs a new MenuItem with an empty label and no keyboard\n\
+              \ shortcut."
+          - modifiers:
+            - public
+            parameters:
+            - name: label
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the label for this menu item.
+            notes: "Constructs a new MenuItem with the specified label\n and no keyboard\
+              \ shortcut. Note that use of \"-\" in\n a label is reserved to indicate\
+              \ a separator between\n menu items. By default, all menu items except\
+              \ for\n separators are enabled."
+          - modifiers:
+            - public
+            parameters:
+            - name: label
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the label for this menu item.
+            - name: s
+              type:
+                basic: MenuShortcut
+                full: java.awt.MenuShortcut
+              notes: "the instance of MenuShortcut\n                       associated\
+                \ with this menu item."
+            notes: "Create a menu item with an associated keyboard shortcut.\n Note\
+              \ that use of \"-\" in a label is reserved to indicate\n a separator\
+              \ between menu items. By default, all menu\n items except for separators\
+              \ are enabled."
           methods:
           - name: addActionListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: l
               type:
                 basic: ActionListener
                 full: java.awt.event.ActionListener
+              notes: the action listener.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds the specified action listener to receive action events\n\
+              \ from this menu item.\n If l is null, no exception is thrown and no\
+              \ action is performed.\n Refer to AWT Threading Issues for details on\
+              \ AWT's threading model."
           - name: addNotify
             modifiers:
             - public
@@ -45,9 +158,31 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Creates the menu item's peer.  The peer allows us to modify the\n\
+              \ appearance of the menu item without changing its functionality."
+          - name: constructComponentName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: deleteShortcut
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Delete any MenuShortcut object associated\n with this menu item."
+          - name: deleteShortcut
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MenuShortcut
+                full: java.awt.MenuShortcut
             return:
               type:
                 basic: void
@@ -59,7 +194,38 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+          - name: disableEvents
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: eventsToDisable
+              type:
+                basic: long
+                full: long
+              notes: the event mask defining the event types
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Disables event delivery to this menu item for events\n defined\
+              \ by the specified event mask parameter."
+          - name: doMenuEvent
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: enable
             modifiers:
             - public
@@ -67,20 +233,52 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
           - name: enable
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
                 basic: boolean
                 full: boolean
+              notes: "if true, enables this menu item;\n           otherwise disables"
             return:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: Sets whether or not this menu item can be chosen.
+          - name: enableEvents
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: eventsToEnable
+              type:
+                basic: long
+                full: long
+              notes: the event mask defining the event types
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Enables event delivery to this menu item for events\n to be defined\
+              \ by the specified event mask parameter\n \n Since event types are automatically\
+              \ enabled when a listener for\n that type is added to the menu item,\
+              \ this method only needs\n to be invoked by subclasses of MenuItem which\
+              \ desire to\n have the specified event types delivered to processEvent\n\
+              \ regardless of whether a listener is registered."
+          - name: eventEnabled
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: AWTEvent
+                full: java.awt.AWTEvent
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: getAccessibleContext
             modifiers:
             - public
@@ -88,16 +286,25 @@ languages:
               type:
                 basic: AccessibleContext
                 full: javax.accessibility.AccessibleContext
-          - name: getAccessibleContext
-            modifiers:
-            - public
-            return:
-              type:
-                basic: AccessibleContext
-                full: javax.accessibility.AccessibleContext
+              notes: "an AccessibleAWTMenuItem that serves as the\n         AccessibleContext\
+                \ of this MenuItem"
+            notes: "Gets the AccessibleContext associated with this MenuItem.\n For\
+              \ menu items, the AccessibleContext takes the form of an\n AccessibleAWTMenuItem.\n\
+              \ A new AccessibleAWTMenuItem instance is created if necessary."
           - name: getActionCommand
             modifiers:
             - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the action command name
+            notes: "Gets the command name of the action event that is fired\n by this\
+              \ menu item."
+          - name: getActionCommandImpl
+            modifiers:
+            - package
+            - final
             return:
               type:
                 basic: String
@@ -107,8 +314,12 @@ languages:
             - public
             return:
               type:
-                basic: ActionListener[]
+                basic: ActionListener
                 full: java.awt.event.ActionListener[]
+              notes: "all of this menu item's ActionListeners\n         or an empty\
+                \ array if no action\n         listeners are currently registered"
+            notes: "Returns an array of all the action listeners\n registered on this\
+              \ menu item."
           - name: getLabel
             modifiers:
             - public
@@ -116,18 +327,33 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the label of this menu item, or null\n                     \
+                \  if this menu item has no label."
+            notes: Gets the label for this menu item.
           - name: getListeners
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: listenerType
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the type of listeners requested; this parameter\n          should\
+                \ specify an interface that descends from\n          java.util.EventListener"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
+              notes: "an array of all objects registered as\n          FooListeners\
+                \ on this menu item,\n          or an empty array if no such\n   \
+                \       listeners have been added"
+            notes: "Returns an array of all the objects currently registered\n as\
+              \ FooListeners\n upon this MenuItem.\n FooListeners are registered using\
+              \ the\n addFooListener method.\n\n \n You can specify the listenerType\
+              \ argument\n with a class literal, such as\n FooListener.class.\n For\
+              \ example, you can query a\n MenuItem m\n for its action listeners with\
+              \ the following code:\n\n ActionListener[] als = (ActionListener[])(m.getListeners(ActionListener.class));\n\
+              \n If no such listeners exist, this method returns an empty array."
           - name: getShortcut
             modifiers:
             - public
@@ -135,9 +361,45 @@ languages:
               type:
                 basic: MenuShortcut
                 full: java.awt.MenuShortcut
+              notes: "the menu shortcut associated with this menu item,\n        \
+                \           or null if none has been specified."
+            notes: "Get the MenuShortcut object associated with this\n menu item,"
+          - name: getShortcutMenuItem
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MenuShortcut
+                full: java.awt.MenuShortcut
+            return:
+              type:
+                basic: MenuItem
+                full: java.awt.MenuItem
+          - name: handleShortcut
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: KeyEvent
+                full: java.awt.event.KeyEvent
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isEnabled
             modifiers:
             - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the item is enabled;\n         otherwise false"
+            notes: Checks whether this menu item is enabled.
+          - name: isItemEnabled
+            modifiers:
+            - private
             return:
               type:
                 basic: boolean
@@ -149,65 +411,160 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the parameter string of this menu item
+            notes: "Returns a string representing the state of this MenuItem.\n This\
+              \ method is intended to be used only for debugging purposes, and the\n\
+              \ content and format of the returned string may vary between\n implementations.\
+              \ The returned string may be empty but may not be\n null."
+          - name: processActionEvent
+            modifiers:
+            - protected
+            parameters:
+            - name: e
+              type:
+                basic: ActionEvent
+                full: java.awt.event.ActionEvent
+              notes: the action event
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Processes action events occurring on this menu item,\n by dispatching\
+              \ them to any registered\n ActionListener objects.\n This method is\
+              \ not called unless action events are\n enabled for this component.\
+              \ Action events are enabled\n when one of the following occurs:\n \n\
+              \ An ActionListener object is registered\n via addActionListener.\n\
+              \ Action events are enabled via enableEvents.\n \n Note that if the\
+              \ event parameter is null\n the behavior is unspecified and may result\
+              \ in an\n exception."
+          - name: processEvent
+            modifiers:
+            - protected
+            parameters:
+            - name: e
+              type:
+                basic: AWTEvent
+                full: java.awt.AWTEvent
+              notes: the event
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Processes events on this menu item. If the event is an\n instance\
+              \ of ActionEvent, it invokes\n processActionEvent, another method\n\
+              \ defined by MenuItem.\n \n Currently, menu items only support action\
+              \ events.\n Note that if the event parameter is null\n the behavior\
+              \ is unspecified and may result in an\n exception."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: removeActionListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: l
               type:
                 basic: ActionListener
                 full: java.awt.event.ActionListener
+              notes: the action listener.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Removes the specified action listener so it no longer receives\n\
+              \ action events from this menu item.\n If l is null, no exception is\
+              \ thrown and no action is performed.\n Refer to AWT Threading Issues\
+              \ for details on AWT's threading model."
           - name: setActionCommand
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: command
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the action command to be set\n                             \
+                \   for this menu item."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the command name of the action event that is fired\n by this\
+              \ menu item.\n \n By default, the action command is set to the label\
+              \ of\n the menu item."
           - name: setEnabled
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
                 basic: boolean
                 full: boolean
+              notes: "if true, enables this menu item;\n                       if\
+                \ false, disables it."
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets whether or not this menu item can be chosen.
           - name: setLabel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: label
               type:
                 basic: String
                 full: java.lang.String
+              notes: the new label, or null for no label.
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the label for this menu item to the specified label.
           - name: setShortcut
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: MenuShortcut
                 full: java.awt.MenuShortcut
+              notes: "the menu shortcut to associate\n                           with\
+                \ this menu item."
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: MenuComponent
+            notes: "Set the MenuShortcut object associated with this\n menu item.\
+              \ If a menu shortcut is already associated with\n this menu item, it\
+              \ is replaced."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

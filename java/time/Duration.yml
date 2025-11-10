@@ -4,25 +4,88 @@ languages:
     packages:
       java.time:
         Duration:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A time-based amount of time, such as '34.5 seconds'.\n \n This class\
+            \ models a quantity or amount of time in terms of seconds and nanoseconds.\n\
+            \ It can be accessed using other duration-based units, such as minutes\
+            \ and hours.\n In addition, the DAYS unit can be used and is treated as\n\
+            \ exactly equal to 24 hours, thus ignoring daylight savings effects.\n\
+            \ See Period for the date-based equivalent to this class.\n \n A physical\
+            \ duration could be of infinite length.\n For practicality, the duration\
+            \ is stored with constraints similar to Instant.\n The duration uses nanosecond\
+            \ resolution with a maximum value of the seconds that can\n be held in\
+            \ a long. This is greater than the current estimated age of the universe.\n\
+            \ \n The range of a duration requires the storage of a number larger than\
+            \ a long.\n To achieve this, the class stores a long representing seconds\
+            \ and an int\n representing nanosecond-of-second, which will always be\
+            \ between 0 and 999,999,999.\n The model is of a directed duration, meaning\
+            \ that the duration may be negative.\n \n The duration is measured in\
+            \ \"seconds\", but these are not necessarily identical to\n the scientific\
+            \ \"SI second\" definition based on atomic clocks.\n This difference only\
+            \ impacts durations measured near a leap-second and should not affect\n\
+            \ most applications.\n See Instant for a discussion as to the meaning\
+            \ of the second and time-scales.\n \n This is a value-based\n class; programmers\
+            \ should treat instances that are\n equal as interchangeable and should\
+            \ not\n use instances for synchronization, or unpredictable behavior may\n\
+            \ occur. For example, in a future release, synchronization may fail.\n\
+            \ The equals method should be used for comparisons."
+          fields:
+            nanos:
+              name: nanos
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            seconds:
+              name: seconds
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
           staticFields:
+            BI_NANOS_PER_SECOND:
+              name: BI_NANOS_PER_SECOND
+              modifiers:
+              - private
+              - static
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
             ZERO:
               name: ZERO
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Duration
                 full: java.time.Duration
-                nullable: true
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+              notes: Constant for a duration of zero.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
               type:
-                basic: String
-                full: java.lang.String
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
+          methods:
           - name: abs
             modifiers:
             - public
@@ -30,30 +93,53 @@ languages:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with an absolute length, not
+                null
+            notes: "Returns a copy of this duration with a positive length.\n \n This\
+              \ method returns a positive duration by effectively removing the sign\
+              \ from any negative total length.\n For example, PT-1.3S will be returned\
+              \ as PT1.3S.\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: addTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the temporal object to adjust, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: addTo
+              notes: an object of the same type with the adjustment made, not null
+            notes: "Adds this duration to the specified temporal object.\n \n This\
+              \ returns a temporal object of the same observable type as the input\n\
+              \ with this duration added.\n \n In most cases, it is clearer to reverse\
+              \ the calling pattern by using\n Temporal.plus(TemporalAmount).\n \n\
+              \   // these two lines are equivalent, but the second approach is recommended\n\
+              \   dateTime = thisDuration.addTo(dateTime);\n   dateTime = dateTime.plus(thisDuration);\n\
+              \ \n \n The calculation will add the seconds, then nanos.\n Only non-zero\
+              \ amounts will be added.\n \n This instance is immutable and unaffected\
+              \ by this method call."
+          - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: otherDuration
               type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+                basic: Duration
+                full: java.time.Duration
+              notes: the other duration to compare to, not null
             return:
               type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+                basic: int
+                full: int
+              notes: the comparator value, negative if less, positive if greater
+            notes: "Compares this duration to the specified Duration.\n \n The comparison\
+              \ is based on the total length of the durations.\n It is \"consistent\
+              \ with equals\", as defined by Comparable."
           - name: compareTo
             modifiers:
             - public
@@ -66,90 +152,76 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Duration
-                full: java.time.Duration
-            return:
-              type:
-                basic: int
-                full: int
           - name: dividedBy
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Duration
-                full: java.time.Duration
-            return:
+            - name: divisor
               type:
                 basic: long
                 full: long
+              notes: the value to divide the duration by, positive or negative, not
+                zero
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: a Duration based on this duration divided by the specified divisor,
+                not null
+            notes: "Returns a copy of this duration divided by the specified value.\n\
+              \ \n This instance is immutable and unaffected by this method call."
           - name: dividedBy
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
+            - name: divisor
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the value to divide the duration by, positive or negative, not
+                null
+            return:
+              type:
+                basic: long
+                full: long
+              notes: "number of whole times, rounded toward zero, a specified\n  \
+                \       Duration occurs within this Duration, may be negative"
+            notes: "Returns number of whole times a specified Duration occurs within\
+              \ this Duration.\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the other duration, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the other duration is equal to this one
+            notes: "Checks if this duration is equal to the specified Duration.\n\
+              \ \n The comparison is based on the total length of the durations."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the TemporalUnit for which to return the value
             return:
               type:
                 basic: long
                 full: long
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: long
-                full: long
+              notes: the long value of the unit
+            notes: "Gets the value of the requested unit.\n \n This returns a value\
+              \ for each of the two supported units,\n SECONDS and NANOS.\n All other\
+              \ units throw an exception."
           - name: getNano
             modifiers:
             - public
@@ -157,6 +229,17 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the nanoseconds within the second part of the length of the duration,
+                from 0 to 999,999,999
+            notes: "Gets the number of nanoseconds within the second in this duration.\n\
+              \ \n The length of the duration is stored using two fields - seconds\
+              \ and nanoseconds.\n The nanoseconds part is a value from 0 to 999,999,999\
+              \ that is an adjustment to\n the length in seconds.\n The total duration\
+              \ is defined by calling this method and getSeconds().\n \n A Duration\
+              \ represents a directed distance between two points on the time-line.\n\
+              \ A negative duration is expressed by the negative sign of the seconds\
+              \ part.\n A duration of -1 nanosecond is stored as -1 seconds plus 999,999,999\
+              \ nanoseconds."
           - name: getSeconds
             modifiers:
             - public
@@ -164,20 +247,28 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the whole seconds part of the length of the duration, positive
+                or negative
+            notes: "Gets the number of seconds in this duration.\n \n The length of\
+              \ the duration is stored using two fields - seconds and nanoseconds.\n\
+              \ The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment\
+              \ to\n the length in seconds.\n The total duration is defined by calling\
+              \ this method and getNano().\n \n A Duration represents a directed distance\
+              \ between two points on the time-line.\n A negative duration is expressed\
+              \ by the negative sign of the seconds part.\n A duration of -1 nanosecond\
+              \ is stored as -1 seconds plus 999,999,999 nanoseconds."
           - name: getUnits
             modifiers:
             - public
             return:
               type:
-                basic: List<TemporalUnit>
+                basic: List
                 full: java.util.List<java.time.temporal.TemporalUnit>
-          - name: getUnits
-            modifiers:
-            - public
-            return:
-              type:
-                basic: List<TemporalUnit>
-                full: java.util.List<java.time.temporal.TemporalUnit>
+              notes: a list containing the seconds and nanos units, not null
+            notes: "Gets the set of units supported by this duration.\n \n The supported\
+              \ units are SECONDS,\n and NANOS.\n They are returned in the order seconds,\
+              \ nanos.\n \n This set can be used in conjunction with get(TemporalUnit)\n\
+              \ to access the entire state of the duration."
           - name: hashCode
             modifiers:
             - public
@@ -185,6 +276,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a suitable hash code
+            notes: A hash code for this duration.
           - name: isNegative
             modifiers:
             - public
@@ -192,6 +285,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this duration has a total length less than zero
+            notes: "Checks if this duration is negative, excluding zero.\n \n A Duration\
+              \ represents a directed distance between two points on\n the time-line\
+              \ and can therefore be positive, zero or negative.\n This method checks\
+              \ whether the length is less than zero."
           - name: isZero
             modifiers:
             - public
@@ -199,118 +297,185 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this duration has a total length equal to zero
+            notes: "Checks if this duration is zero length.\n \n A Duration represents\
+              \ a directed distance between two points on\n the time-line and can\
+              \ therefore be positive, zero or negative.\n This method checks whether\
+              \ the length is zero."
           - name: minus
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the duration to subtract, positive or negative, not null
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified duration
+                subtracted, not null
+            notes: "Returns a copy of this duration with the specified duration subtracted.\n\
+              \ \n This instance is immutable and unaffected by this method call."
           - name: minus
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: amountToSubtract
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the amount to subtract, measured in terms of the unit, positive
+                or negative
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the unit that the amount is measured in, must have an exact duration,
+                not null
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified duration
+                subtracted, not null
+            notes: "Returns a copy of this duration with the specified duration subtracted.\n\
+              \ \n The duration amount is measured in terms of the specified unit.\n\
+              \ Only a subset of units are accepted by this method.\n The unit must\
+              \ either have an exact duration or\n be ChronoUnit.DAYS which is treated\
+              \ as 24 hours. Other units throw an exception.\n \n This instance is\
+              \ immutable and unaffected by this method call."
           - name: minusDays
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: daysToSubtract
               type:
                 basic: long
                 full: long
+              notes: the days to subtract, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified days subtracted,
+                not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ standard 24 hour days subtracted.\n \n The number of days is multiplied\
+              \ by 86400 to obtain the number of seconds to subtract.\n This is based\
+              \ on the standard definition of a day as 24 hours.\n \n This instance\
+              \ is immutable and unaffected by this method call."
           - name: minusHours
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: hoursToSubtract
               type:
                 basic: long
                 full: long
+              notes: the hours to subtract, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified hours subtracted,
+                not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ hours subtracted.\n \n The number of hours is multiplied by 3600 to\
+              \ obtain the number of seconds to subtract.\n \n This instance is immutable\
+              \ and unaffected by this method call."
           - name: minusMillis
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: millisToSubtract
               type:
                 basic: long
                 full: long
+              notes: the milliseconds to subtract, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified milliseconds
+                subtracted, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ milliseconds subtracted.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: minusMinutes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: minutesToSubtract
               type:
                 basic: long
                 full: long
+              notes: the minutes to subtract, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified minutes
+                subtracted, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ minutes subtracted.\n \n The number of hours is multiplied by 60 to\
+              \ obtain the number of seconds to subtract.\n \n This instance is immutable\
+              \ and unaffected by this method call."
           - name: minusNanos
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: nanosToSubtract
               type:
                 basic: long
                 full: long
+              notes: the nanoseconds to subtract, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified nanoseconds
+                subtracted, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ nanoseconds subtracted.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: minusSeconds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: secondsToSubtract
               type:
                 basic: long
                 full: long
+              notes: the seconds to subtract, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified seconds
+                subtracted, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ seconds subtracted.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: multipliedBy
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: multiplicand
               type:
                 basic: long
                 full: long
+              notes: the value to multiply the duration by, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration multiplied by the specified
+                scalar, not null
+            notes: "Returns a copy of this duration multiplied by the scalar.\n \n\
+              \ This instance is immutable and unaffected by this method call."
           - name: negated
             modifiers:
             - public
@@ -318,21 +483,60 @@ languages:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the amount negated, not
+                null
+            notes: "Returns a copy of this duration with the length negated.\n \n\
+              \ This method swaps the sign of the total length of this duration.\n\
+              \ For example, PT1.3S will be returned as PT-1.3S.\n \n This instance\
+              \ is immutable and unaffected by this method call."
           - name: plus
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the duration to add, positive or negative, not null
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified duration
+                added, not null
+            notes: "Returns a copy of this duration with the specified duration added.\n\
+              \ \n This instance is immutable and unaffected by this method call."
           - name: plus
             modifiers:
             - public
+            parameters:
+            - name: amountToAdd
+              type:
+                basic: long
+                full: long
+              notes: the amount to add, measured in terms of the unit, positive or
+                negative
+            - name: unit
+              type:
+                basic: TemporalUnit
+                full: java.time.temporal.TemporalUnit
+              notes: the unit that the amount is measured in, must have an exact duration,
+                not null
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: a Duration based on this duration with the specified duration
+                added, not null
+            notes: "Returns a copy of this duration with the specified duration added.\n\
+              \ \n The duration amount is measured in terms of the specified unit.\n\
+              \ Only a subset of units are accepted by this method.\n The unit must\
+              \ either have an exact duration or\n be ChronoUnit.DAYS which is treated\
+              \ as 24 hours. Other units throw an exception.\n \n This instance is\
+              \ immutable and unaffected by this method call."
+          - name: plus
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -340,8 +544,8 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
+                basic: long
+                full: long
             return:
               type:
                 basic: Duration
@@ -350,98 +554,155 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: daysToAdd
               type:
                 basic: long
                 full: long
+              notes: the days to add, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified days added,
+                not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ standard 24 hour days added.\n \n The number of days is multiplied\
+              \ by 86400 to obtain the number of seconds to add.\n This is based on\
+              \ the standard definition of a day as 24 hours.\n \n This instance is\
+              \ immutable and unaffected by this method call."
           - name: plusHours
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: hoursToAdd
               type:
                 basic: long
                 full: long
+              notes: the hours to add, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified hours added,
+                not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ hours added.\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: plusMillis
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: millisToAdd
               type:
                 basic: long
                 full: long
+              notes: the milliseconds to add, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified milliseconds
+                added, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ milliseconds added.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: plusMinutes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: minutesToAdd
               type:
                 basic: long
                 full: long
+              notes: the minutes to add, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified minutes
+                added, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ minutes added.\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: plusNanos
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: nanosToAdd
               type:
                 basic: long
                 full: long
+              notes: the nanoseconds to add, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified nanoseconds
+                added, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ nanoseconds added.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: plusSeconds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: secondsToAdd
               type:
                 basic: long
                 full: long
+              notes: the seconds to add, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the specified seconds
+                added, not null
+            notes: "Returns a copy of this duration with the specified duration in\
+              \ seconds added.\n \n This instance is immutable and unaffected by this\
+              \ method call."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: subtractFrom
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the temporal object to adjust, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: subtractFrom
+              notes: an object of the same type with the adjustment made, not null
+            notes: "Subtracts this duration from the specified temporal object.\n\
+              \ \n This returns a temporal object of the same observable type as the\
+              \ input\n with this duration subtracted.\n \n In most cases, it is clearer\
+              \ to reverse the calling pattern by using\n Temporal.minus(TemporalAmount).\n\
+              \ \n   // these two lines are equivalent, but the second approach is\
+              \ recommended\n   dateTime = thisDuration.subtractFrom(dateTime);\n\
+              \   dateTime = dateTime.minus(thisDuration);\n \n \n The calculation\
+              \ will subtract the seconds, then nanos.\n Only non-zero amounts will\
+              \ be added.\n \n This instance is immutable and unaffected by this method\
+              \ call."
+          - name: toBigDecimalSeconds
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+            - private
             return:
               type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+                basic: BigDecimal
+                full: java.math.BigDecimal
           - name: toDays
             modifiers:
             - public
@@ -449,6 +710,12 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the number of days in the duration, may be negative
+            notes: "Gets the number of days in this duration.\n \n This returns the\
+              \ total number of days in the duration by dividing the\n number of seconds\
+              \ by 86400.\n This is based on the standard definition of a day as 24\
+              \ hours.\n \n This instance is immutable and unaffected by this method\
+              \ call."
           - name: toDaysPart
             modifiers:
             - public
@@ -456,6 +723,12 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the number of days in the duration, may be negative
+            notes: "Extracts the number of days in the duration.\n \n This returns\
+              \ the total number of days in the duration by dividing the\n number\
+              \ of seconds by 86400.\n This is based on the standard definition of\
+              \ a day as 24 hours.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: toHours
             modifiers:
             - public
@@ -463,6 +736,11 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the number of hours in the duration, may be negative
+            notes: "Gets the number of hours in this duration.\n \n This returns the\
+              \ total number of hours in the duration by dividing the\n number of\
+              \ seconds by 3600.\n \n This instance is immutable and unaffected by\
+              \ this method call."
           - name: toHoursPart
             modifiers:
             - public
@@ -470,6 +748,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of hours part in the duration, may be negative
+            notes: "Extracts the number of hours part in the duration.\n \n This returns\
+              \ the number of remaining hours when dividing toHours()\n by hours in\
+              \ a day.\n This is based on the standard definition of a day as 24 hours.\n\
+              \ \n This instance is immutable and unaffected by this method call."
           - name: toMillis
             modifiers:
             - public
@@ -477,6 +760,13 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the total length of the duration in milliseconds
+            notes: "Converts this duration to the total length in milliseconds.\n\
+              \ \n If this duration is too large to fit in a long milliseconds, then\
+              \ an\n exception is thrown.\n \n If this duration has greater than millisecond\
+              \ precision, then the conversion\n will drop any excess precision information\
+              \ as though the amount in nanoseconds\n was subject to integer division\
+              \ by one million."
           - name: toMillisPart
             modifiers:
             - public
@@ -484,6 +774,14 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of milliseconds part of the duration.
+            notes: "Extracts the number of milliseconds part of the duration.\n \n\
+              \ This returns the milliseconds part by dividing the number of nanoseconds\
+              \ by 1,000,000.\n The length of the duration is stored using two fields\
+              \ - seconds and nanoseconds.\n The nanoseconds part is a value from\
+              \ 0 to 999,999,999 that is an adjustment to\n the length in seconds.\n\
+              \ The total duration is defined by calling getNano() and getSeconds().\n\
+              \ \n This instance is immutable and unaffected by this method call."
           - name: toMinutes
             modifiers:
             - public
@@ -491,6 +789,11 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the number of minutes in the duration, may be negative
+            notes: "Gets the number of minutes in this duration.\n \n This returns\
+              \ the total number of minutes in the duration by dividing the\n number\
+              \ of seconds by 60.\n \n This instance is immutable and unaffected by\
+              \ this method call."
           - name: toMinutesPart
             modifiers:
             - public
@@ -498,6 +801,12 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of minutes parts in the duration, may be negative
+            notes: "Extracts the number of minutes part in the duration.\n \n This\
+              \ returns the number of remaining minutes when dividing toMinutes()\n\
+              \ by minutes in an hour.\n This is based on the standard definition\
+              \ of an hour as 60 minutes.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: toNanos
             modifiers:
             - public
@@ -505,6 +814,10 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the total length of the duration in nanoseconds
+            notes: "Converts this duration to the total length in nanoseconds expressed\
+              \ as a long.\n \n If this duration is too large to fit in a long nanoseconds,\
+              \ then an\n exception is thrown."
           - name: toNanosPart
             modifiers:
             - public
@@ -512,6 +825,14 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the nanoseconds within the second part of the length of the duration,
+                from 0 to 999,999,999
+            notes: "Get the nanoseconds part within seconds of the duration.\n \n\
+              \ The length of the duration is stored using two fields - seconds and\
+              \ nanoseconds.\n The nanoseconds part is a value from 0 to 999,999,999\
+              \ that is an adjustment to\n the length in seconds.\n The total duration\
+              \ is defined by calling getNano() and getSeconds().\n \n This instance\
+              \ is immutable and unaffected by this method call."
           - name: toSeconds
             modifiers:
             - public
@@ -519,6 +840,11 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the whole seconds part of the length of the duration, positive
+                or negative
+            notes: "Gets the number of seconds in this duration.\n \n This returns\
+              \ the total number of whole seconds in the duration.\n \n This instance\
+              \ is immutable and unaffected by this method call."
           - name: toSecondsPart
             modifiers:
             - public
@@ -526,23 +852,182 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of seconds parts in the duration, may be negative
+            notes: "Extracts the number of seconds part in the duration.\n \n This\
+              \ returns the remaining seconds when dividing toSeconds()\n by seconds\
+              \ in a minute.\n This is based on the standard definition of a minute\
+              \ as 60 seconds.\n \n This instance is immutable and unaffected by this\
+              \ method call."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: truncatedTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the unit to truncate to, not null
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration based on this duration with the time truncated, not
+                null
+            notes: "Returns a copy of this Duration truncated to the specified unit.\n\
+              \ \n Truncating the duration returns a copy of the original with conceptual\
+              \ fields\n smaller than the specified unit set to zero.\n For example,\
+              \ truncating with the MINUTES unit will\n round down towards zero to\
+              \ the nearest minute, setting the seconds and\n nanoseconds to zero.\n\
+              \ \n The unit must have a duration\n that divides into the length of\
+              \ a standard day without remainder.\n This includes all\n time-based\
+              \ units on ChronoUnit\n and DAYS. Other ChronoUnits throw an exception.\n\
+              \ \n This instance is immutable and unaffected by this method call."
           - name: withNanos
             modifiers:
             - public
             parameters:
+            - name: nanoOfSecond
+              type:
+                basic: int
+                full: int
+              notes: the nano-of-second to represent, from 0 to 999,999,999
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: a Duration based on this period with the requested nano-of-second,
+                not null
+            notes: "Returns a copy of this duration with the specified nano-of-second.\n\
+              \ \n This returns a duration with the specified nano-of-second, retaining\
+              \ the\n seconds part of this duration.\n \n This instance is immutable\
+              \ and unaffected by this method call."
+          - name: withSeconds
+            modifiers:
+            - public
+            parameters:
+            - name: seconds
+              type:
+                basic: long
+                full: long
+              notes: the seconds to represent, may be negative
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: a Duration based on this period with the requested seconds, not
+                null
+            notes: "Returns a copy of this duration with the specified amount of seconds.\n\
+              \ \n This returns a duration with the specified seconds, retaining the\n\
+              \ nano-of-second part of this duration.\n \n This instance is immutable\
+              \ and unaffected by this method call."
+          - name: writeExternal
+            modifiers:
+            - package
+            parameters:
             - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          staticMethods:
+          - name: between
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: startInclusive
+              type:
+                basic: Temporal
+                full: java.time.temporal.Temporal
+              notes: the start instant, inclusive, not null
+            - name: endExclusive
+              type:
+                basic: Temporal
+                full: java.time.temporal.Temporal
+              notes: the end instant, exclusive, not null
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing the duration between two temporal\
+              \ objects.\n \n This calculates the duration between two temporal objects.\
+              \ If the objects\n are of different types, then the duration is calculated\
+              \ based on the type\n of the first object. For example, if the first\
+              \ argument is a LocalTime\n then the second argument is converted to\
+              \ a LocalTime.\n \n The specified temporal objects must support the\
+              \ SECONDS unit.\n For full accuracy, either the NANOS unit or the\n\
+              \ NANO_OF_SECOND field should be supported.\n \n The result of this\
+              \ method can be a negative period if the end is before the start.\n\
+              \ To guarantee to obtain a positive duration call abs() on the result."
+          - name: charMatch
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: char
+                full: char
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: create
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: long
+                full: long
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            - name: arg4
+              type:
+                basic: long
+                full: long
+            - name: arg5
               type:
                 basic: int
                 full: int
@@ -550,32 +1035,32 @@ languages:
               type:
                 basic: Duration
                 full: java.time.Duration
-          - name: withSeconds
+          - name: create
             modifiers:
-            - public
+            - private
+            - static
             parameters:
             - name: arg0
               type:
                 basic: long
                 full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
-          staticMethods:
-          - name: between
+          - name: create
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-            - name: arg1
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+                basic: BigDecimal
+                full: java.math.BigDecimal
             return:
               type:
                 basic: Duration
@@ -585,138 +1070,298 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: amount
               type:
                 basic: TemporalAmount
                 full: java.time.temporal.TemporalAmount
+              notes: the temporal amount to convert, not null
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the equivalent duration, not null
+            notes: "Obtains an instance of Duration from a temporal amount.\n \n This\
+              \ obtains a duration based on the specified amount.\n A TemporalAmount\
+              \ represents an  amount of time, which may be\n date-based or time-based,\
+              \ which this factory extracts to a duration.\n \n The conversion loops\
+              \ around the set of units from the amount and uses\n the duration of\
+              \ the unit to\n calculate the total Duration.\n Only a subset of units\
+              \ are accepted by this method. The unit must either\n have an exact\
+              \ duration\n or be ChronoUnit.DAYS which is treated as 24 hours.\n If\
+              \ any other units are found then an exception is thrown."
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: amount
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the amount of the duration, measured in terms of the unit, positive
+                or negative
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the unit that the duration is measured in, must have an exact
+                duration, not null
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing an amount in the specified unit.\n\
+              \ \n The parameters represent the two parts of a phrase like '6 Hours'.\
+              \ For example:\n \n  Duration.of(3, SECONDS);\n  Duration.of(465, HOURS);\n\
+              \ \n Only a subset of units are accepted by this method.\n The unit\
+              \ must either have an exact duration or\n be ChronoUnit.DAYS which is\
+              \ treated as 24 hours. Other units throw an exception."
           - name: ofDays
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: days
               type:
                 basic: long
                 full: long
+              notes: the number of days, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of standard 24 hour days.\n\
+              \ \n The seconds are calculated based on the standard definition of\
+              \ a day,\n where each day is 86400 seconds which implies a 24 hour day.\n\
+              \ The nanosecond in second field is set to zero."
           - name: ofHours
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: hours
               type:
                 basic: long
                 full: long
+              notes: the number of hours, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of standard hours.\n\
+              \ \n The seconds are calculated based on the standard definition of\
+              \ an hour,\n where each hour is 3600 seconds.\n The nanosecond in second\
+              \ field is set to zero."
           - name: ofMillis
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: millis
               type:
                 basic: long
                 full: long
+              notes: the number of milliseconds, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of milliseconds.\n \n\
+              \ The seconds and nanoseconds are extracted from the specified milliseconds."
           - name: ofMinutes
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: minutes
               type:
                 basic: long
                 full: long
+              notes: the number of minutes, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of standard minutes.\n\
+              \ \n The seconds are calculated based on the standard definition of\
+              \ a minute,\n where each minute is 60 seconds.\n The nanosecond in second\
+              \ field is set to zero."
           - name: ofNanos
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: nanos
               type:
                 basic: long
                 full: long
+              notes: the number of nanoseconds, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of nanoseconds.\n \n\
+              \ The seconds and nanoseconds are extracted from the specified nanoseconds."
           - name: ofSeconds
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: seconds
               type:
                 basic: long
                 full: long
+              notes: the number of seconds, positive or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of seconds.\n \n The\
+              \ nanosecond in second field is set to zero."
           - name: ofSeconds
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: seconds
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the number of seconds, positive or negative
+            - name: nanoAdjustment
               type:
                 basic: long
                 full: long
+              notes: the nanosecond adjustment to the number of seconds, positive
+                or negative
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: a Duration, not null
+            notes: "Obtains a Duration representing a number of seconds and an\n adjustment\
+              \ in nanoseconds.\n \n This method allows an arbitrary number of nanoseconds\
+              \ to be passed in.\n The factory will alter the values of the second\
+              \ and nanosecond in order\n to ensure that the stored nanosecond is\
+              \ in the range 0 to 999,999,999.\n For example, the following will result\
+              \ in exactly the same duration:\n \n  Duration.ofSeconds(3, 1);\n  Duration.ofSeconds(4,\
+              \ -999_999_999);\n  Duration.ofSeconds(2, 1000_000_001);"
           - name: parse
             modifiers:
             - public
+            - static
+            parameters:
+            - name: text
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the text to parse, not null
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: the parsed duration, not null
+            notes: "Obtains a Duration from a text string such as PnDTnHnMn.nS.\n\
+              \ \n This will parse a textual representation of a duration, including\
+              \ the\n string produced by toString(). The formats accepted are based\n\
+              \ on the ISO-8601 duration format PnDTnHnMn.nS with days\n considered\
+              \ to be exactly 24 hours.\n \n The string starts with an optional sign,\
+              \ denoted by the ASCII negative\n or positive symbol. If negative, the\
+              \ whole period is negated.\n The ASCII letter \"P\" is next in upper\
+              \ or lower case.\n There are then four sections, each consisting of\
+              \ a number and a suffix.\n The sections have suffixes in ASCII of \"\
+              D\", \"H\", \"M\" and \"S\" for\n days, hours, minutes and seconds,\
+              \ accepted in upper or lower case.\n The suffixes must occur in order.\
+              \ The ASCII letter \"T\" must occur before\n the first occurrence, if\
+              \ any, of an hour, minute or second section.\n At least one of the four\
+              \ sections must be present, and if \"T\" is present\n there must be\
+              \ at least one section after the \"T\".\n The number part of each section\
+              \ must consist of one or more ASCII digits.\n The number may be prefixed\
+              \ by the ASCII negative or positive symbol.\n The number of days, hours\
+              \ and minutes must parse to a long.\n The number of seconds must parse\
+              \ to a long with optional fraction.\n The decimal point may be either\
+              \ a dot or a comma.\n The fractional part may have from zero to 9 digits.\n\
+              \ \n The leading plus/minus sign, and negative values for other units\
+              \ are\n not part of the ISO-8601 standard.\n \n Examples:\n \n    \"\
+              PT20.345S\" -- parses as \"20.345 seconds\"\n    \"PT15M\"     -- parses\
+              \ as \"15 minutes\" (where a minute is 60 seconds)\n    \"PT10H\"  \
+              \   -- parses as \"10 hours\" (where an hour is 3600 seconds)\n    \"\
+              P2D\"       -- parses as \"2 days\" (where a day is 24 hours or 86400\
+              \ seconds)\n    \"P2DT3H4M\"  -- parses as \"2 days, 3 hours and 4 minutes\"\
+              \n    \"PT-6H3M\"    -- parses as \"-6 hours and +3 minutes\"\n    \"\
+              -PT6H3M\"    -- parses as \"-6 hours and -3 minutes\"\n    \"-PT-6H+3M\"\
+              \  -- parses as \"+6 hours and -3 minutes\""
+          - name: parseFraction
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: parseNumber
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: long
+                full: long
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
             return:
               type:
                 basic: Duration
                 full: java.time.Duration
-          javaType: class
-          extends: Object

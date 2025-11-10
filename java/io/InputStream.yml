@@ -4,9 +4,43 @@ languages:
     packages:
       java.io:
         InputStream:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This abstract class is the superclass of all classes representing\n\
+            \ an input stream of bytes.\n\n  Applications that need to define a subclass\
+            \ of InputStream\n must always provide a method that returns the next\
+            \ byte of input."
+          staticFields:
+            DEFAULT_BUFFER_SIZE:
+              name: DEFAULT_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_BUFFER_SIZE:
+              name: MAX_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_SKIP_BUFFER_SIZE:
+              name: MAX_SKIP_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
+            notes: Constructor for subclasses to call.
           methods:
           - name: available
             modifiers:
@@ -15,6 +49,22 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "an estimate of the number of bytes that can be read (or\n  \
+                \           skipped over) from this input stream without blocking\
+                \ or\n             0 when it reaches the end of the input stream."
+            notes: "Returns an estimate of the number of bytes that can be read (or\
+              \ skipped\n over) from this input stream without blocking, which may\
+              \ be 0, or 0 when\n end of stream is detected.  The read might be on\
+              \ the same thread or\n another thread.  A single read or skip of this\
+              \ many bytes will not block,\n but may read or skip fewer bytes.\n\n\
+              \  Note that while some implementations of InputStream will\n return\
+              \ the total number of bytes in the stream, many will not.  It is\n never\
+              \ correct to use the return value of this method to allocate\n a buffer\
+              \ intended to hold all data in this stream.\n\n  A subclass's implementation\
+              \ of this method may choose to throw an\n IOException if this input\
+              \ stream has been closed by invoking the\n close() method.\n\n  The\
+              \ available method of InputStream always returns\n 0.\n\n  This method\
+              \ should be overridden by subclasses."
           - name: close
             modifiers:
             - public
@@ -22,25 +72,35 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Closes this input stream and releases any system resources associated\n\
+              \ with the stream.\n\n  The close method of InputStream does\n nothing."
           - name: mark
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: readlimit
               type:
                 basic: int
                 full: int
+              notes: "the maximum limit of bytes that can be read before\n       \
+                \               the mark position becomes invalid."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Marks the current position in this input stream. A subsequent\
+              \ call to\n the reset method repositions this stream at the last marked\n\
+              \ position so that subsequent reads re-read the same bytes.\n\n  The\
+              \ readlimit arguments tells this input stream to\n allow that many bytes\
+              \ to be read before the mark position gets\n invalidated.\n\n  The general\
+              \ contract of mark is that, if the method\n markSupported returns true,\
+              \ the stream somehow\n remembers all the bytes read after the call to\
+              \ mark and\n stands ready to supply those same bytes again if and whenever\
+              \ the method\n reset is called.  However, the stream is not required\
+              \ to\n remember any data at all if more than readlimit bytes are\n read\
+              \ from the stream before reset is called.\n\n  Marking a closed stream\
+              \ should not have any effect on the stream.\n\n  The mark method of\
+              \ InputStream does\n nothing."
           - name: markSupported
             modifiers:
             - public
@@ -48,84 +108,220 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this stream instance supports the mark\n          and\
+                \ reset methods; false otherwise."
+            notes: "Tests if this input stream supports the mark and\n reset methods.\
+              \ Whether or not mark and\n reset are supported is an invariant property\
+              \ of a\n particular input stream instance. The markSupported method\n\
+              \ of InputStream returns false."
           - name: read
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: "the next byte of data, or -1 if the end of the\n           \
+                \  stream is reached."
+            notes: "Reads the next byte of data from the input stream. The value byte\
+              \ is\n returned as an int in the range 0 to\n 255. If no byte is available\
+              \ because the end of the stream\n has been reached, the value -1 is\
+              \ returned. This method\n blocks until input data is available, the\
+              \ end of the stream is detected,\n or an exception is thrown.\n\n  A\
+              \ subclass must provide an implementation of this method."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the buffer into which the data is read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the stream has been reached."
+            notes: "Reads some number of bytes from the input stream and stores them\
+              \ into\n the buffer array b. The number of bytes actually read is\n\
+              \ returned as an integer.  This method blocks until input data is\n\
+              \ available, end of file is detected, or an exception is thrown.\n\n\
+              \  If the length of b is zero, then no bytes are read and\n 0 is returned;\
+              \ otherwise, there is an attempt to read at\n least one byte. If no\
+              \ byte is available because the stream is at the\n end of the file,\
+              \ the value -1 is returned; otherwise, at\n least one byte is read and\
+              \ stored into b.\n\n  The first byte read is stored into element b[0],\
+              \ the\n next one into b[1], and so on. The number of bytes read is,\n\
+              \ at most, equal to the length of b. Let k be the\n number of bytes\
+              \ actually read; these bytes will be stored in elements\n b[0] through\
+              \ b[k-1],\n leaving elements b[k] through\n b[b.length-1] unaffected.\n\
+              \n  The read(b) method for class InputStream\n has the same effect as:\
+              \ <code> read(b, 0, b.length) </code>"
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the buffer into which the data is read.
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the start offset in array b\n                   at which the\
+                \ data is written."
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the maximum number of bytes to read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the stream has been reached."
+            notes: "Reads up to len bytes of data from the input stream into\n an\
+              \ array of bytes.  An attempt is made to read as many as\n len bytes,\
+              \ but a smaller number may be read.\n The number of bytes actually read\
+              \ is returned as an integer.\n\n  This method blocks until input data\
+              \ is available, end of file is\n detected, or an exception is thrown.\n\
+              \n  If len is zero, then no bytes are read and\n 0 is returned; otherwise,\
+              \ there is an attempt to read at\n least one byte. If no byte is available\
+              \ because the stream is at end of\n file, the value -1 is returned;\
+              \ otherwise, at least one\n byte is read and stored into b.\n\n  The\
+              \ first byte read is stored into element b[off], the\n next one into\
+              \ b[off+1], and so on. The number of bytes read\n is, at most, equal\
+              \ to len. Let k be the number of\n bytes actually read; these bytes\
+              \ will be stored in elements\n b[off] through b[off+k-1],\n leaving\
+              \ elements b[off+k] through\n b[off+len-1] unaffected.\n\n  In every\
+              \ case, elements b[0] through\n b[off-1] and elements b[off+len] through\n\
+              \ b[b.length-1] are unaffected.\n\n  The read(b, off, len) method\n\
+              \ for class InputStream simply calls the method\n read() repeatedly.\
+              \ If the first such call results in an\n IOException, that exception\
+              \ is returned from the call to\n the read(b, off, len) method.  If\n\
+              \ any subsequent call to read() results in a\n IOException, the exception\
+              \ is caught and treated as if it\n were end of file; the bytes read\
+              \ up to that point are stored into\n b and the number of bytes read\
+              \ before the exception\n occurred is returned. The default implementation\
+              \ of this method blocks\n until the requested amount of input data len\
+              \ has been read,\n end of file is detected, or an exception is thrown.\
+              \ Subclasses are\n encouraged to provide a more efficient implementation\
+              \ of this method."
           - name: readAllBytes
             modifiers:
             - public
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: a byte array containing the bytes read from this input stream
+            notes: "Reads all remaining bytes from the input stream. This method blocks\
+              \ until\n all remaining bytes have been read and end of stream is detected,\
+              \ or an\n exception is thrown. This method does not close the input\
+              \ stream.\n\n  When this stream reaches end of stream, further invocations\
+              \ of this\n method will return an empty byte array.\n\n  Note that this\
+              \ method is intended for simple cases where it is\n convenient to read\
+              \ all bytes into a byte array. It is not intended for\n reading input\
+              \ streams with large amounts of data.\n\n  The behavior for the case\
+              \ where the input stream is asynchronously\n closed, or the thread interrupted\
+              \ during the read, is highly input\n stream specific, and therefore\
+              \ not specified.\n\n  If an I/O error occurs reading from the input\
+              \ stream, then it may do\n so after some, but not all, bytes have been\
+              \ read. Consequently the input\n stream may not be at end of stream\
+              \ and may be in an inconsistent state.\n It is strongly recommended\
+              \ that the stream be promptly closed if an I/O\n error occurs."
           - name: readNBytes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the maximum number of bytes to read
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: a byte array containing the bytes read from this input stream
+            notes: "Reads up to a specified number of bytes from the input stream.\
+              \ This\n method blocks until the requested number of bytes has been\
+              \ read, end\n of stream is detected, or an exception is thrown. This\
+              \ method does not\n close the input stream.\n\n  The length of the returned\
+              \ array equals the number of bytes read\n from the stream. If len is\
+              \ zero, then no bytes are read and\n an empty byte array is returned.\
+              \ Otherwise, up to len bytes\n are read from the stream. Fewer than\
+              \ len bytes may be read if\n end of stream is encountered.\n\n  When\
+              \ this stream reaches end of stream, further invocations of this\n method\
+              \ will return an empty byte array.\n\n  Note that this method is intended\
+              \ for simple cases where it is\n convenient to read the specified number\
+              \ of bytes into a byte array. The\n total amount of memory allocated\
+              \ by this method is proportional to the\n number of bytes read from\
+              \ the stream which is bounded by len.\n Therefore, the method may be\
+              \ safely called with very large values of\n len provided sufficient\
+              \ memory is available.\n\n  The behavior for the case where the input\
+              \ stream is asynchronously\n closed, or the thread interrupted during\
+              \ the read, is highly input\n stream specific, and therefore not specified.\n\
+              \n  If an I/O error occurs reading from the input stream, then it may\
+              \ do\n so after some, but not all, bytes have been read. Consequently\
+              \ the input\n stream may not be at end of stream and may be in an inconsistent\
+              \ state.\n It is strongly recommended that the stream be promptly closed\
+              \ if an I/O\n error occurs."
           - name: readNBytes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the byte array into which the data is read
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset in b at which the data is written
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the maximum number of bytes to read
             return:
               type:
                 basic: int
                 full: int
+              notes: the actual number of bytes read into the buffer
+            notes: "Reads the requested number of bytes from the input stream into\
+              \ the given\n byte array. This method blocks until len bytes of input\
+              \ data have\n been read, end of stream is detected, or an exception\
+              \ is thrown. The\n number of bytes actually read, possibly zero, is\
+              \ returned. This method\n does not close the input stream.\n\n  In the\
+              \ case where end of stream is reached before len bytes\n have been read,\
+              \ then the actual number of bytes read will be returned.\n When this\
+              \ stream reaches end of stream, further invocations of this\n method\
+              \ will return zero.\n\n  If len is zero, then no bytes are read and\
+              \ 0 is\n returned; otherwise, there is an attempt to read up to len\
+              \ bytes.\n\n  The first byte read is stored into element b[off], the\
+              \ next\n one in to b[off+1], and so on. The number of bytes read is,\
+              \ at\n most, equal to len. Let k be the number of bytes actually\n read;\
+              \ these bytes will be stored in elements b[off] through\n b[off+k-1],\
+              \ leaving elements b[off+k\n ] through b[off+len-1] unaffected.\n\n\
+              \  The behavior for the case where the input stream is asynchronously\n\
+              \ closed, or the thread interrupted during the read, is highly input\n\
+              \ stream specific, and therefore not specified.\n\n  If an I/O error\
+              \ occurs reading from the input stream, then it may do\n so after some,\
+              \ but not all, bytes of b have been updated with\n data from the input\
+              \ stream. Consequently the input stream and b\n may be in an inconsistent\
+              \ state. It is strongly recommended that the\n stream be promptly closed\
+              \ if an I/O error occurs."
           - name: reset
             modifiers:
             - public
@@ -133,42 +329,105 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Repositions this stream to the position at the time the\n mark\
+              \ method was last called on this input stream.\n\n  The general contract\
+              \ of reset is:\n\n \n  If the method markSupported returns\n true, then:\n\
+              \n      If the method mark has not been called since\n     the stream\
+              \ was created, or the number of bytes read from the stream\n     since\
+              \ mark was last called is larger than the argument\n     to mark at\
+              \ that last call, then an\n     IOException might be thrown.\n\n   \
+              \   If such an IOException is not thrown, then the\n     stream is reset\
+              \ to a state such that all the bytes read since the\n     most recent\
+              \ call to mark (or since the start of the\n     file, if mark has not\
+              \ been called) will be resupplied\n     to subsequent callers of the\
+              \ read method, followed by\n     any bytes that otherwise would have\
+              \ been the next input data as of\n     the time of the call to reset.\
+              \ \n\n  If the method markSupported returns\n false, then:\n\n     \
+              \ The call to reset may throw an\n     IOException.\n\n      If an IOException\
+              \ is not thrown, then the stream\n     is reset to a fixed state that\
+              \ depends on the particular type of the\n     input stream and how it\
+              \ was created. The bytes that will be supplied\n     to subsequent callers\
+              \ of the read method depend on the\n     particular type of the input\
+              \ stream. \n\n The method reset for class InputStream\n does nothing\
+              \ except throw an IOException."
           - name: skip
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: long
                 full: long
+              notes: the number of bytes to be skipped.
             return:
               type:
                 basic: long
                 full: long
+              notes: the actual number of bytes skipped which might be zero.
+            notes: "Skips over and discards n bytes of data from this input\n stream.\
+              \ The skip method may, for a variety of reasons, end\n up skipping over\
+              \ some smaller number of bytes, possibly 0.\n This may result from any\
+              \ of a number of conditions; reaching end of file\n before n bytes have\
+              \ been skipped is only one possibility.\n The actual number of bytes\
+              \ skipped is returned. If n is\n negative, the skip method for class\
+              \ InputStream always\n returns 0, and no bytes are skipped. Subclasses\
+              \ may handle the negative\n value differently.\n\n  The skip method\
+              \ implementation of this class creates a\n byte array and then repeatedly\
+              \ reads into it until n bytes\n have been read or the end of the stream\
+              \ has been reached. Subclasses are\n encouraged to provide a more efficient\
+              \ implementation of this method.\n For instance, the implementation\
+              \ may depend on the ability to seek."
           - name: skipNBytes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: long
                 full: long
+              notes: the number of bytes to be skipped.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Skips over and discards exactly n bytes of data from this input\n\
+              \ stream.  If n is zero, then no bytes are skipped.\n If n is negative,\
+              \ then no bytes are skipped.\n Subclasses may handle the negative value\
+              \ differently.\n\n  This method blocks until the requested number of\
+              \ bytes has been\n skipped, end of file is reached, or an exception\
+              \ is thrown.\n\n  If end of stream is reached before the stream is at\
+              \ the desired\n position, then an EOFException is thrown.\n\n  If an\
+              \ I/O error occurs, then the input stream may be\n in an inconsistent\
+              \ state. It is strongly recommended that the\n stream be promptly closed\
+              \ if an I/O error occurs."
           - name: transferTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
+              notes: the output stream, non-null
             return:
               type:
                 basic: long
                 full: long
+              notes: the number of bytes transferred
+            notes: "Reads all bytes from this input stream and writes the bytes to\
+              \ the\n given output stream in the order that they are read. On return,\
+              \ this\n input stream will be at end of stream. This method does not\
+              \ close either\n stream.\n \n This method may block indefinitely reading\
+              \ from the input stream, or\n writing to the output stream. The behavior\
+              \ for the case where the input\n and/or output stream is asynchronously\
+              \ closed, or the thread\n interrupted during the transfer, is highly\
+              \ input and output stream\n specific, and therefore not specified.\n\
+              \ \n If an I/O error occurs reading from the input stream or writing\
+              \ to the\n output stream, then it may do so after some bytes have been\
+              \ read or\n written. Consequently the input stream may not be at end\
+              \ of stream and\n one, or both, streams may be in an inconsistent state.\
+              \ It is strongly\n recommended that both streams be promptly closed\
+              \ if an I/O error occurs."
           staticMethods:
           - name: nullInputStream
             modifiers:
@@ -178,5 +437,14 @@ languages:
               type:
                 basic: InputStream
                 full: java.io.InputStream
-          javaType: class
-          extends: Object
+              notes: an InputStream which contains no bytes
+            notes: "Returns a new InputStream that reads no bytes. The returned\n\
+              \ stream is initially open.  The stream is closed by calling the\n close()\
+              \ method.  Subsequent calls to close() have no\n effect.\n\n  While\
+              \ the stream is open, the available(), read(),\n read(byte[]), read(byte[],\
+              \ int, int),\n readAllBytes(), readNBytes(byte[], int, int),\n readNBytes(int),\
+              \ skip(long), skipNBytes(long),\n and transferTo() methods all behave\
+              \ as if end of stream has been\n reached.  After the stream has been\
+              \ closed, these methods all throw\n IOException.\n\n  The markSupported()\
+              \ method returns false.  The\n mark() method does nothing, and the reset()\
+              \ method\n throws IOException."

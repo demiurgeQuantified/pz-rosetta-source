@@ -4,96 +4,193 @@ languages:
     packages:
       java.awt.font:
         GlyphMetrics:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "The GlyphMetrics class represents information for a\n single glyph.\
+            \   A glyph is the visual representation of one or more\n characters.\
+            \  Many different glyphs can be used to represent a single\n character\
+            \ or combination of characters.  GlyphMetrics\n instances are produced\
+            \ by Font and are applicable\n to a specific glyph in a particular Font.\n\
+            \ \n Glyphs are either STANDARD, LIGATURE, COMBINING, or COMPONENT.\n\
+            \ \n STANDARD glyphs are commonly used to represent single characters.\n\
+            \ LIGATURE glyphs are used to represent sequences of characters.\n COMPONENT\
+            \ glyphs in a GlyphVector do not correspond to a\n particular character\
+            \ in a text model. Instead, COMPONENT glyphs are\n added for typographical\
+            \ reasons, such as Arabic justification.\n COMBINING glyphs embellish\
+            \ STANDARD or LIGATURE glyphs, such\n as accent marks.  Carets do not\
+            \ appear before COMBINING glyphs.\n \n \n Other metrics available through\
+            \ GlyphMetrics are the\n components of the advance, the visual bounds,\
+            \ and the left and right\n side bearings.\n \n Glyphs for a rotated font,\
+            \ or obtained from a GlyphVector\n which has applied a rotation to the\
+            \ glyph, can have advances that\n contain both X and Y components.  Usually\
+            \ the advance only has one\n component.\n \n The advance of a glyph is\
+            \ the distance from the glyph's origin to the\n origin of the next glyph\
+            \ along the baseline, which is either vertical\n or horizontal.  Note\
+            \ that, in a GlyphVector,\n the distance from a glyph to its following\
+            \ glyph might not be the\n glyph's advance, because of kerning or other\
+            \ positioning adjustments.\n \n The bounds is the smallest rectangle that\
+            \ completely contains the\n outline of the glyph.  The bounds rectangle\
+            \ is relative to the\n glyph's origin.  The left-side bearing is the distance\
+            \ from the glyph\n origin to the left of its bounds rectangle. If the\
+            \ left-side bearing is\n negative, part of the glyph is drawn to the left\
+            \ of its origin.  The\n right-side bearing is the distance from the right\
+            \ side of the bounds\n rectangle to the next glyph origin (the origin\
+            \ plus the advance).  If\n negative, part of the glyph is drawn to the\
+            \ right of the next glyph's\n origin.  Note that the bounds does not necessarily\
+            \ enclose all the pixels\n affected when rendering the glyph, because\
+            \ of rasterization and pixel\n adjustment effects.\n \n Although instances\
+            \ of GlyphMetrics can be directly\n constructed, they are almost always\
+            \ obtained from a\n GlyphVector.  Once constructed, GlyphMetrics\n objects\
+            \ are immutable.\n \n Example:\n Querying a Font for glyph information\n\
+            \ \n Font font = ...;\n int glyphIndex = ...;\n GlyphMetrics metrics =\
+            \ GlyphVector.getGlyphMetrics(glyphIndex);\n int isStandard = metrics.isStandard();\n\
+            \ float glyphAdvance = metrics.getAdvance();"
+          fields:
+            advanceX:
+              name: advanceX
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            advanceY:
+              name: advanceY
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            bounds:
+              name: bounds
+              modifiers:
+              - private
+              type:
+                basic: Rectangle2D.Float
+                full: java.awt.geom.Rectangle2D$Float
+            glyphType:
+              name: glyphType
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte
+            horizontal:
+              name: horizontal
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
           staticFields:
             COMBINING:
               name: COMBINING
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: byte
                 full: byte
-                nullable: true
+              notes: "Indicates a glyph that represents a combining character,\n such\
+                \ as an umlaut.  There is no caret position between this glyph\n and\
+                \ the preceding glyph."
             COMPONENT:
               name: COMPONENT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: byte
                 full: byte
-                nullable: true
+              notes: "Indicates a glyph with no corresponding character in the\n backing\
+                \ store.  The glyph is associated with the character\n represented\
+                \ by the logically preceding non-component glyph.  This\n is used\
+                \ for kashida justification or other visual modifications to\n existing\
+                \ glyphs.  There is no caret position between this glyph\n and the\
+                \ preceding glyph."
             LIGATURE:
               name: LIGATURE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: byte
                 full: byte
-                nullable: true
+              notes: "Indicates a glyph that represents multiple characters\n as a\
+                \ ligature, for example 'fi' or 'ffi'.  It is followed by\n filler\
+                \ glyphs for the remaining characters. Filler and combining\n glyphs\
+                \ can be intermixed to control positioning of accent marks\n on the\
+                \ logically preceding ligature."
             STANDARD:
               name: STANDARD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: byte
                 full: byte
-                nullable: true
+              notes: "Indicates a glyph that represents a single standard\n character."
             WHITESPACE:
               name: WHITESPACE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: byte
                 full: byte
-                nullable: true
+              notes: "Indicates a glyph with no visual representation. It can\n be\
+                \ added to the other code values to indicate an invisible glyph."
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: advance
               type:
                 basic: float
                 full: float
-            - name: arg1
+              notes: the advance width of the glyph
+            - name: bounds
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
-            - name: arg2
+              notes: the black box bounds of the glyph
+            - name: glyphType
               type:
                 basic: byte
                 full: byte
+              notes: the type of the glyph
+            notes: Constructs a GlyphMetrics object.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: horizontal
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: "if true, metrics are for a horizontal baseline,\n   otherwise\
+                \ they are for a vertical baseline"
+            - name: advanceX
               type:
                 basic: float
                 full: float
-            - name: arg2
+              notes: the X-component of the glyph's advance
+            - name: advanceY
               type:
                 basic: float
                 full: float
-            - name: arg3
+              notes: the Y-component of the glyph's advance
+            - name: bounds
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
-            - name: arg4
+              notes: the visual bounds of the glyph
+            - name: glyphType
               type:
                 basic: byte
                 full: byte
+              notes: the type of the glyph
+            notes: Constructs a GlyphMetrics object.
           methods:
           - name: getAdvance
             modifiers:
@@ -102,6 +199,9 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the advance of the glyph
+            notes: "Returns the advance of the glyph along the baseline (either\n\
+              \ horizontal or vertical)."
           - name: getAdvanceX
             modifiers:
             - public
@@ -109,6 +209,8 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the x-component of the advance of the glyph
+            notes: Returns the x-component of the advance of the glyph.
           - name: getAdvanceY
             modifiers:
             - public
@@ -116,6 +218,8 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the y-component of the advance of the glyph
+            notes: Returns the y-component of the advance of the glyph.
           - name: getBounds2D
             modifiers:
             - public
@@ -123,6 +227,11 @@ languages:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: a Rectangle2D that is the bounds of the glyph.
+            notes: "Returns the bounds of the glyph. This is the bounding box of the\
+              \ glyph outline.\n Because of rasterization and pixel alignment effects,\
+              \ it does not necessarily\n enclose the pixels that are affected when\
+              \ rendering the glyph."
           - name: getLSB
             modifiers:
             - public
@@ -130,6 +239,11 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the left side bearing of the glyph.
+            notes: "Returns the left (top) side bearing of the glyph.\n \n This is\
+              \ the distance from 0, 0 to the left (top) of the glyph\n bounds.  If\
+              \ the bounds of the glyph is to the left of (above) the\n origin, the\
+              \ LSB is negative."
           - name: getRSB
             modifiers:
             - public
@@ -137,6 +251,11 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the right side bearing of the glyph.
+            notes: "Returns the right (bottom) side bearing of the glyph.\n \n This\
+              \ is the distance from the right (bottom) of the glyph bounds to\n the\
+              \ advance. If the bounds of the glyph is to the right of (below)\n the\
+              \ advance, the RSB is negative."
           - name: getType
             modifiers:
             - public
@@ -144,6 +263,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the raw glyph type code.
+            notes: Returns the raw glyph type code.
           - name: isCombining
             modifiers:
             - public
@@ -151,6 +272,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this is a combining glyph;\n          false otherwise."
+            notes: Returns true if this is a combining glyph.
           - name: isComponent
             modifiers:
             - public
@@ -158,6 +281,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this is a component glyph;\n          false otherwise."
+            notes: Returns true if this is a component glyph.
           - name: isLigature
             modifiers:
             - public
@@ -165,6 +290,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this is a ligature glyph;\n          false otherwise."
+            notes: Returns true if this is a ligature glyph.
           - name: isStandard
             modifiers:
             - public
@@ -172,6 +299,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this is a standard glyph;\n          false otherwise."
+            notes: Returns true if this is a standard glyph.
           - name: isWhitespace
             modifiers:
             - public
@@ -179,5 +308,5 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: "true if this is a whitespace glyph;\n          false otherwise."
+            notes: Returns true if this is a whitespace glyph.

@@ -4,6 +4,87 @@ languages:
     packages:
       java.lang.ref:
         Reference:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract base class for reference objects.  This class defines the\n\
+            \ operations common to all reference objects.  Because reference objects\
+            \ are\n implemented in close cooperation with the garbage collector, this\
+            \ class may\n not be subclassed directly."
+          fields:
+            discovered:
+              name: discovered
+              modifiers:
+              - private
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference<?>
+            next:
+              name: next
+              modifiers:
+              - package
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference
+            queue:
+              name: queue
+              modifiers:
+              - package
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<? super T>
+            referent:
+              name: referent
+              modifiers:
+              - private
+              type:
+                basic: T
+                full: T
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            processPendingActive:
+              name: processPendingActive
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            processPendingLock:
+              name: processPendingLock
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T
+            - name: arg1
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<? super T>
           methods:
           - name: clear
             modifiers:
@@ -12,6 +93,27 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: clear0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: clearInactiveFinalReference
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: clone
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: enqueue
             modifiers:
             - public
@@ -19,9 +121,23 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: enqueueFromPending
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: get
             modifiers:
             - public
+            return:
+              type:
+                basic: T
+                full: T
+          - name: getFromInactiveFinalReference
+            modifiers:
+            - package
             return:
               type:
                 basic: T
@@ -33,7 +149,6 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
           - name: refersTo
             modifiers:
             - public
@@ -47,7 +162,43 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: refersTo0
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
           staticMethods:
+          - name: getAndClearReferencePendingList
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference<?>
+          - name: hasReferencePendingList
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: processPendingReferences
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
           - name: reachabilityFence
             modifiers:
             - public
@@ -61,5 +212,19 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+          - name: waitForReferencePendingList
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: waitForReferenceProcessing
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean

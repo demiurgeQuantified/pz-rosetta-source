@@ -1,0 +1,61 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent:
+        ForkJoinPool.ManagedBlocker:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Interface for extending managed parallelism for tasks running\n\
+            \ in ForkJoinPools.\n\n A ManagedBlocker provides two methods.  Method\n\
+            \ isReleasable() must return true if blocking is\n not necessary. Method\
+            \ block() blocks the current thread\n if necessary (perhaps internally\
+            \ invoking isReleasable\n before actually blocking). These actions are\
+            \ performed by any\n thread invoking ForkJoinPool.managedBlock(ManagedBlocker).\
+            \  The unusual\n methods in this API accommodate synchronizers that may,\
+            \ but\n don't usually, block for long periods. Similarly, they allow\n\
+            \ more efficient internal handling of cases in which additional\n workers\
+            \ may be, but usually are not, needed to ensure\n sufficient parallelism.\
+            \  Toward this end, implementations of\n method isReleasable must be amenable\
+            \ to repeated\n invocation. Neither method is invoked after a prior invocation\n\
+            \ of isReleasable or block returns true.\n\n For example, here is a ManagedBlocker\
+            \ based on a\n ReentrantLock:\n  <code>\n class ManagedLocker implements\
+            \ ManagedBlocker {\n   final ReentrantLock lock;\n   boolean hasLock =\
+            \ false;\n   ManagedLocker(ReentrantLock lock) { this.lock = lock; }\n\
+            \   public boolean block() {\n     if (!hasLock)\n       lock.lock();\n\
+            \     return true;\n   }\n   public boolean isReleasable() {\n     return\
+            \ hasLock || (hasLock = lock.tryLock());\n   }\n }</code>\n\n Here is\
+            \ a class that possibly blocks waiting for an\n item on a given queue:\n\
+            \  <code>\n class QueueTaker<E> implements ManagedBlocker {\n   final\
+            \ BlockingQueue<E> queue;\n   volatile E item = null;\n   QueueTaker(BlockingQueue<E>\
+            \ q) { this.queue = q; }\n   public boolean block() throws InterruptedException\
+            \ {\n     if (item == null)\n       item = queue.take();\n     return\
+            \ true;\n   }\n   public boolean isReleasable() {\n     return item !=\
+            \ null || (item = queue.poll()) != null;\n   }\n   public E getItem()\
+            \ { // call after pool.managedBlock completes\n     return item;\n   }\n\
+            \ }</code>"
+          methods:
+          - name: block
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if no additional blocking is necessary\n (i.e., if isReleasable\
+                \ would return true)"
+            notes: "Possibly blocks the current thread, for example waiting for\n\
+              \ a lock or condition."
+          - name: isReleasable
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if blocking is unnecessary
+            notes: Returns true if blocking is unnecessary.

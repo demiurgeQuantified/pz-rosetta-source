@@ -4,26 +4,104 @@ languages:
     packages:
       java.util:
         UUID:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A class that represents an immutable universally unique identifier\
+            \ (UUID).\n A UUID represents a 128-bit value.\n\n  There exist different\
+            \ variants of these global identifiers.  The methods\n of this class are\
+            \ for manipulating the Leach-Salz variant, although the\n constructors\
+            \ allow the creation of any variant of UUID (described below).\n\n  The\
+            \ layout of a variant 2 (Leach-Salz) UUID is as follows:\n\n The most\
+            \ significant long consists of the following unsigned fields:\n \n 0xFFFFFFFF00000000\
+            \ time_low\n 0x00000000FFFF0000 time_mid\n 0x000000000000F000 version\n\
+            \ 0x0000000000000FFF time_hi\n \n The least significant long consists\
+            \ of the following unsigned fields:\n \n 0xC000000000000000 variant\n\
+            \ 0x3FFF000000000000 clock_seq\n 0x0000FFFFFFFFFFFF node\n \n\n  The variant\
+            \ field contains a value which identifies the layout of the\n UUID.  The\
+            \ bit layout described above is valid only for a \n UUID with a variant\
+            \ value of 2, which indicates the Leach-Salz variant.\n\n  The version\
+            \ field holds a value that describes the type of this \n UUID.  There\
+            \ are four different basic types of UUIDs: time-based, DCE\n security,\
+            \ name-based, and randomly generated UUIDs.  These types have a\n version\
+            \ value of 1, 2, 3 and 4, respectively.\n\n  For more information including\
+            \ algorithms used to create UUIDs,\n see  RFC 4122: A\n Universally Unique\
+            \ IDentifier (UUID) URN Namespace, section 4.2\n &quot;Algorithms for\
+            \ Creating a Time-Based UUID&quot;."
+          fields:
+            leastSigBits:
+              name: leastSigBits
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            mostSigBits:
+              name: mostSigBits
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            NIBBLES:
+              name: NIBBLES
+              modifiers:
+              - private
+              - static
+              type:
+                basic: byte
+                full: byte[]
+            jla:
+              name: jla
+              modifiers:
+              - private
+              - static
+              type:
+                basic: JavaLangAccess
+                full: jdk.internal.access.JavaLangAccess
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: long
-                full: long
-          methods:
-          - name: __toString__
-            modifiers:
+                basic: byte
+                full: byte[]
+          - modifiers:
             - public
-            return:
+            parameters:
+            - name: mostSigBits
               type:
-                basic: String
-                full: java.lang.String
+                basic: long
+                full: long
+              notes: The most significant bits of the UUID
+            - name: leastSigBits
+              type:
+                basic: long
+                full: long
+              notes: The least significant bits of the UUID
+            notes: "Constructs a new UUID using the specified data.  \n mostSigBits\
+              \ is used for the most significant 64 bits of the \n UUID and leastSigBits\
+              \ becomes the least significant 64 bits of\n the UUID."
+          methods:
           - name: clockSequence
             modifiers:
             - public
@@ -31,38 +109,40 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The clock sequence of this UUID
+            notes: "The clock sequence value associated with this UUID.\n\n  The 14\
+              \ bit clock sequence value is constructed from the clock\n sequence\
+              \ field of this UUID.  The clock sequence field is used to\n guarantee\
+              \ temporal uniqueness in a time-based UUID.\n\n  The clockSequence value\
+              \ is only meaningful in a time-based\n UUID, which has version type\
+              \ 1.  If this UUID is not a time-based UUID\n then this method throws\
+              \ UnsupportedOperationException."
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: UUID
                 full: java.util.UUID
+              notes: UUID to which this UUID is to be compared
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "-1, 0 or 1 as this UUID is less than, equal to, or\n       \
+                \   greater than val"
+            notes: "Compares this UUID with the specified UUID.\n\n  The first of\
+              \ two UUIDs is greater than the second if the most\n significant field\
+              \ in which the UUIDs differ is greater for the first\n UUID."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -71,14 +151,20 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: The object to be compared
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the objects are the same; false\n          otherwise"
+            notes: "Compares this object to the specified object.  The result is \n\
+              \ true if and only if the argument is not null, is a UUID\n object,\
+              \ has the same variant, and contains the same value, bit for bit,\n\
+              \ as this UUID."
           - name: getLeastSignificantBits
             modifiers:
             - public
@@ -86,6 +172,8 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: The least significant 64 bits of this UUID's 128 bit value
+            notes: Returns the least significant 64 bits of this UUID's 128 bit value.
           - name: getMostSignificantBits
             modifiers:
             - public
@@ -93,6 +181,8 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: The most significant 64 bits of this UUID's 128 bit value
+            notes: Returns the most significant 64 bits of this UUID's 128 bit value.
           - name: hashCode
             modifiers:
             - public
@@ -100,6 +190,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: A hash code value for this UUID
+            notes: Returns a hash code for this UUID.
           - name: node
             modifiers:
             - public
@@ -107,6 +199,13 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: The node value of this UUID
+            notes: "The node value associated with this UUID.\n\n  The 48 bit node\
+              \ value is constructed from the node field of this\n UUID.  This field\
+              \ is intended to hold the IEEE 802 address of the machine\n that generated\
+              \ this UUID to guarantee spatial uniqueness.\n\n  The node value is\
+              \ only meaningful in a time-based UUID, which has\n version type 1.\
+              \  If this UUID is not a time-based UUID then this method\n throws UnsupportedOperationException."
           - name: timestamp
             modifiers:
             - public
@@ -114,6 +213,21 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: The timestamp of this UUID.
+            notes: "The timestamp value associated with this UUID.\n\n  The 60 bit\
+              \ timestamp value is constructed from the time_low,\n time_mid, and\
+              \ time_hi fields of this UUID.  The resulting\n timestamp is measured\
+              \ in 100-nanosecond units since midnight,\n October 15, 1582 UTC.\n\n\
+              \  The timestamp value is only meaningful in a time-based UUID, which\n\
+              \ has version type 1.  If this UUID is not a time-based UUID then\n\
+              \ this method throws UnsupportedOperationException."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: variant
             modifiers:
             - public
@@ -121,6 +235,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The variant number of this UUID
+            notes: "The variant number associated with this UUID.  The variant\n number\
+              \ describes the layout of the UUID.\n\n The variant number has the following\
+              \ meaning:\n \n 0    Reserved for NCS backward compatibility\n 2   \
+              \ IETF RFC 4122\n (Leach-Salz), used by this class\n 6    Reserved,\
+              \ Microsoft Corporation backward compatibility\n 7    Reserved for future\
+              \ definition"
           - name: version
             modifiers:
             - public
@@ -128,10 +249,32 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The version number of this UUID
+            notes: "The version number associated with this UUID.  The version\n number\
+              \ describes how this UUID was generated.\n\n The version number has\
+              \ the following meaning:\n \n 1    Time-based UUID\n 2    DCE security\
+              \ UUID\n 3    Name-based UUID\n 4    Randomly generated UUID"
           staticMethods:
           - name: fromString
             modifiers:
             - public
+            - static
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: A string that specifies a UUID
+            return:
+              type:
+                basic: UUID
+                full: java.util.UUID
+              notes: A UUID with the specified value
+            notes: "Creates a UUID from the string standard representation as\n described\
+              \ in the toString() method."
+          - name: fromString1
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -147,14 +290,35 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: name
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: A byte array to be used to construct a UUID
             return:
               type:
                 basic: UUID
                 full: java.util.UUID
+              notes: A UUID generated from the specified array
+            notes: "Static factory to retrieve a type 3 (name based) UUID based on\n\
+              \ the specified byte array."
+          - name: parse4Nibbles
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long
           - name: randomUUID
             modifiers:
             - public
@@ -163,5 +327,7 @@ languages:
               type:
                 basic: UUID
                 full: java.util.UUID
-          javaType: class
-          extends: Object
+              notes: A randomly generated UUID
+            notes: "Static factory to retrieve a type 4 (pseudo randomly generated)\
+              \ UUID.\n\n The UUID is generated using a cryptographically strong pseudo\n\
+              \ random number generator."

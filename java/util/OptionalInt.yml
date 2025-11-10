@@ -4,26 +4,74 @@ languages:
     packages:
       java.util:
         OptionalInt:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A container object which may or may not contain an int value.\n\
+            \ If a value is present, isPresent() returns true. If no\n value is present,\
+            \ the object is considered empty and\n isPresent() returns false.\n\n\
+            \ Additional methods that depend on the presence or absence of a contained\n\
+            \ value are provided, such as orElse()\n (returns a default value if no\
+            \ value is present) and\n ifPresent() (performs an\n action if a value\
+            \ is present).\n\n This is a value-based\n class; programmers should treat\
+            \ instances that are\n equal as interchangeable and should not\n use instances\
+            \ for synchronization, or unpredictable behavior may\n occur. For example,\
+            \ in a future release, synchronization may fail."
+          fields:
+            isPresent:
+              name: isPresent
+              modifiers:
+              - private
               type:
-                basic: String
-                full: java.lang.String
+                basic: boolean
+                full: boolean
+            value:
+              name: value
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            EMPTY:
+              name: EMPTY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: OptionalInt
+                full: java.util.OptionalInt
+          constructors:
+          - modifiers:
+            - private
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: an object to be tested for equality
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the other object is \"equal to\" this object\n     \
+                \    otherwise false"
+            notes: "Indicates whether some other object is \"equal to\" this\n OptionalInt.\
+              \  The other object is considered equal if:\n \n it is also an OptionalInt\
+              \ and;\n both instances have no value present or;\n the present values\
+              \ are \"equal to\" each other via ==."
           - name: getAsInt
             modifiers:
             - public
@@ -31,6 +79,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the value described by this OptionalInt
+            notes: "If a value is present, returns the value, otherwise throws\n NoSuchElementException."
           - name: hashCode
             modifiers:
             - public
@@ -38,34 +88,46 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "hash code value of the present value or 0 if no value is\n \
+                \        present"
+            notes: "Returns the hash code of the value, if present, otherwise 0\n\
+              \ (zero) if no value is present."
           - name: ifPresent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: IntConsumer
                 full: java.util.function.IntConsumer
+              notes: the action to be performed, if a value is present
             return:
               type:
                 basic: void
                 full: void
+            notes: "If a value is present, performs the given action with the value,\n\
+              \ otherwise does nothing."
           - name: ifPresentOrElse
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: IntConsumer
                 full: java.util.function.IntConsumer
-            - name: arg1
+              notes: the action to be performed, if a value is present
+            - name: emptyAction
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: "the empty-based action to be performed, if no value is\n   \
+                \     present"
             return:
               type:
                 basic: void
                 full: void
+            notes: "If a value is present, performs the given action with the value,\n\
+              \ otherwise performs the given empty-based action."
           - name: isEmpty
             modifiers:
             - public
@@ -73,6 +135,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if a value is not present, otherwise false
+            notes: "If a value is not present, returns true, otherwise\n false."
           - name: isPresent
             modifiers:
             - public
@@ -80,30 +144,41 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if a value is present, otherwise false
+            notes: If a value is present, returns true, otherwise false.
           - name: orElse
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: int
                 full: int
+              notes: the value to be returned, if no value is present
             return:
               type:
                 basic: int
                 full: int
+              notes: the value, if present, otherwise other
+            notes: "If a value is present, returns the value, otherwise returns\n\
+              \ other."
           - name: orElseGet
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: supplier
               type:
                 basic: IntSupplier
                 full: java.util.function.IntSupplier
+              notes: the supplying function that produces a value to be returned
             return:
               type:
                 basic: int
                 full: int
+              notes: "the value, if present, otherwise the result produced by the\n\
+                \         supplying function"
+            notes: "If a value is present, returns the value, otherwise returns the\
+              \ result\n produced by the supplying function."
           - name: orElseThrow
             modifiers:
             - public
@@ -111,18 +186,25 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the value described by this OptionalInt
+            notes: "If a value is present, returns the value, otherwise throws\n NoSuchElementException."
           - name: orElseThrow
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: exceptionSupplier
               type:
-                basic: Supplier<? extends X>
+                basic: Supplier
                 full: java.util.function.Supplier<? extends X>
+              notes: "the supplying function that produces an\n        exception to\
+                \ be thrown"
             return:
               type:
                 basic: int
                 full: int
+              notes: the value, if present
+            notes: "If a value is present, returns the value, otherwise throws an\
+              \ exception\n produced by the exception supplying function."
           - name: stream
             modifiers:
             - public
@@ -130,6 +212,16 @@ languages:
               type:
                 basic: IntStream
                 full: java.util.stream.IntStream
+              notes: the optional value as an IntStream
+            notes: "If a value is present, returns a sequential IntStream containing\n\
+              \ only that value, otherwise returns an empty IntStream."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: empty
             modifiers:
@@ -139,18 +231,22 @@ languages:
               type:
                 basic: OptionalInt
                 full: java.util.OptionalInt
+              notes: an empty OptionalInt
+            notes: "Returns an empty OptionalInt instance.  No value is present for\n\
+              \ this OptionalInt."
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: int
                 full: int
+              notes: the value to describe
             return:
               type:
                 basic: OptionalInt
                 full: java.util.OptionalInt
-          javaType: class
-          extends: Object
+              notes: an OptionalInt with the value present
+            notes: Returns an OptionalInt describing the given value.

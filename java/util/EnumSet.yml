@@ -4,100 +4,427 @@ languages:
     packages:
       java.util:
         EnumSet:
+          extends: java.util.AbstractSet<E>
+          modifiers:
+          - public
+          - abstract
+          notes: "A specialized Set implementation for use with enum types.  All of\n\
+            \ the elements in an enum set must come from a single enum type that is\n\
+            \ specified, explicitly or implicitly, when the set is created.  Enum\
+            \ sets\n are represented internally as bit vectors.  This representation\
+            \ is\n extremely compact and efficient. The space and time performance\
+            \ of this\n class should be good enough to allow its use as a high-quality,\
+            \ typesafe\n alternative to traditional int-based \"bit flags.\"  Even\
+            \ bulk\n operations (such as containsAll and retainAll) should\n run very\
+            \ quickly if their argument is also an enum set.\n\n The iterator returned\
+            \ by the iterator method traverses the\n elements in their natural order\
+            \ (the order in which the enum\n constants are declared).  The returned\
+            \ iterator is weakly\n consistent: it will never throw ConcurrentModificationException\n\
+            \ and it may or may not show the effects of any modifications to the set\
+            \ that\n occur while the iteration is in progress.\n\n Null elements are\
+            \ not permitted.  Attempts to insert a null element\n will throw NullPointerException.\
+            \  Attempts to test for the\n presence of a null element or to remove\
+            \ one will, however, function\n properly.\n\n Like most collection implementations,\
+            \ EnumSet is not\n synchronized.  If multiple threads access an enum set\
+            \ concurrently, and at\n least one of the threads modifies the set, it\
+            \ should be synchronized\n externally.  This is typically accomplished\
+            \ by synchronizing on some\n object that naturally encapsulates the enum\
+            \ set.  If no such object exists,\n the set should be \"wrapped\" using\
+            \ the Collections.synchronizedSet(java.util.Set<T>)\n method.  This is\
+            \ best done at creation time, to prevent accidental\n unsynchronized access:\n\
+            \n \n Set<MyEnum> s = Collections.synchronizedSet(EnumSet.noneOf(MyEnum.class));\n\
+            \ \n\n Implementation note: All basic operations execute in constant time.\n\
+            \ They are likely (though not guaranteed) to be much faster than their\n\
+            \ HashSet counterparts.  Even bulk operations execute in\n constant time\
+            \ if their argument is also an enum set.\n\n This class is a member of\
+            \ the\n \n Java Collections Framework."
+          fields:
+            elementType:
+              name: elementType
+              modifiers:
+              - package
+              type:
+                basic: Class
+                full: java.lang.Class<E>
+            universe:
+              name: universe
+              modifiers:
+              - package
+              type:
+                basic: Enum
+                full: java.lang.Enum<?>[]
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<E>
+            - name: arg1
+              type:
+                basic: Enum
+                full: java.lang.Enum<?>[]
           methods:
+          - name: addAll
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addRange
+            modifiers:
+            - package
+            - abstract
+            parameters:
+            - name: arg0
+              type:
+                basic: E
+                full: E
+            - name: arg1
+              type:
+                basic: E
+                full: E
+            return:
+              type:
+                basic: void
+                full: void
           - name: clone
             modifiers:
             - public
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
+              notes: a copy of this set
+            notes: Returns a copy of this set.
           - name: clone
             modifiers:
             - public
             return:
               type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
+                basic: Object
+                full: java.lang.Object
+          - name: complement
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readObjectNoData
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: typeCheck
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: E
+                full: E
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           staticMethods:
           - name: allOf
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: elementType
               type:
-                basic: Class<E>
+                basic: Class
                 full: java.lang.Class<E>
+              notes: "the class object of the element type for this enum\n     set"
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
+              notes: An enum set containing all the elements in the specified type.
+            notes: "Creates an enum set containing all of the elements in the specified\n\
+              \ element type."
           - name: complementOf
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: s
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
+              notes: the enum set from whose complement to initialize this enum set
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
+              notes: The complement of the specified set in this set
+            notes: "Creates an enum set with the same element type as the specified\
+              \ enum\n set, initially containing all the elements of this type that\
+              \ are\n not contained in the specified set."
           - name: copyOf
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: s
               type:
-                basic: Collection<E>
+                basic: EnumSet
+                full: java.util.EnumSet<E>
+              notes: the enum set from which to initialize this enum set
+            return:
+              type:
+                basic: EnumSet
+                full: java.util.EnumSet<E>
+              notes: A copy of the specified enum set.
+            notes: "Creates an enum set with the same element type as the specified\
+              \ enum\n set, initially containing the same elements (if any)."
+          - name: copyOf
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: c
+              type:
+                basic: Collection
                 full: java.util.Collection<E>
+              notes: the collection from which to initialize this enum set
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
-          - name: copyOf
+              notes: An enum set initialized from the given collection.
+            notes: "Creates an enum set initialized from the specified collection.\
+              \  If\n the specified collection is an EnumSet instance, this static\n\
+              \ factory method behaves identically to copyOf(EnumSet).\n Otherwise,\
+              \ the specified collection must contain at least one element\n (in order\
+              \ to determine the new enum set's element type)."
+          - name: getUniverse
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
+                basic: Class
+                full: java.lang.Class<E>
             return:
               type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
+                basic: E
+                full: E[]
           - name: noneOf
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: elementType
               type:
-                basic: Class<E>
+                basic: Class
                 full: java.lang.Class<E>
+              notes: "the class object of the element type for this enum\n     set"
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
+              notes: An empty enum set of the specified type.
+            notes: Creates an empty enum set with the specified element type.
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element that this set is to contain initially
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
+              notes: an enum set initially containing the specified element
+            notes: "Creates an enum set initially containing the specified element.\n\
+              \n Overloadings of this method exist to initialize an enum set with\n\
+              \ one through five elements.  A sixth overloading is provided that\n\
+              \ uses the varargs feature.  This overloading may be used to create\n\
+              \ an enum set initially containing an arbitrary number of elements,\
+              \ but\n is likely to run slower than the overloadings that do not use\
+              \ varargs."
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: e1
+              type:
+                basic: E
+                full: E
+              notes: an element that this set is to contain initially
+            - name: e2
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            return:
+              type:
+                basic: EnumSet
+                full: java.util.EnumSet<E>
+              notes: an enum set initially containing the specified elements
+            notes: "Creates an enum set initially containing the specified elements.\n\
+              \n Overloadings of this method exist to initialize an enum set with\n\
+              \ one through five elements.  A sixth overloading is provided that\n\
+              \ uses the varargs feature.  This overloading may be used to create\n\
+              \ an enum set initially containing an arbitrary number of elements,\
+              \ but\n is likely to run slower than the overloadings that do not use\
+              \ varargs."
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: e1
+              type:
+                basic: E
+                full: E
+              notes: an element that this set is to contain initially
+            - name: e2
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            - name: e3
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            return:
+              type:
+                basic: EnumSet
+                full: java.util.EnumSet<E>
+              notes: an enum set initially containing the specified elements
+            notes: "Creates an enum set initially containing the specified elements.\n\
+              \n Overloadings of this method exist to initialize an enum set with\n\
+              \ one through five elements.  A sixth overloading is provided that\n\
+              \ uses the varargs feature.  This overloading may be used to create\n\
+              \ an enum set initially containing an arbitrary number of elements,\
+              \ but\n is likely to run slower than the overloadings that do not use\
+              \ varargs."
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: e1
+              type:
+                basic: E
+                full: E
+              notes: an element that this set is to contain initially
+            - name: e2
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            - name: e3
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            - name: e4
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            return:
+              type:
+                basic: EnumSet
+                full: java.util.EnumSet<E>
+              notes: an enum set initially containing the specified elements
+            notes: "Creates an enum set initially containing the specified elements.\n\
+              \n Overloadings of this method exist to initialize an enum set with\n\
+              \ one through five elements.  A sixth overloading is provided that\n\
+              \ uses the varargs feature.  This overloading may be used to create\n\
+              \ an enum set initially containing an arbitrary number of elements,\
+              \ but\n is likely to run slower than the overloadings that do not use\
+              \ varargs."
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: e1
+              type:
+                basic: E
+                full: E
+              notes: an element that this set is to contain initially
+            - name: e2
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            - name: e3
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            - name: e4
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            - name: e5
+              type:
+                basic: E
+                full: E
+              notes: another element that this set is to contain initially
+            return:
+              type:
+                basic: EnumSet
+                full: java.util.EnumSet<E>
+              notes: an enum set initially containing the specified elements
+            notes: "Creates an enum set initially containing the specified elements.\n\
+              \n Overloadings of this method exist to initialize an enum set with\n\
+              \ one through five elements.  A sixth overloading is provided that\n\
+              \ uses the varargs feature.  This overloading may be used to create\n\
+              \ an enum set initially containing an arbitrary number of elements,\
+              \ but\n is likely to run slower than the overloadings that do not use\
+              \ varargs."
           - name: of
             modifiers:
             - public
@@ -109,120 +436,34 @@ languages:
                 full: E
             - name: arg1
               type:
-                basic: E[]
+                basic: E
                 full: E[]
             return:
               type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: EnumSet<E>
-                full: java.util.EnumSet<E>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            - name: arg1
-              type:
-                basic: E
-                full: E
-            - name: arg2
-              type:
-                basic: E
-                full: E
-            - name: arg3
-              type:
-                basic: E
-                full: E
-            - name: arg4
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
           - name: range
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: from
               type:
                 basic: E
                 full: E
-            - name: arg1
+              notes: the first element in the range
+            - name: to
               type:
                 basic: E
                 full: E
+              notes: the last element in the range
             return:
               type:
-                basic: EnumSet<E>
+                basic: EnumSet
                 full: java.util.EnumSet<E>
-          javaType: class
-          extends: AbstractSet<E>
+              notes: "an enum set initially containing all of the elements in the\n\
+                \         range defined by the two specified endpoints"
+            notes: "Creates an enum set initially containing all of the elements in\
+              \ the\n range defined by the two specified endpoints.  The returned\
+              \ set will\n contain the endpoints themselves, which may be identical\
+              \ but must not\n be out of order."

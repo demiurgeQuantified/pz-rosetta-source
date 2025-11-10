@@ -1,0 +1,171 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.security:
+        SecureClassLoader:
+          extends: java.lang.ClassLoader
+          modifiers:
+          - public
+          notes: "This class extends ClassLoader with additional support for defining\n\
+            \ classes with an associated code source and permissions which are\n retrieved\
+            \ by the system policy by default."
+          fields:
+            pdcache:
+              name: pdcache
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.security.SecureClassLoader$CodeSourceKey,
+                  java.security.ProtectionDomain>
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: parent
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+              notes: the parent ClassLoader
+            notes: "Creates a new SecureClassLoader using the specified parent\n class\
+              \ loader for delegation.\n\n If there is a security manager, this method\
+              \ first\n calls the security manager's checkCreateClassLoader\n method\
+              \  to ensure creation of a class loader is allowed."
+          - modifiers:
+            - protected
+            notes: "Creates a new SecureClassLoader using the default parent class\n\
+              \ loader for delegation.\n\n If there is a security manager, this method\
+              \ first\n calls the security manager's checkCreateClassLoader\n method\
+              \  to ensure creation of a class loader is allowed."
+          - modifiers:
+            - protected
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: class loader name; or null if not named
+            - name: parent
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+              notes: the parent class loader
+            notes: "Creates a new SecureClassLoader of the specified name and\n using\
+              \ the specified parent class loader for delegation."
+          methods:
+          - name: defineClass
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the expected name of the class, or null\n                  if\
+                \ not known, using '.' and not '/' as the separator\n            \
+                \      and without a trailing \".class\" suffix."
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: "the bytes that make up the class data. The bytes in\n      \
+                \       positions off through off+len-1\n             should have\
+                \ the format of a valid class file as defined by\n             The\
+                \ Java Virtual Machine Specification."
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset in b of the class data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the length of the class data
+            - name: cs
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+              notes: the associated CodeSource, or null if none
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: "the Class object created from the data,\n         and optional\
+                \ CodeSource."
+            notes: "Converts an array of bytes into an instance of class Class,\n\
+              \ with an optional CodeSource. Before the\n class can be used it must\
+              \ be resolved.\n \n If a non-null CodeSource is supplied a ProtectionDomain\
+              \ is\n constructed and associated with the class being defined."
+          - name: defineClass
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the expected name of the class, or null\n                  if\
+                \ not known, using '.' and not '/' as the separator\n            \
+                \      and without a trailing \".class\" suffix."
+            - name: b
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: "the bytes that make up the class data.  The bytes from positions\n\
+                \                  b.position() through b.position() + b.limit()"
+            - name: cs
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+              notes: the associated CodeSource, or null if none
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: "the Class object created from the data,\n         and optional\
+                \ CodeSource."
+            notes: "Converts a ByteBuffer\n into an instance of class Class, with\
+              \ an optional CodeSource.\n Before the class can be used it must be\
+              \ resolved.\n \n If a non-null CodeSource is supplied a ProtectionDomain\
+              \ is\n constructed and associated with the class being defined."
+          - name: getPermissions
+            modifiers:
+            - protected
+            parameters:
+            - name: codesource
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+              notes: the codesource.
+            return:
+              type:
+                basic: PermissionCollection
+                full: java.security.PermissionCollection
+              notes: the permissions granted to the codesource.
+            notes: "Returns the permissions for the given CodeSource object.\n \n\
+              \ This method is invoked by the defineClass method which takes\n a CodeSource\
+              \ as an argument when it is constructing the\n ProtectionDomain for\
+              \ the class being defined."
+          - name: getProtectionDomain
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+            return:
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain
+          - name: resetArchivedStates
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void

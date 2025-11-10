@@ -4,19 +4,84 @@ languages:
     packages:
       java.lang.module:
         ModuleDescriptor.Version:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A module's version string.\n\n  A version string has three components:\
+            \ The version number itself, an\n optional pre-release version, and an\
+            \ optional build version.  Each\n component is a sequence of tokens; each\
+            \ token is either a non-negative\n integer or a string.  Tokens are separated\
+            \ by the punctuation characters\n '.', '-', or '+', or by transitions\
+            \ from a\n sequence of digits to a sequence of characters that are neither\
+            \ digits\n nor punctuation characters, or vice versa.\n\n \n\n    The\
+            \ version number is a sequence of tokens separated by\n   '.' characters,\
+            \ terminated by the first '-' or \n   '+' character. \n\n    The pre-release\
+            \ version is a sequence of tokens separated\n   by '.' or '-' characters,\
+            \ terminated by the first\n   '+' character. \n\n    The build version\
+            \ is a sequence of tokens separated by\n   '.', '-', or '+' characters.\n\
+            \n \n\n  When comparing two version strings, the elements of their\n corresponding\
+            \ components are compared in pointwise fashion.  If one\n component is\
+            \ longer than the other, but otherwise equal to it, then the\n first component\
+            \ is considered the greater of the two; otherwise, if two\n corresponding\
+            \ elements are integers then they are compared as such;\n otherwise, at\
+            \ least one of the elements is a string, so the other is\n converted into\
+            \ a string if it is an integer and the two are compared\n lexicographically.\
+            \  Trailing integer elements with the value zero are\n ignored.\n\n  Given\
+            \ two version strings, if their version numbers differ then the\n result\
+            \ of comparing them is the result of comparing their version\n numbers;\
+            \ otherwise, if one of them has a pre-release version but the\n other\
+            \ does not then the first is considered to precede the second,\n otherwise\
+            \ the result of comparing them is the result of comparing their\n pre-release\
+            \ versions; otherwise, the result of comparing them is the\n result of\
+            \ comparing their build versions."
+          fields:
+            build:
+              name: build
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
+            pre:
+              name: pre
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
+            sequence:
+              name: sequence
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
+            version:
+              name: version
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
-          - name: compareTo
-            modifiers:
-            - public
+          constructors:
+          - modifiers:
+            - private
             parameters:
             - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+          methods:
+          - name: cmp
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
               type:
                 basic: Object
                 full: java.lang.Object
@@ -28,22 +93,44 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: that
               type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Version
+                basic: ModuleDescriptor.Version
                 full: java.lang.module.ModuleDescriptor$Version
+              notes: The module version to compare
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "A negative integer, zero, or a positive integer as this\n  \
+                \       module version is less than, equal to, or greater than the\n\
+                \         given module version"
+            notes: "Compares this module version to another module version. Module\n\
+              \ versions are compared as described in the class description."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int
+          - name: compareTokens
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
+            - name: arg1
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
             return:
               type:
                 basic: int
@@ -52,14 +139,22 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ob
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to which this object is to be compared
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the given object is a module\n       \
+                \   reference that is equal to this module reference"
+            notes: "Tests this module version for equality with the given object.\n\
+              \n  If the given object is not a Version then this method\n returns\
+              \ false. Two module version are equal if their\n corresponding components\
+              \ are equal. \n\n  This method satisfies the general contract of the\
+              \ Object.equals method."
           - name: hashCode
             modifiers:
             - public
@@ -67,19 +162,73 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The hash-code value for this module version
+            notes: "Computes a hash code for this module version.\n\n  The hash code\
+              \ is based upon the components of the version and\n satisfies the general\
+              \ contract of the Object.hashCode method."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: parse
             modifiers:
             - public
             - static
             parameters:
+            - name: v
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The string to parse
+            return:
+              type:
+                basic: ModuleDescriptor.Version
+                full: java.lang.module.ModuleDescriptor$Version
+              notes: The resulting Version
+            notes: Parses the given string as a version string.
+          - name: takeNumber
+            modifiers:
+            - private
+            - static
+            parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
             return:
               type:
-                basic: Version
-                full: java.lang.module.ModuleDescriptor$Version
-          javaType: class
-          extends: Object
+                basic: int
+                full: int
+          - name: takeString
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: List
+                full: java.util.List<java.lang.Object>
+            return:
+              type:
+                basic: int
+                full: int

@@ -4,77 +4,319 @@ languages:
     packages:
       java.awt.image:
         DataBuffer:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class exists to wrap one or more data arrays.  Each data array\
+            \ in\n the DataBuffer is referred to as a bank.  Accessor methods for\
+            \ getting\n and setting elements of the DataBuffer's banks exist with\
+            \ and without\n a bank specifier.  The methods without a bank specifier\
+            \ use the default 0th\n bank.  The DataBuffer can optionally take an offset\
+            \ per bank, so that\n data in an existing array can be used even if the\
+            \ interesting data\n doesn't start at array location zero.  Getting or\
+            \ setting the 0th\n element of a bank, uses the (0+offset)th element of\
+            \ the array.  The\n size field specifies how much of the data array is\
+            \ available for\n use.  Size + offset for a given bank should never be\
+            \ greater\n than the length of the associated data array.  The data type\
+            \ of\n a data buffer indicates the type of the data array(s) and may also\n\
+            \ indicate additional semantics, e.g. storing unsigned 8-bit data\n in\
+            \ elements of a byte array.  The data type may be TYPE_UNDEFINED\n or\
+            \ one of the types defined below.  Other types may be added in\n the future.\
+            \  Generally, an object of class DataBuffer will be cast down\n to one\
+            \ of its data type specific subclasses to access data type specific\n\
+            \ methods for improved performance.  Currently, the Java 2D(tm) API\n\
+            \ image classes use TYPE_BYTE, TYPE_USHORT, TYPE_INT, TYPE_SHORT,\n TYPE_FLOAT,\
+            \ and TYPE_DOUBLE DataBuffers to store image data."
+          fields:
+            banks:
+              name: banks
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The number of banks in this DataBuffer.
+            dataType:
+              name: dataType
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: The data type of this DataBuffer.
+            offset:
+              name: offset
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: Offset into default (first) bank from which to get the first
+                element.
+            offsets:
+              name: offsets
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int[]
+              notes: Offsets into all banks.
+            size:
+              name: size
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: Usable size of all banks.
+            theTrackable:
+              name: theTrackable
+              modifiers:
+              - package
+              type:
+                basic: StateTrackableDelegate
+                full: sun.java2d.StateTrackableDelegate
           staticFields:
             TYPE_BYTE:
               name: TYPE_BYTE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for unsigned byte data.
             TYPE_DOUBLE:
               name: TYPE_DOUBLE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for double data.  Placeholder for future use.
             TYPE_FLOAT:
               name: TYPE_FLOAT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for float data.  Placeholder for future use.
             TYPE_INT:
               name: TYPE_INT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for int data.
             TYPE_SHORT:
               name: TYPE_SHORT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for signed short data.  Placeholder for future use.
             TYPE_UNDEFINED:
               name: TYPE_UNDEFINED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for undefined data.
             TYPE_USHORT:
               name: TYPE_USHORT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Tag for unsigned short data.
+            dataTypeSize:
+              name: dataTypeSize
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: dataType
+              type:
+                basic: int
+                full: int
+              notes: the data type of this DataBuffer
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the banks
+            notes: "Constructs a DataBuffer containing one bank of the specified\n\
+              \  data type and size."
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: StateTrackable.State
+                full: sun.java2d.StateTrackable$State
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+          - modifiers:
+            - protected
+            parameters:
+            - name: dataType
+              type:
+                basic: int
+                full: int
+              notes: the data type of this DataBuffer
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the banks
+            - name: numBanks
+              type:
+                basic: int
+                full: int
+              notes: "the number of banks in this\n         DataBuffer"
+            notes: "Constructs a DataBuffer containing the specified number of\n \
+              \ banks.  Each bank has the specified size and an offset of 0."
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: StateTrackable.State
+                full: sun.java2d.StateTrackable$State
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+          - modifiers:
+            - protected
+            parameters:
+            - name: dataType
+              type:
+                basic: int
+                full: int
+              notes: the data type of this DataBuffer
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the banks
+            - name: numBanks
+              type:
+                basic: int
+                full: int
+              notes: "the number of banks in this\n         DataBuffer"
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset for each bank
+            notes: "Constructs a DataBuffer that contains the specified number\n \
+              \ of banks.  Each bank has the specified datatype, size and offset."
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: StateTrackable.State
+                full: sun.java2d.StateTrackable$State
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+          - modifiers:
+            - protected
+            parameters:
+            - name: dataType
+              type:
+                basic: int
+                full: int
+              notes: the data type of this DataBuffer
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the banks
+            - name: numBanks
+              type:
+                basic: int
+                full: int
+              notes: "the number of banks in this\n         DataBuffer"
+            - name: offsets
+              type:
+                basic: int
+                full: int[]
+              notes: an array containing an offset for each bank.
+            notes: "Constructs a DataBuffer which contains the specified number\n\
+              \  of banks.  Each bank has the specified datatype and size.  The\n\
+              \  offset for each bank is specified by its respective entry in\n  the\
+              \ offsets array."
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: StateTrackable.State
+                full: sun.java2d.StateTrackable$State
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int[]
           methods:
           - name: getDataType
             modifiers:
@@ -83,90 +325,133 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the data type of this DataBuffer.
+            notes: Returns the data type of this DataBuffer.
           - name: getElem
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the index of the requested data array element
             return:
               type:
                 basic: int
                 full: int
+              notes: the data array element at the specified index.
+            notes: "Returns the requested data array element from the first (default)\
+              \ bank\n as an integer."
           - name: getElem
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: bank
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified bank
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the index of the requested data array element
             return:
               type:
                 basic: int
                 full: int
+              notes: "the data array element at the specified index from the\n   \
+                \      specified bank at the specified index."
+            notes: "Returns the requested data array element from the specified bank\n\
+              \ as an integer."
           - name: getElemDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the specified index
             return:
               type:
                 basic: double
                 full: double
+              notes: "a double value representing the element at the specified\n index\
+                \ in the data array."
+            notes: "Returns the requested data array element from the first (default)\
+              \ bank\n as a double.  The implementation in this class is to cast\n\
+              \ getElem(int)\n to a double.  Subclasses can override this method if\
+              \ another\n implementation is needed."
           - name: getElemDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bank
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified bank
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the specified index
             return:
               type:
                 basic: double
                 full: double
+              notes: "a double value representing the element from the specified\n\
+                \ bank at the specified index in the data array."
+            notes: "Returns the requested data array element from the specified bank\
+              \ as\n a double.  The implementation in this class is to cast getElem(bank,\
+              \ i)\n to a double.  Subclasses may override this method if another\n\
+              \ implementation is needed."
           - name: getElemFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the index of the requested data array element
             return:
               type:
                 basic: float
                 full: float
+              notes: "a float value representing the data array element at the\n \
+                \ specified index."
+            notes: "Returns the requested data array element from the first (default)\
+              \ bank\n as a float.  The implementation in this class is to cast getElem(i)\n\
+              \ to a float.  Subclasses may override this method if another\n implementation\
+              \ is needed."
           - name: getElemFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bank
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified bank
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the index of the requested data array element
             return:
               type:
                 basic: float
                 full: float
+              notes: "a float value representing the data array element from the\n\
+                \ specified bank at the specified index."
+            notes: "Returns the requested data array element from the specified bank\n\
+              \ as a float.  The implementation in this class is to cast\n getElem(int,\
+              \ int)\n to a float.  Subclasses can override this method if another\n\
+              \ implementation is needed."
           - name: getNumBanks
             modifiers:
             - public
@@ -174,6 +459,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of banks.
+            notes: Returns the number of banks in this DataBuffer.
           - name: getOffset
             modifiers:
             - public
@@ -181,13 +468,17 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the offset of the default bank.
+            notes: Returns the offset of the default bank in array elements.
           - name: getOffsets
             modifiers:
             - public
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: the offsets of all banks.
+            notes: Returns the offsets (in array elements) of all the banks.
           - name: getSize
             modifiers:
             - public
@@ -195,127 +486,185 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the size of all banks.
+            notes: Returns the size (in array elements) of all banks.
           - name: setElem
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified index into the data array
+            - name: val
               type:
                 basic: int
                 full: int
+              notes: "the data to set the element at the specified index in\n the\
+                \ data array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the requested data array element in the first (default) bank\n\
+              \ from the given integer."
           - name: setElem
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: bank
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified bank
+            - name: i
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the specified index into the data array
+            - name: val
               type:
                 basic: int
                 full: int
+              notes: "the data to set the element in the specified bank\n at the specified\
+                \ index in the data array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the requested data array element in the specified bank\n\
+              \ from the given integer."
           - name: setElemDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified index
+            - name: val
               type:
                 basic: double
                 full: double
+              notes: "the value to set the element at the specified index\n in the\
+                \ data array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the requested data array element in the first (default) bank\n\
+              \ from the given double.  The implementation in this class is to cast\n\
+              \ val to an int and call setElem(int, int).  Subclasses can\n override\
+              \ this method if another implementation is needed."
           - name: setElemDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bank
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified bank
+            - name: i
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the specified index
+            - name: val
               type:
                 basic: double
                 full: double
+              notes: "the value to set the element in the specified bank\n at the\
+                \ specified index of the data array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the requested data array element in the specified bank\n\
+              \ from the given double.  The implementation in this class is to cast\n\
+              \ val to an int and call setElem(int, int).  Subclasses can\n override\
+              \ this method if another implementation is needed."
           - name: setElemFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified index
+            - name: val
               type:
                 basic: float
                 full: float
+              notes: "the value to set the element at the specified index in\n the\
+                \ data array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the requested data array element in the first (default) bank\n\
+              \ from the given float.  The implementation in this class is to cast\n\
+              \ val to an int and call setElem(int, int).  Subclasses\n can override\
+              \ this method if another implementation is needed."
           - name: setElemFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bank
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified bank
+            - name: i
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the specified index
+            - name: val
               type:
                 basic: float
                 full: float
+              notes: "the value to set the element in the specified bank at\n the\
+                \ specified index in the data array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the requested data array element in the specified bank\n\
+              \ from the given float.  The implementation in this class is to cast\n\
+              \ val to an int and call setElem(int, int).  Subclasses can\n override\
+              \ this method if another implementation is needed."
           staticMethods:
           - name: getDataTypeSize
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: type
               type:
                 basic: int
                 full: int
+              notes: the value of one of the defined datatype tags
             return:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Object
+              notes: the size of the data type
+            notes: Returns the size (in bits) of the data type, given a datatype tag.
+          - name: toIntArray
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int[]

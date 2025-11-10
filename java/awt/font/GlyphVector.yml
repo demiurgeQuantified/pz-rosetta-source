@@ -4,296 +4,493 @@ languages:
     packages:
       java.awt.font:
         GlyphVector:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A GlyphVector object is a collection of glyphs\n containing geometric\
+            \ information for the placement of each glyph\n in a transformed coordinate\
+            \ space which corresponds to the\n device on which the GlyphVector is\
+            \ ultimately\n displayed.\n \n The GlyphVector does not attempt any interpretation\
+            \ of\n the sequence of glyphs it contains.  Relationships between adjacent\n\
+            \ glyphs in sequence are solely used to determine the placement of\n the\
+            \ glyphs in the visual coordinate space.\n \n Instances of GlyphVector\
+            \ are created by a Font.\n \n In a text processing application that can\
+            \ cache intermediate\n representations of text, creation and subsequent\
+            \ caching of a\n GlyphVector for use during rendering is the fastest\n\
+            \ method to present the visual representation of characters to a user.\n\
+            \ \n A GlyphVector is associated with exactly one\n Font, and can provide\
+            \ data useful only in relation to\n this Font.  In addition, metrics obtained\
+            \ from a\n GlyphVector are not generally geometrically scalable\n since\
+            \ the pixelization and spacing are dependent on grid-fitting\n algorithms\
+            \ within a Font.  To facilitate accurate\n measurement of a GlyphVector\
+            \ and its component\n glyphs, you must specify a scaling transform, anti-alias\
+            \ mode, and\n fractional metrics mode when creating the GlyphVector.\n\
+            \ These characteristics can be derived from the destination device.\n\
+            \ \n For each glyph in the GlyphVector, you can obtain:\n \n the position\
+            \ of the glyph\n the transform associated with the glyph\n the metrics\
+            \ of the glyph in the context of the\n   GlyphVector.  The metrics of\
+            \ the glyph may be\n   different under different transforms, application\
+            \ specified\n   rendering hints, and the specific instance of the glyph\
+            \ within\n   the GlyphVector.\n \n \n Altering the data used to create\
+            \ the GlyphVector does not\n alter the state of the GlyphVector.\n \n\
+            \ Methods are provided to adjust the positions of the glyphs\n within\
+            \ the GlyphVector.  These methods are most\n appropriate for applications\
+            \ that are performing justification\n operations for the presentation\
+            \ of the glyphs.\n \n Methods are provided to transform individual glyphs\
+            \ within the\n GlyphVector.  These methods are primarily useful for\n\
+            \ special effects.\n \n Methods are provided to return both the visual,\
+            \ logical, and pixel bounds\n of the entire GlyphVector or of individual\
+            \ glyphs within\n the GlyphVector.\n \n Methods are provided to return\
+            \ a Shape for the\n GlyphVector, and for individual glyphs within the\n\
+            \ GlyphVector."
           staticFields:
             FLAG_COMPLEX_GLYPHS:
               name: FLAG_COMPLEX_GLYPHS
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag used with getLayoutFlags that indicates that this GlyphVector\
+                \ has\n a complex glyph-to-char mapping (one that does not map glyphs\
+                \ to chars one-to-one in\n strictly ascending or descending order\
+                \ matching the run direction)."
             FLAG_HAS_POSITION_ADJUSTMENTS:
               name: FLAG_HAS_POSITION_ADJUSTMENTS
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag used with getLayoutFlags that indicates that this GlyphVector\
+                \ has\n position adjustments.  When this is true, the glyph positions\
+                \ don't match the\n accumulated default advances of the glyphs (for\
+                \ example, if kerning has been done)."
             FLAG_HAS_TRANSFORMS:
               name: FLAG_HAS_TRANSFORMS
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag used with getLayoutFlags that indicates that this GlyphVector\
+                \ has\n per-glyph transforms."
             FLAG_MASK:
               name: FLAG_MASK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A mask for supported flags from getLayoutFlags.  Only bits covered\
+                \ by the mask\n should be tested."
             FLAG_RUN_RTL:
               name: FLAG_RUN_RTL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A flag used with getLayoutFlags that indicates that this GlyphVector\
+                \ has\n a right-to-left run direction.  This refers to the glyph-to-char\
+                \ mapping and does\n not imply that the visual locations of the glyphs\
+                \ are necessarily in this order,\n although generally they will be."
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructor for subclasses to call.
           methods:
           - name: equals
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: set
               type:
                 basic: GlyphVector
                 full: java.awt.font.GlyphVector
+              notes: the specified GlyphVector to test
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified\n   GlyphVector equals this GlyphVector;\n\
+                \   false otherwise."
+            notes: "Tests if the specified GlyphVector exactly\n equals this GlyphVector."
           - name: getFont
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Font
                 full: java.awt.Font
+              notes: "Font used to create this\n GlyphVector."
+            notes: "Returns the Font associated with this\n GlyphVector."
           - name: getFontRenderContext
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: FontRenderContext
                 full: java.awt.font.FontRenderContext
+              notes: "FontRenderContext used to create this\n GlyphVector."
+            notes: "Returns the FontRenderContext associated with this\n GlyphVector."
           - name: getGlyphCharIndex
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: the index of the glyph
             return:
               type:
                 basic: int
                 full: int
+              notes: the index of the first character represented by the glyph
+            notes: "Returns the character index of the specified glyph.\n The character\
+              \ index is the index of the first logical\n character represented by\
+              \ the glyph.  The default\n implementation assumes a one-to-one, left-to-right\
+              \ mapping\n of glyphs to characters."
           - name: getGlyphCharIndices
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: beginGlyphIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index of the first glyph
+            - name: numEntries
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the number of glyph indices
+            - name: codeReturn
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: the array into which to return the character indices
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: an array of character indices, one per glyph.
+            notes: "Returns the character indices of the specified glyphs.\n The character\
+              \ index is the index of the first logical\n character represented by\
+              \ the glyph.  Indices are returned\n in glyph order.  The default implementation\
+              \ invokes\n getGlyphCharIndex for each glyph, and subclassers will probably\n\
+              \ want to override this implementation for performance reasons.\n Use\
+              \ this method for convenience and performance\n in processing of glyphcodes.\
+              \ If no array is passed in,\n a new array is created."
           - name: getGlyphCode
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: "the index into this GlyphVector\n that corresponds to the glyph\
+                \ from which to retrieve the\n glyphcode."
             return:
               type:
                 basic: int
                 full: int
+              notes: "the glyphcode of the glyph at the specified\n glyphIndex."
+            notes: "Returns the glyphcode of the specified glyph.\n This return value\
+              \ is meaningless to anything other\n than the Font object that created\
+              \ this\n GlyphVector."
           - name: getGlyphCodes
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: beginGlyphIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the index into this\n   GlyphVector at which to start retrieving\
+                \ glyphcodes"
+            - name: numEntries
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the number of glyphcodes to retrieve
+            - name: codeReturn
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "the array that receives the glyphcodes and is\n   then returned"
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: an array of glyphcodes for the specified glyphs.
+            notes: "Returns an array of glyphcodes for the specified glyphs.\n The\
+              \ contents of this return value are meaningless to anything other\n\
+              \ than the Font used to create this\n GlyphVector.  This method is used\n\
+              \ for convenience and performance when processing glyphcodes.\n If no\
+              \ array is passed in, a new array is created."
           - name: getGlyphJustificationInfo
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: "the index into this GlyphVector\n   that corresponds to the\
+                \ glyph from which to retrieve its\n   justification properties"
             return:
               type:
                 basic: GlyphJustificationInfo
                 full: java.awt.font.GlyphJustificationInfo
+              notes: "a GlyphJustificationInfo object that\n   represents the justification\
+                \ properties of the glyph at the\n   specified glyphIndex into this\n\
+                \   GlyphVector."
+            notes: "Returns the justification information for the glyph at\n the specified\
+              \ index into this GlyphVector."
           - name: getGlyphLogicalBounds
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: "the index into this GlyphVector\n   that corresponds to the\
+                \ glyph from which to retrieve its logical\n   bounds"
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a Shape that is the logical bounds of the\n   glyph at the specified\
+                \ glyphIndex."
+            notes: "Returns the logical bounds of the specified glyph within this\n\
+              \ GlyphVector.\n These logical bounds have a total of four edges, with\
+              \ two edges\n parallel to the baseline under the glyph's transform and\
+              \ the other two\n edges are shared with adjacent glyphs if they are\
+              \ present.  This\n method is useful for hit-testing of the specified\
+              \ glyph,\n positioning of a caret at the leading or trailing edge of\
+              \ a glyph,\n and for drawing a highlight region around the specified\
+              \ glyph."
           - name: getGlyphMetrics
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: "the index into this GlyphVector\n   that corresponds to the\
+                \ glyph from which to retrieve its metrics"
             return:
               type:
                 basic: GlyphMetrics
                 full: java.awt.font.GlyphMetrics
+              notes: "a GlyphMetrics object that represents the\n   metrics of the\
+                \ glyph at the specified glyphIndex\n   into this GlyphVector."
+            notes: "Returns the metrics of the glyph at the specified index into\n\
+              \ this GlyphVector."
           - name: getGlyphOutline
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: the index into this GlyphVector
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a Shape that is the outline of the glyph\n   at the specified\
+                \ glyphIndex of this\n   GlyphVector."
+            notes: "Returns a Shape whose interior corresponds to the\n visual representation\
+              \ of the specified glyph\n within this GlyphVector.\n The outline returned\
+              \ by this method is positioned around the\n origin of each individual\
+              \ glyph."
           - name: getGlyphOutline
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index into this GlyphVector
+            - name: x
               type:
                 basic: float
                 full: float
-            - name: arg2
+              notes: the X coordinate of the location of this GlyphVector
+            - name: y
               type:
                 basic: float
                 full: float
+              notes: the Y coordinate of the location of this GlyphVector
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a Shape that is the outline of the glyph\n   at the specified\
+                \ glyphIndex of this\n   GlyphVector when rendered at the specified\n\
+                \   coordinates."
+            notes: "Returns a Shape whose interior corresponds to the\n visual representation\
+              \ of the specified glyph\n within this GlyphVector, offset to x, y.\n\
+              \ The outline returned by this method is positioned around the\n origin\
+              \ of each individual glyph."
           - name: getGlyphPixelBounds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index of the glyph.
+            - name: renderFRC
               type:
                 basic: FontRenderContext
                 full: java.awt.font.FontRenderContext
-            - name: arg2
+              notes: the FontRenderContext of the Graphics.
+            - name: x
               type:
                 basic: float
                 full: float
-            - name: arg3
+              notes: the X position at which to render this GlyphVector.
+            - name: y
               type:
                 basic: float
                 full: float
+              notes: the Y position at which to render this GlyphVector.
             return:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: a Rectangle bounding the pixels that would be affected.
+            notes: "Returns the pixel bounds of the glyph at index when this\n GlyphVector\
+              \ is rendered in a Graphics with the\n given FontRenderContext at the\
+              \ given location. The\n renderFRC need not be the same as the\n FontRenderContext\
+              \ of this\n GlyphVector, and can be null.  If it is null, the\n FontRenderContext\
+              \ of this GlyphVector\n is used.  The default implementation returns\
+              \ the visual bounds of the glyph,\n offset to x, y and rounded out to\
+              \ the next integer value, and\n ignores the FRC.  Subclassers should\
+              \ override this method."
           - name: getGlyphPosition
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: the index into this GlyphVector
             return:
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "a Point2D object that is the position of the glyph\n   at the\
+                \ specified glyphIndex."
+            notes: "Returns the position of the specified glyph relative to the\n\
+              \ origin of this GlyphVector.\n If glyphIndex equals the number of glyphs\
+              \ in\n this GlyphVector, this method returns the position after\n the\
+              \ last glyph. This position is used to define the advance of\n the entire\
+              \ GlyphVector."
           - name: getGlyphPositions
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: beginGlyphIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the index at which to begin retrieving\n   glyph positions"
+            - name: numEntries
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the number of glyphs to retrieve
+            - name: positionReturn
               type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: "the array that receives the glyph positions\n   and is then\
+                \ returned."
             return:
               type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: "an array of glyph positions specified by\n  beginGlyphIndex\
+                \ and numEntries."
+            notes: "Returns an array of glyph positions for the specified glyphs.\n\
+              \ This method is used for convenience and performance when\n processing\
+              \ glyph positions.\n If no array is passed in, a new array is created.\n\
+              \ Even numbered array entries beginning with position zero are the X\n\
+              \ coordinates of the glyph numbered beginGlyphIndex + position/2.\n\
+              \ Odd numbered array entries beginning with position one are the Y\n\
+              \ coordinates of the glyph numbered beginGlyphIndex + (position-1)/2.\n\
+              \ If beginGlyphIndex equals the number of glyphs in\n this GlyphVector,\
+              \ this method gets the position after\n the last glyph and this position\
+              \ is used to define the advance of\n the entire GlyphVector."
           - name: getGlyphTransform
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: the index into this GlyphVector
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform that is the transform of\n   the glyph at\
+                \ the specified glyphIndex."
+            notes: "Returns the transform of the specified glyph within this\n GlyphVector.\
+              \  The transform is relative to the\n glyph position.  If no special\
+              \ transform has been applied,\n null can be returned.  A null return\
+              \ indicates\n an identity transform."
           - name: getGlyphVisualBounds
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
+              notes: "the index into this GlyphVector\n   that corresponds to the\
+                \ glyph from which to retrieve its visual\n   bounds"
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a Shape that is the visual bounds of the\n   glyph at the specified\
+                \ glyphIndex."
+            notes: "Returns the visual bounds of the specified glyph within the\n\
+              \ GlyphVector.\n The bounds returned by this method is positioned around\
+              \ the\n origin of each individual glyph."
           - name: getLayoutFlags
             modifiers:
             - public
@@ -301,108 +498,171 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: an int containing the flags describing the state
+            notes: "Returns flags describing the global state of the GlyphVector.\n\
+              \ Flags not described below are reserved.  The default\n implementation\
+              \ returns 0 (meaning false) for the position adjustments,\n transforms,\
+              \ rtl, and complex flags.\n Subclassers should override this method,\
+              \ and make sure\n it correctly describes the GlyphVector and corresponds\n\
+              \ to the results of related calls."
           - name: getLogicalBounds
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the logical bounds of this\n GlyphVector."
+            notes: "Returns the logical bounds of this GlyphVector.\n This method\
+              \ is used when positioning this GlyphVector\n in relation to visually\
+              \ adjacent GlyphVector objects."
           - name: getNumGlyphs
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: number of glyphs in this GlyphVector.
+            notes: Returns the number of glyphs in this GlyphVector.
           - name: getOutline
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a Shape that is the outline of this\n GlyphVector."
+            notes: "Returns a Shape whose interior corresponds to the\n visual representation\
+              \ of this GlyphVector."
           - name: getOutline
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: float
                 full: float
-            - name: arg1
+              notes: the X coordinate of this GlyphVector.
+            - name: y
               type:
                 basic: float
                 full: float
+              notes: the Y coordinate of this GlyphVector.
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a Shape that is the outline of this\n   GlyphVector when rendered\
+                \ at the specified\n   coordinates."
+            notes: "Returns a Shape whose interior corresponds to the\n visual representation\
+              \ of this GlyphVector when\n rendered at x, y."
           - name: getPixelBounds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: renderFRC
               type:
                 basic: FontRenderContext
                 full: java.awt.font.FontRenderContext
-            - name: arg1
+              notes: the FontRenderContext of the Graphics.
+            - name: x
               type:
                 basic: float
                 full: float
-            - name: arg2
+              notes: the x-coordinate at which to render this GlyphVector.
+            - name: y
               type:
                 basic: float
                 full: float
+              notes: the y-coordinate at which to render this GlyphVector.
             return:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: a Rectangle bounding the pixels that would be affected.
+            notes: "Returns the pixel bounds of this GlyphVector when\n rendered in\
+              \ a graphics with the given\n FontRenderContext at the given location.\
+              \  The\n renderFRC need not be the same as the\n FontRenderContext of\
+              \ this\n GlyphVector, and can be null.  If it is null, the\n FontRenderContext\
+              \ of this GlyphVector\n is used.  The default implementation returns\
+              \ the visual bounds,\n offset to x, y and rounded out to the next integer\
+              \ value (i.e. returns an\n integer rectangle which encloses the visual\
+              \ bounds) and\n ignores the FRC.  Subclassers should override this method."
           - name: getVisualBounds
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the bounding box\n of this GlyphVector."
+            notes: "Returns the visual bounds of this GlyphVector\n The visual bounds\
+              \ is the bounding box of the outline of this\n GlyphVector.  Because\
+              \ of rasterization and\n alignment of pixels, it is possible that this\
+              \ box does not\n enclose all pixels affected by rendering this GlyphVector."
           - name: performDefaultLayout
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
+            notes: "Assigns default positions to each glyph in this\n GlyphVector.\
+              \ This can destroy information\n generated during initial layout of\
+              \ this GlyphVector."
           - name: setGlyphPosition
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index into this GlyphVector
+            - name: newPos
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "the Point2D at which to position the\n   glyph at the specified\
+                \ glyphIndex"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the position of the specified glyph within this\n GlyphVector.\n\
+              \ If glyphIndex equals the number of glyphs in\n this GlyphVector, this\
+              \ method sets the position after\n the last glyph. This position is\
+              \ used to define the advance of\n the entire GlyphVector."
           - name: setGlyphTransform
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: glyphIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index into this GlyphVector
+            - name: newTX
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: the new transform of the glyph at glyphIndex
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Sets the transform of the specified glyph within this\n GlyphVector.\
+              \  The transform is relative to the glyph\n position.  A null argument\
+              \ for newTX\n indicates that no special transform is applied for the\
+              \ specified\n glyph.\n This method can be used to rotate, mirror, translate\
+              \ and scale the\n glyph.  Adding a transform can result in significant\
+              \ performance changes."

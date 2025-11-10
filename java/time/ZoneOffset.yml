@@ -4,101 +4,169 @@ languages:
     packages:
       java.time:
         ZoneOffset:
+          extends: java.time.ZoneId
+          modifiers:
+          - public
+          - final
+          notes: "A time-zone offset from Greenwich/UTC, such as +02:00.\n \n A time-zone\
+            \ offset is the amount of time that a time-zone differs from Greenwich/UTC.\n\
+            \ This is usually a fixed number of hours and minutes.\n \n Different\
+            \ parts of the world have different time-zone offsets.\n The rules for\
+            \ how offsets vary by place and time of year are captured in the\n ZoneId\
+            \ class.\n \n For example, Paris is one hour ahead of Greenwich/UTC in\
+            \ winter and two hours\n ahead in summer. The ZoneId instance for Paris\
+            \ will reference two\n ZoneOffset instances - a +01:00 instance for winter,\n\
+            \ and a +02:00 instance for summer.\n \n In 2008, time-zone offsets around\
+            \ the world extended from -12:00 to +14:00.\n To prevent any problems\
+            \ with that range being extended, yet still provide\n validation, the\
+            \ range of offsets is restricted to -18:00 to 18:00 inclusive.\n \n This\
+            \ class is designed for use with the ISO calendar system.\n The fields\
+            \ of hours, minutes and seconds make assumptions that are valid for the\n\
+            \ standard ISO definitions of those fields. This class may be used with\
+            \ other\n calendar systems providing the definition of the time fields\
+            \ matches those\n of the ISO calendar system.\n \n Instances of ZoneOffset\
+            \ must be compared using equals(java.lang.Object).\n Implementations may\
+            \ choose to cache certain common offsets, however\n applications must\
+            \ not rely on such caching.\n \n This is a value-based\n class; programmers\
+            \ should treat instances that are\n equal as interchangeable and should\
+            \ not\n use instances for synchronization, or unpredictable behavior may\n\
+            \ occur. For example, in a future release, synchronization may fail.\n\
+            \ The equals method should be used for comparisons."
+          fields:
+            id:
+              name: id
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            totalSeconds:
+              name: totalSeconds
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
+            ID_CACHE:
+              name: ID_CACHE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.lang.String, java.time.ZoneOffset>
             MAX:
               name: MAX
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
-                nullable: true
+              notes: Constant for the maximum supported offset.
+            MAX_SECONDS:
+              name: MAX_SECONDS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             MIN:
               name: MIN
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
-                nullable: true
+              notes: Constant for the minimum supported offset.
+            SECONDS_CACHE:
+              name: SECONDS_CACHE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.lang.Integer, java.time.ZoneOffset>
             UTC:
               name: UTC
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
-                nullable: true
+              notes: The time-zone offset for UTC, with an ID of 'Z'.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: adjustInto
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the target object to be adjusted, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: adjustInto
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-            return:
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+              notes: the adjusted object, not null
+            notes: "Adjusts the specified temporal object to have the same offset\
+              \ as this object.\n \n This returns a temporal object of the same observable\
+              \ type as the input\n with the offset changed to be the same as this.\n\
+              \ \n The adjustment is equivalent to using Temporal.with(TemporalField,\
+              \ long)\n passing ChronoField.OFFSET_SECONDS as the field.\n \n In most\
+              \ cases, it is clearer to reverse the calling pattern by using\n Temporal.with(TemporalAdjuster):\n\
+              \ \n   // these two lines are equivalent, but the second approach is\
+              \ recommended\n   temporal = thisOffset.adjustInto(temporal);\n   temporal\
+              \ = temporal.with(thisOffset);\n \n \n This instance is immutable and\
+              \ unaffected by this method call."
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the other date to compare to, not null
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the comparator value, negative if less, positive if greater
+            notes: "Compares this offset to another offset in descending order.\n\
+              \ \n The offsets are compared in the order that they occur for the same\
+              \ time\n of day around the world. Thus, an offset of +10:00 comes before\
+              \ an\n offset of +09:00 and so on down to -18:00.\n \n The comparison\
+              \ is \"consistent with equals\", as defined by Comparable."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -107,38 +175,45 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this is equal to the other offset
+            notes: "Checks if this offset is equal to another offset.\n \n The comparison\
+              \ is based on the amount of the offset in seconds.\n This is equivalent\
+              \ to a comparison by ID."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to get, not null
             return:
               type:
                 basic: int
                 full: int
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalField
-                full: java.time.temporal.TemporalField
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the value for the field
+            notes: "Gets the value of the specified field from this offset as an int.\n\
+              \ \n This queries this offset for the value of the specified field.\n\
+              \ The returned value will always be within the valid range of values\
+              \ for the field.\n If it is not possible to return the value, because\
+              \ the field is not supported\n or for some other reason, an exception\
+              \ is thrown.\n \n If the field is a ChronoField then the query is implemented\
+              \ here.\n The OFFSET_SECONDS field returns the value of the offset.\n\
+              \ All other ChronoField instances will throw an UnsupportedTemporalTypeException.\n\
+              \ \n If the field is not a ChronoField, then the result of this method\n\
+              \ is obtained by invoking TemporalField.getFrom(TemporalAccessor)\n\
+              \ passing this as the argument. Whether the value can be obtained,\n\
+              \ and what the value represents, is determined by the field."
           - name: getId
             modifiers:
             - public
@@ -146,30 +221,37 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the zone offset ID, not null
+            notes: "Gets the normalized zone offset ID.\n \n The ID is minor variation\
+              \ to the standard ISO-8601 formatted string\n for the offset. There\
+              \ are three formats:\n \n Z - for UTC (ISO-8601)\n +hh:mm or -hh:mm\
+              \ - if the seconds are zero (ISO-8601)\n +hh:mm:ss or -hh:mm:ss - if\
+              \ the seconds are non-zero (not ISO-8601)"
           - name: getLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to get, not null
             return:
               type:
                 basic: long
                 full: long
-          - name: getLong
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalField
-                full: java.time.temporal.TemporalField
-            return:
-              type:
-                basic: long
-                full: long
+              notes: the value for the field
+            notes: "Gets the value of the specified field from this offset as a long.\n\
+              \ \n This queries this offset for the value of the specified field.\n\
+              \ If it is not possible to return the value, because the field is not\
+              \ supported\n or for some other reason, an exception is thrown.\n \n\
+              \ If the field is a ChronoField then the query is implemented here.\n\
+              \ The OFFSET_SECONDS field returns the value of the offset.\n All other\
+              \ ChronoField instances will throw an UnsupportedTemporalTypeException.\n\
+              \ \n If the field is not a ChronoField, then the result of this method\n\
+              \ is obtained by invoking TemporalField.getFrom(TemporalAccessor)\n\
+              \ passing this as the argument. Whether the value can be obtained,\n\
+              \ and what the value represents, is determined by the field."
           - name: getRules
             modifiers:
             - public
@@ -177,6 +259,10 @@ languages:
               type:
                 basic: ZoneRules
                 full: java.time.zone.ZoneRules
+              notes: the rules, not null
+            notes: "Gets the associated time-zone rules.\n \n The rules will always\
+              \ return this offset when queried.\n The implementation class is immutable,\
+              \ thread-safe and serializable."
           - name: getTotalSeconds
             modifiers:
             - public
@@ -184,6 +270,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the total zone offset amount in seconds
+            notes: "Gets the total zone offset in seconds.\n \n This is the primary\
+              \ way to access the offset amount.\n It returns the total of the hours,\
+              \ minutes and seconds fields as a\n single offset that can be added\
+              \ to a time."
           - name: hashCode
             modifiers:
             - public
@@ -191,138 +282,318 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a suitable hash code
+            notes: A hash code for this offset.
           - name: isSupported
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: isSupported
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalField
-                full: java.time.temporal.TemporalField
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the field is supported on this offset, false if not
+            notes: "Checks if the specified field is supported.\n \n This checks if\
+              \ this offset can be queried for the specified field.\n If false, then\
+              \ calling the range and\n get methods will throw an exception.\n \n\
+              \ If the field is a ChronoField then the query is implemented here.\n\
+              \ The OFFSET_SECONDS field returns true.\n All other ChronoField instances\
+              \ will return false.\n \n If the field is not a ChronoField, then the\
+              \ result of this method\n is obtained by invoking TemporalField.isSupportedBy(TemporalAccessor)\n\
+              \ passing this as the argument.\n Whether the field is supported is\
+              \ determined by the field."
           - name: query
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: query
               type:
-                basic: TemporalQuery<R>
+                basic: TemporalQuery
                 full: java.time.temporal.TemporalQuery<R>
+              notes: the query to invoke, not null
             return:
               type:
                 basic: R
                 full: R
-          - name: query
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalQuery<R>
-                full: java.time.temporal.TemporalQuery<R>
-            return:
-              type:
-                basic: R
-                full: R
+              notes: the query result, null may be returned (defined by the query)
+            notes: "Queries this offset using the specified query.\n \n This queries\
+              \ this offset using the specified query strategy object.\n The TemporalQuery\
+              \ object defines the logic to be used to\n obtain the result. Read the\
+              \ documentation of the query to understand\n what the result of this\
+              \ method will be.\n \n The result of this method is obtained by invoking\
+              \ the\n TemporalQuery.queryFrom(TemporalAccessor) method on the\n specified\
+              \ query passing this as the argument."
           - name: range
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to query the range for, not null
             return:
               type:
                 basic: ValueRange
                 full: java.time.temporal.ValueRange
-          - name: range
+              notes: the range of valid values for the field, not null
+            notes: "Gets the range of valid values for the specified field.\n \n The\
+              \ range object expresses the minimum and maximum valid values for a\
+              \ field.\n This offset is used to enhance the accuracy of the returned\
+              \ range.\n If it is not possible to return the range, because the field\
+              \ is not supported\n or for some other reason, an exception is thrown.\n\
+              \ \n If the field is a ChronoField then the query is implemented here.\n\
+              \ The supported fields will return\n appropriate range instances.\n\
+              \ All other ChronoField instances will throw an UnsupportedTemporalTypeException.\n\
+              \ \n If the field is not a ChronoField, then the result of this method\n\
+              \ is obtained by invoking TemporalField.rangeRefinedBy(TemporalAccessor)\n\
+              \ passing this as the argument.\n Whether the range can be obtained\
+              \ is determined by the field."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: TemporalField
-                full: java.time.temporal.TemporalField
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
-                basic: ValueRange
-                full: java.time.temporal.ValueRange
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: write
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeExternal
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           staticMethods:
+          - name: buildId
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: from
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: TemporalAccessor
                 full: java.time.temporal.TemporalAccessor
+              notes: the temporal object to convert, not null
             return:
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the zone-offset, not null
+            notes: "Obtains an instance of ZoneOffset from a temporal object.\n \n\
+              \ This obtains an offset based on the specified temporal.\n A TemporalAccessor\
+              \ represents an arbitrary set of date and time information,\n which\
+              \ this factory converts to an instance of ZoneOffset.\n \n A TemporalAccessor\
+              \ represents some form of date and time information.\n This factory\
+              \ converts the arbitrary temporal object to an instance of ZoneOffset.\n\
+              \ \n The conversion uses the TemporalQueries.offset() query, which relies\n\
+              \ on extracting the OFFSET_SECONDS field.\n \n This method matches the\
+              \ signature of the functional interface TemporalQuery\n allowing it\
+              \ to be used as a query via method reference, ZoneOffset::from."
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: offsetId
               type:
                 basic: String
                 full: java.lang.String
+              notes: the offset ID, not null
             return:
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the zone-offset, not null
+            notes: "Obtains an instance of ZoneOffset using the ID.\n \n This method\
+              \ parses the string ID of a ZoneOffset to\n return an instance. The\
+              \ parsing accepts all the formats generated by\n getId(), plus some\
+              \ additional formats:\n \n Z - for UTC\n +h\n +hh\n +hh:mm\n -hh:mm\n\
+              \ +hhmm\n -hhmm\n +hh:mm:ss\n -hh:mm:ss\n +hhmmss\n -hhmmss\n \n Note\
+              \ that &plusmn; means either the plus or minus symbol.\n \n The ID of\
+              \ the returned offset will be normalized to one of the formats\n described\
+              \ by getId().\n \n The maximum supported range is from +18:00 to -18:00\
+              \ inclusive."
           - name: ofHours
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: hours
               type:
                 basic: int
                 full: int
+              notes: the time-zone offset in hours, from
             return:
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the zone-offset, not null
+            notes: Obtains an instance of ZoneOffset using an offset in hours.
           - name: ofHoursMinutes
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: hours
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the time-zone offset in hours, from
+            - name: minutes
               type:
                 basic: int
                 full: int
+              notes: the time-zone offset in minutes, from 0 to &plusmn;59, sign matches
+                hours
             return:
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the zone-offset, not null
+            notes: "Obtains an instance of ZoneOffset using an offset in\n hours and\
+              \ minutes.\n \n The sign of the hours and minutes components must match.\n\
+              \ Thus, if the hours is negative, the minutes must be negative or zero.\n\
+              \ If the hours is zero, the minutes may be positive, negative or zero."
           - name: ofHoursMinutesSeconds
             modifiers:
             - public
+            - static
+            parameters:
+            - name: hours
+              type:
+                basic: int
+                full: int
+              notes: the time-zone offset in hours, from
+            - name: minutes
+              type:
+                basic: int
+                full: int
+              notes: the time-zone offset in minutes, from 0 to &plusmn;59, sign matches
+                hours and seconds
+            - name: seconds
+              type:
+                basic: int
+                full: int
+              notes: the time-zone offset in seconds, from 0 to &plusmn;59, sign matches
+                hours and minutes
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the zone-offset, not null
+            notes: "Obtains an instance of ZoneOffset using an offset in\n hours,\
+              \ minutes and seconds.\n \n The sign of the hours, minutes and seconds\
+              \ components must match.\n Thus, if the hours is negative, the minutes\
+              \ and seconds must be negative or zero."
+          - name: ofTotalSeconds
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: totalSeconds
+              type:
+                basic: int
+                full: int
+              notes: the total time-zone offset in seconds, from
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the ZoneOffset, not null
+            notes: "Obtains an instance of ZoneOffset specifying the total offset\
+              \ in seconds\n \n The offset must be in the range -18:00 to +18:00,\
+              \ which corresponds to -64800 to +64800."
+          - name: parseNumber
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+          - name: totalSeconds
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -339,20 +610,26 @@ languages:
                 full: int
             return:
               type:
-                basic: ZoneOffset
-                full: java.time.ZoneOffset
-          - name: ofTotalSeconds
+                basic: int
+                full: int
+          - name: validate
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
                 basic: int
                 full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: ZoneOffset
-                full: java.time.ZoneOffset
-          javaType: class
-          extends: ZoneId
+                basic: void
+                full: void

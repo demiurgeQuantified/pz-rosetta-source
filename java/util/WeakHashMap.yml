@@ -4,34 +4,200 @@ languages:
     packages:
       java.util:
         WeakHashMap:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.util.AbstractMap<K, V>
+          modifiers:
+          - public
+          notes: "Hash table based implementation of the Map interface, with\n weak\
+            \ keys.\n An entry in a WeakHashMap will automatically be removed when\n\
+            \ its key is no longer in ordinary use.  More precisely, the presence\
+            \ of a\n mapping for a given key will not prevent the key from being discarded\
+            \ by the\n garbage collector, that is, made finalizable, finalized, and\
+            \ then reclaimed.\n When a key has been discarded its entry is effectively\
+            \ removed from the map,\n so this class behaves somewhat differently from\
+            \ other Map\n implementations.\n\n  Both null values and the null key\
+            \ are supported. This class has\n performance characteristics similar\
+            \ to those of the HashMap\n class, and has the same efficiency parameters\
+            \ of initial capacity\n and load factor.\n\n  Like most collection classes,\
+            \ this class is not synchronized.\n A synchronized WeakHashMap may be\
+            \ constructed using the\n Collections.synchronizedMap\n method.\n\n  This\
+            \ class is intended primarily for use with key objects whose\n equals\
+            \ methods test for object identity using the\n == operator.  Once such\
+            \ a key is discarded it can never be\n recreated, so it is impossible\
+            \ to do a lookup of that key in a\n WeakHashMap at some later time and\
+            \ be surprised that its entry\n has been removed.  This class will work\
+            \ perfectly well with key objects\n whose equals methods are not based\
+            \ upon object identity, such\n as String instances.  With such recreatable\
+            \ key objects,\n however, the automatic removal of WeakHashMap entries\
+            \ whose\n keys have been discarded may prove to be confusing.\n\n  The\
+            \ behavior of the WeakHashMap class depends in part upon\n the actions\
+            \ of the garbage collector, so several familiar (though not\n required)\
+            \ Map invariants do not hold for this class.  Because\n the garbage collector\
+            \ may discard keys at any time, a\n WeakHashMap may behave as though an\
+            \ unknown thread is silently\n removing entries.  In particular, even\
+            \ if you synchronize on a\n WeakHashMap instance and invoke none of its\
+            \ mutator methods, it\n is possible for the size method to return smaller\
+            \ values over\n time, for the isEmpty method to return false and\n then\
+            \ true, for the containsKey method to return\n true and later false for\
+            \ a given key, for the\n get method to return a value for a given key\
+            \ but later return\n null, for the put method to return\n null and the\
+            \ remove method to return\n false for a key that previously appeared to\
+            \ be in the map, and\n for successive examinations of the key set, the\
+            \ value collection, and\n the entry set to yield successively smaller\
+            \ numbers of elements.\n\n  Each key object in a WeakHashMap is stored\
+            \ indirectly as\n the referent of a weak reference.  Therefore a key will\
+            \ automatically be\n removed only after the weak references to it, both\
+            \ inside and outside of the\n map, have been cleared by the garbage collector.\n\
+            \n  Implementation note: The value objects in a\n WeakHashMap are held\
+            \ by ordinary strong references.  Thus care\n should be taken to ensure\
+            \ that value objects do not strongly refer to their\n own keys, either\
+            \ directly or indirectly, since that will prevent the keys\n from being\
+            \ discarded.  Note that a value object may refer indirectly to its\n key\
+            \ via the WeakHashMap itself; that is, a value object may\n strongly refer\
+            \ to some other key object whose associated value object, in\n turn, strongly\
+            \ refers to the key of the first value object.  If the values\n in the\
+            \ map do not rely on the map holding strong references to them, one way\n\
+            \ to deal with this is to wrap values themselves within\n WeakReferences\
+            \ before\n inserting, as in: m.put(key, new WeakReference(value)),\n and\
+            \ then unwrapping upon each get.\n\n The iterators returned by the iterator\
+            \ method of the collections\n returned by all of this class's \"collection\
+            \ view methods\" are\n fail-fast: if the map is structurally modified\
+            \ at any time after the\n iterator is created, in any way except through\
+            \ the iterator's own\n remove method, the iterator will throw a ConcurrentModificationException.\
+            \  Thus, in the face of concurrent\n modification, the iterator fails\
+            \ quickly and cleanly, rather than risking\n arbitrary, non-deterministic\
+            \ behavior at an undetermined time in the future.\n\n Note that the fail-fast\
+            \ behavior of an iterator cannot be guaranteed\n as it is, generally speaking,\
+            \ impossible to make any hard guarantees in the\n presence of unsynchronized\
+            \ concurrent modification.  Fail-fast iterators\n throw ConcurrentModificationException\
+            \ on a best-effort basis.\n Therefore, it would be wrong to write a program\
+            \ that depended on this\n exception for its correctness:  the fail-fast\
+            \ behavior of iterators\n should be used only to detect bugs.\n\n This\
+            \ class is a member of the\n \n Java Collections Framework."
+          fields:
+            entrySet:
+              name: entrySet
+              modifiers:
+              - private
               type:
-                basic: int
-                full: int
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
+                basic: Set
+                full: java.util.Set<java.util.Map$Entry<K, V>>
+            loadFactor:
+              name: loadFactor
+              modifiers:
+              - private
               type:
                 basic: float
                 full: float
+            modCount:
+              name: modCount
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            queue:
+              name: queue
+              modifiers:
+              - private
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<java.lang.Object>
+            size:
+              name: size
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            table:
+              name: table
+              modifiers:
+              - package
+              type:
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>[]
+            threshold:
+              name: threshold
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            DEFAULT_INITIAL_CAPACITY:
+              name: DEFAULT_INITIAL_CAPACITY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            DEFAULT_LOAD_FACTOR:
+              name: DEFAULT_LOAD_FACTOR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            MAXIMUM_CAPACITY:
+              name: MAXIMUM_CAPACITY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            NULL_KEY:
+              name: NULL_KEY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: initialCapacity
+              type:
+                basic: int
+                full: int
+              notes: The initial capacity of the WeakHashMap
+            - name: loadFactor
+              type:
+                basic: float
+                full: float
+              notes: The load factor of the WeakHashMap
+            notes: "Constructs a new, empty WeakHashMap with the given initial\n capacity\
+              \ and the given load factor."
+          - modifiers:
+            - public
+            parameters:
+            - name: initialCapacity
+              type:
+                basic: int
+                full: int
+              notes: The initial capacity of the WeakHashMap
+            notes: "Constructs a new, empty WeakHashMap with the given initial\n capacity\
+              \ and the default load factor (0.75)."
+          - modifiers:
+            - public
+            notes: "Constructs a new, empty WeakHashMap with the default initial\n\
+              \ capacity (16) and load factor (0.75)."
+          - modifiers:
+            - public
+            parameters:
+            - name: m
+              type:
+                basic: Map
+                full: java.util.Map<? extends K, ? extends V>
+              notes: the map whose mappings are to be placed in this map
+            notes: "Constructs a new WeakHashMap with the same mappings as the\n specified\
+              \ map.  The WeakHashMap is created with the default\n load factor (0.75)\
+              \ and an initial capacity sufficient to hold the\n mappings in the specified\
+              \ map."
           methods:
           - name: clear
             modifiers:
@@ -40,83 +206,27 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: clear
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
-          - name: compute
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: computeIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: Function<? super K, ? extends V>
-                full: java.util.function.Function<? super K, ? extends V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: computeIfPresent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
+            notes: "Removes all of the mappings from this map.\n The map will be empty\
+              \ after this call returns."
           - name: containsKey
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: The key whose presence in this map is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: containsKey
+              notes: "true if there is a mapping for key;\n         false otherwise"
+            notes: "Returns true if this map contains a mapping for the\n specified\
+              \ key."
+          - name: containsNullValue
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
+            - private
             return:
               type:
                 basic: boolean
@@ -125,60 +235,29 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value whose presence in this map is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: containsValue
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if this map maps one or more keys to the\n         specified\
+                \ value"
+            notes: "Returns true if this map maps one or more keys to the\n specified\
+              \ value."
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<K, V>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<K, V>>
-          - name: entrySet
+          - name: expungeStaleEntries
             modifiers:
-            - public
-            return:
-              type:
-                basic: Entry<K, V>>
-                full: java.util.Set<java.util.Map$Entry<K, V>>
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: forEach
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer<? super K, ? super V>
-                full: java.util.function.BiConsumer<? super K, ? super V>
+            - private
             return:
               type:
                 basic: void
@@ -189,7 +268,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: BiConsumer<? super K, ? super V>
+                basic: BiConsumer
                 full: java.util.function.BiConsumer<? super K, ? super V>
             return:
               type:
@@ -199,17 +278,29 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the key whose associated value is to be returned
             return:
               type:
                 basic: V
                 full: V
-          - name: get
+              notes: "the value to which the specified key is mapped, or\n       \
+                \  null if this map contains no mapping for the key"
+            notes: "Returns the value to which the specified key is mapped,\n or null\
+              \ if this map contains no mapping for the key.\n\n More formally, if\
+              \ this map contains a mapping from a key\n k to a value v such that\n\
+              \ Objects.equals(key, k),\n then this method returns v; otherwise\n\
+              \ it returns null.  (There can be at most one such mapping.)\n\n A return\
+              \ value of null does not necessarily\n indicate that the map contains\
+              \ no mapping for the key; it's also\n possible that the map explicitly\
+              \ maps the key to null.\n The containsKey operation may be used to\n\
+              \ distinguish these two cases."
+          - name: getEntry
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
@@ -217,27 +308,24 @@ languages:
                 full: java.lang.Object
             return:
               type:
-                basic: V
-                full: V
-          - name: getOrDefault
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>
+          - name: getTable
             modifiers:
-            - public
+            - private
+            return:
+              type:
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>[]
+          - name: hash
+            modifiers:
+            - package
+            - final
             parameters:
             - name: arg0
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: hashCode
-            modifiers:
-            - public
             return:
               type:
                 basic: int
@@ -249,152 +337,36 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isEmpty
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if this map contains no key-value mappings
+            notes: "Returns true if this map contains no key-value mappings.\n This\
+              \ result is a snapshot, and may not reflect unprocessed\n entries that\
+              \ will be removed before next attempted access\n because they are no\
+              \ longer referenced."
           - name: keySet
             modifiers:
             - public
             return:
               type:
-                basic: Set<K>
+                basic: Set
                 full: java.util.Set<K>
-          - name: keySet
+              notes: a set view of the keys contained in this map
+            notes: "Returns a Set view of the keys contained in this map.\n The set\
+              \ is backed by the map, so changes to the map are\n reflected in the\
+              \ set, and vice-versa.  If the map is modified\n while an iteration\
+              \ over the set is in progress (except through\n the iterator's own remove\
+              \ operation), the results of\n the iteration are undefined.  The set\
+              \ supports element removal,\n which removes the corresponding mapping\
+              \ from the map, via the\n Iterator.remove, Set.remove,\n removeAll,\
+              \ retainAll, and clear\n operations.  It does not support the add or\
+              \ addAll\n operations."
+          - name: matchesKey
             modifiers:
-            - public
-            return:
-              type:
-                basic: Set<K>
-                full: java.util.Set<K>
-          - name: merge
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: BiFunction<? super V, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super V, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: putAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: putAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: putIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: V
-                full: V
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: V
-                full: V
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>
             - name: arg1
               type:
                 basic: Object
@@ -403,38 +375,92 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: replace
+          - name: newTable
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>[]
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which the specified value is to be associated.
+            - name: value
               type:
                 basic: V
                 full: V
+              notes: value to be associated with the specified key.
             return:
               type:
                 basic: V
                 full: V
-          - name: replace
+              notes: "the previous value associated with key, or\n         null if\
+                \ there was no mapping for key.\n         (A null return can also\
+                \ indicate that the map\n         previously associated null with\
+                \ key.)"
+            notes: "Associates the specified value with the specified key in this\
+              \ map.\n If the map previously contained a mapping for this key, the\
+              \ old\n value is replaced."
+          - name: putAll
             modifiers:
             - public
             parameters:
+            - name: m
+              type:
+                basic: Map
+                full: java.util.Map<? extends K, ? extends V>
+              notes: mappings to be stored in this map.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Copies all of the mappings from the specified map to this map.\n\
+              \ These mappings will replace any mappings that this map had for any\n\
+              \ of the keys currently in the specified map."
+          - name: remove
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: key whose mapping is to be removed from the map
+            return:
+              type:
+                basic: V
+                full: V
+              notes: "the previous value associated with key, or\n         null if\
+                \ there was no mapping for key"
+            notes: "Removes the mapping for a key from this weak hash map if it is\
+              \ present.\n More formally, if this map contains a mapping from key\
+              \ k to\n value v such that (key==null ?  k==null :\n key.equals(k)),\
+              \ that mapping is removed.  (The map can contain\n at most one such\
+              \ mapping.)\n\n Returns the value to which this map previously associated\
+              \ the key,\n or null if the map contained no mapping for the key.  A\n\
+              \ return value of null does not necessarily indicate\n that the map\
+              \ contained no mapping for the key; it's also possible\n that the map\
+              \ explicitly mapped the key to null.\n\n The map will not contain a\
+              \ mapping for the specified key once the\n call returns."
+          - name: removeMapping
+            modifiers:
+            - package
+            parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: V
-                full: V
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: boolean
@@ -445,22 +471,21 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   V>
             return:
               type:
                 basic: void
                 full: void
-          - name: replaceAll
+          - name: resize
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
+                basic: int
+                full: int
             return:
               type:
                 basic: void
@@ -472,608 +497,85 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: size
+              notes: the number of key-value mappings in this map
+            notes: "Returns the number of key-value mappings in this map.\n This result\
+              \ is a snapshot, and may not reflect unprocessed\n entries that will\
+              \ be removed before next attempted access\n because they are no longer\
+              \ referenced."
+          - name: transfer
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>[]
+            - name: arg1
+              type:
+                basic: WeakHashMap.Entry
+                full: java.util.WeakHashMap$Entry<K, V>[]
             return:
               type:
-                basic: int
-                full: int
+                basic: void
+                full: void
           - name: values
             modifiers:
             - public
             return:
               type:
-                basic: Collection<V>
+                basic: Collection
                 full: java.util.Collection<V>
-          - name: values
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Collection<V>
-                full: java.util.Collection<V>
+              notes: a collection view of the values contained in this map
+            notes: "Returns a Collection view of the values contained in this map.\n\
+              \ The collection is backed by the map, so changes to the map are\n reflected\
+              \ in the collection, and vice-versa.  If the map is\n modified while\
+              \ an iteration over the collection is in progress\n (except through\
+              \ the iterator's own remove operation),\n the results of the iteration\
+              \ are undefined.  The collection\n supports element removal, which removes\
+              \ the corresponding\n mapping from the map, via the Iterator.remove,\n\
+              \ Collection.remove, removeAll,\n retainAll and clear operations.  It\
+              \ does not\n support the add or addAll operations."
           staticMethods:
-          - name: copyOf
+          - name: indexFor
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: entry
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
+                basic: int
+                full: int
             - name: arg1
               type:
-                basic: V
-                full: V
+                basic: int
+                full: int
             return:
               type:
-                basic: Entry<K, V>
-                full: java.util.Map$Entry<K, V>
-          - name: of
+                basic: int
+                full: int
+          - name: maskNull
             modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
+                basic: Object
+                full: java.lang.Object
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
+                basic: Object
+                full: java.lang.Object
+          - name: unmaskNull
             modifiers:
-            - public
+            - package
             - static
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
+                basic: Object
+                full: java.lang.Object
             return:
               type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            - name: arg16
-              type:
-                basic: K
-                full: K
-            - name: arg17
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            - name: arg16
-              type:
-                basic: K
-                full: K
-            - name: arg17
-              type:
-                basic: V
-                full: V
-            - name: arg18
-              type:
-                basic: K
-                full: K
-            - name: arg19
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: ofEntries
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Entry<? extends K, ? extends V>[>
-                full: java.util.Map$Entry<? extends K, ? extends V>[]
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          javaType: class
-          extends: AbstractMap<K, V>
+                basic: Object
+                full: java.lang.Object

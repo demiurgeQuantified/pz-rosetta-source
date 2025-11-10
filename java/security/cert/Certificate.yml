@@ -4,40 +4,99 @@ languages:
     packages:
       java.security.cert:
         Certificate:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract class for managing a variety of identity certificates.\n\
+            \ An identity certificate is a binding of a principal to a public key\
+            \ which\n is vouched for by another principal.  (A principal represents\n\
+            \ an entity such as an individual user, a group, or a corporation.)\n\
+            \ \n This class is an abstraction for certificates that have different\n\
+            \ formats but important common uses.  For example, different types of\n\
+            \ certificates, such as X.509 and PGP, share general certificate\n functionality\
+            \ (like encoding and verifying) and\n some types of information (like\
+            \ a public key).\n \n X.509, PGP, and SDSI certificates can all be implemented\
+            \ by\n subclassing the Certificate class, even though they contain different\n\
+            \ sets of information, and they store and retrieve the information in\n\
+            \ different ways."
+          fields:
+            hash:
+              name: hash
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            type:
+              name: type
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: type
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the standard name of the certificate type.\n See the CertificateFactory\
+                \ section in the \n Java Security Standard Algorithm Names Specification\n\
+                \ for information about standard certificate types."
+            notes: Creates a certificate of the specified type.
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to test for equality with this certificate.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true iff the encoded forms of the two certificates\n match,\
+                \ false otherwise."
+            notes: "Compares this certificate for equality with the specified\n object.\
+              \ If the other object is an\n instanceof Certificate, then\n its encoded\
+              \ form is retrieved and compared with the\n encoded form of this certificate."
           - name: getEncoded
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the encoded form of this certificate
+            notes: "Returns the encoded form of this certificate. It is\n assumed\
+              \ that each certificate type would have only a single\n form of encoding;\
+              \ for example, X.509 certificates would\n be encoded as ASN.1 DER."
           - name: getPublicKey
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: PublicKey
                 full: java.security.PublicKey
+              notes: the public key.
+            notes: Gets the public key from this certificate.
           - name: getType
             modifiers:
             - public
@@ -46,6 +105,8 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the type of this certificate.
+            notes: Returns the type of this certificate.
           - name: hashCode
             modifiers:
             - public
@@ -53,49 +114,87 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: verify
+              notes: the hashcode value.
+            notes: "Returns a hashcode value for this certificate from its\n encoded\
+              \ form."
+          - name: toString
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: PublicKey
-                full: java.security.PublicKey
+            - abstract
             return:
-              type:
-                basic: void
-                full: void
-          - name: verify
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: PublicKey
-                full: java.security.PublicKey
-            - name: arg1
               type:
                 basic: String
                 full: java.lang.String
+          - name: verify
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: key
+              type:
+                basic: PublicKey
+                full: java.security.PublicKey
+              notes: the PublicKey used to carry out the verification.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Verifies that this certificate was signed using the\n private\
+              \ key that corresponds to the specified public key."
+          - name: verify
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: key
+              type:
+                basic: PublicKey
+                full: java.security.PublicKey
+              notes: the PublicKey used to carry out the verification.
+            - name: sigProvider
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the signature provider.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Verifies that this certificate was signed using the\n private\
+              \ key that corresponds to the specified public key.\n This method uses\
+              \ the signature verification engine\n supplied by the specified provider."
           - name: verify
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: PublicKey
                 full: java.security.PublicKey
-            - name: arg1
+              notes: the PublicKey used to carry out the verification.
+            - name: sigProvider
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: the signature provider.
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Verifies that this certificate was signed using the\n private\
+              \ key that corresponds to the specified public key.\n This method uses\
+              \ the signature verification engine\n supplied by the specified provider.\
+              \ Note that the specified\n Provider object does not have to be registered\
+              \ in the provider list.\n\n  This method was added to version 1.8 of\
+              \ the Java Platform\n Standard Edition. In order to maintain backwards\
+              \ compatibility with\n existing service providers, this method cannot\
+              \ be abstract\n and by default throws an UnsupportedOperationException."
+          - name: writeReplace
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the alternate Certificate object to be serialized
+            notes: Replace the Certificate to be serialized.

@@ -4,22 +4,88 @@ languages:
     packages:
       java.awt:
         MenuBar:
+          extends: java.awt.MenuComponent
+          modifiers:
+          - public
+          notes: "The MenuBar class encapsulates the platform's\n concept of a menu\
+            \ bar bound to a frame. In order to associate\n the menu bar with a Frame\
+            \ object, call the\n frame's setMenuBar method.\n \n \n This is what a\
+            \ menu bar might look like:\n \n \n \n A menu bar handles keyboard shortcuts\
+            \ for menu items, passing them\n along to its child menus.\n (Keyboard\
+            \ shortcuts, which are optional, provide the user with\n an alternative\
+            \ to the mouse for invoking a menu item and the\n action that is associated\
+            \ with it.)\n Each menu item can maintain an instance of MenuShortcut.\n\
+            \ The MenuBar class defines several methods,\n shortcuts() and\n getShortcutMenuItem(java.awt.MenuShortcut)\n\
+            \ that retrieve information about the shortcuts a given\n menu bar is\
+            \ managing."
+          fields:
+            helpMenu:
+              name: helpMenu
+              modifiers:
+              - private
+              type:
+                basic: Menu
+                full: java.awt.Menu
+            menuBarSerializedDataVersion:
+              name: menuBarSerializedDataVersion
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            menus:
+              name: menus
+              modifiers:
+              - private
+              type:
+                basic: Vector
+                full: java.util.Vector<java.awt.Menu>
+          staticFields:
+            base:
+              name: base
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            nameCounter:
+              name: nameCounter
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: Creates a new menu bar.
           methods:
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
                 basic: Menu
                 full: java.awt.Menu
+              notes: the menu to be added
             return:
               type:
                 basic: Menu
                 full: java.awt.Menu
+              notes: the menu added
+            notes: "Adds the specified menu to the menu bar.\n If the menu has been\
+              \ part of another menu bar,\n removes it from that menu bar."
           - name: addNotify
             modifiers:
             - public
@@ -27,6 +93,16 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Creates the menu bar's peer.  The peer allows us to change the\n\
+              \ appearance of the menu bar without changing any of the menu bar's\n\
+              \ functionality."
+          - name: constructComponentName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: countMenus
             modifiers:
             - public
@@ -34,19 +110,34 @@ languages:
               type:
                 basic: int
                 full: int
-            deprecated: true
+              notes: the number of menus on the menu bar.
+            notes: Gets the number of menus on the menu bar.
           - name: deleteShortcut
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: MenuShortcut
                 full: java.awt.MenuShortcut
+              notes: the menu shortcut to delete.
             return:
               type:
                 basic: void
                 full: void
+            notes: Deletes the specified menu shortcut.
+          - name: getAccessibleChildIndex
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MenuComponent
+                full: java.awt.MenuComponent
+            return:
+              type:
+                basic: int
+                full: int
           - name: getAccessibleContext
             modifiers:
             - public
@@ -54,20 +145,11 @@ languages:
               type:
                 basic: AccessibleContext
                 full: javax.accessibility.AccessibleContext
-          - name: getAccessibleContext
-            modifiers:
-            - public
-            return:
-              type:
-                basic: AccessibleContext
-                full: javax.accessibility.AccessibleContext
-          - name: getFont
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Font
-                full: java.awt.Font
+              notes: "an AccessibleAWTMenuBar that serves as the\n         AccessibleContext\
+                \ of this MenuBar"
+            notes: "Gets the AccessibleContext associated with this MenuBar.\n For\
+              \ menu bars, the AccessibleContext takes the form of an\n AccessibleAWTMenuBar.\n\
+              \ A new AccessibleAWTMenuBar instance is created if necessary."
           - name: getHelpMenu
             modifiers:
             - public
@@ -75,18 +157,23 @@ languages:
               type:
                 basic: Menu
                 full: java.awt.Menu
+              notes: the help menu on this menu bar.
+            notes: Gets the help menu on the menu bar.
           - name: getMenu
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
                 basic: int
                 full: int
+              notes: the index position of the menu to be returned.
             return:
               type:
                 basic: Menu
                 full: java.awt.Menu
+              notes: the menu at the specified index of this menu bar.
+            notes: Gets the specified menu.
           - name: getMenuCount
             modifiers:
             - public
@@ -94,34 +181,20 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: getShortcutMenuItem
+              notes: the number of menus on the menu bar.
+            notes: Gets the number of menus on the menu bar.
+          - name: getMenuCountImpl
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: MenuShortcut
-                full: java.awt.MenuShortcut
+            - package
+            - final
             return:
               type:
-                basic: MenuItem
-                full: java.awt.MenuItem
-          - name: postEvent
+                basic: int
+                full: int
+          - name: getMenuImpl
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Event
-                full: java.awt.Event
-            return:
-              type:
-                basic: boolean
-                full: boolean
-            deprecated: true
-          - name: remove
-            modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
               type:
@@ -129,16 +202,45 @@ languages:
                 full: int
             return:
               type:
-                basic: void
-                full: void
-          - name: remove
+                basic: Menu
+                full: java.awt.Menu
+          - name: getShortcutMenuItem
             modifiers:
             - public
             parameters:
+            - name: s
+              type:
+                basic: MenuShortcut
+                full: java.awt.MenuShortcut
+              notes: the specified menu shortcut.
+            return:
+              type:
+                basic: MenuItem
+                full: java.awt.MenuItem
+              notes: the menu item for the specified shortcut.
+            notes: "Gets the instance of MenuItem associated\n with the specified\
+              \ MenuShortcut object,\n or null if none of the menu items being managed\n\
+              \ by this menu bar is associated with the specified menu\n shortcut."
+          - name: handleShortcut
+            modifiers:
+            - package
+            parameters:
             - name: arg0
               type:
-                basic: MenuComponent
-                full: java.awt.MenuComponent
+                basic: KeyEvent
+                full: java.awt.event.KeyEvent
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -147,14 +249,31 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
-                basic: MenuComponent
-                full: java.awt.MenuComponent
+                basic: int
+                full: int
+              notes: the position of the menu to be removed.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Removes the menu located at the specified\n index from this menu\
+              \ bar."
+          - name: remove
+            modifiers:
+            - public
+            parameters:
+            - name: m
+              type:
+                basic: MenuComponent
+                full: java.awt.MenuComponent
+              notes: the menu component to be removed.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Removes the specified menu component from this menu bar.
           - name: removeNotify
             modifiers:
             - public
@@ -162,24 +281,53 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Removes the menu bar's peer.  The peer allows us to change the\n\
+              \ appearance of the menu bar without changing any of the menu bar's\n\
+              \ functionality."
           - name: setHelpMenu
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
                 basic: Menu
                 full: java.awt.Menu
+              notes: the menu to be set as the help menu
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the specified menu to be this menu bar's help menu.\n If\
+              \ this menu bar has an existing help menu, the old help menu is\n removed\
+              \ from the menu bar, and replaced with the specified menu."
           - name: shortcuts
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<MenuShortcut>
+                basic: Enumeration
                 full: java.util.Enumeration<java.awt.MenuShortcut>
-          javaType: class
-          extends: MenuComponent
+              notes: "an enumeration of menu shortcuts that this\n               \
+                \       menu bar is managing."
+            notes: "Gets an enumeration of all menu shortcuts this menu bar\n is managing."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

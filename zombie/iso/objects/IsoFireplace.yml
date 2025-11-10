@@ -4,8 +4,118 @@ languages:
     packages:
       zombie.iso.objects:
         IsoFireplace:
+          extends: zombie.iso.IsoObject
           modifiers:
           - public
+          fields:
+            FireSpriteIndex:
+              name: FireSpriteIndex
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            FuelAmountMinutes:
+              name: FuelAmountMinutes
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            FuelSprite:
+              name: FuelSprite
+              modifiers:
+              - protected
+              type:
+                basic: IsoSprite
+                full: zombie.iso.sprite.IsoSprite
+            FuelSpriteIndex:
+              name: FuelSpriteIndex
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            LastUpdateTime:
+              name: LastUpdateTime
+              modifiers:
+              - protected
+              type:
+                basic: float
+                full: float
+            LightSource:
+              name: LightSource
+              modifiers:
+              - protected
+              type:
+                basic: IsoLightSource
+                full: zombie.iso.IsoLightSource
+            MinuteAccumulator:
+              name: MinuteAccumulator
+              modifiers:
+              - protected
+              type:
+                basic: float
+                full: float
+            MinutesSinceExtinguished:
+              name: MinutesSinceExtinguished
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            bFireSpriteUsesOurDepthTexture:
+              name: bFireSpriteUsesOurDepthTexture
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            bLit:
+              name: bLit
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            bSmouldering:
+              name: bSmouldering
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            heatSource:
+              name: heatSource
+              modifiers:
+              - protected
+              type:
+                basic: IsoHeatSource
+                full: zombie.iso.IsoHeatSource
+            soundInstance:
+              name: soundInstance
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+          staticFields:
+            IsoHeatSourceTemperature:
+              name: IsoHeatSourceTemperature
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SmoulderMinutes:
+              name: SmoulderMinutes
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
@@ -13,18 +123,22 @@ languages:
             - name: cell
               type:
                 basic: IsoCell
+                full: zombie.iso.IsoCell
           - modifiers:
             - public
             parameters:
             - name: cell
               type:
                 basic: IsoCell
+                full: zombie.iso.IsoCell
             - name: sq
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: gid
               type:
                 basic: IsoSprite
+                full: zombie.iso.sprite.IsoSprite
           methods:
           - name: addFuel
             modifiers:
@@ -33,21 +147,39 @@ languages:
             - name: units
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: addToWorld
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: afterRotated
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: calcLightRadius
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
           - name: extinguish
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: getFacingPosition
             modifiers:
             - public
@@ -55,45 +187,74 @@ languages:
             - name: pos
               type:
                 basic: Vector2
+                full: zombie.iso.Vector2
             return:
               type:
                 basic: Vector2
+                full: zombie.iso.Vector2
           - name: getFuelAmount
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getObjectName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getTemperature
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
+          - name: hasAnimatedAttachments
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: hasFuel
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isFireSpriteUsingOurDepthTexture
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isLit
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isSmouldering
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isTemperatureChanging
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: load
             modifiers:
             - public
@@ -101,15 +262,19 @@ languages:
             - name: input
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: WorldVersion
               type:
                 basic: int
+                full: int
             - name: IS_DEBUG_SAVE
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: loadChange
             modifiers:
             - public
@@ -117,18 +282,22 @@ languages:
             - name: change
               type:
                 basic: String
+                full: java.lang.String
             - name: bb
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             return:
               type:
                 basic: void
+                full: void
           - name: removeFromWorld
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: render
             modifiers:
             - public
@@ -136,27 +305,59 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: z
               type:
                 basic: float
+                full: float
             - name: col
               type:
                 basic: ColorInfo
+                full: zombie.core.textures.ColorInfo
             - name: bDoChild
               type:
                 basic: boolean
+                full: boolean
             - name: bWallLightingPass
               type:
                 basic: boolean
+                full: boolean
             - name: shader
               type:
                 basic: Shader
+                full: zombie.core.opengl.Shader
             return:
               type:
                 basic: void
+                full: void
+          - name: renderAnimatedAttachments
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: ColorInfo
+                full: zombie.core.textures.ColorInfo
+            return:
+              type:
+                basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -164,12 +365,15 @@ languages:
             - name: output
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: IS_DEBUG_SAVE
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: saveChange
             modifiers:
             - public
@@ -177,15 +381,19 @@ languages:
             - name: change
               type:
                 basic: String
+                full: java.lang.String
             - name: tbl
               type:
                 basic: KahluaTable
+                full: se.krka.kahlua.vm.KahluaTable
             - name: bb
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             return:
               type:
                 basic: void
+                full: void
           - name: setFuelAmount
             modifiers:
             - public
@@ -193,9 +401,11 @@ languages:
             - name: units
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setLit
             modifiers:
             - public
@@ -203,15 +413,60 @@ languages:
             - name: lit
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
+          - name: turnOn
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: updateFireSprite
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateFuelSprite
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateHeatSource
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateLightSource
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateSound
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: useFuel
             modifiers:
             - public
@@ -219,8 +474,8 @@ languages:
             - name: amount
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
-          javaType: class
-          extends: IsoObject
+                full: int

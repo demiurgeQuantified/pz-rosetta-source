@@ -4,200 +4,510 @@ languages:
     packages:
       java.awt:
         Dialog:
+          extends: java.awt.Window
+          modifiers:
+          - public
+          notes: "A Dialog is a top-level window with a title and a border\n that\
+            \ is typically used to take some form of input from the user.\n\n The\
+            \ size of the dialog includes any area designated for the\n border.  The\
+            \ dimensions of the border area can be obtained\n using the getInsets\
+            \ method, however, since\n these dimensions are platform-dependent, a\
+            \ valid insets\n value cannot be obtained until the dialog is made displayable\n\
+            \ by either calling pack or show.\n Since the border area is included\
+            \ in the overall size of the\n dialog, the border effectively obscures\
+            \ a portion of the dialog,\n constraining the area available for rendering\
+            \ and/or displaying\n subcomponents to the rectangle which has an upper-left\
+            \ corner\n location of (insets.left, insets.top), and has a size of\n\
+            \ width - (insets.left + insets.right) by\n height - (insets.top + insets.bottom).\n\
+            \ \n The default layout for a dialog is BorderLayout.\n \n A dialog may\
+            \ have its native decorations (i.e. Frame & Titlebar) turned off\n with\
+            \ setUndecorated.  This can only be done while the dialog\n is not displayable.\n\
+            \ \n A dialog may have another window as its owner when it's constructed.\
+            \  When\n the owner window of a visible dialog is minimized, the dialog\
+            \ will\n automatically be hidden from the user. When the owner window\
+            \ is subsequently\n restored, the dialog is made visible to the user again.\n\
+            \ \n In a multi-screen environment, you can create a Dialog\n on a different\
+            \ screen device than its owner.  See Frame for\n more information.\n \n\
+            \ A dialog can be either modeless (the default) or modal.  A modal\n dialog\
+            \ is one which blocks input to some other top-level windows\n in the application,\
+            \ except for any windows created with the dialog\n as their owner. See\
+            \ AWT Modality\n specification for details.\n \n Dialogs are capable of\
+            \ generating the following\n WindowEvents:\n WindowOpened, WindowClosing,\n\
+            \ WindowClosed, WindowActivated,\n WindowDeactivated, WindowGainedFocus,\n\
+            \ WindowLostFocus."
+          fields:
+            blockedWindows:
+              name: blockedWindows
+              modifiers:
+              - package
+              type:
+                basic: IdentityArrayList
+                full: sun.awt.util.IdentityArrayList<java.awt.Window>
+            initialized:
+              name: initialized
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            isInDispose:
+              name: isInDispose
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            isInHide:
+              name: isInHide
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            modal:
+              name: modal
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            modalFilter:
+              name: modalFilter
+              modifiers:
+              - private
+              type:
+                basic: ModalEventFilter
+                full: java.awt.ModalEventFilter
+            modalityType:
+              name: modalityType
+              modifiers:
+              - package
+              type:
+                basic: Dialog.ModalityType
+                full: java.awt.Dialog$ModalityType
+            resizable:
+              name: resizable
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            secondaryLoop:
+              name: secondaryLoop
+              modifiers:
+              - private
+              type:
+                basic: SecondaryLoop
+                full: java.awt.SecondaryLoop
+            title:
+              name: title
+              modifiers:
+              - package
+              type:
+                basic: String
+                full: java.lang.String
+            undecorated:
+              name: undecorated
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
           staticFields:
             DEFAULT_MODALITY_TYPE:
               name: DEFAULT_MODALITY_TYPE
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: ModalityType
+                basic: Dialog.ModalityType
                 full: java.awt.Dialog$ModalityType
-                nullable: true
+              notes: "Default modality type for modal dialogs. The default modality\
+                \ type is\n APPLICATION_MODAL. Calling the oldstyle setModal(true)\n\
+                \ is equal to setModalityType(DEFAULT_MODALITY_TYPE)."
+            base:
+              name: base
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            modalDialogs:
+              name: modalDialogs
+              modifiers:
+              - package
+              - static
+              type:
+                basic: IdentityArrayList
+                full: sun.awt.util.IdentityArrayList<java.awt.Dialog>
+            nameCounter:
+              name: nameCounter
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Dialog
-                full: java.awt.Dialog
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: owner
               type:
                 basic: Frame
                 full: java.awt.Frame
+              notes: "the owner of the dialog or null if\n     this dialog has no\
+                \ owner"
+            notes: "Constructs an initially invisible, modeless Dialog with\n the\
+              \ specified owner Frame and an empty title."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Window
-                full: java.awt.Window
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Dialog
-                full: java.awt.Dialog
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: owner
               type:
                 basic: Frame
                 full: java.awt.Frame
-            - name: arg1
+              notes: "the owner of the dialog or null if\n     this dialog has no\
+                \ owner"
+            - name: modal
               type:
                 basic: boolean
                 full: boolean
+              notes: "specifies whether dialog blocks user input to other top-level\n\
+                \     windows when shown. If false, the dialog is MODELESS;\n    \
+                \ if true, the modality type property is set to\n     DEFAULT_MODALITY_TYPE"
+            notes: "Constructs an initially invisible Dialog with the specified\n\
+              \ owner Frame and modality and an empty title."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: owner
               type:
                 basic: Frame
                 full: java.awt.Frame
-            - name: arg1
+              notes: "the owner of the dialog or null if\n     this dialog has no\
+                \ owner"
+            - name: title
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the title of the dialog or null if this dialog\n     has no\
+                \ title"
+            notes: "Constructs an initially invisible, modeless Dialog with\n the\
+              \ specified owner Frame and title."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Window
-                full: java.awt.Window
-            - name: arg1
-              type:
-                basic: ModalityType
-                full: java.awt.Dialog$ModalityType
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Window
-                full: java.awt.Window
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Dialog
-                full: java.awt.Dialog
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg2
-              type:
-                basic: boolean
-                full: boolean
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: owner
               type:
                 basic: Frame
                 full: java.awt.Frame
-            - name: arg1
+              notes: "the owner of the dialog or null if\n     this dialog has no\
+                \ owner"
+            - name: title
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "the title of the dialog or null if this dialog\n     has no\
+                \ title"
+            - name: modal
               type:
                 basic: boolean
                 full: boolean
+              notes: "specifies whether dialog blocks user input to other top-level\n\
+                \     windows when shown. If false, the dialog is MODELESS;\n    \
+                \ if true, the modality type property is set to\n     DEFAULT_MODALITY_TYPE"
+            notes: "Constructs an initially invisible Dialog with the\n specified\
+              \ owner Frame, title and modality."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: owner
               type:
-                basic: Window
-                full: java.awt.Window
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg2
-              type:
-                basic: ModalityType
-                full: java.awt.Dialog$ModalityType
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Dialog
-                full: java.awt.Dialog
-            - name: arg1
+                basic: Frame
+                full: java.awt.Frame
+              notes: "the owner of the dialog or null if this dialog\n     has no\
+                \ owner"
+            - name: title
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "the title of the dialog or null if this dialog\n     has no\
+                \ title"
+            - name: modal
               type:
                 basic: boolean
                 full: boolean
-            - name: arg3
+              notes: "specifies whether dialog blocks user input to other top-level\n\
+                \     windows when shown. If false, the dialog is MODELESS;\n    \
+                \ if true, the modality type property is set to\n     DEFAULT_MODALITY_TYPE"
+            - name: gc
               type:
                 basic: GraphicsConfiguration
                 full: java.awt.GraphicsConfiguration
+              notes: "the GraphicsConfiguration of the target screen device;\n   \
+                \  if null, the default system GraphicsConfiguration\n     is assumed"
+            notes: "Constructs an initially invisible Dialog with the specified owner\n\
+              \ Frame, title, modality, and GraphicsConfiguration."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: owner
               type:
-                basic: Frame
-                full: java.awt.Frame
-            - name: arg1
+                basic: Dialog
+                full: java.awt.Dialog
+              notes: "the owner of the dialog or null if this\n     dialog has no\
+                \ owner"
+            notes: "Constructs an initially invisible, modeless Dialog with\n the\
+              \ specified owner Dialog and an empty title."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Dialog
+                full: java.awt.Dialog
+              notes: "the owner of the dialog or null if this\n     has no owner"
+            - name: title
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "the title of the dialog or null if this dialog\n     has no\
+                \ title"
+            notes: "Constructs an initially invisible, modeless Dialog\n with the\
+              \ specified owner Dialog and title."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Dialog
+                full: java.awt.Dialog
+              notes: "the owner of the dialog or null if this\n     dialog has no\
+                \ owner"
+            - name: title
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title of the dialog or null if this\n     dialog has no\
+                \ title"
+            - name: modal
               type:
                 basic: boolean
                 full: boolean
-            - name: arg3
-              type:
-                basic: GraphicsConfiguration
-                full: java.awt.GraphicsConfiguration
+              notes: "specifies whether dialog blocks user input to other top-level\n\
+                \     windows when shown. If false, the dialog is MODELESS;\n    \
+                \ if true, the modality type property is set to\n     DEFAULT_MODALITY_TYPE"
+            notes: "Constructs an initially invisible Dialog with the\n specified\
+              \ owner Dialog, title, and modality."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: owner
               type:
-                basic: Window
-                full: java.awt.Window
-            - name: arg1
+                basic: Dialog
+                full: java.awt.Dialog
+              notes: "the owner of the dialog or null if this\n     dialog has no\
+                \ owner"
+            - name: title
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "the title of the dialog or null if this\n     dialog has no\
+                \ title"
+            - name: modal
               type:
-                basic: ModalityType
-                full: java.awt.Dialog$ModalityType
-            - name: arg3
+                basic: boolean
+                full: boolean
+              notes: "specifies whether dialog blocks user input to other top-level\n\
+                \     windows when shown. If false, the dialog is MODELESS;\n    \
+                \ if true, the modality type property is set to\n     DEFAULT_MODALITY_TYPE"
+            - name: gc
               type:
                 basic: GraphicsConfiguration
                 full: java.awt.GraphicsConfiguration
+              notes: "the GraphicsConfiguration of the target screen device;\n   \
+                \  if null, the default system GraphicsConfiguration\n     is assumed"
+            notes: "Constructs an initially invisible Dialog with the\n specified\
+              \ owner Dialog, title, modality and\n GraphicsConfiguration."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Window
+                full: java.awt.Window
+              notes: "the owner of the dialog. The owner must be an instance of\n\
+                \     Dialog, Frame, any\n     of their descendants or null"
+            notes: "Constructs an initially invisible, modeless Dialog with the\n\
+              \ specified owner Window and an empty title."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Window
+                full: java.awt.Window
+              notes: "the owner of the dialog. The owner must be an instance of\n\
+                \    Dialog, Frame, any\n    of their descendants or null"
+            - name: title
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title of the dialog or null if this dialog\n    has no title"
+            notes: "Constructs an initially invisible, modeless Dialog with\n the\
+              \ specified owner Window and title."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Window
+                full: java.awt.Window
+              notes: "the owner of the dialog. The owner must be an instance of\n\
+                \    Dialog, Frame, any\n    of their descendants or null"
+            - name: modalityType
+              type:
+                basic: Dialog.ModalityType
+                full: java.awt.Dialog$ModalityType
+              notes: "specifies whether dialog blocks input to other\n    windows\
+                \ when shown. null value and unsupported modality\n    types are equivalent\
+                \ to MODELESS"
+            notes: "Constructs an initially invisible Dialog with the\n specified\
+              \ owner Window and modality and an empty title."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Window
+                full: java.awt.Window
+              notes: "the owner of the dialog. The owner must be an instance of\n\
+                \     Dialog, Frame, any\n     of their descendants or null"
+            - name: title
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title of the dialog or null if this dialog\n     has no\
+                \ title"
+            - name: modalityType
+              type:
+                basic: Dialog.ModalityType
+                full: java.awt.Dialog$ModalityType
+              notes: "specifies whether dialog blocks input to other\n    windows\
+                \ when shown. null value and unsupported modality\n    types are equivalent\
+                \ to MODELESS"
+            notes: "Constructs an initially invisible Dialog with the\n specified\
+              \ owner Window, title and modality."
+          - modifiers:
+            - public
+            parameters:
+            - name: owner
+              type:
+                basic: Window
+                full: java.awt.Window
+              notes: "the owner of the dialog. The owner must be an instance of\n\
+                \     Dialog, Frame, any\n     of their descendants or null"
+            - name: title
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title of the dialog or null if this dialog\n     has no\
+                \ title"
+            - name: modalityType
+              type:
+                basic: Dialog.ModalityType
+                full: java.awt.Dialog$ModalityType
+              notes: "specifies whether dialog blocks input to other\n    windows\
+                \ when shown. null value and unsupported modality\n    types are equivalent\
+                \ to MODELESS"
+            - name: gc
+              type:
+                basic: GraphicsConfiguration
+                full: java.awt.GraphicsConfiguration
+              notes: "the GraphicsConfiguration of the target screen device;\n   \
+                \  if null, the default system GraphicsConfiguration\n     is assumed"
+            notes: "Constructs an initially invisible Dialog with the\n specified\
+              \ owner Window, title, modality and\n GraphicsConfiguration."
           methods:
           - name: addNotify
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: blockWindow
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Window
+                full: java.awt.Window
+            return:
+              type:
+                basic: void
+                full: void
+          - name: blockWindows
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<java.awt.Window>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkModalityPermission
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Dialog.ModalityType
+                full: java.awt.Dialog$ModalityType
+            return:
+              type:
+                basic: void
+                full: void
+          - name: conditionalShow
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Component
+                full: java.awt.Component
+            - name: arg1
+              type:
+                basic: AtomicLong
+                full: java.util.concurrent.atomic.AtomicLong
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: constructComponentName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: doDispose
+            modifiers:
+            - package
             return:
               type:
                 basic: void
@@ -214,7 +524,7 @@ languages:
             - public
             return:
               type:
-                basic: ModalityType
+                basic: Dialog.ModalityType
                 full: java.awt.Dialog$ModalityType
           - name: getTitle
             modifiers:
@@ -230,10 +540,31 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+          - name: hideAndDisposeHandler
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: hideAndDisposePreHandler
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: isModal
             modifiers:
             - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isModal_NoClientCode
+            modifiers:
+            - package
+            - final
             return:
               type:
                 basic: boolean
@@ -252,6 +583,55 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: modalHide
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: modalShow
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: modalityPopped
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: modalityPushed
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: paramString
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: setBackground
             modifiers:
             - public
@@ -282,7 +662,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: ModalityType
+                basic: Dialog.ModalityType
                 full: java.awt.Dialog$ModalityType
             return:
               type:
@@ -360,6 +740,18 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: shouldBlock
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Window
+                full: java.awt.Window
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: show
             modifiers:
             - public
@@ -367,7 +759,6 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
           - name: toBack
             modifiers:
             - public
@@ -375,5 +766,53 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Window
+          - name: unblockWindow
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Window
+                full: java.awt.Window
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: checkShouldBeBlocked
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Window
+                full: java.awt.Window
+            return:
+              type:
+                basic: void
+                full: void
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$show$0
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$show$1
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean

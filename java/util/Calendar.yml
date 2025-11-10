@@ -4,518 +4,1118 @@ languages:
     packages:
       java.util:
         Calendar:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "The Calendar class is an abstract class that provides methods\n\
+            \ for converting between a specific instant in time and a set of calendar\
+            \ fields such as YEAR, MONTH,\n DAY_OF_MONTH, HOUR, and so on, and for\n\
+            \ manipulating the calendar fields, such as getting the date of the next\n\
+            \ week. An instant in time can be represented by a millisecond value that\
+            \ is\n an offset from the Epoch, January 1, 1970\n 00:00:00.000 GMT (Gregorian).\n\
+            \n The class also provides additional fields and methods for\n implementing\
+            \ a concrete calendar system outside the package. Those\n fields and methods\
+            \ are defined as protected.\n\n \n Like other locale-sensitive classes,\
+            \ Calendar provides a\n class method, getInstance, for getting a generally\
+            \ useful\n object of this type. Calendar's getInstance method\n returns\
+            \ a Calendar object whose\n calendar fields have been initialized with\
+            \ the current date and time:\n \n \n     Calendar rightNow = Calendar.getInstance();\n\
+            \ \n \n\n A Calendar object can produce all the calendar field values\n\
+            \ needed to implement the date-time formatting for a particular language\
+            \ and\n calendar style (for example, Japanese-Gregorian, Japanese-Traditional).\n\
+            \ Calendar defines the range of values returned by\n certain calendar\
+            \ fields, as well as their meaning.  For example,\n the first month of\
+            \ the calendar system has value MONTH ==\n JANUARY for all calendars.\
+            \  Other values are defined by the\n concrete subclass, such as ERA. \
+            \ See individual field\n documentation and subclass documentation for\
+            \ details.\n\n Getting and Setting Calendar Field Values\n\n The calendar\
+            \ field values can be set by calling the set\n methods. Any field values\
+            \ set in a Calendar will not be\n interpreted until it needs to calculate\
+            \ its time value (milliseconds from\n the Epoch) or values of the calendar\
+            \ fields. Calling the\n get, getTimeInMillis, getTime,\n add and roll\
+            \ involves such calculation.\n\n Leniency\n\n Calendar has two modes for\
+            \ interpreting the calendar\n fields, lenient and non-lenient.  When a\n\
+            \ Calendar is in lenient mode, it accepts a wider range of\n calendar\
+            \ field values than it produces.  When a Calendar\n recomputes calendar\
+            \ field values for return by get(), all of\n the calendar fields are normalized.\
+            \ For example, a lenient\n GregorianCalendar interprets MONTH == JANUARY,\n\
+            \ DAY_OF_MONTH == 32 as February 1.\n\n When a Calendar is in non-lenient\
+            \ mode, it throws an\n exception if there is any inconsistency in its\
+            \ calendar fields. For\n example, a GregorianCalendar always produces\n\
+            \ DAY_OF_MONTH values between 1 and the length of the month. A\n non-lenient\
+            \ GregorianCalendar throws an exception upon\n calculating its time or\
+            \ calendar field values if any out-of-range field\n value has been set.\n\
+            \n First Week\n\n Calendar defines a locale-specific seven day week using\
+            \ two\n parameters: the first day of the week and the minimal days in\
+            \ first week\n (from 1 to 7).  These numbers are taken from the locale\
+            \ resource data or the\n locale itself when a Calendar is constructed.\
+            \ If the designated\n locale contains \"fw\" and/or \"rg\" \n Unicode\
+            \ extensions, the first day of the week will be obtained according to\n\
+            \ those extensions. If both \"fw\" and \"rg\" are specified, the value\
+            \ from the \"fw\"\n extension supersedes the implicit one from the \"\
+            rg\" extension.\n They may also be specified explicitly through the methods\
+            \ for setting their\n values.\n\n When setting or getting the WEEK_OF_MONTH\
+            \ or\n WEEK_OF_YEAR fields, Calendar must determine the\n first week of\
+            \ the month or year as a reference point.  The first week of a\n month\
+            \ or year is defined as the earliest seven day period beginning on\n getFirstDayOfWeek()\
+            \ and containing at least\n getMinimalDaysInFirstWeek() days of that month\
+            \ or year.  Weeks\n numbered ..., -1, 0 precede the first week; weeks\
+            \ numbered 2, 3,... follow\n it.  Note that the normalized numbering returned\
+            \ by get() may be\n different.  For example, a specific Calendar subclass\
+            \ may\n designate the week before week 1 of a year as week n of\n the\
+            \ previous year.\n\n Calendar Fields Resolution\n\n When computing a date\
+            \ and time from the calendar fields, there\n may be insufficient information\
+            \ for the computation (such as only\n year and month with no day of month),\
+            \ or there may be inconsistent\n information (such as Tuesday, July 15,\
+            \ 1996 (Gregorian) -- July 15,\n 1996 is actually a Monday). Calendar\
+            \ will resolve\n calendar field values to determine the date and time\
+            \ in the\n following way.\n\n If there is any conflict in calendar field\
+            \ values,\n Calendar gives priorities to calendar fields that have been\
+            \ set\n more recently. The following are the default combinations of the\n\
+            \ calendar fields. The most recent combination, as determined by the\n\
+            \ most recently set single field, will be used.\n\n For the date fields:\n\
+            \ \n \n YEAR + MONTH + DAY_OF_MONTH\n YEAR + MONTH + WEEK_OF_MONTH + DAY_OF_WEEK\n\
+            \ YEAR + MONTH + DAY_OF_WEEK_IN_MONTH + DAY_OF_WEEK\n YEAR + DAY_OF_YEAR\n\
+            \ YEAR + DAY_OF_WEEK + WEEK_OF_YEAR\n \n\n For the time of day fields:\n\
+            \ \n \n HOUR_OF_DAY\n AM_PM + HOUR\n \n\n If there are any calendar fields\
+            \ whose values haven't been set in the selected\n field combination, Calendar\
+            \ uses their default values. The default\n value of each field may vary\
+            \ by concrete calendar systems. For example, in\n GregorianCalendar, the\
+            \ default of a field is the same as that\n of the start of the Epoch:\
+            \ i.e., YEAR = 1970, MONTH =\n JANUARY, DAY_OF_MONTH = 1, etc.\n\n \n\
+            \ Note: There are certain possible ambiguities in\n interpretation of\
+            \ certain singular times, which are resolved in the\n following ways:\n\
+            \ \n      23:59 is the last minute of the day and 00:00 is the first\n\
+            \          minute of the next day. Thus, 23:59 on Dec 31, 1999 < 00:00\
+            \ on\n          Jan 1, 2000 < 00:01 on Jan 1, 2000.\n\n      Although\
+            \ historically not precise, midnight also belongs to \"am\",\n       \
+            \   and noon belongs to \"pm\", so on the same day,\n          12:00 am\
+            \ (midnight) < 12:01 am, and 12:00 pm (noon) < 12:01 pm\n \n\n \n The\
+            \ date or time format strings are not part of the definition of a\n calendar,\
+            \ as those must be modifiable or overridable by the user at\n runtime.\
+            \ Use DateFormat\n to format dates.\n\n Field Manipulation\n\n The calendar\
+            \ fields can be changed using three methods:\n set(), add(), and roll().\n\
+            \n set(f, value) changes calendar field\n f to value.  In addition, it\
+            \ sets an\n internal member variable to indicate that calendar field f\
+            \ has\n been changed. Although calendar field f is changed immediately,\n\
+            \ the calendar's time value in milliseconds is not recomputed until the\
+            \ next call to\n get(), getTime(), getTimeInMillis(),\n add(), or roll()\
+            \ is made. Thus, multiple calls to\n set() do not trigger multiple, unnecessary\n\
+            \ computations. As a result of changing a calendar field using\n set(),\
+            \ other calendar fields may also change, depending on the\n calendar field,\
+            \ the calendar field value, and the calendar system. In addition,\n get(f)\
+            \ will not necessarily return value set by\n the call to the set method\n\
+            \ after the calendar fields have been recomputed. The specifics are determined\
+            \ by\n the concrete calendar class.\n\n Example: Consider a GregorianCalendar\n\
+            \ originally set to August 31, 1999. Calling set(Calendar.MONTH,\n Calendar.SEPTEMBER)\
+            \ sets the date to September 31,\n 1999. This is a temporary internal\
+            \ representation that resolves to\n October 1, 1999 if getTime() is then\
+            \ called. However, a\n call to set(Calendar.DAY_OF_MONTH, 30) before the\
+            \ call to\n getTime() sets the date to September 30, 1999, since\n no\
+            \ recomputation occurs after set() itself.\n\n add(f, delta) adds delta\n\
+            \ to field f.  This is equivalent to calling set(f,\n get(f) + delta)\
+            \ with two adjustments:\n\n \n   Add rule 1. The value of field f\n  \
+            \ after the call minus the value of field f before the\n   call is delta,\
+            \ modulo any overflow that has occurred in\n   field f. Overflow occurs\
+            \ when a field value exceeds its\n   range and, as a result, the next\
+            \ larger field is incremented or\n   decremented and the field value is\
+            \ adjusted back into its range.\n\n   Add rule 2. If a smaller field is\
+            \ expected to be\n   invariant, but it is impossible for it to be equal\
+            \ to its\n   prior value because of changes in its minimum or maximum\
+            \ after field\n   f is changed or other constraints, such as time zone\n\
+            \   offset changes, then its value is adjusted to be as close\n   as possible\
+            \ to its expected value. A smaller field represents a\n   smaller unit\
+            \ of time. HOUR is a smaller field than\n   DAY_OF_MONTH. No adjustment\
+            \ is made to smaller fields\n   that are not expected to be invariant.\
+            \ The calendar system\n   determines what fields are expected to be invariant.\n\
+            \ \n\n In addition, unlike set(), add() forces\n an immediate recomputation\
+            \ of the calendar's milliseconds and all\n fields.\n\n Example: Consider\
+            \ a GregorianCalendar\n originally set to August 31, 1999. Calling add(Calendar.MONTH,\n\
+            \ 13) sets the calendar to September 30, 2000. Add rule\n 1 sets the MONTH\
+            \ field to September, since\n adding 13 months to August gives September\
+            \ of the next year. Since\n DAY_OF_MONTH cannot be 31 in September in\
+            \ a\n GregorianCalendar, add rule 2 sets the\n DAY_OF_MONTH to 30, the\
+            \ closest possible value. Although\n it is a smaller field, DAY_OF_WEEK\
+            \ is not adjusted by\n rule 2, since it is expected to change when the\
+            \ month changes in a\n GregorianCalendar.\n\n roll(f, delta) adds\n delta\
+            \ to field f without changing larger\n fields. This is equivalent to calling\
+            \ add(f, delta) with\n the following adjustment:\n\n \n   Roll rule. Larger\
+            \ fields are unchanged after the\n   call. A larger field represents a\
+            \ larger unit of\n   time. DAY_OF_MONTH is a larger field than\n   HOUR.\n\
+            \ \n\n Example: See GregorianCalendar.roll(int, int).\n\n Usage model.\
+            \ To motivate the behavior of\n add() and roll(), consider a user interface\n\
+            \ component with increment and decrement buttons for the month, day, and\n\
+            \ year, and an underlying GregorianCalendar. If the\n interface reads\
+            \ January 31, 1999 and the user presses the month\n increment button,\
+            \ what should it read? If the underlying\n implementation uses set(),\
+            \ it might read March 3, 1999. A\n better result would be February 28,\
+            \ 1999. Furthermore, if the user\n presses the month increment button\
+            \ again, it should read March 31,\n 1999, not March 28, 1999. By saving\
+            \ the original date and using either\n add() or roll(), depending on whether\
+            \ larger\n fields should be affected, the user interface can behave as\
+            \ most users\n will intuitively expect."
+          fields:
+            areAllFieldsSet:
+              name: areAllFieldsSet
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            areFieldsSet:
+              name: areFieldsSet
+              modifiers:
+              - protected
+              type:
+                basic: boolean
+                full: boolean
+              notes: "True if fields[] are in sync with the currently set time.\n\
+                \ If false, then the next attempt to get the value of a field will\n\
+                \ force a recomputation of all fields from the current value of\n\
+                \ time."
+            fields:
+              name: fields
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int[]
+              notes: "The calendar field values for the currently set time for this\
+                \ calendar.\n This is an array of FIELD_COUNT integers, with index\
+                \ values\n ERA through DST_OFFSET."
+            firstDayOfWeek:
+              name: firstDayOfWeek
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            isSet:
+              name: isSet
+              modifiers:
+              - protected
+              type:
+                basic: boolean
+                full: boolean[]
+              notes: "The flags which tell if a specified calendar field for the calendar\
+                \ is set.\n A new object has no fields set.  After the first call\
+                \ to a method\n which generates the fields, they all remain set after\
+                \ that.\n This is an array of FIELD_COUNT booleans, with index values\n\
+                \ ERA through DST_OFFSET."
+            isTimeSet:
+              name: isTimeSet
+              modifiers:
+              - protected
+              type:
+                basic: boolean
+                full: boolean
+              notes: "True if then the value of time is valid.\n The time is made\
+                \ invalid by a change to an item of field[]."
+            lenient:
+              name: lenient
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            minimalDaysInFirstWeek:
+              name: minimalDaysInFirstWeek
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            nextStamp:
+              name: nextStamp
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            serialVersionOnStream:
+              name: serialVersionOnStream
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            sharedZone:
+              name: sharedZone
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            stamp:
+              name: stamp
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            time:
+              name: time
+              modifiers:
+              - protected
+              type:
+                basic: long
+                full: long
+              notes: "The currently set time for this calendar, expressed in milliseconds\
+                \ after\n January 1, 1970, 0:00:00 GMT."
+            zone:
+              name: zone
+              modifiers:
+              - private
+              type:
+                basic: TimeZone
+                full: java.util.TimeZone
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ALL_FIELDS:
+              name: ALL_FIELDS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             ALL_STYLES:
               name: ALL_STYLES
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A style specifier for getDisplayNames indicating names in all\
+                \ styles, such as\n \"January\" and \"Jan\"."
             AM:
               name: AM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the AM_PM field indicating the\n period of the day\
+                \ from midnight to just before noon."
             AM_PM:
               name: AM_PM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating\n whether the HOUR is\
+                \ before or after noon.\n E.g., at 10:04:15.250 PM the AM_PM is PM."
+            AM_PM_MASK:
+              name: AM_PM_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             APRIL:
               name: APRIL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n fourth month of the\
+                \ year in the Gregorian and Julian calendars."
             AUGUST:
               name: AUGUST
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n eighth month of the\
+                \ year in the Gregorian and Julian calendars."
+            COMPUTED:
+              name: COMPUTED
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             DATE:
               name: DATE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n day of the month.\
+                \ This is a synonym for DAY_OF_MONTH.\n The first day of the month\
+                \ has value 1."
+            DATE_MASK:
+              name: DATE_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             DAY_OF_MONTH:
               name: DAY_OF_MONTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n day of the month.\
+                \ This is a synonym for DATE.\n The first day of the month has value\
+                \ 1."
+            DAY_OF_MONTH_MASK:
+              name: DAY_OF_MONTH_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             DAY_OF_WEEK:
               name: DAY_OF_WEEK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the day\n of the week.\
+                \  This field takes values SUNDAY,\n MONDAY, TUESDAY, WEDNESDAY,\n\
+                \ THURSDAY, FRIDAY, and SATURDAY."
             DAY_OF_WEEK_IN_MONTH:
               name: DAY_OF_WEEK_IN_MONTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n ordinal number\
+                \ of the day of the week within the current month. Together\n with\
+                \ the DAY_OF_WEEK field, this uniquely specifies a day\n within a\
+                \ month.  Unlike WEEK_OF_MONTH and\n WEEK_OF_YEAR, this field's value\
+                \ does not depend on\n getFirstDayOfWeek() or\n getMinimalDaysInFirstWeek().\
+                \  DAY_OF_MONTH 1\n through 7 always correspond to DAY_OF_WEEK_IN_MONTH\n\
+                \ 1; 8 through 14 correspond to\n DAY_OF_WEEK_IN_MONTH 2, and so on.\n\
+                \ DAY_OF_WEEK_IN_MONTH 0 indicates the week before\n DAY_OF_WEEK_IN_MONTH\
+                \ 1.  Negative values count back from the\n end of the month, so the\
+                \ last Sunday of a month is specified as\n DAY_OF_WEEK = SUNDAY, DAY_OF_WEEK_IN_MONTH\
+                \ = -1.  Because\n negative values count backward they will usually\
+                \ be aligned differently\n within the month than positive values.\
+                \  For example, if a month has 31\n days, DAY_OF_WEEK_IN_MONTH -1\
+                \ will overlap\n DAY_OF_WEEK_IN_MONTH 5 and the end of 4."
+            DAY_OF_WEEK_IN_MONTH_MASK:
+              name: DAY_OF_WEEK_IN_MONTH_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            DAY_OF_WEEK_MASK:
+              name: DAY_OF_WEEK_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             DAY_OF_YEAR:
               name: DAY_OF_YEAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the day\n number within\
+                \ the current year.  The first day of the year has value 1."
+            DAY_OF_YEAR_MASK:
+              name: DAY_OF_YEAR_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             DECEMBER:
               name: DECEMBER
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n twelfth month of the\
+                \ year in the Gregorian and Julian calendars."
             DST_OFFSET:
               name: DST_OFFSET
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n daylight saving\
+                \ offset in milliseconds.\n \n This field reflects the correct daylight\
+                \ saving offset value of\n the time zone of this Calendar if the\n\
+                \ TimeZone implementation subclass supports\n historical Daylight\
+                \ Saving Time schedule changes."
+            DST_OFFSET_MASK:
+              name: DST_OFFSET_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             ERA:
               name: ERA
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n era, e.g., AD\
+                \ or BC in the Julian calendar. This is a calendar-specific\n value;\
+                \ see subclass documentation."
+            ERA_MASK:
+              name: ERA_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             FEBRUARY:
               name: FEBRUARY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n second month of the\
+                \ year in the Gregorian and Julian calendars."
             FIELD_COUNT:
               name: FIELD_COUNT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The number of distinct fields recognized by get and set.\n Field\
+                \ numbers range from 0..FIELD_COUNT-1."
+            FIELD_NAME:
+              name: FIELD_NAME
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
             FRIDAY:
               name: FRIDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Friday."
             HOUR:
               name: HOUR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n hour of the morning\
+                \ or afternoon. HOUR is used for the\n 12-hour clock (0 - 11). Noon\
+                \ and midnight are represented by 0, not by 12.\n E.g., at 10:04:15.250\
+                \ PM the HOUR is 10."
+            HOUR_MASK:
+              name: HOUR_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             HOUR_OF_DAY:
               name: HOUR_OF_DAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n hour of the day.\
+                \ HOUR_OF_DAY is used for the 24-hour clock.\n E.g., at 10:04:15.250\
+                \ PM the HOUR_OF_DAY is 22."
+            HOUR_OF_DAY_MASK:
+              name: HOUR_OF_DAY_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             JANUARY:
               name: JANUARY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n first month of the\
+                \ year in the Gregorian and Julian calendars."
             JULY:
               name: JULY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n seventh month of the\
+                \ year in the Gregorian and Julian calendars."
             JUNE:
               name: JUNE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n sixth month of the\
+                \ year in the Gregorian and Julian calendars."
             LONG:
               name: LONG
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: A style specifier for getDisplayName and getDisplayNames equivalent
+                to LONG_FORMAT.
             LONG_FORMAT:
               name: LONG_FORMAT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: A style specifier for getDisplayName and getDisplayNames indicating
+                a long name used for format.
             LONG_STANDALONE:
               name: LONG_STANDALONE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A style specifier for getDisplayName and getDisplayNames indicating\
+                \ a long name used independently,\n such as a month name as calendar\
+                \ headers."
             MARCH:
               name: MARCH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n third month of the\
+                \ year in the Gregorian and Julian calendars."
             MAY:
               name: MAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n fifth month of the\
+                \ year in the Gregorian and Julian calendars."
             MILLISECOND:
               name: MILLISECOND
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n millisecond within\
+                \ the second.\n E.g., at 10:04:15.250 PM the MILLISECOND is 250."
+            MILLISECOND_MASK:
+              name: MILLISECOND_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MINIMUM_USER_STAMP:
+              name: MINIMUM_USER_STAMP
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             MINUTE:
               name: MINUTE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n minute within\
+                \ the hour.\n E.g., at 10:04:15.250 PM the MINUTE is 4."
+            MINUTE_MASK:
+              name: MINUTE_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             MONDAY:
               name: MONDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Monday."
             MONTH:
               name: MONTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n month. This is\
+                \ a calendar-specific value. The first month of\n the year in the\
+                \ Gregorian and Julian calendars is\n JANUARY which is 0; the last\
+                \ depends on the number\n of months in a year."
+            MONTH_MASK:
+              name: MONTH_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             NARROW_FORMAT:
               name: NARROW_FORMAT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A style specifier for getDisplayName and getDisplayNames indicating\
+                \ a narrow name used for format. Narrow names\n are typically single\
+                \ character strings, such as \"M\" for Monday."
             NARROW_STANDALONE:
               name: NARROW_STANDALONE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A style specifier for getDisplayName and getDisplayNames indicating\
+                \ a narrow name independently. Narrow names\n are typically single\
+                \ character strings, such as \"M\" for Monday."
             NOVEMBER:
               name: NOVEMBER
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n eleventh month of\
+                \ the year in the Gregorian and Julian calendars."
             OCTOBER:
               name: OCTOBER
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n tenth month of the\
+                \ year in the Gregorian and Julian calendars."
             PM:
               name: PM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the AM_PM field indicating the\n period of the day\
+                \ from noon to just before midnight."
             SATURDAY:
               name: SATURDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Saturday."
             SECOND:
               name: SECOND
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n second within\
+                \ the minute.\n E.g., at 10:04:15.250 PM the SECOND is 15."
+            SECOND_MASK:
+              name: SECOND_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             SEPTEMBER:
               name: SEPTEMBER
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n ninth month of the\
+                \ year in the Gregorian and Julian calendars."
             SHORT:
               name: SHORT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: A style specifier for getDisplayName and getDisplayNames equivalent
+                to SHORT_FORMAT.
             SHORT_FORMAT:
               name: SHORT_FORMAT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: A style specifier for getDisplayName and getDisplayNames indicating
+                a short name used for format.
             SHORT_STANDALONE:
               name: SHORT_STANDALONE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "A style specifier for getDisplayName and getDisplayNames indicating\
+                \ a short name used independently,\n such as a month abbreviation\
+                \ as calendar headers."
+            STANDALONE_MASK:
+              name: STANDALONE_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             SUNDAY:
               name: SUNDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Sunday."
             THURSDAY:
               name: THURSDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Thursday."
             TUESDAY:
               name: TUESDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Tuesday."
             UNDECIMBER:
               name: UNDECIMBER
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the MONTH field indicating the\n thirteenth month of\
+                \ the year. Although GregorianCalendar\n does not use this value,\
+                \ lunar calendars do."
+            UNSET:
+              name: UNSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             WEDNESDAY:
               name: WEDNESDAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Value of the DAY_OF_WEEK field indicating\n Wednesday."
             WEEK_OF_MONTH:
               name: WEEK_OF_MONTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n week number within\
+                \ the current month.  The first week of the month, as\n defined by\
+                \ getFirstDayOfWeek() and\n getMinimalDaysInFirstWeek(), has value\
+                \ 1.  Subclasses define\n the value of WEEK_OF_MONTH for days before\
+                \ the first week of\n the month."
+            WEEK_OF_MONTH_MASK:
+              name: WEEK_OF_MONTH_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             WEEK_OF_YEAR:
               name: WEEK_OF_YEAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n week number within\
+                \ the current year.  The first week of the year, as\n defined by getFirstDayOfWeek()\
+                \ and\n getMinimalDaysInFirstWeek(), has value 1.  Subclasses define\n\
+                \ the value of WEEK_OF_YEAR for days before the first week of\n the\
+                \ year."
+            WEEK_OF_YEAR_MASK:
+              name: WEEK_OF_YEAR_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             YEAR:
               name: YEAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Field number for get and set indicating the\n year. This is\
+                \ a calendar-specific value; see subclass documentation."
+            YEAR_MASK:
+              name: YEAR_MASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
             ZONE_OFFSET:
               name: ZONE_OFFSET
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+              notes: "Field number for get and set\n indicating the raw offset from\
+                \ GMT in milliseconds.\n \n This field reflects the correct GMT offset\
+                \ value of the time\n zone of this Calendar if the\n TimeZone implementation\
+                \ subclass supports\n historical GMT offset changes."
+            ZONE_OFFSET_MASK:
+              name: ZONE_OFFSET_MASK
+              modifiers:
+              - package
+              - static
               type:
-                basic: String
-                full: java.lang.String
+                basic: int
+                full: int
+            cachedLocaleData:
+              name: cachedLocaleData
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.util.Locale, int[]>
+            currentSerialVersion:
+              name: currentSerialVersion
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - package
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Constructs a Calendar with the default time zone\n and the default\
+              \ FORMAT\n locale."
+          - modifiers:
+            - protected
+            parameters:
+            - name: zone
+              type:
+                basic: TimeZone
+                full: java.util.TimeZone
+              notes: the time zone to use
+            - name: aLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for the week data
+            notes: Constructs a calendar with the specified time zone and locale.
+          methods:
           - name: add
             modifiers:
             - public
+            - abstract
+            parameters:
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the calendar field.
+            - name: amount
+              type:
+                basic: int
+                full: int
+              notes: the amount of date or time to be added to the field.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Adds or subtracts the specified amount of time to the given calendar\
+              \ field,\n based on the calendar's rules. For example, to subtract 5\
+              \ days from\n the current time of the calendar, you can achieve it by\
+              \ calling:\n add(Calendar.DAY_OF_MONTH, -5)."
+          - name: adjustStamp
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: after
+            modifiers:
+            - public
+            parameters:
+            - name: when
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the Object to be compared
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the time of this Calendar is\n after the time represented\
+                \ by when; false\n otherwise."
+            notes: "Returns whether this Calendar represents a time\n after the time\
+              \ represented by the specified\n Object. This method is equivalent to:\n\
+              \ <code>\n         compareTo(when) > 0\n </code>\n if and only if when\
+              \ is a Calendar\n instance. Otherwise, the method returns false."
+          - name: before
+            modifiers:
+            - public
+            parameters:
+            - name: when
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the Object to be compared
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the time of this\n Calendar is before the time represented\
+                \ by\n when; false otherwise."
+            notes: "Returns whether this Calendar represents a time\n before the time\
+              \ represented by the specified\n Object. This method is equivalent to:\n\
+              \ <code>\n         compareTo(when) < 0\n </code>\n if and only if when\
+              \ is a Calendar\n instance. Otherwise, the method returns false."
+          - name: checkDisplayNameParams
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -525,55 +1125,65 @@ languages:
               type:
                 basic: int
                 full: int
-            return:
+            - name: arg2
               type:
-                basic: void
-                full: void
-          - name: after
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: int
+                full: int
+            - name: arg3
               type:
-                basic: Object
-                full: java.lang.Object
-            return:
+                basic: int
+                full: int
+            - name: arg4
               type:
-                basic: boolean
-                full: boolean
-          - name: before
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: clear
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: void
-                full: void
-          - name: clear
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
+                basic: Locale
+                full: java.util.Locale
+            - name: arg5
               type:
                 basic: int
                 full: int
             return:
               type:
+                basic: boolean
+                full: boolean
+          - name: clear
+            modifiers:
+            - public
+            - final
+            return:
+              type:
                 basic: void
                 full: void
+            notes: "Sets all the calendar field values and the time value\n (millisecond\
+              \ offset from the Epoch) of\n this Calendar undefined. This means that\
+              \ isSet() will return false for all the\n calendar fields, and the date\
+              \ and time calculations will treat\n the fields as if they had never\
+              \ been set. A\n Calendar implementation class may use its specific\n\
+              \ default field values for date/time calculations. For example,\n GregorianCalendar\
+              \ uses 1970 if the\n YEAR field value is undefined."
+          - name: clear
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the calendar field to be cleared.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the given calendar field value and the time value\n (millisecond\
+              \ offset from the Epoch) of\n this Calendar undefined. This means that\
+              \ isSet(field) will return false, and\n the date and time calculations\
+              \ will treat the field as if it\n had never been set. A Calendar implementation\n\
+              \ class may use the field's specific default value for date and\n time\
+              \ calculations.\n\n The HOUR_OF_DAY, HOUR and AM_PM\n fields are handled\
+              \ independently and the the resolution rule for the time of\n day is\
+              \ applied. Clearing one of the fields doesn't reset\n the hour of day\
+              \ value of this Calendar. Use set(Calendar.HOUR_OF_DAY, 0) to reset\
+              \ the hour\n value."
           - name: clone
             modifiers:
             - public
@@ -581,81 +1191,176 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a copy of this object.
+            notes: Creates and returns a copy of this object.
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: anotherCalendar
               type:
                 basic: Calendar
                 full: java.util.Calendar
+              notes: the Calendar to be compared.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the value 0 if the time represented by the argument\n is equal\
+                \ to the time represented by this Calendar; a value\n less than 0\
+                \ if the time of this Calendar is\n before the time represented by\
+                \ the argument; and a value greater than\n 0 if the time of this Calendar\
+                \ is after the\n time represented by the argument."
+            notes: "Compares the time values (millisecond offsets from the Epoch)\
+              \ represented by two\n Calendar objects."
+          - name: compareTo
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int
+          - name: complete
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Fills in any unset fields in the calendar fields. First, the computeTime()\
+              \ method is called if the time value (millisecond offset\n from the\
+              \ Epoch) has not been calculated from\n calendar field values. Then,\
+              \ the computeFields() method is\n called to calculate all calendar field\
+              \ values."
+          - name: computeFields
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Converts the current millisecond time value time\n to calendar\
+              \ field values in fields[].\n This allows you to sync up the calendar\
+              \ field values with\n a new time that is set for the calendar.  The\
+              \ time is not\n recomputed first; to recompute the time, then the fields,\
+              \ call the\n complete() method."
+          - name: computeTime
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Converts the current calendar field values in fields[]\n to the\
+              \ millisecond time value\n time."
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare with.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this object is equal to obj;\n false otherwise."
+            notes: "Compares this Calendar to the specified\n Object.  The result\
+              \ is true if and only if\n the argument is a Calendar object of the\
+              \ same calendar\n system that represents the same time value (millisecond\
+              \ offset from the\n Epoch) under the same\n Calendar parameters as this\
+              \ object.\n\n The Calendar parameters are the values represented\n by\
+              \ the isLenient, getFirstDayOfWeek,\n getMinimalDaysInFirstWeek and\
+              \ getTimeZone\n methods. If there is any difference in those parameters\n\
+              \ between the two Calendars, this method returns\n false.\n\n Use the\
+              \ compareTo method to\n compare only the time values."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the given calendar field.
             return:
               type:
                 basic: int
                 full: int
+              notes: the value for the given calendar field.
+            notes: "Returns the value of the given calendar field. In lenient mode,\n\
+              \ all calendar fields are normalized. In non-lenient mode, all\n calendar\
+              \ fields are validated and this method throws an\n exception if any\
+              \ calendar fields have out-of-range values. The\n normalization and\
+              \ validation are handled by the\n complete() method, which process is\
+              \ calendar\n system dependent."
           - name: getActualMaximum
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the calendar field
             return:
               type:
                 basic: int
                 full: int
+              notes: "the maximum of the given calendar field for the time\n value\
+                \ of this Calendar"
+            notes: "Returns the maximum value that the specified calendar field\n\
+              \ could have, given the time value of this\n Calendar. For example,\
+              \ the actual maximum value of\n the MONTH field is 12 in some years,\
+              \ and 13 in\n other years in the Hebrew calendar system.\n\n The default\
+              \ implementation of this method uses an iterative\n algorithm to determine\
+              \ the actual maximum value for the\n calendar field. Subclasses should,\
+              \ if possible, override this\n with a more efficient implementation."
           - name: getActualMinimum
             modifiers:
             - public
+            parameters:
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the calendar field
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the minimum of the given calendar field for the time\n value\
+                \ of this Calendar"
+            notes: "Returns the minimum value that the specified calendar field\n\
+              \ could have, given the time value of this Calendar.\n\n The default\
+              \ implementation of this method uses an iterative\n algorithm to determine\
+              \ the actual minimum value for the\n calendar field. Subclasses should,\
+              \ if possible, override this\n with a more efficient implementation\
+              \ - in many cases, they can\n simply return getMinimum()."
+          - name: getBaseStyle
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -672,29 +1377,104 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the LDML-defined calendar type or the class name of this\n \
+                \        Calendar instance"
+            notes: "Returns the calendar type of this Calendar. Calendar types are\n\
+              \ defined by the Unicode Locale Data Markup Language (LDML)\n specification.\n\
+              \n The default implementation of this method returns the class name\
+              \ of\n this Calendar instance. Any subclasses that implement\n LDML-defined\
+              \ calendar systems should override this method to return\n appropriate\
+              \ calendar types."
           - name: getDisplayName
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the calendar field for which the string representation\n   \
+                \     is returned"
+            - name: style
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the style applied to the string representation; one of SHORT_FORMAT\
+                \ (SHORT), SHORT_STANDALONE,\n        LONG_FORMAT (LONG), LONG_STANDALONE,\n\
+                \        NARROW_FORMAT, or NARROW_STANDALONE."
+            - name: locale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: "the locale for the string representation\n        (any calendar\
+                \ types specified by locale are ignored)"
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the string representation of the given\n        field in the\
+                \ given style, or\n        null if no string representation is\n \
+                \       applicable."
+            notes: "Returns the string representation of the calendar\n field value\
+              \ in the given style and\n locale.  If no string representation is\n\
+              \ applicable, null is returned. This method calls\n get(field) to get\
+              \ the calendar\n field value if the string representation is\n applicable\
+              \ to the given calendar field.\n\n For example, if this Calendar is\
+              \ a\n GregorianCalendar and its date is 2005-01-01, then\n the string\
+              \ representation of the MONTH field would be\n \"January\" in the long\
+              \ style in an English locale or \"Jan\" in\n the short style. However,\
+              \ no string representation would be\n available for the DAY_OF_MONTH\
+              \ field, and this method\n would return null.\n\n The default implementation\
+              \ supports the calendar fields for\n which a DateFormatSymbols has names\
+              \ in the given\n locale."
           - name: getDisplayNames
             modifiers:
             - public
+            parameters:
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the calendar field for which the display names are returned
+            - name: style
+              type:
+                basic: int
+                full: int
+              notes: "the style applied to the string representation; one of SHORT_FORMAT\
+                \ (SHORT), SHORT_STANDALONE,\n        LONG_FORMAT (LONG), LONG_STANDALONE,\n\
+                \        NARROW_FORMAT, or NARROW_STANDALONE"
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for the display names
+            return:
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Integer>
+              notes: "a Map containing all display names in\n        style and locale\
+                \ and their\n        field values, or null if no display names\n \
+                \       are defined for field"
+            notes: "Returns a Map containing all names of the calendar\n field in\
+              \ the given style and\n locale and their corresponding field values.\
+              \ For\n example, if this Calendar is a GregorianCalendar, the returned\
+              \ map would contain \"Jan\" to\n JANUARY, \"Feb\" to FEBRUARY, and so\
+              \ on, in the\n short style in an English locale.\n\n Narrow names may\
+              \ not be unique due to use of single characters,\n such as \"S\" for\
+              \ Sunday and Saturday. In that case narrow names are not\n included\
+              \ in the returned Map.\n\n The values of other calendar fields may be\
+              \ taken into\n account to determine a set of display names. For example,\
+              \ if\n this Calendar is a lunisolar calendar system and\n the year value\
+              \ given by the YEAR field has a leap\n month, this method would return\
+              \ month names containing the leap\n month name, and month names are\
+              \ mapped to their values specific\n for the year.\n\n The default implementation\
+              \ supports display names contained in\n a DateFormatSymbols. For example,\
+              \ if field\n is MONTH and style is ALL_STYLES, this method returns a\
+              \ Map containing\n all strings returned by DateFormatSymbols.getShortMonths()\n\
+              \ and DateFormatSymbols.getMonths()."
+          - name: getDisplayNamesImpl
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -710,8 +1490,28 @@ languages:
                 full: java.util.Locale
             return:
               type:
-                basic: Map<String, Integer>
+                basic: Map
                 full: java.util.Map<java.lang.String, java.lang.Integer>
+          - name: getFieldStrings
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: DateFormatSymbols
+                full: java.text.DateFormatSymbols
+            return:
+              type:
+                basic: String
+                full: java.lang.String[]
           - name: getFirstDayOfWeek
             modifiers:
             - public
@@ -719,42 +1519,71 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the first day of the week.
+            notes: "Gets what the first day of the week is; e.g., SUNDAY in the U.S.,\n\
+              \ MONDAY in France."
           - name: getGreatestMinimum
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the calendar field.
             return:
               type:
                 basic: int
                 full: int
+              notes: the highest minimum value for the given calendar field.
+            notes: "Returns the highest minimum value for the given calendar field\n\
+              \ of this Calendar instance. The highest minimum\n value is defined\
+              \ as the largest value returned by getActualMinimum(int) for any possible\
+              \ time value. The\n greatest minimum value depends on calendar system\
+              \ specific\n parameters of the instance."
           - name: getLeastMaximum
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the calendar field.
             return:
               type:
                 basic: int
                 full: int
+              notes: the lowest maximum value for the given calendar field.
+            notes: "Returns the lowest maximum value for the given calendar field\n\
+              \ of this Calendar instance. The lowest maximum\n value is defined as\
+              \ the smallest value returned by getActualMaximum(int) for any possible\
+              \ time value. The least\n maximum value depends on calendar system specific\
+              \ parameters of\n the instance. For example, a Calendar for the\n Gregorian\
+              \ calendar system returns 28 for the\n DAY_OF_MONTH field, because the\
+              \ 28th is the last\n day of the shortest month of this calendar, February\
+              \ in a\n common year."
           - name: getMaximum
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the calendar field.
             return:
               type:
                 basic: int
                 full: int
+              notes: the maximum value for the given calendar field.
+            notes: "Returns the maximum value for the given calendar field of this\n\
+              \ Calendar instance. The maximum value is defined as\n the largest value\
+              \ returned by the get method\n for any possible time value. The maximum\
+              \ value depends on\n calendar system specific parameters of the instance."
           - name: getMinimalDaysInFirstWeek
             modifiers:
             - public
@@ -762,14 +1591,36 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the minimal days required in the first week of the year.
+            notes: "Gets what the minimal days required in the first week of the year\
+              \ are;\n e.g., if the first week is defined as one that contains the\
+              \ first day\n of the first month of a year, this method returns 1. If\n\
+              \ the minimal days required must be a full week, this method\n returns\
+              \ 7."
           - name: getMinimum
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the calendar field.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the minimum value for the given calendar field.
+            notes: "Returns the minimum value for the given calendar field of this\n\
+              \ Calendar instance. The minimum value is defined as\n the smallest\
+              \ value returned by the get method\n for any possible time value.  The\
+              \ minimum value depends on\n calendar system specific parameters of\
+              \ the instance."
+          - name: getSetStateFields
+            modifiers:
+            - package
+            - final
             return:
               type:
                 basic: int
@@ -782,6 +1633,9 @@ languages:
               type:
                 basic: Date
                 full: java.util.Date
+              notes: a Date representing the time value.
+            notes: "Returns a Date object representing this\n Calendar's time value\
+              \ (millisecond offset from the Epoch\")."
           - name: getTimeInMillis
             modifiers:
             - public
@@ -789,6 +1643,8 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the current time as UTC milliseconds from the epoch.
+            notes: Returns this Calendar's time value in milliseconds.
           - name: getTimeZone
             modifiers:
             - public
@@ -796,6 +1652,8 @@ languages:
               type:
                 basic: TimeZone
                 full: java.util.TimeZone
+              notes: the time zone object associated with this calendar.
+            notes: Gets the time zone.
           - name: getWeekYear
             modifiers:
             - public
@@ -803,6 +1661,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the week year of this Calendar
+            notes: "Returns the week year represented by this Calendar. The\n week\
+              \ year is in sync with the week cycle. The first day of the first week\
+              \ is the first\n day of the week year.\n\n The default implementation\
+              \ of this method throws an\n UnsupportedOperationException."
           - name: getWeeksInWeekYear
             modifiers:
             - public
@@ -810,6 +1673,17 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of weeks in the week year.
+            notes: "Returns the number of weeks in the week year represented by this\n\
+              \ Calendar.\n\n The default implementation of this method throws an\n\
+              \ UnsupportedOperationException."
+          - name: getZone
+            modifiers:
+            - package
+            return:
+              type:
+                basic: TimeZone
+                full: java.util.TimeZone
           - name: hashCode
             modifiers:
             - public
@@ -817,9 +1691,108 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object.
+            notes: Returns a hash code for this calendar.
+          - name: internalGet
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the given calendar field.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the value for the given calendar field.
+            notes: "Returns the value of the given calendar field. This method does\n\
+              \ not involve normalization or validation of the field value."
+          - name: internalSet
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: invalidateWeekFields
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: isExternallySet
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isFullyNormalized
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isLenient
             modifiers:
             - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the interpretation mode of this calendar is lenient;\n\
+                \ false otherwise."
+            notes: Tells whether date/time interpretation is to be lenient.
+          - name: isNarrowFormatStyle
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isNarrowStyle
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isPartiallyNormalized
+            modifiers:
+            - package
+            - final
             return:
               type:
                 basic: boolean
@@ -828,6 +1801,23 @@ languages:
             modifiers:
             - public
             - final
+            parameters:
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the calendar field to test
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the given calendar field has a value set;\n false otherwise."
+            notes: "Determines if the given calendar field has a value set,\n including\
+              \ cases that the value has been set by internal fields\n calculations\
+              \ triggered by a get method call."
+          - name: isStandaloneStyle
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -844,130 +1834,234 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: roll
+              notes: "true if this Calendar supports week dates;\n         false otherwise."
+            notes: "Returns whether this Calendar supports week dates.\n\n The default\
+              \ implementation of this method returns false."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: roll
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: field
+              type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the time field.
+            - name: up
               type:
                 basic: boolean
                 full: boolean
+              notes: "indicates if the value of the specified time field is to be\n\
+                \ rolled up or rolled down. Use true if rolling up, false otherwise."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds or subtracts (up/down) a single unit of time on the given\
+              \ time\n field without changing larger fields. For example, to roll\
+              \ the current\n date up by one day, you can achieve it by calling:\n\
+              \ roll(Calendar.DATE, true).\n When rolling on the year or Calendar.YEAR\
+              \ field, it will roll the year\n value in the range between 1 and the\
+              \ value returned by calling\n getMaximum(Calendar.YEAR).\n When rolling\
+              \ on the month or Calendar.MONTH field, other fields like\n date might\
+              \ conflict and, need to be changed. For instance,\n rolling the month\
+              \ on the date 01/31/96 will result in 02/29/96.\n When rolling on the\
+              \ hour-in-day or Calendar.HOUR_OF_DAY field, it will\n roll the hour\
+              \ value in the range between 0 and 23, which is zero-based."
           - name: roll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the calendar field.
+            - name: amount
               type:
                 basic: int
                 full: int
+              notes: the signed amount to add to the calendar field.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds the specified (signed) amount to the specified calendar field\n\
+              \ without changing larger fields.  A negative amount means to roll\n\
+              \ down.\n\n NOTE:  This default implementation on Calendar just repeatedly\
+              \ calls the\n version of roll() that rolls by one unit.  This may not\n\
+              \ always do the right thing.  For example, if the DAY_OF_MONTH field\
+              \ is 31,\n rolling through February will leave it set to 28.  The GregorianCalendar\n\
+              \ version of this function takes care of this problem.  Other subclasses\n\
+              \ should also provide overrides of this function that do the right thing."
+          - name: selectFields
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: int
+                full: int
           - name: set
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the given calendar field.
+            - name: value
               type:
                 basic: int
                 full: int
+              notes: the value to be set for the given calendar field.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the given calendar field to the given value. The value is\
+              \ not\n interpreted by this method regardless of the leniency mode."
           - name: set
             modifiers:
             - public
+            - final
+            parameters:
+            - name: year
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the YEAR calendar field.
+            - name: month
+              type:
+                basic: int
+                full: int
+              notes: "the value used to set the MONTH calendar field.\n Month value\
+                \ is 0-based. e.g., 0 for January."
+            - name: date
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the DAY_OF_MONTH calendar field.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the values for the calendar fields YEAR,\n MONTH, and DAY_OF_MONTH.\n\
+              \ Previous values of other calendar fields are retained.  If this is\
+              \ not desired,\n call clear() first."
+          - name: set
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: year
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the YEAR calendar field.
+            - name: month
+              type:
+                basic: int
+                full: int
+              notes: "the value used to set the MONTH calendar field.\n Month value\
+                \ is 0-based. e.g., 0 for January."
+            - name: date
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the DAY_OF_MONTH calendar field.
+            - name: hourOfDay
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the HOUR_OF_DAY calendar field.
+            - name: minute
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the MINUTE calendar field.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the values for the calendar fields YEAR,\n MONTH, DAY_OF_MONTH,\n\
+              \ HOUR_OF_DAY, and MINUTE.\n Previous values of other fields are retained.\
+              \  If this is not desired,\n call clear() first."
+          - name: set
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: year
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the YEAR calendar field.
+            - name: month
+              type:
+                basic: int
+                full: int
+              notes: "the value used to set the MONTH calendar field.\n Month value\
+                \ is 0-based. e.g., 0 for January."
+            - name: date
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the DAY_OF_MONTH calendar field.
+            - name: hourOfDay
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the HOUR_OF_DAY calendar field.
+            - name: minute
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the MINUTE calendar field.
+            - name: second
+              type:
+                basic: int
+                full: int
+              notes: the value used to set the SECOND calendar field.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the values for the fields YEAR, MONTH,\n DAY_OF_MONTH, HOUR_OF_DAY,\
+              \ MINUTE, and\n SECOND.\n Previous values of other fields are retained.\
+              \  If this is not desired,\n call clear() first."
+          - name: setFieldsComputed
+            modifiers:
+            - package
             - final
             parameters:
             - name: arg0
               type:
                 basic: int
                 full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: void
                 full: void
-          - name: set
+          - name: setFieldsNormalized
             modifiers:
-            - public
+            - package
             - final
             parameters:
             - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: set
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
               type:
                 basic: int
                 full: int
@@ -979,71 +2073,114 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: int
                 full: int
+              notes: the given first day of the week.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets what the first day of the week is; e.g., SUNDAY in the U.S.,\n\
+              \ MONDAY in France."
           - name: setLenient
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: lenient
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the lenient mode is to be turned\n on; false if it is\
+                \ to be turned off."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Specifies whether or not date/time interpretation is to be lenient.\
+              \  With\n lenient interpretation, a date such as \"February 942, 1996\"\
+              \ will be\n treated as being equivalent to the 941st day after February\
+              \ 1, 1996.\n With strict (non-lenient) interpretation, such dates will\
+              \ cause an exception to be\n thrown. The default is lenient."
           - name: setMinimalDaysInFirstWeek
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: int
                 full: int
+              notes: "the given minimal days required in the first week\n of the year."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets what the minimal days required in the first week of the year\
+              \ are;\n For example, if the first week is defined as one that contains\
+              \ the first\n day of the first month of a year, call this method with\
+              \ value 1. If it\n must be a full week, use value 7."
           - name: setTime
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: date
               type:
                 basic: Date
                 full: java.util.Date
+              notes: the given Date.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this Calendar's time with the given Date.\n \n Note: Calling\
+              \ setTime() with\n Date(Long.MAX_VALUE) or Date(Long.MIN_VALUE)\n may\
+              \ yield incorrect field values from get()."
           - name: setTimeInMillis
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: millis
               type:
                 basic: long
                 full: long
+              notes: the new time in UTC milliseconds from the epoch.
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets this Calendar's current time from the given long value.
           - name: setTimeZone
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: TimeZone
                 full: java.util.TimeZone
+              notes: the given time zone.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Sets the time zone with the given time zone value.
+          - name: setUnnormalized
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setWeekCountData
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Locale
+                full: java.util.Locale
             return:
               type:
                 basic: void
@@ -1052,18 +2189,41 @@ languages:
             modifiers:
             - public
             parameters:
+            - name: weekYear
+              type:
+                basic: int
+                full: int
+              notes: the week year
+            - name: weekOfYear
+              type:
+                basic: int
+                full: int
+              notes: the week number based on weekYear
+            - name: dayOfWeek
+              type:
+                basic: int
+                full: int
+              notes: "the day of week value: one of the constants\n              \
+                \     for the DAY_OF_WEEK field: SUNDAY, ..., SATURDAY."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the date of this Calendar with the given date\n specifiers\
+              \ - week year, week of year, and day of week.\n\n Unlike the set method,\
+              \ all of the calendar fields\n and time values are calculated upon return.\n\
+              \n If weekOfYear is out of the valid week-of-year range\n in weekYear,\
+              \ the weekYear and \n weekOfYear values are adjusted in lenient mode,\
+              \ or an \n IllegalArgumentException is thrown in non-lenient mode.\n\
+              \n The default implementation of this method throws an\n UnsupportedOperationException."
+          - name: setZoneShared
+            modifiers:
+            - package
+            parameters:
             - name: arg0
               type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
@@ -1076,60 +2236,94 @@ languages:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the instant representing the same point on the time-line
+            notes: "Converts this object to an Instant.\n \n The conversion creates\
+              \ an Instant that represents the\n same point on the time-line as this\
+              \ Calendar."
+          - name: toStandaloneStyle
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: updateTime
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
-          - name: getAvailableCalendarTypes
+          - name: aggregateStamp
             modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Set<String>
-                full: java.util.Set<java.lang.String>
-          - name: getAvailableLocales
-            modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Locale[]
-                full: java.util.Locale[]
-          - name: getInstance
-            modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Calendar
-                full: java.util.Calendar
-          - name: getInstance
-            modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: Locale
-                full: java.util.Locale
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: Calendar
-                full: java.util.Calendar
-          - name: getInstance
+                basic: int
+                full: int
+          - name: appendValue
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: TimeZone
-                full: java.util.TimeZone
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: long
+                full: long
             return:
               type:
-                basic: Calendar
-                full: java.util.Calendar
-          - name: getInstance
+                basic: void
+                full: void
+          - name: createCalendar
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
@@ -1144,5 +2338,160 @@ languages:
               type:
                 basic: Calendar
                 full: java.util.Calendar
-          javaType: class
-          extends: Object
+          - name: defaultTimeZone
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Locale
+                full: java.util.Locale
+            return:
+              type:
+                basic: TimeZone
+                full: java.util.TimeZone
+          - name: getAvailableCalendarTypes
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>
+              notes: an unmodifiable Set containing all available calendar types
+            notes: "Returns an unmodifiable Set containing all calendar types\n supported\
+              \ by Calendar in the runtime environment. The available\n calendar types\
+              \ can be used for the Unicode locale extensions.\n The Set returned\
+              \ contains at least \"gregory\". The\n calendar types don't include\
+              \ aliases, such as \"gregorian\" for\n \"gregory\"."
+          - name: getAvailableLocales
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Locale
+                full: java.util.Locale[]
+              notes: "An array of locales for which localized\n         Calendar instances\
+                \ are available."
+            notes: "Returns an array of all locales for which the getInstance\n methods\
+              \ of this class can return localized instances.\n The array returned\
+              \ must contain at least a Locale\n instance equal to Locale.US."
+          - name: getFieldName
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Calendar
+                full: java.util.Calendar
+              notes: a Calendar.
+            notes: "Gets a calendar using the default time zone and locale. The\n\
+              \ Calendar returned is based on the current time\n in the default time\
+              \ zone with the default\n FORMAT locale.\n \n If the locale contains\
+              \ the time zone with \"tz\"\n Unicode extension,\n that time zone is\
+              \ used instead."
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: zone
+              type:
+                basic: TimeZone
+                full: java.util.TimeZone
+              notes: the time zone to use
+            return:
+              type:
+                basic: Calendar
+                full: java.util.Calendar
+              notes: a Calendar.
+            notes: "Gets a calendar using the specified time zone and default locale.\n\
+              \ The Calendar returned is based on the current time\n in the given\
+              \ time zone with the default\n FORMAT locale."
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: aLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for the week data
+            return:
+              type:
+                basic: Calendar
+                full: java.util.Calendar
+              notes: a Calendar.
+            notes: "Gets a calendar using the default time zone and specified locale.\n\
+              \ The Calendar returned is based on the current time\n in the default\
+              \ time zone with the given locale.\n \n If the locale contains the time\
+              \ zone with \"tz\"\n Unicode extension,\n that time zone is used instead."
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: zone
+              type:
+                basic: TimeZone
+                full: java.util.TimeZone
+              notes: the time zone to use
+            - name: aLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the locale for the week data
+            return:
+              type:
+                basic: Calendar
+                full: java.util.Calendar
+              notes: a Calendar.
+            notes: "Gets a calendar with the specified time zone and locale.\n The\
+              \ Calendar returned is based on the current time\n in the given time\
+              \ zone with the given locale."
+          - name: getMillisOf
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Calendar
+                full: java.util.Calendar
+            return:
+              type:
+                basic: long
+                full: long
+          - name: isFieldSet
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean

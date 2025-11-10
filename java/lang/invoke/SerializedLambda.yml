@@ -1,0 +1,307 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.lang.invoke:
+        SerializedLambda:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "Serialized form of a lambda expression.  The properties of this\
+            \ class\n represent the information that is present at the lambda factory\
+            \ site, including\n static metafactory arguments such as the identity\
+            \ of the primary functional\n interface method and the identity of the\
+            \ implementation method, as well as\n dynamic metafactory arguments such\
+            \ as values captured from the lexical scope\n at the time of lambda capture.\n\
+            \n Implementors of serializable lambdas, such as compilers or language\n\
+            \ runtime libraries, are expected to ensure that instances deserialize\
+            \ properly.\n One means to do so is to ensure that the writeReplace method\
+            \ returns\n an instance of SerializedLambda, rather than allowing default\n\
+            \ serialization to proceed.\n\n SerializedLambda has a readResolve method\
+            \ that looks for\n a (possibly private) static method called\n $deserializeLambda$(SerializedLambda)\
+            \ in the capturing class, invokes\n that with itself as the first argument,\
+            \ and returns the result.  Lambda classes\n implementing $deserializeLambda$\
+            \ are responsible for validating\n that the properties of the SerializedLambda\
+            \ are consistent with a\n lambda actually captured by that class.\n\n\
+            \ The identity of a function object produced by deserializing the serialized\n\
+            \ form is unpredictable, and therefore identity-sensitive operations (such\
+            \ as\n reference equality, object locking, and System.identityHashCode()\
+            \ may\n produce different results in different implementations, or even\
+            \ upon\n different deserializations in the same implementation."
+          fields:
+            capturedArgs:
+              name: capturedArgs
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            capturingClass:
+              name: capturingClass
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            functionalInterfaceClass:
+              name: functionalInterfaceClass
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            functionalInterfaceMethodName:
+              name: functionalInterfaceMethodName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            functionalInterfaceMethodSignature:
+              name: functionalInterfaceMethodSignature
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            implClass:
+              name: implClass
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            implMethodKind:
+              name: implMethodKind
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            implMethodName:
+              name: implMethodName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            implMethodSignature:
+              name: implMethodSignature
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            instantiatedMethodType:
+              name: instantiatedMethodType
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: capturingClass
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: The class in which the lambda expression appears
+            - name: functionalInterfaceClass
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "Name, in slash-delimited form, of static\n                 \
+                \                type of the returned lambda object"
+            - name: functionalInterfaceMethodName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "Name of the functional interface\n                         \
+                \             method for the present at the\n                    \
+                \                  lambda factory site"
+            - name: functionalInterfaceMethodSignature
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "Signature of the functional\n                              \
+                \             interface method present at\n                      \
+                \                     the lambda factory site"
+            - name: implMethodKind
+              type:
+                basic: int
+                full: int
+              notes: Method handle kind for the implementation method
+            - name: implClass
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "Name, in slash-delimited form, for the class holding\n     \
+                \             the implementation method"
+            - name: implMethodName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: Name of the implementation method
+            - name: implMethodSignature
+              type:
+                basic: String
+                full: java.lang.String
+              notes: Signature of the implementation method
+            - name: instantiatedMethodType
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "The signature of the primary functional\n                  \
+                \             interface method after type variables\n            \
+                \                   are substituted with their instantiation\n   \
+                \                            from the capture site"
+            - name: capturedArgs
+              type:
+                basic: Object
+                full: java.lang.Object[]
+              notes: "The dynamic arguments to the lambda factory site,\n        \
+                \             which represent variables captured by\n            \
+                \         the lambda"
+            notes: "Create a SerializedLambda from the low-level information present\n\
+              \ at the lambda factory site."
+          methods:
+          - name: getCapturedArg
+            modifiers:
+            - public
+            parameters:
+            - name: i
+              type:
+                basic: int
+                full: int
+              notes: the argument to capture
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a dynamic argument to the lambda capture site
+            notes: Get a dynamic argument to the lambda capture site.
+          - name: getCapturedArgCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the count of dynamic arguments to the lambda capture site
+            notes: Get the count of dynamic arguments to the lambda capture site.
+          - name: getCapturingClass
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the class that captured this lambda
+            notes: Get the name of the class that captured this lambda.
+          - name: getFunctionalInterfaceClass
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the name of the functional interface class to which\n this lambda\
+                \ has been converted"
+            notes: "Get the name of the invoked type to which this\n lambda has been\
+              \ converted"
+          - name: getFunctionalInterfaceMethodName
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the primary methods of the functional interface
+            notes: "Get the name of the primary method for the functional interface\n\
+              \ to which this lambda has been converted."
+          - name: getFunctionalInterfaceMethodSignature
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the signature of the primary method of the functional\n interface"
+            notes: "Get the signature of the primary method for the functional\n interface\
+              \ to which this lambda has been converted."
+          - name: getImplClass
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the name of the class containing the implementation\n method"
+            notes: "Get the name of the class containing the implementation\n method."
+          - name: getImplMethodKind
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the method handle kind of the implementation method
+            notes: "Get the method handle kind (see MethodHandleInfo) of\n the implementation\
+              \ method."
+          - name: getImplMethodName
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the implementation method
+            notes: Get the name of the implementation method.
+          - name: getImplMethodSignature
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the signature of the implementation method
+            notes: Get the signature of the implementation method.
+          - name: getInstantiatedMethodType
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the signature of the primary functional interface method\n after\
+                \ type variable processing"
+            notes: "Get the signature of the primary functional interface method\n\
+              \ after type variables are substituted with their instantiation\n from\
+              \ the capture site."
+          - name: readResolve
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

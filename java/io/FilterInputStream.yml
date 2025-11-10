@@ -4,6 +4,37 @@ languages:
     packages:
       java.io:
         FilterInputStream:
+          extends: java.io.InputStream
+          modifiers:
+          - public
+          notes: "A FilterInputStream contains\n some other input stream, which it\
+            \ uses as\n its  basic source of data, possibly transforming\n the data\
+            \ along the way or providing  additional\n functionality. The class FilterInputStream\n\
+            \ itself simply overrides all  methods of\n InputStream with versions\
+            \ that\n pass all requests to the contained  input\n stream. Subclasses\
+            \ of FilterInputStream\n may further override some of  these methods\n\
+            \ and may also provide additional methods\n and fields."
+          fields:
+            in:
+              name: in
+              modifiers:
+              - protected
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+              notes: The input stream to be filtered.
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: in
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+              notes: "the underlying input stream, or null if\n          this instance\
+                \ is to be created without an underlying stream."
+            notes: "Creates a FilterInputStream\n by assigning the  argument in\n\
+              \ to the field this.in so as\n to remember it for later use."
           methods:
           - name: available
             modifiers:
@@ -12,6 +43,14 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "an estimate of the number of bytes that can be read (or skipped\n\
+                \             over) from this input stream without blocking."
+            notes: "Returns an estimate of the number of bytes that can be read (or\n\
+              \ skipped over) from this input stream without blocking by the next\n\
+              \ caller of a method for this input stream. The next caller might be\n\
+              \ the same thread or another thread.  A single read or skip of this\n\
+              \ many bytes will not block, but may read or skip fewer bytes.\n \n\
+              \ This method returns the result of in.available()."
           - name: close
             modifiers:
             - public
@@ -19,18 +58,28 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes this input stream and releases any system resources\n associated\
+              \ with the stream.\n This\n method simply performs in.close()."
           - name: mark
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: readlimit
               type:
                 basic: int
                 full: int
+              notes: "the maximum limit of bytes that can be read before\n       \
+                \               the mark position becomes invalid."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Marks the current position in this input stream. A subsequent\n\
+              \ call to the reset method repositions this stream at\n the last marked\
+              \ position so that subsequent reads re-read the same bytes.\n \n The\
+              \ readlimit argument tells this input stream to\n allow that many bytes\
+              \ to be read before the mark position gets\n invalidated.\n \n This\
+              \ method simply performs in.mark(readlimit)."
           - name: markSupported
             modifiers:
             - public
@@ -38,6 +87,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this stream type supports the\n          mark and reset\
+                \ method;\n          false otherwise."
+            notes: "Tests if this input stream supports the mark\n and reset methods.\n\
+              \ This method\n simply performs in.markSupported()."
           - name: read
             modifiers:
             - public
@@ -45,38 +98,67 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the next byte of data, or -1 if the end of the\n           \
+                \  stream is reached."
+            notes: "Reads the next byte of data from this input stream. The value\n\
+              \ byte is returned as an int in the range\n 0 to 255. If no byte is\
+              \ available\n because the end of the stream has been reached, the value\n\
+              \ -1 is returned. This method blocks until input data\n is available,\
+              \ the end of the stream is detected, or an exception\n is thrown.\n\
+              \ \n This method\n simply performs in.read() and returns the result."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the buffer into which the data is read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the stream has been reached."
+            notes: "Reads up to b.length bytes of data from this\n input stream into\
+              \ an array of bytes. This method blocks until some\n input is available.\n\
+              \ \n This method simply performs the call\n read(b, 0, b.length) and\
+              \ returns\n the  result. It is important that it does\n not do in.read(b)\
+              \ instead;\n certain subclasses of  FilterInputStream\n depend on the\
+              \ implementation strategy actually\n used."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the buffer into which the data is read.
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset in the destination array b
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the maximum number of bytes read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the stream has been reached."
+            notes: "Reads up to len bytes of data from this input stream\n into an\
+              \ array of bytes. If len is not zero, the method\n blocks until some\
+              \ input is available; otherwise, no\n bytes are read and 0 is returned.\n\
+              \ \n This method simply performs in.read(b, off, len)\n and returns\
+              \ the result."
           - name: reset
             modifiers:
             - public
@@ -84,17 +166,31 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Repositions this stream to the position at the time the\n mark\
+              \ method was last called on this input stream.\n \n This method\n simply\
+              \ performs in.reset().\n \n Stream marks are intended to be used in\n\
+              \ situations where you need to read ahead a little to see what's in\n\
+              \ the stream. Often this is most easily done by invoking some\n general\
+              \ parser. If the stream is of the type handled by the\n parse, it just\
+              \ chugs along happily. If the stream is not of\n that type, the parser\
+              \ should toss an exception when it fails.\n If this happens within readlimit\
+              \ bytes, it allows the outer\n code to reset the stream and try another\
+              \ parser."
           - name: skip
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: long
                 full: long
+              notes: the number of bytes to be skipped.
             return:
               type:
                 basic: long
                 full: long
-          javaType: class
-          extends: InputStream
+              notes: the actual number of bytes skipped.
+            notes: "Skips over and discards n bytes of data from the\n input stream.\
+              \ The skip method may, for a variety of\n reasons, end up skipping over\
+              \ some smaller number of bytes,\n possibly 0. The actual number of bytes\
+              \ skipped is\n returned.\n \n This method simply performs in.skip(n)."

@@ -4,65 +4,172 @@ languages:
     packages:
       sun.awt:
         AppContext:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          fields:
+            DISPOSAL_TIMEOUT:
+              name: DISPOSAL_TIMEOUT
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            THREAD_INTERRUPT_TIMEOUT:
+              name: THREAD_INTERRUPT_TIMEOUT
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            changeSupport:
+              name: changeSupport
+              modifiers:
+              - private
+              type:
+                basic: PropertyChangeSupport
+                full: java.beans.PropertyChangeSupport
+            contextClassLoader:
+              name: contextClassLoader
+              modifiers:
+              - private
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            mostRecentKeyValue:
+              name: mostRecentKeyValue
+              modifiers:
+              - private
+              type:
+                basic: MostRecentKeyValue
+                full: sun.awt.MostRecentKeyValue
+            shadowMostRecentKeyValue:
+              name: shadowMostRecentKeyValue
+              modifiers:
+              - private
+              type:
+                basic: MostRecentKeyValue
+                full: sun.awt.MostRecentKeyValue
+            state:
+              name: state
+              modifiers:
+              - private
+              type:
+                basic: AppContext.State
+                full: sun.awt.AppContext$State
+            table:
+              name: table
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.Object, java.lang.Object>
+            threadGroup:
+              name: threadGroup
+              modifiers:
+              - private
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
           staticFields:
             DISPOSED_PROPERTY_NAME:
               name: DISPOSED_PROPERTY_NAME
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
             EVENT_QUEUE_COND_KEY:
               name: EVENT_QUEUE_COND_KEY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
             EVENT_QUEUE_KEY:
               name: EVENT_QUEUE_KEY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
             EVENT_QUEUE_LOCK_KEY:
               name: EVENT_QUEUE_LOCK_KEY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
             GUI_DISPOSED:
               name: GUI_DISPOSED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+            getAppContextLock:
+              name: getAppContextLock
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+            log:
+              name: log
+              modifiers:
+              - private
+              - static
+              type:
+                basic: PlatformLogger
+                full: sun.util.logging.PlatformLogger
+            mainAppContext:
+              name: mainAppContext
+              modifiers:
+              - private
+              - static
+              type:
+                basic: AppContext
+                full: sun.awt.AppContext
+            numAppContexts:
+              name: numAppContexts
+              modifiers:
+              - private
+              - static
+              type:
+                basic: AtomicInteger
+                full: java.util.concurrent.atomic.AtomicInteger
+            threadAppContext:
+              name: threadAppContext
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ThreadLocal
+                full: java.lang.ThreadLocal<sun.awt.AppContext>
+            threadGroup2appContext:
+              name: threadGroup2appContext
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.ThreadGroup, sun.awt.AppContext>
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: addPropertyChangeListener
             modifiers:
             - public
@@ -110,7 +217,7 @@ languages:
             - public
             return:
               type:
-                basic: PropertyChangeListener[]
+                basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener[]
           - name: getPropertyChangeListeners
             modifiers:
@@ -122,7 +229,7 @@ languages:
                 full: java.lang.String
             return:
               type:
-                basic: PropertyChangeListener[]
+                basic: PropertyChangeListener
                 full: java.beans.PropertyChangeListener[]
           - name: getThreadGroup
             modifiers:
@@ -138,6 +245,13 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: lambda$dispose$0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void
           - name: put
             modifiers:
             - public
@@ -182,6 +296,13 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: getAppContext
             modifiers:
@@ -197,7 +318,7 @@ languages:
             - static
             return:
               type:
-                basic: Set<AppContext>
+                basic: Set
                 full: java.util.Set<sun.awt.AppContext>
           - name: getSoftReferenceValue
             modifiers:
@@ -210,12 +331,20 @@ languages:
                 full: java.lang.Object
             - name: arg1
               type:
-                basic: Supplier<T>
+                basic: Supplier
                 full: java.util.function.Supplier<T>
             return:
               type:
                 basic: T
                 full: T
+          - name: initMainAppContext
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
           - name: isMainContext
             modifiers:
             - public
@@ -229,5 +358,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+          - name: stopEventDispatchThreads
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: void
+                full: void

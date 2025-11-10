@@ -4,49 +4,183 @@ languages:
     packages:
       java.util.concurrent:
         CompletableFuture:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A Future that may be explicitly completed (setting its\n value and\
+            \ status), and may be used as a CompletionStage,\n supporting dependent\
+            \ functions and actions that trigger upon its\n completion.\n\n When two\
+            \ or more threads attempt to\n complete,\n completeExceptionally, or\n\
+            \ cancel\n a CompletableFuture, only one of them succeeds.\n\n In addition\
+            \ to these and related methods for directly\n manipulating status and\
+            \ results, CompletableFuture implements\n interface CompletionStage with\
+            \ the following policies: \n\n Actions supplied for dependent completions\
+            \ of\n non-async methods may be performed by the thread that\n completes\
+            \ the current CompletableFuture, or by any other caller of\n a completion\
+            \ method.\n\n All async methods without an explicit Executor\n argument\
+            \ are performed using the ForkJoinPool.commonPool()\n (unless it does\
+            \ not support a parallelism level of at least two, in\n which case, a\
+            \ new Thread is created to run each task).  This may be\n overridden for\
+            \ non-static methods in subclasses by defining method\n defaultExecutor().\
+            \ To simplify monitoring, debugging,\n and tracking, all generated asynchronous\
+            \ tasks are instances of the\n marker interface CompletableFuture.AsynchronousCompletionTask.\
+            \  Operations\n with time-delays can use adapter methods defined in this\
+            \ class, for\n example: supplyAsync(supplier, delayedExecutor(timeout,\n\
+            \ timeUnit)).  To support methods with delays and timeouts, this\n class\
+            \ maintains at most one daemon thread for triggering and\n cancelling\
+            \ actions, not for running them.\n\n All CompletionStage methods are implemented\
+            \ independently of\n other public methods, so the behavior of one method\
+            \ is not impacted\n by overrides of others in subclasses.\n\n All CompletionStage\
+            \ methods return CompletableFutures.  To\n restrict usages to only those\
+            \ methods defined in interface\n CompletionStage, use method minimalCompletionStage().\
+            \ Or to\n ensure only that clients do not themselves modify a future,\
+            \ use\n method copy().\n \n\n CompletableFuture also implements Future\
+            \ with the following\n policies: \n\n Since (unlike FutureTask) this class\
+            \ has no direct\n control over the computation that causes it to be completed,\n\
+            \ cancellation is treated as just another form of exceptional\n completion.\
+            \  Method cancel has the same effect as\n completeExceptionally(new CancellationException()).\
+            \ Method\n isCompletedExceptionally() can be used to determine if a\n\
+            \ CompletableFuture completed in any exceptional fashion.\n\n In case\
+            \ of exceptional completion with a CompletionException,\n methods get()\
+            \ and get(long, TimeUnit) throw an\n ExecutionException with the same\
+            \ cause as held in the\n corresponding CompletionException.  To simplify\
+            \ usage in most\n contexts, this class also defines methods join() and\n\
+            \ getNow(T) that instead throw the CompletionException directly\n in these\
+            \ cases.\n \n\n Arguments used to pass a completion result (that is, for\n\
+            \ parameters of type T) for methods accepting them may be\n null, but\
+            \ passing a null value for any other parameter will result\n in a NullPointerException\
+            \ being thrown.\n\n Subclasses of this class should normally override\
+            \ the \"virtual\n constructor\" method newIncompleteFuture(), which establishes\n\
+            \ the concrete type returned by CompletionStage methods. For example,\n\
+            \ here is a class that substitutes a different default Executor and\n\
+            \ disables the obtrude methods:\n\n  <code>\n class MyCompletableFuture<T>\
+            \ extends CompletableFuture<T> {\n   static final Executor myExecutor\
+            \ = ...;\n   public MyCompletableFuture() { }\n   public <U> CompletableFuture<U>\
+            \ newIncompleteFuture() {\n     return new MyCompletableFuture<U>(); }\n\
+            \   public Executor defaultExecutor() {\n     return myExecutor; }\n \
+            \  public void obtrudeValue(T value) {\n     throw new UnsupportedOperationException();\
+            \ }\n   public void obtrudeException(Throwable ex) {\n     throw new UnsupportedOperationException();\
+            \ }\n }</code>"
+          fields:
+            result:
+              name: result
+              modifiers:
+              - package
+              type:
+                basic: Object
+                full: java.lang.Object
+            stack:
+              name: stack
+              modifiers:
+              - package
+              type:
+                basic: CompletableFuture.Completion
+                full: java.util.concurrent.CompletableFuture$Completion
+          staticFields:
+            ASYNC:
+              name: ASYNC
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            ASYNC_POOL:
+              name: ASYNC_POOL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            NESTED:
+              name: NESTED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            NEXT:
+              name: NEXT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            NIL:
+              name: NIL
+              modifiers:
+              - package
+              - static
+              type:
+                basic: CompletableFuture.AltResult
+                full: java.util.concurrent.CompletableFuture$AltResult
+            RESULT:
+              name: RESULT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            STACK:
+              name: STACK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            SYNC:
+              name: SYNC
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            USE_COMMON_POOL:
+              name: USE_COMMON_POOL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
+            notes: Creates a new incomplete CompletableFuture.
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: acceptEither
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
+                full: java.util.concurrent.CompletionStage<? extends T>
+              notes: the other CompletionStage
+            - name: action
               type:
                 basic: Consumer
-                full: java.util.function.Consumer
+                full: java.util.function.Consumer<? super T>
+              notes: "the action to perform before completing the\n returned CompletionStage"
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: acceptEither
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: acceptEither
             modifiers:
             - public
@@ -67,50 +201,47 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
+                full: java.util.concurrent.CompletionStage<? extends T>
+              notes: the other CompletionStage
+            - name: action
               type:
                 basic: Consumer
-                full: java.util.function.Consumer
+                full: java.util.function.Consumer<? super T>
+              notes: "the action to perform before completing the\n returned CompletionStage"
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: acceptEitherAsync
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
+                full: java.util.concurrent.CompletionStage<? extends T>
+              notes: the other CompletionStage
+            - name: action
               type:
                 basic: Consumer
-                full: java.util.function.Consumer
+                full: java.util.function.Consumer<? super T>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: acceptEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: acceptEitherAsync
             modifiers:
             - public
@@ -143,30 +274,6 @@ languages:
               type:
                 basic: Consumer
                 full: java.util.function.Consumer
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: acceptEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
             return:
               type:
                 basic: CompletionStage
@@ -175,34 +282,22 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
+                full: java.util.concurrent.CompletionStage<? extends T>
+              notes: the other CompletionStage
+            - name: fn
               type:
                 basic: Function
-                full: java.util.function.Function
+                full: java.util.function.Function<? super T, U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: applyToEither
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: applyToEither
             modifiers:
             - public
@@ -223,50 +318,47 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
+                full: java.util.concurrent.CompletionStage<? extends T>
+              notes: the other CompletionStage
+            - name: fn
               type:
                 basic: Function
-                full: java.util.function.Function
+                full: java.util.function.Function<? super T, U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: applyToEitherAsync
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
+                full: java.util.concurrent.CompletionStage<? extends T>
+              notes: the other CompletionStage
+            - name: fn
               type:
                 basic: Function
-                full: java.util.function.Function
+                full: java.util.function.Function<? super T, U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: applyToEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: applyToEitherAsync
             modifiers:
             - public
@@ -299,106 +391,270 @@ languages:
               type:
                 basic: Function
                 full: java.util.function.Function
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
             return:
               type:
                 basic: CompletionStage
                 full: java.util.concurrent.CompletionStage
-          - name: applyToEitherAsync
+          - name: biAccept
             modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: Object
+                full: java.lang.Object
             - name: arg1
               type:
-                basic: Function
-                full: java.util.function.Function
+                basic: Object
+                full: java.lang.Object
             - name: arg2
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super R, ? super S>
+            - name: arg3
+              type:
+                basic: CompletableFuture.BiAccept
+                full: java.util.concurrent.CompletableFuture$BiAccept<R, S>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: biAcceptStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
               type:
                 basic: Executor
                 full: java.util.concurrent.Executor
-            return:
+            - name: arg1
               type:
                 basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                full: java.util.concurrent.CompletionStage<U>
+            - name: arg2
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super U>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: biApply
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super R, ? super S, ? extends
+                  T>
+            - name: arg3
+              type:
+                basic: CompletableFuture.BiApply
+                full: java.util.concurrent.CompletableFuture$BiApply<R, S, T>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: biApplyStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<U>
+            - name: arg2
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, ? super U, ? extends
+                  V>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+          - name: biRun
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg3
+              type:
+                basic: CompletableFuture.BiRun
+                full: java.util.concurrent.CompletableFuture$BiRun<?, ?>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: biRunStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+            - name: arg2
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: bipush
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<?>
+            - name: arg1
+              type:
+                basic: CompletableFuture.BiCompletion
+                full: java.util.concurrent.CompletableFuture$BiCompletion<?, ?, ?>
+            return:
+              type:
+                basic: void
+                full: void
           - name: cancel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: mayInterruptIfRunning
               type:
                 basic: boolean
                 full: boolean
+              notes: "this value has no effect in this\n implementation because interrupts\
+                \ are not used to control\n processing."
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: cancel
+              notes: true if this task is now cancelled
+            notes: "If not already completed, completes this CompletableFuture with\n\
+              \ a CancellationException. Dependent CompletableFutures\n that have\
+              \ not already completed will also complete\n exceptionally, with a CompletionException\
+              \ caused by\n this CancellationException."
+          - name: cleanStack
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
+            - package
+            - final
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: void
+                full: void
           - name: complete
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: T
                 full: T
+              notes: the result value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this invocation caused this CompletableFuture\n to transition\
+                \ to a completed state, else false"
+            notes: If not already completed, sets the value returned by get() and
+              related methods to the given value.
           - name: completeAsync
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: supplier
               type:
-                basic: Supplier<? extends T>
+                basic: Supplier
                 full: java.util.function.Supplier<? extends T>
-            return:
-              type:
-                basic: CompletableFuture<T>
-                full: java.util.concurrent.CompletableFuture<T>
-          - name: completeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Supplier<? extends T>
-                full: java.util.function.Supplier<? extends T>
-            - name: arg1
+              notes: "a function returning the value to be used\n to complete this\
+                \ CompletableFuture"
+            - name: executor
               type:
                 basic: Executor
                 full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
             return:
               type:
-                basic: CompletableFuture<T>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<T>
+              notes: this CompletableFuture
+            notes: "Completes this CompletableFuture with the result of\n the given\
+              \ Supplier function invoked from an asynchronous\n task using the given\
+              \ executor."
+          - name: completeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: supplier
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<? extends T>
+              notes: "a function returning the value to be used\n to complete this\
+                \ CompletableFuture"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: this CompletableFuture
+            notes: "Completes this CompletableFuture with the result of the given\n\
+              \ Supplier function invoked from an asynchronous task using the\n default\
+              \ executor."
           - name: completeExceptionally
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ex
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: the exception
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this invocation caused this CompletableFuture\n to transition\
+                \ to a completed state, else false"
+            notes: "If not already completed, causes invocations of get()\n and related\
+              \ methods to throw the given exception."
+          - name: completeNull
+            modifiers:
+            - package
+            - final
             return:
               type:
                 basic: boolean
@@ -407,520 +663,47 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: T
                 full: T
-            - name: arg1
+              notes: the value to use upon timeout
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg2
+              notes: "how long to wait before completing normally\n        with the\
+                \ given value, in units of unit"
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
             return:
               type:
-                basic: CompletableFuture<T>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<T>
-          - name: copy
+              notes: this CompletableFuture
+            notes: "Completes this CompletableFuture with the given value if not\n\
+              \ otherwise completed before the given timeout."
+          - name: completeRelay
             modifiers:
-            - public
-            return:
-              type:
-                basic: CompletableFuture<T>
-                full: java.util.concurrent.CompletableFuture<T>
-          - name: defaultExecutor
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-          - name: exceptionally
-            modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
               type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionally
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionally
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyCompose
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyCompose
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyCompose
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: exceptionallyComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: get
-            modifiers:
-            - public
-            return:
-              type:
-                basic: T
-                full: T
-          - name: get
-            modifiers:
-            - public
-            return:
-              type:
-                basic: T
-                full: T
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TimeUnit
-                full: java.util.concurrent.TimeUnit
-            return:
-              type:
-                basic: T
-                full: T
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TimeUnit
-                full: java.util.concurrent.TimeUnit
-            return:
-              type:
-                basic: T
-                full: T
-          - name: getNow
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: T
-                full: T
-            return:
-              type:
-                basic: T
-                full: T
-          - name: getNumberOfDependents
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: handle
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handle
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handle
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handleAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handleAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handleAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handleAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handleAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: handleAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: isCancelled
-            modifiers:
-            - public
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: isCancelled
+          - name: completeThrowable
             modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isCompletedExceptionally
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isDone
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isDone
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: join
-            modifiers:
-            - public
-            return:
-              type:
-                basic: T
-                full: T
-          - name: minimalCompletionStage
-            modifiers:
-            - public
-            return:
-              type:
-                basic: CompletionStage<T>
-                full: java.util.concurrent.CompletionStage<T>
-          - name: newIncompleteFuture
-            modifiers:
-            - public
-            return:
-              type:
-                basic: CompletableFuture<U>
-                full: java.util.concurrent.CompletableFuture<U>
-          - name: obtrudeException
-            modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
               type:
@@ -928,11 +711,29 @@ languages:
                 full: java.lang.Throwable
             return:
               type:
-                basic: void
-                full: void
-          - name: obtrudeValue
+                basic: boolean
+                full: boolean
+          - name: completeThrowable
             modifiers:
-            - public
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: completeValue
+            modifiers:
+            - package
+            - final
             parameters:
             - name: arg0
               type:
@@ -940,1166 +741,1843 @@ languages:
                 full: T
             return:
               type:
+                basic: boolean
+                full: boolean
+          - name: copy
+            modifiers:
+            - public
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: the new CompletableFuture
+            notes: "Returns a new CompletableFuture that is completed normally with\n\
+              \ the same value as this CompletableFuture when it completes\n normally.\
+              \ If this CompletableFuture completes exceptionally,\n then the returned\
+              \ CompletableFuture completes exceptionally\n with a CompletionException\
+              \ with this exception as cause. The\n behavior is equivalent to thenApply(x\
+              \ -> x). This\n method may be useful as a form of \"defensive copying\"\
+              , to\n prevent clients from completing, while still being able to\n\
+              \ arrange dependent actions."
+          - name: defaultExecutor
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor
+            notes: "Returns the default Executor used for async methods that do not\n\
+              \ specify an Executor. This class uses the ForkJoinPool.commonPool()\
+              \ if it supports more than one\n parallel thread, or else an Executor\
+              \ using one thread per async\n task.  This method may be overridden\
+              \ in subclasses to return\n an Executor that provides at least one independent\
+              \ thread."
+          - name: encodeOutcome
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T
+            - name: arg1
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: encodeValue
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: T
+                full: T
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: exceptionally
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends T>
+              notes: "the function to use to compute the value of the\n returned CompletionStage\
+                \ if this CompletionStage completed\n exceptionally"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: exceptionally
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: exceptionallyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends T>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: exceptionallyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends T>
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: exceptionallyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: exceptionallyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: exceptionallyCompose
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends java.util.concurrent.CompletionStage<T>>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: exceptionallyCompose
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: exceptionallyComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends java.util.concurrent.CompletionStage<T>>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: exceptionallyComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends java.util.concurrent.CompletionStage<T>>
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: exceptionallyComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: exceptionallyComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: get
+            modifiers:
+            - public
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the result value
+            notes: "Waits if necessary for this future to complete, and then\n returns\
+              \ its result."
+          - name: get
+            modifiers:
+            - public
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the result value
+            notes: "Waits if necessary for at most the given time for this future\n\
+              \ to complete, and then returns its result, if available."
+          - name: getNow
+            modifiers:
+            - public
+            parameters:
+            - name: valueIfAbsent
+              type:
+                basic: T
+                full: T
+              notes: the value to return if not completed
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the result value, if completed, else the given valueIfAbsent
+            notes: "Returns the result value (or throws any encountered exception)\n\
+              \ if completed, else returns the given valueIfAbsent."
+          - name: getNumberOfDependents
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of dependent CompletableFutures
+            notes: "Returns the estimated number of CompletableFutures whose\n completions\
+              \ are awaiting completion of this CompletableFuture.\n This method is\
+              \ designed for use in monitoring system state, not\n for synchronization\
+              \ control."
+          - name: handle
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, java.lang.Throwable,
+                  ? extends U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: handle
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: handleAsync
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, java.lang.Throwable,
+                  ? extends U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: handleAsync
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, java.lang.Throwable,
+                  ? extends U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: handleAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: handleAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: internalComplete
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isCancelled
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this CompletableFuture was cancelled\n before it completed\
+                \ normally"
+            notes: "Returns true if this CompletableFuture was cancelled\n before\
+              \ it completed normally."
+          - name: isCompletedExceptionally
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this CompletableFuture completed\n exceptionally"
+            notes: "Returns true if this CompletableFuture completed\n exceptionally,\
+              \ in any way. Possible causes include\n cancellation, explicit invocation\
+              \ of \n completeExceptionally, and abrupt termination of a\n CompletionStage\
+              \ action."
+          - name: isDone
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if completed
+            notes: "Returns true if completed in any fashion: normally,\n exceptionally,\
+              \ or via cancellation."
+          - name: join
+            modifiers:
+            - public
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the result value
+            notes: "Returns the result value when complete, or throws an\n (unchecked)\
+              \ exception if completed exceptionally. To better\n conform with the\
+              \ use of common functional forms, if a\n computation involved in the\
+              \ completion of this\n CompletableFuture threw an exception, this method\
+              \ throws an\n (unchecked) CompletionException with the underlying\n\
+              \ exception as its cause."
+          - name: minimalCompletionStage
+            modifiers:
+            - public
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<T>
+              notes: the new CompletionStage
+            notes: "Returns a new CompletionStage that is completed normally with\n\
+              \ the same value as this CompletableFuture when it completes\n normally,\
+              \ and cannot be independently completed or otherwise\n used in ways\
+              \ not defined by the methods of interface CompletionStage.  If this\
+              \ CompletableFuture completes\n exceptionally, then the returned CompletionStage\
+              \ completes\n exceptionally with a CompletionException with this exception\
+              \ as\n cause.\n\n Unless overridden by a subclass, a new non-minimal\n\
+              \ CompletableFuture with all methods available can be obtained from\n\
+              \ a minimal CompletionStage via toCompletableFuture().\n For example,\
+              \ completion of a minimal stage can be awaited by\n\n  <code>minimalStage.toCompletableFuture().join();\
+              \ </code>"
+          - name: newIncompleteFuture
+            modifiers:
+            - public
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: a new CompletableFuture
+            notes: "Returns a new incomplete CompletableFuture of the type to be\n\
+              \ returned by a CompletionStage method. Subclasses should\n normally\
+              \ override this method to return an instance of the same\n class as\
+              \ this CompletableFuture. The default implementation\n returns an instance\
+              \ of class CompletableFuture."
+          - name: obtrudeException
+            modifiers:
+            - public
+            parameters:
+            - name: ex
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: the exception
+            return:
+              type:
                 basic: void
                 full: void
+            notes: "Forcibly causes subsequent invocations of method get()\n and related\
+              \ methods to throw the given exception, whether or\n not already completed.\
+              \ This method is designed for use only in\n error recovery actions,\
+              \ and even in such situations may result\n in ongoing dependent completions\
+              \ using established versus\n overwritten outcomes."
+          - name: obtrudeValue
+            modifiers:
+            - public
+            parameters:
+            - name: value
+              type:
+                basic: T
+                full: T
+              notes: the completion value
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Forcibly sets or resets the value subsequently returned by\n method\
+              \ get() and related methods, whether or not\n already completed. This\
+              \ method is designed for use only in\n error recovery actions, and even\
+              \ in such situations may result\n in ongoing dependent completions using\
+              \ established versus\n overwritten outcomes."
+          - name: orAcceptStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<U>
+            - name: arg2
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super T>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: orApplyStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<U>
+            - name: arg2
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends V>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+          - name: orRunStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+            - name: arg2
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
           - name: orTimeout
             modifiers:
             - public
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: "how long to wait before completing exceptionally\n        with\
+                \ a TimeoutException, in units of unit"
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: this CompletableFuture
+            notes: "Exceptionally completes this CompletableFuture with\n a TimeoutException\
+              \ if not otherwise completed\n before the given timeout."
+          - name: orpush
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<?>
+            - name: arg1
+              type:
+                basic: CompletableFuture.BiCompletion
+                full: java.util.concurrent.CompletableFuture$BiCompletion<?, ?, ?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: postComplete
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: postFire
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<?>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: postFire
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<?>
+            - name: arg1
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<?>
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: pushStack
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture.Completion
+                full: java.util.concurrent.CompletableFuture$Completion
+            return:
+              type:
+                basic: void
+                full: void
+          - name: runAfterBoth
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: runAfterBoth
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: runAfterBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: runAfterBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: runAfterBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg2
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: runAfterBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: runAfterEither
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: runAfterEither
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: runAfterEitherAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: runAfterEitherAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<?>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: runAfterEitherAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg2
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: runAfterEitherAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenAccept
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super T>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenAccept
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenAcceptAsync
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super T>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenAcceptAsync
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super T>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenAcceptAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenAcceptAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenAcceptBoth
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<? extends U>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super U>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenAcceptBoth
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenAcceptBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<? extends U>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super U>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenAcceptBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<? extends U>
+              notes: the other CompletionStage
+            - name: action
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super U>
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenAcceptBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer
+            - name: arg2
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenAcceptBothAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenApply
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenApply
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenApplyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenApplyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends U>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenApplyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenApplyAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenCombine
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<? extends U>
+              notes: the other CompletionStage
+            - name: fn
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, ? super U, ? extends
+                  V>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenCombine
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenCombineAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<? extends U>
+              notes: the other CompletionStage
+            - name: fn
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, ? super U, ? extends
+                  V>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenCombineAsync
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage<? extends U>
+              notes: the other CompletionStage
+            - name: fn
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, ? super U, ? extends
+                  V>
+              notes: "the function to use to compute the value of the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenCombineAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction
+            - name: arg2
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenCombineAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenCompose
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends java.util.concurrent.CompletionStage<U>>
+              notes: the function to use to compute another CompletionStage
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenCompose
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends java.util.concurrent.CompletionStage<U>>
+              notes: the function to use to compute another CompletionStage
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: fn
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends java.util.concurrent.CompletionStage<U>>
+              notes: the function to use to compute another CompletionStage
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenComposeAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Function
+                full: java.util.function.Function
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenRun
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenRun
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenRunAsync
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenRunAsync
+            modifiers:
+            - public
+            parameters:
+            - name: action
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "the action to perform before completing the\n returned CompletionStage"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
+          - name: thenRunAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: thenRunAsync
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletionStage
+                full: java.util.concurrent.CompletionStage
+          - name: timedGet
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
                 basic: long
                 full: long
-            - name: arg1
-              type:
-                basic: TimeUnit
-                full: java.util.concurrent.TimeUnit
-            return:
-              type:
-                basic: CompletableFuture<T>
-                full: java.util.concurrent.CompletableFuture<T>
-          - name: runAfterBoth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBoth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBoth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEither
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEither
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEither
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: runAfterEitherAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAccept
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAccept
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAccept
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Consumer
-                full: java.util.function.Consumer
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBoth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBoth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBoth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenAcceptBothAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApply
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApply
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApply
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApplyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApplyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApplyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApplyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApplyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenApplyAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombine
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombine
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombine
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombineAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombineAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombineAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombineAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombineAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCombineAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-            - name: arg1
-              type:
-                basic: BiFunction
-                full: java.util.function.BiFunction
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCompose
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCompose
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenCompose
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenComposeAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Function
-                full: java.util.function.Function
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: thenRun
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRun
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRun
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRunAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRunAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRunAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRunAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRunAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: thenRunAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Runnable
-                full: java.lang.Runnable
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
             return:
               type:
-                basic: CompletableFuture<Void>
-                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+                basic: Object
+                full: java.lang.Object
           - name: toCompletableFuture
             modifiers:
             - public
             return:
               type:
-                basic: CompletableFuture<T>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<T>
-          - name: toCompletableFuture
+              notes: this CompletableFuture
+            notes: Returns this CompletableFuture.
+          - name: toString
             modifiers:
             - public
             return:
               type:
-                basic: CompletableFuture<T>
+                basic: String
+                full: java.lang.String
+          - name: tryPushStack
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture.Completion
+                full: java.util.concurrent.CompletableFuture$Completion
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: uniAcceptNow
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg2
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super T>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: uniAcceptStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super T>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: uniApplyNow
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg2
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends V>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+          - name: uniApplyStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends V>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+          - name: uniAsMinimalStage
+            modifiers:
+            - private
+            return:
+              type:
+                basic: CompletableFuture.MinimalStage
+                full: java.util.concurrent.CompletableFuture$MinimalStage<T>
+          - name: uniComposeExceptionallyStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends java.util.concurrent.CompletionStage<T>>
+            return:
+              type:
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<T>
+          - name: uniComposeStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<? super T, ? extends java.util.concurrent.CompletionStage<V>>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+          - name: uniExceptionally
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<? super java.lang.Throwable, ? extends
+                  T>
+            - name: arg2
+              type:
+                basic: CompletableFuture.UniExceptionally
+                full: java.util.concurrent.CompletableFuture$UniExceptionally<T>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: uniExceptionallyStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Function
+                full: java.util.function.Function<java.lang.Throwable, ? extends T>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: uniHandle
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super S, java.lang.Throwable,
+                  ? extends T>
+            - name: arg2
+              type:
+                basic: CompletableFuture.UniHandle
+                full: java.util.concurrent.CompletableFuture$UniHandle<S, T>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: uniHandleStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<? super T, java.lang.Throwable,
+                  ? extends V>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<V>
+          - name: uniRunNow
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg2
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: uniRunStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: uniWhenComplete
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super java.lang.Throwable>
+            - name: arg2
+              type:
+                basic: CompletableFuture.UniWhenComplete
+                full: java.util.concurrent.CompletableFuture$UniWhenComplete<T>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: uniWhenCompleteStage
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super java.lang.Throwable>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+          - name: unipush
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture.Completion
+                full: java.util.concurrent.CompletableFuture$Completion
+            return:
+              type:
+                basic: void
+                full: void
+          - name: waitingGet
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: whenComplete
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: BiConsumer
-                full: java.util.function.BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super java.lang.Throwable>
+              notes: the action to perform
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: whenComplete
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: whenComplete
             modifiers:
             - public
@@ -2116,38 +2594,37 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: BiConsumer
-                full: java.util.function.BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super java.lang.Throwable>
+              notes: the action to perform
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: whenCompleteAsync
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: BiConsumer
-                full: java.util.function.BiConsumer
+                full: java.util.function.BiConsumer<? super T, ? super java.lang.Throwable>
+              notes: the action to perform
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
             return:
               type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: whenCompleteAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+              notes: the new CompletionStage
+            notes: 'Description copied from interface: CompletionStage'
           - name: whenCompleteAsync
             modifiers:
             - public
@@ -2172,26 +2649,6 @@ languages:
               type:
                 basic: BiConsumer
                 full: java.util.function.BiConsumer
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
-            return:
-              type:
-                basic: CompletionStage
-                full: java.util.concurrent.CompletionStage
-          - name: whenCompleteAsync
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer
-                full: java.util.function.BiConsumer
-            - name: arg1
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
             return:
               type:
                 basic: CompletionStage
@@ -2204,11 +2661,32 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: CompletableFuture<?>[>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<?>[]
             return:
               type:
-                basic: CompletableFuture<Void>
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: andTree
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<?>[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<java.lang.Void>
           - name: anyOf
             modifiers:
@@ -2217,161 +2695,343 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: CompletableFuture<?>[>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<?>[]
             return:
               type:
-                basic: CompletableFuture<Object>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<java.lang.Object>
+          - name: asyncRunStage
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<java.lang.Void>
+          - name: asyncSupplyStage
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<U>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
           - name: completedFuture
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: U
                 full: U
+              notes: the value
             return:
               type:
-                basic: CompletableFuture<U>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<U>
+              notes: the completed CompletableFuture
+            notes: "Returns a new CompletableFuture that is already completed with\n\
+              \ the given value."
           - name: completedStage
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: U
                 full: U
+              notes: the value
             return:
               type:
-                basic: CompletionStage<U>
+                basic: CompletionStage
                 full: java.util.concurrent.CompletionStage<U>
+              notes: the completed CompletionStage
+            notes: "Returns a new CompletionStage that is already completed with\n\
+              \ the given value and supports only those methods in\n interface CompletionStage."
           - name: delayedExecutor
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: delay
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: how long to delay, in units of unit
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        delay parameter"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the base executor
             return:
               type:
                 basic: Executor
                 full: java.util.concurrent.Executor
+              notes: the new delayed executor
+            notes: "Returns a new Executor that submits a task to the given base\n\
+              \ executor after the given delay (or no delay if non-positive).\n Each\
+              \ delay commences upon invocation of the returned executor's\n execute\
+              \ method."
           - name: delayedExecutor
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: delay
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: how long to delay, in units of unit
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
-            - name: arg2
-              type:
-                basic: Executor
-                full: java.util.concurrent.Executor
+              notes: "a TimeUnit determining how to interpret the\n        delay parameter"
             return:
               type:
                 basic: Executor
                 full: java.util.concurrent.Executor
+              notes: the new delayed executor
+            notes: "Returns a new Executor that submits a task to the default\n executor\
+              \ after the given delay (or no delay if non-positive).\n Each delay\
+              \ commences upon invocation of the returned executor's\n execute method."
+          - name: encodeRelay
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: encodeThrowable
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: CompletableFuture.AltResult
+                full: java.util.concurrent.CompletableFuture$AltResult
+          - name: encodeThrowable
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: failedFuture
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: ex
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: the exception
             return:
               type:
-                basic: CompletableFuture<U>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<U>
+              notes: the exceptionally completed CompletableFuture
+            notes: "Returns a new CompletableFuture that is already completed\n exceptionally\
+              \ with the given exception."
           - name: failedStage
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: ex
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: the exception
             return:
               type:
-                basic: CompletionStage<U>
+                basic: CompletionStage
                 full: java.util.concurrent.CompletionStage<U>
+              notes: the exceptionally completed CompletionStage
+            notes: "Returns a new CompletionStage that is already completed\n exceptionally\
+              \ with the given exception and supports only those\n methods in interface\
+              \ CompletionStage."
+          - name: reportGet
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: reportJoin
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: runAsync
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: runnable
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: "the action to run before completing the\n returned CompletableFuture"
             return:
               type:
-                basic: CompletableFuture<Void>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<java.lang.Void>
+              notes: the new CompletableFuture
+            notes: "Returns a new CompletableFuture that is asynchronously completed\n\
+              \ by a task running in the ForkJoinPool.commonPool() after\n it runs\
+              \ the given action."
           - name: runAsync
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: runnable
               type:
                 basic: Runnable
                 full: java.lang.Runnable
-            - name: arg1
+              notes: "the action to run before completing the\n returned CompletableFuture"
+            - name: executor
               type:
                 basic: Executor
                 full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
             return:
               type:
-                basic: CompletableFuture<Void>
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<java.lang.Void>
-          - name: supplyAsync
+              notes: the new CompletableFuture
+            notes: "Returns a new CompletableFuture that is asynchronously completed\n\
+              \ by a task running in the given executor after it runs the given\n\
+              \ action."
+          - name: screenExecutor
             modifiers:
-            - public
+            - package
             - static
             parameters:
             - name: arg0
-              type:
-                basic: Supplier<U>
-                full: java.util.function.Supplier<U>
-            return:
-              type:
-                basic: CompletableFuture<U>
-                full: java.util.concurrent.CompletableFuture<U>
-          - name: supplyAsync
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Supplier<U>
-                full: java.util.function.Supplier<U>
-            - name: arg1
               type:
                 basic: Executor
                 full: java.util.concurrent.Executor
             return:
               type:
-                basic: CompletableFuture<U>
+                basic: Executor
+                full: java.util.concurrent.Executor
+          - name: supplyAsync
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: supplier
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<U>
+              notes: "a function returning the value to be used\n to complete the\
+                \ returned CompletableFuture"
+            return:
+              type:
+                basic: CompletableFuture
                 full: java.util.concurrent.CompletableFuture<U>
-          javaType: class
-          extends: Object
+              notes: the new CompletableFuture
+            notes: "Returns a new CompletableFuture that is asynchronously completed\n\
+              \ by a task running in the ForkJoinPool.commonPool() with\n the value\
+              \ obtained by calling the given Supplier."
+          - name: supplyAsync
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: supplier
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<U>
+              notes: "a function returning the value to be used\n to complete the\
+                \ returned CompletableFuture"
+            - name: executor
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+              notes: the executor to use for asynchronous execution
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>
+              notes: the new CompletableFuture
+            notes: "Returns a new CompletableFuture that is asynchronously completed\n\
+              \ by a task running in the given executor with the value obtained\n\
+              \ by calling the given Supplier."
+          - name: uniCopyStage
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<T>
+            return:
+              type:
+                basic: CompletableFuture
+                full: java.util.concurrent.CompletableFuture<U>

@@ -1,0 +1,163 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.spi:
+        CalendarNameProvider:
+          extends: java.util.spi.LocaleServiceProvider
+          modifiers:
+          - public
+          - abstract
+          notes: "An abstract class for service providers that provide localized string\n\
+            \ representations (display names) of Calendar field values.\n\n Calendar\
+            \ Types\n\n Calendar types are used to specify calendar systems for which\
+            \ the getDisplayName and getDisplayNames methods provide\n calendar field\
+            \ value names. See Calendar.getCalendarType() for details.\n\n Calendar\
+            \ Fields\n\n Calendar fields are specified with the constants defined\
+            \ in Calendar. The following are calendar-common fields and their values\
+            \ to be\n supported for each calendar system.\n\n \n Field values\n \n\
+            \   \n     Field\n     Value\n     Description\n   \n \n \n   \n     Calendar.MONTH\n\
+            \     Calendar.JANUARY to Calendar.UNDECIMBER\n     Month numbering is\
+            \ 0-based (e.g., 0 - January, ..., 11 -\n         December). Some calendar\
+            \ systems have 13 months. Month\n         names need to be supported in\
+            \ both the formatting and\n         stand-alone forms if required by the\
+            \ supported locales. If there's\n         no distinction in the two forms,\
+            \ the same names should be returned\n         in both of the forms.\n\
+            \   \n   \n     Calendar.DAY_OF_WEEK\n     Calendar.SUNDAY to Calendar.SATURDAY\n\
+            \     Day-of-week numbering is 1-based starting from Sunday (i.e., 1 -\
+            \ Sunday,\n         ..., 7 - Saturday).\n   \n   \n     Calendar.AM_PM\n\
+            \     Calendar.AM to Calendar.PM\n     0 - AM, 1 - PM\n   \n \n \n\n The\
+            \ following are calendar-specific fields and their values to be supported.\n\
+            \n \n Calendar type and field values\n \n   \n     Calendar Type\n   \
+            \  Field\n     Value\n     Description\n   \n \n \n   \n     \"gregory\"\
+            \n     Calendar.ERA\n     0\n     GregorianCalendar.BC (BCE)\n   \n  \
+            \ \n     1\n     GregorianCalendar.AD (CE)\n   \n   \n     \"buddhist\"\
+            \n     Calendar.ERA\n     0\n     BC (BCE)\n   \n   \n     1\n     B.E.\
+            \ (Buddhist Era)\n   \n   \n     \"japanese\"\n     Calendar.ERA\n   \
+            \  0\n     Seireki (Before Meiji)\n   \n   \n     1\n     Meiji\n   \n\
+            \   \n     2\n     Taisho\n   \n   \n     3\n     Showa\n   \n   \n  \
+            \   4\n     Heisei\n   \n   \n     5\n     Reiwa\n   \n   \n     Calendar.YEAR\n\
+            \     1\n     the first year in each era. It should be returned when a\
+            \ long\n     style (Calendar.LONG_FORMAT or Calendar.LONG_STANDALONE)\
+            \ is\n     specified. See also the \n     Year representation in SimpleDateFormat.\n\
+            \   \n   \n     \"roc\"\n     Calendar.ERA\n     0\n     Before R.O.C.\n\
+            \   \n   \n     1\n     R.O.C.\n   \n   \n     \"islamic\"\n     Calendar.ERA\n\
+            \     0\n     Before AH\n   \n   \n     1\n     Anno Hijrah (AH)\n   \n\
+            \ \n \n\n Calendar field value names for \"gregory\" must be consistent\
+            \ with\n the date-time symbols provided by DateFormatSymbolsProvider.\n\
+            \n Time zone names are supported by TimeZoneNameProvider."
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Sole constructor. (For invocation by subclass constructors, typically\n\
+              \ implicit.)"
+          methods:
+          - name: getDisplayName
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: calendarType
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the calendar type. (Any calendar type given by locale\n    \
+                \          is ignored.)"
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: "the Calendar field index,\n              such as Calendar.DAY_OF_WEEK"
+            - name: value
+              type:
+                basic: int
+                full: int
+              notes: "the value of the Calendar field,\n              such as Calendar.MONDAY"
+            - name: style
+              type:
+                basic: int
+                full: int
+              notes: "the string representation style: one of Calendar.SHORT_FORMAT\
+                \ (SHORT),\n              Calendar.SHORT_STANDALONE, Calendar.LONG_FORMAT\
+                \ (LONG),\n              Calendar.LONG_STANDALONE,\n             \
+                \ Calendar.NARROW_FORMAT,\n              or Calendar.NARROW_STANDALONE"
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the string representation of the field value, or \n        \
+                \ null if the string representation is not applicable or\n       \
+                \  the given calendar type is unknown"
+            notes: "Returns the string representation (display name) of the calendar\n\
+              \ field value in the given style and\n locale.  If no string representation\
+              \ is\n applicable, null is returned.\n\n field is a Calendar field index,\
+              \ such as Calendar.MONTH. The time zone fields, Calendar.ZONE_OFFSET\
+              \ and\n Calendar.DST_OFFSET, are not supported by this\n method. null\
+              \ must be returned if any time zone fields are\n specified.\n\n value\
+              \ is the numeric representation of the field value.\n For example, if\
+              \ field is Calendar.DAY_OF_WEEK, the valid\n values are Calendar.SUNDAY\
+              \ to Calendar.SATURDAY\n (inclusive).\n\n style gives the style of the\
+              \ string representation. It is one\n of Calendar.SHORT_FORMAT (SHORT),\n\
+              \ Calendar.SHORT_STANDALONE, Calendar.LONG_FORMAT\n (LONG), Calendar.LONG_STANDALONE,\n\
+              \ Calendar.NARROW_FORMAT, or Calendar.NARROW_STANDALONE.\n\n For example,\
+              \ the following call will return \"Sunday\".\n \n getDisplayName(\"\
+              gregory\", Calendar.DAY_OF_WEEK, Calendar.SUNDAY,\n                Calendar.LONG_STANDALONE,\
+              \ Locale.ENGLISH);"
+          - name: getDisplayNames
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: calendarType
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the calendar type. (Any calendar type given by locale\n    \
+                \          is ignored.)"
+            - name: field
+              type:
+                basic: int
+                full: int
+              notes: the calendar field for which the display names are returned
+            - name: style
+              type:
+                basic: int
+                full: int
+              notes: "the style applied to the display names; one of\n           \
+                \   Calendar.ALL_STYLES, Calendar.SHORT_FORMAT\n              (SHORT),\
+                \ Calendar.SHORT_STANDALONE, Calendar.LONG_FORMAT\n              (LONG),\
+                \ Calendar.LONG_STANDALONE,\n              Calendar.NARROW_FORMAT,\n\
+                \              or Calendar.NARROW_STANDALONE"
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale
+            return:
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Integer>
+              notes: "a Map containing all display names of field in\n         style\
+                \ and locale and their field values,\n         or null if no display\
+                \ names are defined for field"
+            notes: "Returns a Map containing all string representations (display\n\
+              \ names) of the Calendar field in the given style\n and locale and their\
+              \ corresponding field values.\n\n field is a Calendar field index, such\
+              \ as Calendar.MONTH. The time zone fields, Calendar.ZONE_OFFSET and\n\
+              \ Calendar.DST_OFFSET, are not supported by this\n method. null must\
+              \ be returned if any time zone fields are specified.\n\n style gives\
+              \ the style of the string representation. It must be\n one of Calendar.ALL_STYLES,\
+              \ Calendar.SHORT_FORMAT (SHORT), Calendar.SHORT_STANDALONE, Calendar.LONG_FORMAT\
+              \ (LONG), Calendar.LONG_STANDALONE, Calendar.NARROW_FORMAT, or\n Calendar.NARROW_STANDALONE.\
+              \ Note that narrow names may\n not be unique due to use of single characters,\
+              \ such as \"S\" for Sunday\n and Saturday, and that no narrow names\
+              \ are included in that case.\n\n For example, the following call will\
+              \ return a Map containing\n \"January\" to Calendar.JANUARY, \"Jan\"\
+              \ to Calendar.JANUARY, \"February\" to Calendar.FEBRUARY,\n \"Feb\"\
+              \ to Calendar.FEBRUARY, and so on.\n \n getDisplayNames(\"gregory\"\
+              , Calendar.MONTH, Calendar.ALL_STYLES, Locale.ENGLISH);"

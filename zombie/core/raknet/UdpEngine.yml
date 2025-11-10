@@ -4,22 +4,101 @@ languages:
     packages:
       zombie.core.raknet:
         UdpEngine:
+          extends: java.lang.Object
           modifiers:
           - public
           fields:
+            bQuit:
+              name: bQuit
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            bServer:
+              name: bServer
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            bb:
+              name: bb
+              modifiers:
+              - private
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            bbw:
+              name: bbw
+              modifiers:
+              - private
+              type:
+                basic: ByteBufferWriter
+                full: zombie.core.network.ByteBufferWriter
+            buf:
+              name: buf
+              modifiers:
+              - package
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            bufferLock:
+              name: bufferLock
+              modifiers:
+              - package
+              type:
+                basic: Lock
+                full: java.util.concurrent.locks.Lock
+            connectionArray:
+              name: connectionArray
+              modifiers:
+              - package
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection[]
+            connectionMap:
+              name: connectionMap
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.Long, zombie.core.raknet.UdpConnection>
             connections:
               name: connections
               modifiers:
               - public
-              - final
               type:
                 basic: List
+                full: java.util.List<zombie.core.raknet.UdpConnection>
+            maxConnections:
+              name: maxConnections
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            peer:
+              name: peer
+              modifiers:
+              - protected
+              type:
+                basic: RakNetPeerInterface
+                full: zombie.core.raknet.RakNetPeerInterface
             port:
               name: port
               modifiers:
               - public
               type:
                 basic: int
+                full: int
+            thread:
+              name: thread
+              modifiers:
+              - private
+              type:
+                basic: Thread
+                full: java.lang.Thread
           constructors:
           - modifiers:
             - public
@@ -27,41 +106,55 @@ languages:
             - name: port
               type:
                 basic: int
+                full: int
             - name: UDPPort
               type:
                 basic: int
+                full: int
             - name: maxConnections
               type:
                 basic: int
+                full: int
             - name: serverPassword
               type:
                 basic: String
+                full: java.lang.String
             - name: bListen
               type:
                 basic: boolean
+                full: boolean
           methods:
           - name: Connect
             modifiers:
             - public
             parameters:
-            - name: hostname
+            - name: arg0
               type:
                 basic: String
-            - name: port
+                full: java.lang.String
+            - name: arg1
               type:
                 basic: int
-            - name: serverPassword
+                full: int
+            - name: arg2
               type:
                 basic: String
+                full: java.lang.String
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: Receive
             modifiers:
             - public
             return:
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
           - name: SetServerPassword
             modifiers:
             - public
@@ -69,31 +162,65 @@ languages:
             - name: password
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: Shutdown
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: addConnection
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
           - name: connected
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: decode
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
           - name: endPacketBroadcast
             modifiers:
             - public
             parameters:
             - name: packetType
               type:
-                basic: PacketType
+                basic: PacketTypes.PacketType
+                full: zombie.network.PacketTypes$PacketType
             return:
               type:
                 basic: void
+                full: void
           - name: endPacketBroadcastExcept
             modifiers:
             - public
@@ -101,15 +228,19 @@ languages:
             - name: priority
               type:
                 basic: int
+                full: int
             - name: reliability
               type:
                 basic: int
+                full: int
             - name: connection
               type:
                 basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
             return:
               type:
                 basic: void
+                full: void
           - name: forceDisconnect
             modifiers:
             - public
@@ -117,12 +248,15 @@ languages:
             - name: connectedGUID
               type:
                 basic: long
+                full: long
             - name: message
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: getActiveConnection
             modifiers:
             - public
@@ -130,9 +264,11 @@ languages:
             - name: connection
               type:
                 basic: long
+                full: long
             return:
               type:
                 basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
           - name: getClientOwnerSteamID
             modifiers:
             - public
@@ -140,9 +276,11 @@ languages:
             - name: guid
               type:
                 basic: long
+                full: long
             return:
               type:
                 basic: long
+                full: long
           - name: getClientSteamID
             modifiers:
             - public
@@ -150,33 +288,32 @@ languages:
             - name: guid
               type:
                 basic: long
+                full: long
             return:
               type:
                 basic: long
-          - name: getDescription
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
+                full: long
           - name: getMaxConnections
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getPeer
             modifiers:
             - public
             return:
               type:
                 basic: RakNetPeerInterface
+                full: zombie.core.raknet.RakNetPeerInterface
           - name: getServerIP
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: hashServerPassword
             modifiers:
             - public
@@ -184,14 +321,34 @@ languages:
             - name: password
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: String
+                full: java.lang.String
+          - name: removeConnection
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: startPacket
             modifiers:
             - public
             return:
               type:
                 basic: ByteBufferWriter
-          javaType: class
-          extends: Object
+                full: zombie.core.network.ByteBufferWriter
+          - name: threadRun
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void

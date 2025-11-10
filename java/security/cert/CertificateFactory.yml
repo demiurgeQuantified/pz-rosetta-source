@@ -4,110 +4,295 @@ languages:
     packages:
       java.security.cert:
         CertificateFactory:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class defines the functionality of a certificate factory, which\
+            \ is\n used to generate certificate, certification path (CertPath)\n and\
+            \ certificate revocation list (CRL) objects from their encodings.\n\n\
+            \ For encodings consisting of multiple certificates, use\n generateCertificates\
+            \ when you want to\n parse a collection of possibly unrelated certificates.\
+            \ Otherwise,\n use generateCertPath when you want to generate\n a CertPath\
+            \ (a certificate chain) and subsequently\n validate it with a CertPathValidator.\n\
+            \n A certificate factory for X.509 must return certificates that are an\n\
+            \ instance of java.security.cert.X509Certificate, and CRLs\n that are\
+            \ an instance of java.security.cert.X509CRL.\n\n The following example\
+            \ reads a file with Base64 encoded certificates,\n which are each bounded\
+            \ at the beginning by -----BEGIN CERTIFICATE-----, and\n bounded at the\
+            \ end by -----END CERTIFICATE-----. We convert the\n FileInputStream (which\
+            \ does not support mark\n and reset) to a BufferedInputStream (which\n\
+            \ supports those methods), so that each call to\n generateCertificate\
+            \ consumes only one certificate, and the\n read position of the input\
+            \ stream is positioned to the next certificate in\n the file:\n\n <code>\n\
+            \ FileInputStream fis = new FileInputStream(filename);\n BufferedInputStream\
+            \ bis = new BufferedInputStream(fis);\n\n CertificateFactory cf = CertificateFactory.getInstance(\"\
+            X.509\");\n\n while (bis.available() > 0) {\n    Certificate cert = cf.generateCertificate(bis);\n\
+            \    System.out.println(cert.toString());\n }\n </code>\n\n The following\
+            \ example parses a PKCS#7-formatted certificate reply stored\n in a file\
+            \ and extracts all the certificates from it:\n\n \n FileInputStream fis\
+            \ = new FileInputStream(filename);\n CertificateFactory cf = CertificateFactory.getInstance(\"\
+            X.509\");\n Collection c = cf.generateCertificates(fis);\n Iterator i\
+            \ = c.iterator();\n while (i.hasNext()) {\n    Certificate cert = (Certificate)i.next();\n\
+            \    System.out.println(cert);\n }\n \n\n  Every implementation of the\
+            \ Java platform is required to support the\n following standard CertificateFactory\
+            \ type:\n \n X.509\n \n and the following standard CertPath encodings:\n\
+            \ \n PKCS7\n PkiPath\n \n The type and encodings are described in the\
+            \ \n CertificateFactory section and the \n CertPath Encodings section\
+            \ of the\n Java Security Standard Algorithm Names Specification.\n Consult\
+            \ the release documentation for your implementation to see if any\n other\
+            \ types or encodings are supported."
+          fields:
+            certFacSpi:
+              name: certFacSpi
+              modifiers:
+              - private
+              type:
+                basic: CertificateFactorySpi
+                full: java.security.cert.CertificateFactorySpi
+            provider:
+              name: provider
+              modifiers:
+              - private
+              type:
+                basic: Provider
+                full: java.security.Provider
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: certFacSpi
+              type:
+                basic: CertificateFactorySpi
+                full: java.security.cert.CertificateFactorySpi
+              notes: the provider implementation.
+            - name: provider
+              type:
+                basic: Provider
+                full: java.security.Provider
+              notes: the provider.
+            - name: type
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the certificate type.
+            notes: "Creates a CertificateFactory object of the given type, and encapsulates\n\
+              \ the given provider implementation (SPI object) in it."
           methods:
           - name: generateCRL
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: an input stream with the CRL data.
             return:
               type:
                 basic: CRL
                 full: java.security.cert.CRL
+              notes: "a CRL object initialized with the data\n from the input stream."
+            notes: "Generates a certificate revocation list (CRL) object and initializes\
+              \ it\n with the data read from the input stream inStream.\n\n In order\
+              \ to take advantage of the specialized CRL format\n supported by this\
+              \ certificate factory,\n the returned CRL object can be typecast to\
+              \ the corresponding\n CRL class. For example, if this certificate\n\
+              \ factory implements X.509 CRLs, the returned CRL object\n can be typecast\
+              \ to the X509CRL class.\n\n Note that if the given input stream does\
+              \ not support\n mark and\n reset, this method will\n consume the entire\
+              \ input stream. Otherwise, each call to this\n method consumes one CRL\
+              \ and the read position of the input stream\n is positioned to the next\
+              \ available byte after the inherent\n end-of-CRL marker. If the data\
+              \ in the\n input stream does not contain an inherent end-of-CRL marker\
+              \ (other\n than EOF) and there is trailing data after the CRL is parsed,\
+              \ a\n CRLException is thrown."
           - name: generateCRLs
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the input stream with the CRLs.
             return:
               type:
-                basic: Collection<? extends CRL>
+                basic: Collection
                 full: java.util.Collection<? extends java.security.cert.CRL>
+              notes: "a (possibly empty) collection view of\n java.security.cert.CRL\
+                \ objects initialized with the data from the input\n stream."
+            notes: "Returns a (possibly empty) collection view of the CRLs read\n\
+              \ from the given input stream inStream.\n\n In order to take advantage\
+              \ of the specialized CRL format\n supported by this certificate factory,\
+              \ each element in\n the returned collection view can be typecast to\
+              \ the corresponding\n CRL class. For example, if this certificate\n\
+              \ factory implements X.509 CRLs, the elements in the returned\n collection\
+              \ can be typecast to the X509CRL class.\n\n In the case of a certificate\
+              \ factory for X.509 CRLs,\n inStream may contain a sequence of DER-encoded\
+              \ CRLs.\n In addition, inStream may contain a PKCS#7 CRL\n set. This\
+              \ is a PKCS#7 SignedData object, with the only\n significant field being\
+              \ crls. In particular, the\n signature and the contents are ignored.\
+              \ This format allows multiple\n CRLs to be downloaded at once. If no\
+              \ CRLs are present,\n an empty collection is returned.\n\n Note that\
+              \ if the given input stream does not support\n mark and\n reset, this\
+              \ method will\n consume the entire input stream."
           - name: generateCertPath
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: an InputStream containing the data
             return:
               type:
                 basic: CertPath
                 full: java.security.cert.CertPath
+              notes: "a CertPath initialized with the data from the\n   InputStream"
+            notes: "Generates a CertPath object and initializes it with\n the data\
+              \ read from the InputStream inStream. The data\n is assumed to be in\
+              \ the default encoding. The name of the default\n encoding is the first\
+              \ element of the Iterator returned by\n the getCertPathEncodings method."
           - name: generateCertPath
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
-              type:
-                basic: List<? extends Certificate>
-                full: java.util.List<? extends java.security.cert.Certificate>
-            return:
-              type:
-                basic: CertPath
-                full: java.security.cert.CertPath
-          - name: generateCertPath
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
-            - name: arg1
+              notes: an InputStream containing the data
+            - name: encoding
               type:
                 basic: String
                 full: java.lang.String
+              notes: the encoding used for the data
             return:
               type:
                 basic: CertPath
                 full: java.security.cert.CertPath
+              notes: "a CertPath initialized with the data from the\n   InputStream"
+            notes: "Generates a CertPath object and initializes it with\n the data\
+              \ read from the InputStream inStream. The data\n is assumed to be in\
+              \ the specified encoding. See\n the CertPath Encodings section in the\
+              \ \n Java Security Standard Algorithm Names Specification\n for information\
+              \ about standard encoding names and their formats."
+          - name: generateCertPath
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: certificates
+              type:
+                basic: List
+                full: java.util.List<? extends java.security.cert.Certificate>
+              notes: a List of Certificates
+            return:
+              type:
+                basic: CertPath
+                full: java.security.cert.CertPath
+              notes: "a CertPath initialized with the supplied list of\n   certificates"
+            notes: "Generates a CertPath object and initializes it with\n a List of\
+              \ Certificates.\n \n The certificates supplied must be of a type supported\
+              \ by the\n CertificateFactory. They will be copied out of the supplied\n\
+              \ List object."
           - name: generateCertificate
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: an input stream with the certificate data.
             return:
               type:
                 basic: Certificate
                 full: java.security.cert.Certificate
+              notes: "a certificate object initialized with the data\n from the input\
+                \ stream."
+            notes: "Generates a certificate object and initializes it with\n the data\
+              \ read from the input stream inStream.\n\n In order to take advantage\
+              \ of the specialized certificate format\n supported by this certificate\
+              \ factory,\n the returned certificate object can be typecast to the\
+              \ corresponding\n certificate class. For example, if this certificate\n\
+              \ factory implements X.509 certificates, the returned certificate object\n\
+              \ can be typecast to the X509Certificate class.\n\n In the case of a\
+              \ certificate factory for X.509 certificates, the\n certificate provided\
+              \ in inStream must be DER-encoded and\n may be supplied in binary or\
+              \ printable (Base64) encoding. If the\n certificate is provided in Base64\
+              \ encoding, it must be bounded at\n the beginning by -----BEGIN CERTIFICATE-----,\
+              \ and must be bounded at\n the end by -----END CERTIFICATE-----.\n\n\
+              \ Note that if the given input stream does not support\n mark and\n\
+              \ reset, this method will\n consume the entire input stream. Otherwise,\
+              \ each call to this\n method consumes one certificate and the read position\
+              \ of the\n input stream is positioned to the next available byte after\n\
+              \ the inherent end-of-certificate marker. If the data in the input stream\n\
+              \ does not contain an inherent end-of-certificate marker (other\n than\
+              \ EOF) and there is trailing data after the certificate is parsed, a\n\
+              \ CertificateException is thrown."
           - name: generateCertificates
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: inStream
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the input stream with the certificates.
             return:
               type:
-                basic: Collection<? extends Certificate>
+                basic: Collection
                 full: java.util.Collection<? extends java.security.cert.Certificate>
+              notes: "a (possibly empty) collection view of\n java.security.cert.Certificate\
+                \ objects\n initialized with the data from the input stream."
+            notes: "Returns a (possibly empty) collection view of the certificates\
+              \ read\n from the given input stream inStream.\n\n In order to take\
+              \ advantage of the specialized certificate format\n supported by this\
+              \ certificate factory, each element in\n the returned collection view\
+              \ can be typecast to the corresponding\n certificate class. For example,\
+              \ if this certificate\n factory implements X.509 certificates, the elements\
+              \ in the returned\n collection can be typecast to the X509Certificate\
+              \ class.\n\n In the case of a certificate factory for X.509 certificates,\n\
+              \ inStream may contain a sequence of DER-encoded certificates\n in the\
+              \ formats described for\n generateCertificate.\n In addition, inStream\
+              \ may contain a PKCS#7 certificate\n chain. This is a PKCS#7 SignedData\
+              \ object, with the only\n significant field being certificates. In particular,\
+              \ the\n signature and the contents are ignored. This format allows multiple\n\
+              \ certificates to be downloaded at once. If no certificates are present,\n\
+              \ an empty collection is returned.\n\n Note that if the given input\
+              \ stream does not support\n mark and\n reset, this method will\n consume\
+              \ the entire input stream."
           - name: getCertPathEncodings
             modifiers:
             - public
             - final
             return:
               type:
-                basic: Iterator<String>
+                basic: Iterator
                 full: java.util.Iterator<java.lang.String>
+              notes: "an Iterator over the names of the supported\n         CertPath\
+                \ encodings (as Strings)"
+            notes: "Returns an iteration of the CertPath encodings supported\n by\
+              \ this certificate factory, with the default encoding first. See\n the\
+              \ CertPath Encodings section in the \n Java Security Standard Algorithm\
+              \ Names Specification\n for information about standard encoding names\
+              \ and their formats.\n \n Attempts to modify the returned Iterator via\
+              \ its\n remove method result in an\n UnsupportedOperationException."
           - name: getProvider
             modifiers:
             - public
@@ -116,6 +301,8 @@ languages:
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: the provider of this certificate factory.
+            notes: Returns the provider of this certificate factory.
           - name: getType
             modifiers:
             - public
@@ -124,56 +311,90 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the name of the certificate type associated with this\n certificate\
+                \ factory."
+            notes: "Returns the name of the certificate type associated with this\n\
+              \ certificate factory."
           staticMethods:
           - name: getInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: type
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the name of the requested certificate type.\n See the CertificateFactory\
+                \ section in the \n Java Security Standard Algorithm Names Specification\n\
+                \ for information about standard certificate types."
             return:
               type:
                 basic: CertificateFactory
                 full: java.security.cert.CertificateFactory
+              notes: a certificate factory object for the specified type
+            notes: "Returns a certificate factory object that implements the\n specified\
+              \ certificate type.\n\n  This method traverses the list of registered\
+              \ security Providers,\n starting with the most preferred Provider.\n\
+              \ A new CertificateFactory object encapsulating the\n CertificateFactorySpi\
+              \ implementation from the first\n Provider that supports the specified\
+              \ type is returned.\n\n  Note that the list of registered providers\
+              \ may be retrieved via\n the Security.getProviders() method."
           - name: getInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: type
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the certificate type.\n See the CertificateFactory section in\
+                \ the \n Java Security Standard Algorithm Names Specification\n for\
+                \ information about standard certificate types."
+            - name: provider
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the provider.
             return:
               type:
                 basic: CertificateFactory
                 full: java.security.cert.CertificateFactory
+              notes: a certificate factory object for the specified type
+            notes: "Returns a certificate factory object for the specified\n certificate\
+              \ type.\n\n  A new CertificateFactory object encapsulating the\n CertificateFactorySpi\
+              \ implementation from the specified provider\n is returned.  The specified\
+              \ provider must be registered\n in the security provider list.\n\n \
+              \ Note that the list of registered providers may be retrieved via\n\
+              \ the Security.getProviders() method."
           - name: getInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: type
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the certificate type.\n See the CertificateFactory section in\
+                \ the \n Java Security Standard Algorithm Names Specification\n for\
+                \ information about standard certificate types."
+            - name: provider
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: the provider.
             return:
               type:
                 basic: CertificateFactory
                 full: java.security.cert.CertificateFactory
-          javaType: class
-          extends: Object
+              notes: a certificate factory object for the specified type
+            notes: "Returns a certificate factory object for the specified\n certificate\
+              \ type.\n\n  A new CertificateFactory object encapsulating the\n CertificateFactorySpi\
+              \ implementation from the specified Provider\n object is returned. \
+              \ Note that the specified Provider object\n does not have to be registered\
+              \ in the provider list."

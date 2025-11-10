@@ -4,24 +4,118 @@ languages:
     packages:
       zombie.iso.areas.isoregion.data:
         DataRoot:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          notes: TurboTuTone.
           fields:
+            cellMap:
+              name: cellMap
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.Integer, zombie.iso.areas.isoregion.data.DataCell>
+            changedCells:
+              name: changedCells
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.IsoGameCharacter$Location>
+            dirtyChunks:
+              name: dirtyChunks
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.isoregion.data.DataChunk>
+            dirtyIsoWorldRegions:
+              name: dirtyIsoWorldRegions
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.isoregion.regions.IsoWorldRegion>
             regionManager:
               name: regionManager
               modifiers:
               - public
-              - final
               type:
                 basic: IsoRegionManager
+                full: zombie.iso.areas.isoregion.regions.IsoRegionManager
             select:
               name: select
               modifiers:
               - public
-              - final
               type:
-                basic: SelectInfo
+                basic: DataRoot.SelectInfo
+                full: zombie.iso.areas.isoregion.data.DataRoot$SelectInfo
+            selectInternal:
+              name: selectInternal
+              modifiers:
+              - private
+              type:
+                basic: DataRoot.SelectInfo
+                full: zombie.iso.areas.isoregion.data.DataRoot$SelectInfo
+          staticFields:
+            floodFills:
+              name: floodFills
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+            merges:
+              name: merges
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+            recalcs:
+              name: recalcs
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+            t_end:
+              name: t_end
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long[]
+            t_start:
+              name: t_start
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long[]
+            t_time:
+              name: t_time
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long[]
+            wrtmg:
+              name: wrtmg
+              modifiers:
+              - private
+              - static
+              type:
+                basic: WorldRegionToMetaGrid
+                full: zombie.iso.areas.isoregion.metagrid.WorldRegionToMetaGrid
           constructors:
           - modifiers:
             - public
@@ -33,9 +127,11 @@ languages:
             - name: mr
               type:
                 basic: IsoWorldRegion
+                full: zombie.iso.areas.isoregion.regions.IsoWorldRegion
             return:
               type:
                 basic: void
+                full: void
           - name: EnqueueDirtyDataChunk
             modifiers:
             - public
@@ -43,9 +139,11 @@ languages:
             - name: chunk
               type:
                 basic: DataChunk
+                full: zombie.iso.areas.isoregion.data.DataChunk
             return:
               type:
                 basic: void
+                full: void
           - name: EnqueueDirtyIsoWorldRegion
             modifiers:
             - public
@@ -53,9 +151,30 @@ languages:
             - name: mr
               type:
                 basic: IsoWorldRegion
+                full: zombie.iso.areas.isoregion.regions.IsoWorldRegion
             return:
               type:
                 basic: void
+                full: void
+          - name: addCell
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: DataCell
+                full: zombie.iso.areas.isoregion.data.DataCell
+          - name: clientProcessBuildings
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: getAllChunks
             modifiers:
             - public
@@ -63,10 +182,23 @@ languages:
             - name: list
               type:
                 basic: List
-                full: List<DataChunk>
+                full: java.util.List<zombie.iso.areas.isoregion.data.DataChunk>
             return:
               type:
                 basic: void
+                full: void
+          - name: getCell
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: DataCell
+                full: zombie.iso.areas.isoregion.data.DataCell
           - name: getDataChunk
             modifiers:
             - public
@@ -74,12 +206,15 @@ languages:
             - name: chunkx
               type:
                 basic: int
+                full: int
             - name: chunky
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: DataChunk
+                full: zombie.iso.areas.isoregion.data.DataChunk
           - name: getIsoChunkRegion
             modifiers:
             - public
@@ -87,15 +222,19 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoChunkRegion
+                full: zombie.iso.areas.isoregion.regions.IsoChunkRegion
           - name: getIsoWorldRegion
             modifiers:
             - public
@@ -103,15 +242,39 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoWorldRegion
+                full: zombie.iso.areas.isoregion.regions.IsoWorldRegion
+          - name: getIsoWorldRegionsInCell
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.isoregion.regions.IsoWorldRegion>
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.isoregion.regions.IsoWorldRegion>
           - name: getSquareFlags
             modifiers:
             - public
@@ -119,27 +282,45 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: byte
+                full: byte
           - name: processDirtyChunks
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: resetAllData
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: setDataChunk
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: DataChunk
+                full: zombie.iso.areas.isoregion.data.DataChunk
+            return:
+              type:
+                basic: void
+                full: void
           - name: updateExistingSquare
             modifiers:
             - public
@@ -147,18 +328,20 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: flags
               type:
                 basic: byte
+                full: byte
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
-          notes: TurboTuTone.
+                full: void

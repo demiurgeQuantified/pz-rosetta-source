@@ -4,191 +4,305 @@ languages:
     packages:
       java.awt.dnd:
         DragSourceContext:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The DragSourceContext class is responsible for managing the\n initiator\
+            \ side of the Drag and Drop protocol. In particular, it is responsible\n\
+            \ for managing drag event notifications to the\n DragSourceListeners\n\
+            \ and DragSourceMotionListeners, and providing the\n Transferable representing\
+            \ the source data for the drag operation.\n \n Note that the DragSourceContext\
+            \ itself\n implements the DragSourceListener and\n DragSourceMotionListener\
+            \ interfaces.\n This is to allow the platform peer\n (the DragSourceContextPeer\
+            \ instance)\n created by the DragSource to notify\n the DragSourceContext\
+            \ of\n state changes in the ongoing operation. This allows the\n DragSourceContext\
+            \ object to interpose\n itself between the platform and the\n listeners\
+            \ provided by the initiator of the drag operation.\n \n \n By default,\
+            \ DragSourceContext sets the cursor as appropriate\n for the current state\
+            \ of the drag and drop operation. For example, if\n the user has chosen\
+            \ the move action,\n and the pointer is over a target that accepts\n the\
+            \ move action, the default move cursor is shown. When\n the pointer is\
+            \ over an area that does not accept the transfer,\n the default \"no drop\"\
+            \ cursor is shown.\n \n This default handling mechanism is disabled when\
+            \ a custom cursor is set\n by the setCursor(java.awt.Cursor) method. When\
+            \ the default handling is disabled,\n it becomes the responsibility\n\
+            \ of the developer to keep the cursor up to date, by listening\n to the\
+            \ DragSource events and calling the setCursor() method.\n Alternatively,\
+            \ you can provide custom cursor behavior by providing\n custom implementations\
+            \ of the DragSource\n and the DragSourceContext classes."
+          fields:
+            cursor:
+              name: cursor
+              modifiers:
+              - private
+              type:
+                basic: Cursor
+                full: java.awt.Cursor
+            listener:
+              name: listener
+              modifiers:
+              - private
+              type:
+                basic: DragSourceListener
+                full: java.awt.dnd.DragSourceListener
+            peer:
+              name: peer
+              modifiers:
+              - private
+              type:
+                basic: DragSourceContextPeer
+                full: java.awt.dnd.peer.DragSourceContextPeer
+            sourceActions:
+              name: sourceActions
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            transferable:
+              name: transferable
+              modifiers:
+              - private
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+            trigger:
+              name: trigger
+              modifiers:
+              - private
+              type:
+                basic: DragGestureEvent
+                full: java.awt.dnd.DragGestureEvent
+            useCustomCursor:
+              name: useCustomCursor
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            CHANGED:
+              name: CHANGED
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int used by updateCurrentCursor()\n indicating that the user\
+                \ operation has changed."
+            DEFAULT:
+              name: DEFAULT
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int used by updateCurrentCursor()\n indicating that the Cursor\
+                \ should change\n to the default (no drop) Cursor."
+            ENTER:
+              name: ENTER
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int used by updateCurrentCursor()\n indicating that the Cursor\n\
+                \ has entered a DropTarget."
+            OVER:
+              name: OVER
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int used by updateCurrentCursor()\n indicating that the Cursor\
+                \ is\n over a DropTarget."
+            emptyTransferable:
+              name: emptyTransferable
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: trigger
               type:
                 basic: DragGestureEvent
                 full: java.awt.dnd.DragGestureEvent
-            - name: arg1
+              notes: the triggering event
+            - name: dragCursor
               type:
                 basic: Cursor
                 full: java.awt.Cursor
-            - name: arg2
+              notes: "the initial Cursor for this drag operation\n               \
+                \        or null for the default cursor handling;\n              \
+                \         see class level documentation\n                       for\
+                \ more details on the cursor handling mechanism during drag and drop"
+            - name: dragImage
               type:
                 basic: Image
                 full: java.awt.Image
-            - name: arg3
+              notes: the Image to drag (or null)
+            - name: offset
               type:
                 basic: Point
                 full: java.awt.Point
-            - name: arg4
+              notes: "the offset of the image origin from the hotspot at the\n   \
+                \                instant of the triggering event"
+            - name: t
               type:
                 basic: Transferable
                 full: java.awt.datatransfer.Transferable
-            - name: arg5
+              notes: the Transferable
+            - name: dsl
               type:
                 basic: DragSourceListener
                 full: java.awt.dnd.DragSourceListener
+              notes: the DragSourceListener
+            notes: "Called from DragSource, this constructor creates a new\n DragSourceContext\
+              \ given the\n DragSourceContextPeer for this Drag, the\n DragGestureEvent\
+              \ that triggered the Drag, the initial\n Cursor to use for the Drag,\
+              \ an (optional)\n Image to display while the Drag is taking place, the\
+              \ offset\n of the Image origin from the hotspot at the instant of the\n\
+              \ triggering event, the Transferable subject data, and the\n DragSourceListener\
+              \ to use during the Drag and Drop\n operation.\n \n If DragSourceContextPeer\
+              \ is null\n NullPointerException is thrown.\n \n If DragGestureEvent\
+              \ is null\n NullPointerException is thrown.\n \n If Cursor is null no\
+              \ exception is thrown and\n the default drag cursor behavior is activated\
+              \ for this drag operation.\n \n If Image is null no exception is thrown.\n\
+              \ \n If Image is not null and the offset is\n null NullPointerException\
+              \ is thrown.\n \n If Transferable is null\n NullPointerException is\
+              \ thrown.\n \n If DragSourceListener is null no exception\n is thrown."
           methods:
           - name: addDragSourceListener
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dsl
               type:
                 basic: DragSourceListener
                 full: java.awt.dnd.DragSourceListener
+              notes: "the DragSourceListener to add.\n Note that while null is not\
+                \ prohibited,\n it is not acceptable as a parameter."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Add a DragSourceListener to this\n DragSourceContext if one has\
+              \ not already been added.\n If a DragSourceListener already exists,\n\
+              \ this method throws a TooManyListenersException."
           - name: dragDropEnd
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dsde
               type:
                 basic: DragSourceDropEvent
                 full: java.awt.dnd.DragSourceDropEvent
+              notes: the DragSourceDropEvent
             return:
               type:
                 basic: void
                 full: void
-          - name: dragDropEnd
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DragSourceDropEvent
-                full: java.awt.dnd.DragSourceDropEvent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Calls dragDropEnd on the\n DragSourceListeners registered with\
+              \ this\n DragSourceContext and with the associated\n DragSource, and\
+              \ passes them the specified\n DragSourceDropEvent."
           - name: dragEnter
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dsde
               type:
                 basic: DragSourceDragEvent
                 full: java.awt.dnd.DragSourceDragEvent
+              notes: the DragSourceDragEvent
             return:
               type:
                 basic: void
                 full: void
-          - name: dragEnter
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DragSourceDragEvent
-                full: java.awt.dnd.DragSourceDragEvent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Calls dragEnter on the\n DragSourceListeners registered with this\n\
+              \ DragSourceContext and with the associated\n DragSource, and passes\
+              \ them the specified\n DragSourceDragEvent."
           - name: dragExit
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dse
               type:
                 basic: DragSourceEvent
                 full: java.awt.dnd.DragSourceEvent
+              notes: the DragSourceEvent
             return:
               type:
                 basic: void
                 full: void
-          - name: dragExit
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DragSourceEvent
-                full: java.awt.dnd.DragSourceEvent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Calls dragExit on the\n DragSourceListeners registered with this\n\
+              \ DragSourceContext and with the associated\n DragSource, and passes\
+              \ them the specified\n DragSourceEvent."
           - name: dragMouseMoved
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dsde
               type:
                 basic: DragSourceDragEvent
                 full: java.awt.dnd.DragSourceDragEvent
+              notes: the DragSourceDragEvent
             return:
               type:
                 basic: void
                 full: void
-          - name: dragMouseMoved
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DragSourceDragEvent
-                full: java.awt.dnd.DragSourceDragEvent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Calls dragMouseMoved on the\n DragSourceMotionListeners registered\
+              \ with the\n DragSource associated with this\n DragSourceContext, and\
+              \ them passes the specified\n DragSourceDragEvent."
           - name: dragOver
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dsde
               type:
                 basic: DragSourceDragEvent
                 full: java.awt.dnd.DragSourceDragEvent
+              notes: the DragSourceDragEvent
             return:
               type:
                 basic: void
                 full: void
-          - name: dragOver
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DragSourceDragEvent
-                full: java.awt.dnd.DragSourceDragEvent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Calls dragOver on the\n DragSourceListeners registered with this\n\
+              \ DragSourceContext and with the associated\n DragSource, and passes\
+              \ them the specified\n DragSourceDragEvent."
           - name: dropActionChanged
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dsde
               type:
                 basic: DragSourceDragEvent
                 full: java.awt.dnd.DragSourceDragEvent
+              notes: the DragSourceDragEvent
             return:
               type:
                 basic: void
                 full: void
-          - name: dropActionChanged
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DragSourceDragEvent
-                full: java.awt.dnd.DragSourceDragEvent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Calls dropActionChanged on the\n DragSourceListeners registered\
+              \ with this\n DragSourceContext and with the associated\n DragSource,\
+              \ and passes them the specified\n DragSourceDragEvent."
           - name: getComponent
             modifiers:
             - public
@@ -196,6 +310,8 @@ languages:
               type:
                 basic: Component
                 full: java.awt.Component
+              notes: the Component that started the drag
+            notes: "Returns the Component associated with this\n DragSourceContext."
           - name: getCursor
             modifiers:
             - public
@@ -203,6 +319,9 @@ languages:
               type:
                 basic: Cursor
                 full: java.awt.Cursor
+              notes: "the current custom drag Cursor, if it was set\n         otherwise\
+                \ returns null."
+            notes: Returns the current custom drag Cursor.
           - name: getDragSource
             modifiers:
             - public
@@ -210,6 +329,8 @@ languages:
               type:
                 basic: DragSource
                 full: java.awt.dnd.DragSource
+              notes: "the DragSource that\n   instantiated this DragSourceContext"
+            notes: "Returns the DragSource\n that instantiated this DragSourceContext."
           - name: getSourceActions
             modifiers:
             - public
@@ -217,6 +338,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the drop actions supported by the drag source
+            notes: "Returns a bitwise mask of DnDConstants that\n represent the set\
+              \ of drop actions supported by the drag source for the\n drag operation\
+              \ associated with this DragSourceContext."
           - name: getTransferable
             modifiers:
             - public
@@ -224,6 +349,8 @@ languages:
               type:
                 basic: Transferable
                 full: java.awt.datatransfer.Transferable
+              notes: the Transferable
+            notes: "Returns the Transferable associated with\n this DragSourceContext."
           - name: getTrigger
             modifiers:
             - public
@@ -231,21 +358,58 @@ languages:
               type:
                 basic: DragGestureEvent
                 full: java.awt.dnd.DragGestureEvent
-          - name: removeDragSourceListener
+              notes: the Event that triggered the drag
+            notes: "Returns the DragGestureEvent\n that initially triggered the drag."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: DragSourceListener
-                full: java.awt.dnd.DragSourceListener
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
                 full: void
+          - name: removeDragSourceListener
+            modifiers:
+            - public
+            parameters:
+            - name: dsl
+              type:
+                basic: DragSourceListener
+                full: java.awt.dnd.DragSourceListener
+              notes: "the DragSourceListener to remove;\n     note that while null\
+                \ is not prohibited,\n     it is not acceptable as a parameter"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Removes the specified DragSourceListener\n from  this DragSourceContext."
           - name: setCursor
             modifiers:
             - public
+            parameters:
+            - name: c
+              type:
+                basic: Cursor
+                full: java.awt.Cursor
+              notes: "the initial Cursor for this drag operation,\n              \
+                \         or null for the default cursor handling;\n             \
+                \          see class\n                       level documentation for\
+                \ more details\n                       on the cursor handling during\
+                \ drag and drop"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the custom cursor for this drag operation to the specified\n\
+              \ Cursor.  If the specified Cursor\n is null, the default drag cursor\
+              \ behavior is\n activated for this drag operation, otherwise it is deactivated."
+          - name: setCursorImpl
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -262,5 +426,58 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Notifies the peer that the Transferable's\n DataFlavors have changed."
+          - name: updateCurrentCursor
+            modifiers:
+            - protected
+            parameters:
+            - name: sourceAct
+              type:
+                basic: int
+                full: int
+              notes: the actions supported by the drag source
+            - name: targetAct
+              type:
+                basic: int
+                full: int
+              notes: the drop target action
+            - name: status
+              type:
+                basic: int
+                full: int
+              notes: "one of the fields DEFAULT,\n               ENTER, OVER,\n  \
+                \             CHANGED"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "If the default drag cursor behavior is active, this method\n sets\
+              \ the default drag cursor for the specified actions\n supported by the\
+              \ drag source, the drop target action,\n and status, otherwise this\
+              \ method does nothing."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: lambda$static$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DragSourceContext
+                full: java.awt.dnd.DragSourceContext
+            return:
+              type:
+                basic: DragSourceContextPeer
+                full: java.awt.dnd.peer.DragSourceContextPeer

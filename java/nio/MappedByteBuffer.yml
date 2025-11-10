@@ -4,96 +4,56 @@ languages:
     packages:
       java.nio:
         MappedByteBuffer:
-          methods:
-          - name: clear
-            modifiers:
-            - public
-            return:
+          extends: java.nio.ByteBuffer
+          modifiers:
+          - public
+          - abstract
+          notes: "A direct byte buffer whose content is a memory-mapped region of\
+            \ a file.\n\n  Mapped byte buffers are created via the FileChannel.map\
+            \ method.  This class\n extends the ByteBuffer class with operations that\
+            \ are specific to\n memory-mapped file regions.\n\n  A mapped byte buffer\
+            \ and the file mapping that it represents remain\n valid until the buffer\
+            \ itself is garbage-collected.\n\n  The content of a mapped byte buffer\
+            \ can change at any time, for example\n if the content of the corresponding\
+            \ region of the mapped file is changed by\n this program or another. \
+            \ Whether or not such changes occur, and when they\n occur, is operating-system\
+            \ dependent and therefore unspecified.\n\n  All or part of a mapped byte\
+            \ buffer may become\n inaccessible at any time, for example if the mapped\
+            \ file is truncated.  An\n attempt to access an inaccessible region of\
+            \ a mapped byte buffer will not\n change the buffer's content and will\
+            \ cause an unspecified exception to be\n thrown either at the time of\
+            \ the access or at some later time.  It is\n therefore strongly recommended\
+            \ that appropriate precautions be taken to\n avoid the manipulation of\
+            \ a mapped file by this program, or by a\n concurrently running program,\
+            \ except to read or write the file's content.\n\n  Mapped byte buffers\
+            \ otherwise behave no differently than ordinary direct\n byte buffers."
+          fields:
+            fd:
+              name: fd
+              modifiers:
+              - private
               type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: clear
-            modifiers:
-            - public
-            return:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+            isSync:
+              name: isSync
+              modifiers:
+              - private
               type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: clear
-            modifiers:
-            - public
-            return:
+                basic: boolean
+                full: boolean
+          staticFields:
+            SCOPED_MEMORY_ACCESS:
+              name: SCOPED_MEMORY_ACCESS
+              modifiers:
+              - package
+              - static
               type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: compact
-            modifiers:
-            - public
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: compact
-            modifiers:
-            - public
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: duplicate
-            modifiers:
-            - public
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: duplicate
-            modifiers:
-            - public
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: duplicate
-            modifiers:
-            - public
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: flip
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: flip
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: flip
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: force
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: force
-            modifiers:
-            - public
-            - final
+                basic: ScopedMemoryAccess
+                full: jdk.internal.misc.ScopedMemoryAccess
+          constructors:
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -103,10 +63,276 @@ languages:
               type:
                 basic: int
                 full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+            - name: arg5
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg6
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg5
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          methods:
+          - name: clear
+            modifiers:
+            - public
+            - final
             return:
               type:
                 basic: MappedByteBuffer
                 full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Clears this buffer.  The position is set to zero, the limit is\
+              \ set to\n the capacity, and the mark is discarded.\n\n  Invoke this\
+              \ method before using a sequence of channel-read or\n put operations\
+              \ to fill this buffer.  For example:\n\n \n buf.clear();     // Prepare\
+              \ buffer for reading\n in.read(buf);    // Read data\n\n  This method\
+              \ does not actually erase the data in the buffer, but it\n is named\
+              \ as if it did because it will most often be used in situations\n in\
+              \ which that might as well be the case."
+          - name: clear
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+          - name: clear
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: compact
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Compacts this buffer  (optional operation).\n\n  The bytes between\
+              \ the buffer's current position and its limit,\n if any, are copied\
+              \ to the beginning of the buffer.  That is, the\n byte at index p =\
+              \ position() is copied\n to index zero, the byte at index p + 1 is copied\n\
+              \ to index one, and so forth until the byte at index\n limit() - 1 is\
+              \ copied to index\n n = limit() - 1 - p.\n The buffer's position is\
+              \ then set to n+1 and its limit is set to\n its capacity.  The mark,\
+              \ if defined, is discarded.\n\n  The buffer's position is set to the\
+              \ number of bytes copied,\n rather than to zero, so that an invocation\
+              \ of this method can be\n followed immediately by an invocation of another\
+              \ relative put\n method. \n\n\n\n  Invoke this method after writing\
+              \ data from a buffer in case the\n write was incomplete.  The following\
+              \ loop, for example, copies bytes\n from one channel to another via\
+              \ the buffer buf:\n\n <code>\n   buf.clear();          // Prepare buffer\
+              \ for use\n   while (in.read(buf) >= 0 || buf.position != 0) {\n   \
+              \    buf.flip();\n       out.write(buf);\n       buf.compact();    //\
+              \ In case of partial write\n   }\n </code>"
+          - name: compact
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+          - name: duplicate
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: The new byte buffer
+            notes: "Creates a new byte buffer that shares this buffer's content.\n\
+              \n  The content of the new buffer will be that of this buffer.  Changes\n\
+              \ to this buffer's content will be visible in the new buffer, and vice\n\
+              \ versa; the two buffers' position, limit, and mark values will be\n\
+              \ independent.\n\n  The new buffer's capacity, limit, position,\n\n\
+              \ and mark values will be identical to those of this buffer, and its\
+              \ byte\n order will be BIG_ENDIAN.\n\n\n\n The new buffer will be direct\
+              \ if, and only if, this buffer is direct, and\n it will be read-only\
+              \ if, and only if, this buffer is read-only."
+          - name: duplicate
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+          - name: duplicate
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: fileDescriptor
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+          - name: flip
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Flips this buffer.  The limit is set to the current position and\
+              \ then\n the position is set to zero.  If the mark is defined then it\
+              \ is\n discarded.\n\n  After a sequence of channel-read or put operations,\
+              \ invoke\n this method to prepare for a sequence of channel-write or\
+              \ relative\n get operations.  For example:\n\n \n buf.put(magic);  \
+              \  // Prepend header\n in.read(buf);      // Read data into rest of\
+              \ buffer\n buf.flip();        // Flip buffer\n out.write(buf);    //\
+              \ Write header + data to channel\n\n  This method is often used in conjunction\
+              \ with the compact method when transferring data from\n one place to\
+              \ another."
+          - name: flip
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+          - name: flip
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: force
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Forces any changes made to this buffer's content to be written\
+              \ to the\n storage device containing the mapped file.  The region starts\
+              \ at index\n zero in this buffer and is capacity() bytes.  An invocation\
+              \ of\n this method behaves in exactly the same way as the invocation\n\
+              \ force(0,capacity()).\n\n  If the file mapped into this buffer resides\
+              \ on a local storage\n device then when this method returns it is guaranteed\
+              \ that all changes\n made to the buffer since it was created, or since\
+              \ this method was last\n invoked, will have been written to that device.\n\
+              \n  If the file does not reside on a local device then no such guarantee\n\
+              \ is made.\n\n  If this buffer was not mapped in read/write mode (FileChannel.MapMode.READ_WRITE)\
+              \ then\n invoking this method may have no effect. In particular, the\n\
+              \ method has no effect for buffers mapped in read-only or private\n\
+              \ mapping modes. This method may or may not have an effect for\n implementation-specific\
+              \ mapping modes."
+          - name: force
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The index of the first byte in the buffer region that is\n \
+                \        to be written back to storage; must be non-negative\n   \
+                \      and less than capacity()"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The length of the region in bytes; must be non-negative\n  \
+                \       and no larger than capacity()"
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Forces any changes made to a region of this buffer's content to\n\
+              \ be written to the storage device containing the mapped\n file. The\
+              \ region starts at the given index in this\n buffer and is length bytes.\n\
+              \n  If the file mapped into this buffer resides on a local\n storage\
+              \ device then when this method returns it is guaranteed\n that all changes\
+              \ made to the selected region buffer since it\n was created, or since\
+              \ this method was last invoked, will have\n been written to that device.\
+              \ The force operation is free to\n write bytes that lie outside the\
+              \ specified region, for example\n to ensure that data blocks of some\
+              \ device-specific granularity\n are transferred in their entirety.\n\
+              \n  If the file does not reside on a local device then no such\n guarantee\
+              \ is made.\n\n  If this buffer was not mapped in read/write mode (FileChannel.MapMode.READ_WRITE)\
+              \ then\n invoking this method may have no effect. In particular, the\n\
+              \ method has no effect for buffers mapped in read-only or private\n\
+              \ mapping modes. This method may or may not have an effect for\n implementation-specific\
+              \ mapping modes."
           - name: isLoaded
             modifiers:
             - public
@@ -115,6 +341,45 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if it is likely that this buffer's content\n          is\
+                \ resident in physical memory"
+            notes: "Tells whether or not this buffer's content is resident in physical\n\
+              \ memory.\n\n  A return value of true implies that it is highly likely\n\
+              \ that all of the data in this buffer is resident in physical memory\
+              \ and\n may therefore be accessed without incurring any virtual-memory\
+              \ page\n faults or I/O operations.  A return value of false does not\n\
+              \ necessarily imply that the buffer's content is not resident in physical\n\
+              \ memory.\n\n  The returned value is a hint, rather than a guarantee,\
+              \ because the\n underlying operating system may have paged out some\
+              \ of the buffer's data\n by the time that an invocation of this method\
+              \ returns."
+          - name: isSync
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: limit
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: newLimit
+              type:
+                basic: int
+                full: int
+              notes: "The new limit value; must be non-negative\n         and no larger\
+                \ than this buffer's capacity"
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Sets this buffer's limit.  If the position is larger than the\
+              \ new limit\n then it is set to the new limit.  If the mark is defined\
+              \ and larger than\n the new limit then it is discarded."
           - name: limit
             modifiers:
             - public
@@ -125,20 +390,8 @@ languages:
                 full: int
             return:
               type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: limit
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
           - name: limit
             modifiers:
             - public
@@ -159,6 +412,11 @@ languages:
               type:
                 basic: MappedByteBuffer
                 full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Loads this buffer's content into physical memory.\n\n  This method\
+              \ makes a best effort to ensure that, when it returns,\n this buffer's\
+              \ content is resident in physical memory.  Invoking this\n method may\
+              \ cause some number of page faults and I/O operations to\n occur."
           - name: mark
             modifiers:
             - public
@@ -167,22 +425,40 @@ languages:
               type:
                 basic: MappedByteBuffer
                 full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: Sets this buffer's mark at its position.
           - name: mark
             modifiers:
             - public
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+          - name: mark
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: position
+            modifiers:
+            - public
             - final
+            parameters:
+            - name: newPosition
+              type:
+                basic: int
+                full: int
+              notes: "The new position value; must be non-negative\n         and no\
+                \ larger than the current limit"
             return:
               type:
                 basic: MappedByteBuffer
                 full: java.nio.MappedByteBuffer
-          - name: mark
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Sets this buffer's position.  If the mark is defined and larger\
+              \ than the\n new position then it is discarded."
           - name: position
             modifiers:
             - public
@@ -205,75 +481,135 @@ languages:
                 full: int
             return:
               type:
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: reset
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Resets this buffer's position to the previously-marked position.\n\
+              \n  Invoking this method neither changes nor discards the mark's\n value."
+          - name: reset
+            modifiers:
+            - public
+            return:
+              type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
-          - name: position
+          - name: reset
             modifiers:
             - public
-            parameters:
-            - name: arg0
+            return:
               type:
-                basic: int
-                full: int
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: rewind
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: This buffer
+            notes: "Rewinds this buffer.  The position is set to zero and the mark\
+              \ is\n discarded.\n\n  Invoke this method before a sequence of channel-write\
+              \ or get\n operations, assuming that the limit has already been set\n\
+              \ appropriately.  For example:\n\n \n out.write(buf);    // Write remaining\
+              \ data\n buf.rewind();      // Rewind buffer\n buf.get(array);    //\
+              \ Copy data into array"
+          - name: rewind
+            modifiers:
+            - public
             return:
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
-          - name: reset
+          - name: rewind
             modifiers:
             - public
             return:
               type:
                 basic: Buffer
                 full: java.nio.Buffer
-          - name: reset
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: reset
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: rewind
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: rewind
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
-          - name: rewind
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: MappedByteBuffer
-                full: java.nio.MappedByteBuffer
           - name: slice
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: The new byte buffer
+            notes: "Creates a new byte buffer whose content is a shared subsequence\
+              \ of\n this buffer's content.\n\n  The content of the new buffer will\
+              \ start at this buffer's current\n position.  Changes to this buffer's\
+              \ content will be visible in the new\n buffer, and vice versa; the two\
+              \ buffers' position, limit, and mark\n values will be independent.\n\
+              \n  The new buffer's position will be zero, its capacity and its limit\n\
+              \ will be the number of bytes remaining in this buffer, its mark will\
+              \ be\n undefined, and its byte order will be\n\n BIG_ENDIAN.\n\n\n\n\
+              \ The new buffer will be direct if, and only if, this buffer is direct,\
+              \ and\n it will be read-only if, and only if, this buffer is read-only.\
+              \  \n\n  Reading bytes into physical memory by invoking load() on the\n\
+              \ returned buffer, or writing bytes to the storage device by invoking\n\
+              \ force() on the returned buffer, will only act on the sub-range\n of\
+              \ this buffer that the returned buffer represents, namely\n [position(),limit())."
           - name: slice
             modifiers:
             - public
+            - abstract
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The position in this buffer at which the content of the new\n\
+                \          buffer will start; must be non-negative and no larger than\n\
+                \          limit()"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of elements the new buffer will contain; must be\n\
+                \          non-negative and no larger than limit()"
+            return:
+              type:
+                basic: MappedByteBuffer
+                full: java.nio.MappedByteBuffer
+              notes: The new buffer
+            notes: "Creates a new byte buffer whose content is a shared subsequence\
+              \ of\n this buffer's content.\n\n  The content of the new buffer will\
+              \ start at position index\n in this buffer, and will contain length\
+              \ elements. Changes to\n this buffer's content will be visible in the\
+              \ new buffer, and vice versa;\n the two buffers' position, limit, and\
+              \ mark values will be independent.\n\n  The new buffer's position will\
+              \ be zero, its capacity and its limit\n will be length, its mark will\
+              \ be undefined, and its byte order\n will be\n\n BIG_ENDIAN.\n\n\n\n\
+              \ The new buffer will be direct if, and only if, this buffer is direct,\n\
+              \ and it will be read-only if, and only if, this buffer is read-only.\
+              \ \n\n  Reading bytes into physical memory by invoking load() on the\n\
+              \ returned buffer, or writing bytes to the storage device by invoking\n\
+              \ force() on the returned buffer, will only act on the sub-range\n of\
+              \ this buffer that the returned buffer represents, namely\n [index,index+length),\
+              \ where index and length are\n assumed to satisfy the preconditions."
+          - name: slice
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: ByteBuffer
@@ -299,39 +635,19 @@ languages:
                 full: int
             return:
               type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
+                basic: Buffer
+                full: java.nio.Buffer
           - name: slice
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
             return:
               type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-          - name: slice
+                basic: Buffer
+                full: java.nio.Buffer
+          - name: unmapper
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
+            - package
             return:
               type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-          javaType: class
-          extends: ByteBuffer
+                basic: UnmapperProxy
+                full: jdk.internal.access.foreign.UnmapperProxy

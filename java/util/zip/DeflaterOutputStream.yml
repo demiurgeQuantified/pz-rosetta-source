@@ -1,0 +1,251 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.zip:
+        DeflaterOutputStream:
+          extends: java.io.FilterOutputStream
+          modifiers:
+          - public
+          notes: "This class implements an output stream filter for compressing data\
+            \ in\n the \"deflate\" compression format. It is also used as the basis\
+            \ for other\n types of compression filters, such as GZIPOutputStream."
+          fields:
+            buf:
+              name: buf
+              modifiers:
+              - protected
+              type:
+                basic: byte
+                full: byte[]
+              notes: Output buffer for writing compressed data.
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            def:
+              name: def
+              modifiers:
+              - protected
+              type:
+                basic: Deflater
+                full: java.util.zip.Deflater
+              notes: Compressor for this stream.
+            syncFlush:
+              name: syncFlush
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            usesDefaultDeflater:
+              name: usesDefaultDeflater
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream
+            - name: def
+              type:
+                basic: Deflater
+                full: java.util.zip.Deflater
+              notes: the compressor ("deflater")
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the output buffer size
+            - name: syncFlush
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if true the flush() method of this\n        instance flushes\
+                \ the compressor with flush mode\n        Deflater.SYNC_FLUSH before\
+                \ flushing the output\n        stream, otherwise only flushes the\
+                \ output stream"
+            notes: "Creates a new output stream with the specified compressor,\n buffer\
+              \ size and flush mode."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream
+            - name: def
+              type:
+                basic: Deflater
+                full: java.util.zip.Deflater
+              notes: the compressor ("deflater")
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the output buffer size
+            notes: "Creates a new output stream with the specified compressor and\n\
+              \ buffer size.\n\n The new output stream instance is created as if by\
+              \ invoking\n the 4-argument constructor DeflaterOutputStream(out, def,\
+              \ size, false)."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream
+            - name: def
+              type:
+                basic: Deflater
+                full: java.util.zip.Deflater
+              notes: the compressor ("deflater")
+            - name: syncFlush
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if true the flush() method of this\n        instance flushes\
+                \ the compressor with flush mode\n        Deflater.SYNC_FLUSH before\
+                \ flushing the output\n        stream, otherwise only flushes the\
+                \ output stream"
+            notes: "Creates a new output stream with the specified compressor, flush\n\
+              \ mode and a default buffer size."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream
+            - name: def
+              type:
+                basic: Deflater
+                full: java.util.zip.Deflater
+              notes: the compressor ("deflater")
+            notes: "Creates a new output stream with the specified compressor and\n\
+              \ a default buffer size.\n\n The new output stream instance is created\
+              \ as if by invoking\n the 3-argument constructor DeflaterOutputStream(out,\
+              \ def, false)."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream
+            - name: syncFlush
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if true the flush() method of this\n        instance flushes\
+                \ the compressor with flush mode\n        Deflater.SYNC_FLUSH before\
+                \ flushing the output\n        stream, otherwise only flushes the\
+                \ output stream"
+            notes: "Creates a new output stream with a default compressor, a default\n\
+              \ buffer size and the specified flush mode."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream
+            notes: "Creates a new output stream with a default compressor and buffer\
+              \ size.\n\n The new output stream instance is created as if by invoking\n\
+              \ the 2-argument constructor DeflaterOutputStream(out, false)."
+          methods:
+          - name: close
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes remaining compressed data to the output stream and closes\
+              \ the\n underlying stream."
+          - name: deflate
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes next block of compressed data to the output stream.
+          - name: finish
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Finishes writing compressed data to the output stream without\
+              \ closing\n the underlying stream. Use this method when applying multiple\
+              \ filters\n in succession to the same output stream."
+          - name: flush
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Flushes the compressed output stream.\n\n If syncFlush is true\
+              \ when this compressed output stream is\n constructed, this method first\
+              \ flushes the underlying compressor\n with the flush mode Deflater.SYNC_FLUSH\
+              \ to force\n all pending data to be flushed out to the output stream\
+              \ and then\n flushes the output stream. Otherwise this method only flushes\
+              \ the\n output stream without flushing the compressor."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: the byte to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes a byte to the compressed output stream. This method will\n\
+              \ block until the byte can be written."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the data to be written
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset of the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the length of the data
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes an array of bytes to the compressed output stream. This\n\
+              \ method will block until all the bytes are written."

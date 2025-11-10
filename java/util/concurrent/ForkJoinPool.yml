@@ -1,0 +1,1626 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent:
+        ForkJoinPool:
+          extends: java.util.concurrent.AbstractExecutorService
+          modifiers:
+          - public
+          notes: "An ExecutorService for running ForkJoinTasks.\n A ForkJoinPool provides\
+            \ the entry point for submissions\n from non-ForkJoinTask clients, as\
+            \ well as management and\n monitoring operations.\n\n A ForkJoinPool differs\
+            \ from other kinds of ExecutorService mainly by virtue of employing\n\
+            \ work-stealing: all threads in the pool attempt to find and\n execute\
+            \ tasks submitted to the pool and/or created by other active\n tasks (eventually\
+            \ blocking waiting for work if none exist). This\n enables efficient processing\
+            \ when most tasks spawn other subtasks\n (as do most ForkJoinTasks), as\
+            \ well as when many small\n tasks are submitted to the pool from external\
+            \ clients.  Especially\n when setting asyncMode to true in constructors,\
+            \ \n ForkJoinPools may also be appropriate for use with event-style\n\
+            \ tasks that are never joined. All worker threads are initialized\n with\
+            \ Thread.isDaemon() set true.\n\n A static commonPool() is available and\
+            \ appropriate for\n most applications. The common pool is used by any\
+            \ ForkJoinTask that\n is not explicitly submitted to a specified pool.\
+            \ Using the common\n pool normally reduces resource usage (its threads\
+            \ are slowly\n reclaimed during periods of non-use, and reinstated upon\
+            \ subsequent\n use).\n\n For applications that require separate or custom\
+            \ pools, a \n ForkJoinPool may be constructed with a given target parallelism\n\
+            \ level; by default, equal to the number of available processors.\n The\
+            \ pool attempts to maintain enough active (or available) threads\n by\
+            \ dynamically adding, suspending, or resuming internal worker\n threads,\
+            \ even if some tasks are stalled waiting to join others.\n However, no\
+            \ such adjustments are guaranteed in the face of blocked\n I/O or other\
+            \ unmanaged synchronization. The nested ForkJoinPool.ManagedBlocker interface\
+            \ enables extension of the kinds of\n synchronization accommodated. The\
+            \ default policies may be\n overridden using a constructor with parameters\
+            \ corresponding to\n those documented in class ThreadPoolExecutor.\n\n\
+            \ In addition to execution and lifecycle control methods, this\n class\
+            \ provides status check methods (for example\n getStealCount()) that are\
+            \ intended to aid in developing,\n tuning, and monitoring fork/join applications.\
+            \ Also, method\n toString() returns indications of pool state in a\n convenient\
+            \ form for informal monitoring.\n\n As is the case with other ExecutorServices,\
+            \ there are three\n main task execution methods summarized in the following\
+            \ table.\n These are designed to be used primarily by clients not already\n\
+            \ engaged in fork/join computations in the current pool.  The main\n forms\
+            \ of these methods accept instances of ForkJoinTask,\n but overloaded\
+            \ forms also allow mixed execution of plain \n Runnable- or Callable-\
+            \ based activities as well.  However,\n tasks that are already executing\
+            \ in a pool should normally instead\n use the within-computation forms\
+            \ listed in the table unless using\n async event-style tasks that are\
+            \ not usually joined, in which case\n there is little difference among\
+            \ choice of methods.\n\n \n Summary of task execution methods\n  \n  \
+            \  \n     Call from non-fork/join clients\n     Call from within fork/join\
+            \ computations\n  \n  \n     Arrange async execution\n     execute(ForkJoinTask)\n\
+            \     ForkJoinTask.fork()\n  \n  \n     Await and obtain result\n    \
+            \ invoke(ForkJoinTask)\n     ForkJoinTask.invoke()\n  \n  \n     Arrange\
+            \ exec and obtain Future\n     submit(ForkJoinTask)\n     ForkJoinTask.fork()\
+            \ (ForkJoinTasks are Futures)\n  \n \n\n The parameters used to construct\
+            \ the common pool may be controlled by\n setting the following system\
+            \ properties:\n \n java.util.concurrent.ForkJoinPool.common.parallelism\n\
+            \ - the parallelism level, a non-negative integer\n java.util.concurrent.ForkJoinPool.common.threadFactory\n\
+            \ - the class name of a ForkJoinPool.ForkJoinWorkerThreadFactory.\n The\
+            \ system class loader\n is used to load this class.\n java.util.concurrent.ForkJoinPool.common.exceptionHandler\n\
+            \ - the class name of a Thread.UncaughtExceptionHandler.\n The system\
+            \ class loader\n is used to load this class.\n java.util.concurrent.ForkJoinPool.common.maximumSpares\n\
+            \ - the maximum number of allowed extra threads to maintain target\n parallelism\
+            \ (default 256).\n \n If no thread factory is supplied via a system property,\
+            \ then the\n common pool uses a factory that uses the system class loader\
+            \ as the\n thread context class loader.\n In addition, if a SecurityManager\
+            \ is present, then\n the common pool uses a factory supplying threads\
+            \ that have no\n Permissions enabled.\n\n Upon any error in establishing\
+            \ these settings, default parameters\n are used. It is possible to disable\
+            \ or limit the use of threads in\n the common pool by setting the parallelism\
+            \ property to zero, and/or\n using a factory that may return null. However\
+            \ doing so may\n cause unjoined tasks to never be executed.\n\n Implementation\
+            \ notes: This implementation restricts the\n maximum number of running\
+            \ threads to 32767. Attempts to create\n pools with greater than the maximum\
+            \ number result in\n IllegalArgumentException.\n\n This implementation\
+            \ rejects submitted tasks (that is, by throwing\n RejectedExecutionException)\
+            \ only when the pool is shut down\n or internal resources have been exhausted."
+          fields:
+            bounds:
+              name: bounds
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            ctl:
+              name: ctl
+              modifiers:
+              - package
+              type:
+                basic: long
+                full: long
+            factory:
+              name: factory
+              modifiers:
+              - package
+              type:
+                basic: ForkJoinPool.ForkJoinWorkerThreadFactory
+                full: java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
+            keepAlive:
+              name: keepAlive
+              modifiers:
+              - package
+              type:
+                basic: long
+                full: long
+            mode:
+              name: mode
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            queues:
+              name: queues
+              modifiers:
+              - package
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue[]
+            registrationLock:
+              name: registrationLock
+              modifiers:
+              - package
+              type:
+                basic: ReentrantLock
+                full: java.util.concurrent.locks.ReentrantLock
+            saturate:
+              name: saturate
+              modifiers:
+              - package
+              type:
+                basic: Predicate
+                full: java.util.function.Predicate<? super java.util.concurrent.ForkJoinPool>
+            scanRover:
+              name: scanRover
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            stealCount:
+              name: stealCount
+              modifiers:
+              - package
+              type:
+                basic: long
+                full: long
+            termination:
+              name: termination
+              modifiers:
+              - package
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+            threadIds:
+              name: threadIds
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            ueh:
+              name: ueh
+              modifiers:
+              - package
+              type:
+                basic: Thread.UncaughtExceptionHandler
+                full: java.lang.Thread$UncaughtExceptionHandler
+            workerNamePrefix:
+              name: workerNamePrefix
+              modifiers:
+              - package
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            ADD_WORKER:
+              name: ADD_WORKER
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            COMMON_MAX_SPARES:
+              name: COMMON_MAX_SPARES
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            COMMON_PARALLELISM:
+              name: COMMON_PARALLELISM
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            CTL:
+              name: CTL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            DEFAULT_COMMON_MAX_SPARES:
+              name: DEFAULT_COMMON_MAX_SPARES
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            DEFAULT_KEEPALIVE:
+              name: DEFAULT_KEEPALIVE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            FIFO:
+              name: FIFO
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            INITIAL_QUEUE_CAPACITY:
+              name: INITIAL_QUEUE_CAPACITY
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            INNOCUOUS:
+              name: INNOCUOUS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_CAP:
+              name: MAX_CAP
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MODE:
+              name: MODE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            POOLIDS:
+              name: POOLIDS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            QUIET:
+              name: QUIET
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            RC_MASK:
+              name: RC_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            RC_SHIFT:
+              name: RC_SHIFT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            RC_UNIT:
+              name: RC_UNIT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            SHUTDOWN:
+              name: SHUTDOWN
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            SMASK:
+              name: SMASK
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            SP_MASK:
+              name: SP_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            SRC:
+              name: SRC
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            SS_SEQ:
+              name: SS_SEQ
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            STOP:
+              name: STOP
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            SWIDTH:
+              name: SWIDTH
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            TC_MASK:
+              name: TC_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            TC_SHIFT:
+              name: TC_SHIFT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            TC_UNIT:
+              name: TC_UNIT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            TERMINATED:
+              name: TERMINATED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            THREADIDS:
+              name: THREADIDS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            TIMEOUT_SLOP:
+              name: TIMEOUT_SLOP
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            UC_MASK:
+              name: UC_MASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            UNCOMPENSATE:
+              name: UNCOMPENSATE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            UNSIGNALLED:
+              name: UNSIGNALLED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            common:
+              name: common
+              modifiers:
+              - package
+              - static
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            defaultForkJoinWorkerThreadFactory:
+              name: defaultForkJoinWorkerThreadFactory
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ForkJoinPool.ForkJoinWorkerThreadFactory
+                full: java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
+              notes: "Creates a new ForkJoinWorkerThread. This factory is used unless\n\
+                \ overridden in ForkJoinPool constructors."
+            modifyThreadPermission:
+              name: modifyThreadPermission
+              modifiers:
+              - package
+              - static
+              type:
+                basic: RuntimePermission
+                full: java.lang.RuntimePermission
+            poolIds:
+              name: poolIds
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+          constructors:
+          - modifiers:
+            - public
+            notes: "Creates a ForkJoinPool with parallelism equal to Runtime.availableProcessors(),\
+              \ using defaults for all\n other parameters (see ForkJoinPool(int, ForkJoinWorkerThreadFactory,\
+              \ UncaughtExceptionHandler, boolean, int, int, int, Predicate, long,\
+              \ TimeUnit))."
+          - modifiers:
+            - public
+            parameters:
+            - name: parallelism
+              type:
+                basic: int
+                full: int
+              notes: the parallelism level
+            notes: "Creates a ForkJoinPool with the indicated parallelism\n level,\
+              \ using defaults for all other parameters (see ForkJoinPool(int, ForkJoinWorkerThreadFactory,\
+              \ UncaughtExceptionHandler, boolean, int, int, int, Predicate, long,\
+              \ TimeUnit))."
+          - modifiers:
+            - public
+            parameters:
+            - name: parallelism
+              type:
+                basic: int
+                full: int
+              notes: "the parallelism level. For default value,\n use Runtime.availableProcessors()."
+            - name: factory
+              type:
+                basic: ForkJoinPool.ForkJoinWorkerThreadFactory
+                full: java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
+              notes: "the factory for creating new threads. For default value,\n use\
+                \ defaultForkJoinWorkerThreadFactory."
+            - name: handler
+              type:
+                basic: Thread.UncaughtExceptionHandler
+                full: java.lang.Thread$UncaughtExceptionHandler
+              notes: "the handler for internal worker threads that\n terminate due\
+                \ to unrecoverable errors encountered while executing\n tasks. For\
+                \ default value, use null."
+            - name: asyncMode
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if true,\n establishes local first-in-first-out scheduling mode\
+                \ for forked\n tasks that are never joined. This mode may be more\
+                \ appropriate\n than default locally stack-based mode in applications\
+                \ in which\n worker threads only process event-style asynchronous\
+                \ tasks.\n For default value, use false."
+            notes: "Creates a ForkJoinPool with the given parameters (using\n defaults\
+              \ for others -- see ForkJoinPool(int, ForkJoinWorkerThreadFactory, UncaughtExceptionHandler,\
+              \ boolean, int, int, int, Predicate, long, TimeUnit))."
+          - modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: ForkJoinPool.ForkJoinWorkerThreadFactory
+                full: java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
+            - name: arg2
+              type:
+                basic: Thread.UncaughtExceptionHandler
+                full: java.lang.Thread$UncaughtExceptionHandler
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: int
+                full: int
+            - name: arg7
+              type:
+                basic: Predicate
+                full: java.util.function.Predicate<? super java.util.concurrent.ForkJoinPool>
+            - name: arg8
+              type:
+                basic: long
+                full: long
+            - name: arg9
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte
+          methods:
+          - name: awaitQuiescence
+            modifiers:
+            - public
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if quiescent; false if the\n timeout elapsed."
+            notes: "If called by a ForkJoinTask operating in this pool, equivalent\n\
+              \ in effect to ForkJoinTask.helpQuiesce(). Otherwise,\n waits and/or\
+              \ attempts to assist performing tasks until this\n pool isQuiescent()\
+              \ or the indicated timeout elapses."
+          - name: awaitTermination
+            modifiers:
+            - public
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this executor terminated and\n         false if the\
+                \ timeout elapsed before termination"
+            notes: "Blocks until all tasks have completed execution after a\n shutdown\
+              \ request, or the timeout occurs, or the current thread\n is interrupted,\
+              \ whichever happens first. Because the commonPool() never terminates\
+              \ until program shutdown, when\n applied to the common pool, this method\
+              \ is equivalent to awaitQuiescence(long, TimeUnit) but always returns\
+              \ false."
+          - name: awaitWork
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            return:
+              type:
+                basic: int
+                full: int
+          - name: canStop
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: compareAndExchangeCtl
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: long
+                full: long
+          - name: compareAndSetCtl
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: compensatedBlock
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.ManagedBlocker
+                full: java.util.concurrent.ForkJoinPool$ManagedBlocker
+            return:
+              type:
+                basic: void
+                full: void
+          - name: createWorker
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: deregisterWorker
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinWorkerThread
+                full: java.util.concurrent.ForkJoinWorkerThread
+            - name: arg1
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: drainTasksTo
+            modifiers:
+            - protected
+            parameters:
+            - name: c
+              type:
+                basic: Collection
+                full: java.util.Collection<? super java.util.concurrent.ForkJoinTask<?>>
+              notes: the collection to transfer elements into
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of elements transferred
+            notes: "Removes all available unexecuted submitted and forked tasks\n\
+              \ from scheduling queues and adds them to the given collection,\n without\
+              \ altering their execution status. These may include\n artificially\
+              \ generated or wrapped tasks. This method is\n designed to be invoked\
+              \ only when the pool is known to be\n quiescent. Invocations at other\
+              \ times may not remove all\n tasks. A failure encountered while attempting\
+              \ to add elements\n to collection c may result in elements being in\n\
+              \ neither, either or both collections when the associated\n exception\
+              \ is thrown.  The behavior of this operation is\n undefined if the specified\
+              \ collection is modified while the\n operation is in progress."
+          - name: execute
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the task
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Arranges for (asynchronous) execution of the given task.
+          - name: execute
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the runnable task
+            return:
+              type:
+                basic: void
+                full: void
+            notes: 'Description copied from interface: Executor'
+          - name: externalHelpQuiescePool
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
+          - name: externalPush
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: externalQueue
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+          - name: externalSubmit
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+          - name: getActiveThreadCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of active threads
+            notes: "Returns an estimate of the number of threads that are currently\n\
+              \ stealing or executing tasks. This method may overestimate the\n number\
+              \ of active threads."
+          - name: getAndAddCtl
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: long
+                full: long
+          - name: getAndAddThreadIds
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getAndBitwiseOrMode
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getAsyncMode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this pool uses async mode
+            notes: "Returns true if this pool uses local first-in-first-out\n scheduling\
+              \ mode for forked tasks that are never joined."
+          - name: getFactory
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ForkJoinPool.ForkJoinWorkerThreadFactory
+                full: java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
+              notes: the factory used for constructing new workers
+            notes: Returns the factory used for constructing new workers.
+          - name: getParallelism
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the targeted parallelism level of this pool
+            notes: Returns the targeted parallelism level of this pool.
+          - name: getPoolSize
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of worker threads
+            notes: "Returns the number of worker threads that have started but not\n\
+              \ yet terminated.  The result returned by this method may differ\n from\
+              \ getParallelism() when threads are created to\n maintain parallelism\
+              \ when others are cooperatively blocked."
+          - name: getQueuedSubmissionCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of queued submissions
+            notes: "Returns an estimate of the number of tasks submitted to this\n\
+              \ pool that have not yet begun executing.  This method may take\n time\
+              \ proportional to the number of submissions."
+          - name: getQueuedTaskCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: long
+                full: long
+              notes: the number of queued tasks
+            notes: "Returns an estimate of the total number of tasks currently held\n\
+              \ in queues by worker threads (but not including tasks submitted\n to\
+              \ the pool that have not begun executing). This value is only\n an approximation,\
+              \ obtained by iterating across all threads in\n the pool. This method\
+              \ may be useful for tuning task\n granularities."
+          - name: getRunningThreadCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of worker threads
+            notes: "Returns an estimate of the number of worker threads that are\n\
+              \ not blocked waiting to join tasks or for other managed\n synchronization.\
+              \ This method may overestimate the\n number of running threads."
+          - name: getStealCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: long
+                full: long
+              notes: the number of steals
+            notes: "Returns an estimate of the total number of completed tasks that\n\
+              \ were executed by a thread other than their submitter. The\n reported\
+              \ value underestimates the actual total number of steals\n when the\
+              \ pool is not quiescent. This value may be useful for\n monitoring and\
+              \ tuning fork/join programs: in general, steal\n counts should be high\
+              \ enough to keep threads busy, but low\n enough to avoid overhead and\
+              \ contention across threads."
+          - name: getUncaughtExceptionHandler
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Thread.UncaughtExceptionHandler
+                full: java.lang.Thread$UncaughtExceptionHandler
+              notes: the handler, or null if none
+            notes: "Returns the handler for internal worker threads that terminate\n\
+              \ due to unrecoverable errors encountered while executing tasks."
+          - name: hasQueuedSubmissions
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there are any queued submissions
+            notes: "Returns true if there are any tasks submitted to this\n pool that\
+              \ have not yet begun executing."
+          - name: helpComplete
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+            - name: arg1
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
+          - name: helpJoin
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+            - name: arg1
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
+          - name: helpQuiescePool
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
+          - name: invoke
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: the task
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the task's result
+            notes: "Performs the given task, returning its result upon completion.\n\
+              \ If the computation encounters an unchecked Exception or Error,\n it\
+              \ is rethrown as the outcome of this invocation.  Rethrown\n exceptions\
+              \ behave in the same way as regular exceptions, but,\n when possible,\
+              \ contain stack traces (as displayed for example\n using ex.printStackTrace())\
+              \ of both the current thread\n as well as the thread actually encountering\
+              \ the exception;\n minimally only the latter."
+          - name: invokeAll
+            modifiers:
+            - public
+            parameters:
+            - name: tasks
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.util.concurrent.Future<T>>
+              notes: "a list of Futures representing the tasks, in the same\n    \
+                \     sequential order as produced by the iterator for the\n     \
+                \    given task list, each of which has completed"
+            notes: 'Description copied from interface: ExecutorService'
+          - name: invokeAll
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.util.concurrent.Future<T>>
+          - name: invokeAny
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+            return:
+              type:
+                basic: T
+                full: T
+          - name: invokeAny
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+            return:
+              type:
+                basic: T
+                full: T
+          - name: isQuiescent
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if all threads are currently idle
+            notes: "Returns true if all worker threads are currently idle.\n An idle\
+              \ worker is one that cannot obtain a task to execute\n because none\
+              \ are available to steal from other threads, and\n there are no pending\
+              \ submissions to the pool. This method is\n conservative; it might not\
+              \ return true immediately upon\n idleness of all threads, but will eventually\
+              \ become true if\n threads remain inactive."
+          - name: isShutdown
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this pool has been shut down
+            notes: Returns true if this pool has been shut down.
+          - name: isTerminated
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if all tasks have completed following shut down
+            notes: Returns true if all tasks have completed following shut down.
+          - name: isTerminating
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if terminating but not yet terminated
+            notes: "Returns true if the process of termination has\n commenced but\
+              \ not yet completed.  This method may be useful for\n debugging. A return\
+              \ of true reported a sufficient\n period after shutdown may indicate\
+              \ that submitted tasks have\n ignored or suppressed interruption, or\
+              \ are waiting for I/O,\n causing this executor not to properly terminate.\
+              \ (See the\n advisory notes for class ForkJoinTask stating that\n tasks\
+              \ should not normally entail blocking operations.  But if\n they do,\
+              \ they must abort them on interrupt.)"
+          - name: newTaskFor
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg1
+              type:
+                basic: T
+                full: T
+            return:
+              type:
+                basic: RunnableFuture
+                full: java.util.concurrent.RunnableFuture<T>
+          - name: newTaskFor
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable<T>
+            return:
+              type:
+                basic: RunnableFuture
+                full: java.util.concurrent.RunnableFuture<T>
+          - name: nextTaskFor
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+          - name: nextWorkerThreadName
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: pollScan
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+          - name: pollSubmission
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the next submission, or null if none
+            notes: "Removes and returns the next unexecuted submission if one is\n\
+              \ available.  This method may be useful in extensions to this\n class\
+              \ that re-assign work in systems with multiple pools."
+          - name: registerWorker
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            return:
+              type:
+                basic: void
+                full: void
+          - name: runWorker
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            return:
+              type:
+                basic: void
+                full: void
+          - name: scan
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: shutdown
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Possibly initiates an orderly shutdown in which previously\n submitted\
+              \ tasks are executed, but no new tasks will be\n accepted. Invocation\
+              \ has no effect on execution state if this\n is the commonPool(), and\
+              \ no additional effect if\n already shut down.  Tasks that are in the\
+              \ process of being\n submitted concurrently during the course of this\
+              \ method may or\n may not be rejected."
+          - name: shutdownNow
+            modifiers:
+            - public
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.lang.Runnable>
+              notes: an empty list
+            notes: "Possibly attempts to cancel and/or stop all tasks, and reject\n\
+              \ all subsequently submitted tasks.  Invocation has no effect on\n execution\
+              \ state if this is the commonPool(), and no\n additional effect if already\
+              \ shut down. Otherwise, tasks that\n are in the process of being submitted\
+              \ or executed concurrently\n during the course of this method may or\
+              \ may not be\n rejected. This method cancels both existing and unexecuted\n\
+              \ tasks, in order to permit termination in the presence of task\n dependencies.\
+              \ So the method always returns an empty list\n (unlike the case for\
+              \ some other Executors)."
+          - name: signalWork
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: submissionQueue
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: the task to submit
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: the task
+            notes: Submits a ForkJoinTask for execution.
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable<T>
+              notes: the task to submit
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: a Future representing pending completion of the task
+            notes: 'Description copied from interface: ExecutorService'
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the task to submit
+            - name: result
+              type:
+                basic: T
+                full: T
+              notes: the result to return
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: a Future representing pending completion of the task
+            notes: 'Description copied from interface: ExecutorService'
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the task to submit
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: a Future representing pending completion of the task
+            notes: 'Description copied from interface: ExecutorService'
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: tryCompensate
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int
+          - name: tryTerminate
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: uncompensate
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: checkPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: commonPool
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+              notes: the common pool instance
+            notes: "Returns the common pool instance. This pool is statically\n constructed;\
+              \ its run state is unaffected by attempts to shutdown() or shutdownNow().\
+              \ However this pool and any\n ongoing processing are automatically terminated\
+              \ upon program\n System.exit(int).  Any program that relies on asynchronous\n\
+              \ task processing to complete before program termination should\n invoke\
+              \ commonPool().awaitQuiescence,\n before exit."
+          - name: commonQueue
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: ForkJoinPool.WorkQueue
+                full: java.util.concurrent.ForkJoinPool$WorkQueue
+          - name: contextWithPermissions
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Permission
+                full: java.security.Permission[]
+            return:
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+          - name: getAndAddPoolIds
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getCommonPoolParallelism
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the targeted parallelism level of the common pool
+            notes: Returns the targeted parallelism level of the common pool.
+          - name: getSurplusQueuedTaskCount
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: int
+                full: int
+          - name: helpAsyncBlocker
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Executor
+                full: java.util.concurrent.Executor
+            - name: arg1
+              type:
+                basic: ForkJoinPool.ManagedBlocker
+                full: java.util.concurrent.ForkJoinPool$ManagedBlocker
+            return:
+              type:
+                basic: void
+                full: void
+          - name: managedBlock
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: blocker
+              type:
+                basic: ForkJoinPool.ManagedBlocker
+                full: java.util.concurrent.ForkJoinPool$ManagedBlocker
+              notes: the blocker task
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Runs the given possibly blocking task.  When running in a ForkJoinPool,\
+              \ this\n method possibly arranges for a spare thread to be activated\
+              \ if\n necessary to ensure sufficient parallelism while the current\n\
+              \ thread is blocked in blocker.block().\n\n This method repeatedly calls\
+              \ blocker.isReleasable() and\n blocker.block() until either method returns\
+              \ true.\n Every call to blocker.block() is preceded by a call to\n blocker.isReleasable()\
+              \ that returned false.\n\n If not running in a ForkJoinPool, this method\
+              \ is\n behaviorally equivalent to\n  <code>\n while (!blocker.isReleasable())\n\
+              \   if (blocker.block())\n     break;</code>\n\n If running in a ForkJoinPool,\
+              \ the pool may first be expanded to\n ensure sufficient parallelism\
+              \ available during the call to\n blocker.block()."
+          - name: newInstanceFromSystemProperty
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: unmanagedBlock
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool.ManagedBlocker
+                full: java.util.concurrent.ForkJoinPool$ManagedBlocker
+            return:
+              type:
+                basic: void
+                full: void

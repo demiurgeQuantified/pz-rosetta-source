@@ -4,8 +4,78 @@ languages:
     packages:
       zombie.iso.objects:
         IsoCompost:
+          extends: zombie.iso.IsoObject
           modifiers:
           - public
+          fields:
+            Health:
+              name: Health
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            LastUpdated:
+              name: LastUpdated
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            MaxHealth:
+              name: MaxHealth
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            compost:
+              name: compost
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            partialThumpDmg:
+              name: partialThumpDmg
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+          staticFields:
+            DefaultCapacity:
+              name: DefaultCapacity
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MaximumCompost:
+              name: MaximumCompost
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            MaximumThumpDamage:
+              name: MaximumThumpDamage
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            NoWeaponCompostDamage:
+              name: NoWeaponCompostDamage
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
           constructors:
           - modifiers:
             - public
@@ -13,34 +83,127 @@ languages:
             - name: cell
               type:
                 basic: IsoCell
+                full: zombie.iso.IsoCell
           - modifiers:
             - public
             parameters:
-            - name: cell
+            - name: arg0
               type:
                 basic: IsoCell
-            - name: sq
+                full: zombie.iso.IsoCell
+            - name: arg1
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+          - modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell
+                full: zombie.iso.IsoCell
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: IsoSprite
+                full: zombie.iso.sprite.IsoSprite
           methods:
+          - name: Damage
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: Thump
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoMovingObject
+                full: zombie.iso.IsoMovingObject
+            return:
+              type:
+                basic: void
+                full: void
+          - name: WeaponHit
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            - name: arg1
+              type:
+                basic: HandWeapon
+                full: zombie.inventory.types.HandWeapon
+            return:
+              type:
+                basic: void
+                full: void
           - name: addToWorld
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: dropContainedItems
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: getCompost
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
+          - name: getHealth
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getMaxHealth
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
           - name: getObjectName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
+          - name: getThumpCondition
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
           - name: getThumpableFor
             modifiers:
             - public
@@ -48,9 +211,18 @@ languages:
             - name: chr
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             return:
               type:
                 basic: Thumpable
+                full: zombie.iso.objects.interfaces.Thumpable
+          - name: isDestroyed
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: load
             modifiers:
             - public
@@ -58,21 +230,26 @@ languages:
             - name: input
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: WorldVersion
               type:
                 basic: int
+                full: int
             - name: IS_DEBUG_SAVE
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: remove
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -80,12 +257,15 @@ languages:
             - name: output
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: IS_DEBUG_SAVE
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: setCompost
             modifiers:
             - public
@@ -93,26 +273,60 @@ languages:
             - name: compost
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
+          - name: setHealth
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setMaxHealth
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sync
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: syncCompost
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: updateSprite
             modifiers:
             - public
             return:
               type:
                 basic: void
-          javaType: class
-          extends: IsoObject
+                full: void

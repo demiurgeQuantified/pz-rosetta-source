@@ -4,31 +4,105 @@ languages:
     packages:
       java.nio.file:
         FileSystem:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Provides an interface to a file system and is the factory for objects\
+            \ to\n access files and other objects in the file system.\n\n  The default\
+            \ file system, obtained by invoking the FileSystems.getDefault method,\
+            \ provides access to the file system that is\n accessible to the Java\
+            \ virtual machine. The FileSystems class defines\n methods to create file\
+            \ systems that provide access to other types of (custom)\n file systems.\n\
+            \n  A file system is the factory for several types of objects:\n\n \n\
+            \    The getPath method converts a system dependent\n     path string,\
+            \ returning a Path object that may be used\n     to locate and access\
+            \ a file. \n    The getPathMatcher method is used\n     to create a PathMatcher\
+            \ that performs match operations on\n     paths. \n    The getFileStores\
+            \ method returns an iterator\n     over the underlying file-stores. \n\
+            \    The getUserPrincipalLookupService\n     method returns the UserPrincipalLookupService\
+            \ to lookup users or\n     groups by name. \n    The newWatchService method\
+            \ creates a\n     WatchService that may be used to watch objects for changes\
+            \ and\n     events. \n \n\n  File systems vary greatly. In some cases\
+            \ the file system is a single\n hierarchy of files with one top-level\
+            \ root directory. In other cases it may\n have several distinct file hierarchies,\
+            \ each with its own top-level root\n directory. The getRootDirectories\
+            \ method may be\n used to iterate over the root directories in the file\
+            \ system. A file system\n is typically composed of one or more underlying\
+            \ file-stores\n that provide the storage for the files. Theses file stores\
+            \ can also vary in\n the features they support, and the file attributes\
+            \ or meta-data that\n they associate with files.\n\n  A file system is\
+            \ open upon creation and can be closed by invoking its\n close method.\
+            \ Once closed, any further attempt to access\n objects in the file system\
+            \ cause ClosedFileSystemException to be\n thrown. File systems created\
+            \ by the default provider\n cannot be closed.\n\n  A FileSystem can provide\
+            \ read-only or read-write access to the\n file system. Whether or not\
+            \ a file system provides read-only access is\n established when the FileSystem\
+            \ is created and can be tested by invoking\n its isReadOnly method. Attempts\
+            \ to write to file stores\n by means of an object associated with a read-only\
+            \ file system throws ReadOnlyFileSystemException.\n\n  File systems are\
+            \ safe for use by multiple concurrent threads. The close method may be\
+            \ invoked at any time to close a file system but\n whether a file system\
+            \ is asynchronously closeable is provider specific\n and therefore unspecified.\
+            \ In other words, if a thread is accessing an\n object in a file system,\
+            \ and another thread invokes the close method\n then it may require to\
+            \ block until the first operation is complete. Closing\n a file system\
+            \ causes all open channels, watch services, and other closeable objects\
+            \ associated with the file system to be closed."
+          constructors:
+          - modifiers:
+            - protected
+            notes: Initializes a new instance of this class.
           methods:
           - name: close
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Closes this file system.\n\n  After a file system is closed then\
+              \ all subsequent access to the file\n system, either by methods defined\
+              \ by this class or on objects associated\n with this file system, throw\
+              \ ClosedFileSystemException. If the\n file system is already closed\
+              \ then invoking this method has no effect.\n\n  Closing a file system\
+              \ will close all open channels, directory-streams,\n watch-service,\
+              \ and other closeable objects associated\n with this file system. The\
+              \ default file\n system cannot be closed."
           - name: getFileStores
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Iterable<FileStore>
+                basic: Iterable
                 full: java.lang.Iterable<java.nio.file.FileStore>
+              notes: An object to iterate over the backing file stores
+            notes: "Returns an object to iterate over the underlying file stores.\n\
+              \n  The elements of the returned iterator are the FileStores for this\
+              \ file system. The order of the elements is\n not defined and the file\
+              \ stores may change during the lifetime of the\n Java virtual machine.\
+              \ When an I/O error occurs, perhaps because a file\n store is not accessible,\
+              \ then it is not returned by the iterator.\n\n  In the case of the default\
+              \ provider, and a security manager is\n installed, the security manager\
+              \ is invoked to check RuntimePermission(\"getFileStoreAttributes\").\
+              \ If denied, then\n no file stores are returned by the iterator. In\
+              \ addition, the security\n manager's SecurityManager.checkRead(String)\
+              \ method is invoked to\n check read access to the file store's top-most\
+              \ directory. If\n denied, the file store is not returned by the iterator.\
+              \ It is system\n dependent if the permission checks are done when the\
+              \ iterator is obtained\n or during iteration.\n\n  Usage Example:\n\
+              \ Suppose we want to print the space usage for all file stores:\n \n\
+              \     for (FileStore store: FileSystems.getDefault().getFileStores())\
+              \ {\n         long total = store.getTotalSpace() / 1024;\n         long\
+              \ used = (store.getTotalSpace() - store.getUnallocatedSpace()) / 1024;\n\
+              \         long avail = store.getUsableSpace() / 1024;\n         System.out.format(\"\
+              %-20s %12d %12d %12d%n\", store, total, used, avail);\n     }"
           - name: getPath
             modifiers:
             - public
+            - abstract
             parameters:
             - name: arg0
               type:
@@ -36,7 +110,7 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
-                basic: String[]
+                basic: String
                 full: java.lang.String[]
             return:
               type:
@@ -45,70 +119,189 @@ languages:
           - name: getPathMatcher
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: syntaxAndPattern
               type:
                 basic: String
                 full: java.lang.String
+              notes: The syntax and pattern
             return:
               type:
                 basic: PathMatcher
                 full: java.nio.file.PathMatcher
+              notes: A path matcher that may be used to match paths against the pattern
+            notes: "Returns a PathMatcher that performs match operations on the\n\
+              \ String representation of Path objects by interpreting a\n given pattern.\n\
+              \n The syntaxAndPattern parameter identifies the syntax and the\n pattern\
+              \ and takes the form:\n \n <i>syntax</i><b>:</b><i>pattern</i>\n \n\
+              \ where ':' stands for itself.\n\n  A FileSystem implementation supports\
+              \ the \"glob\" and\n \"regex\" syntaxes, and may support others. The\
+              \ value of the syntax\n component is compared without regard to case.\n\
+              \n  When the syntax is \"glob\" then the String\n representation of\
+              \ the path is matched using a limited pattern language\n that resembles\
+              \ regular expressions but with a simpler syntax. For example:\n\n \n\
+              \ Pattern Language\n \n \n   Example\n   Description\n \n \n \n \n \
+              \  *.java\n   Matches a path that represents a file name ending in .java\n\
+              \ \n \n   *.*\n   Matches file names containing a dot\n \n \n   *.{java,class}\n\
+              \   Matches file names ending with .java or .class\n \n \n   foo.?\n\
+              \   Matches file names starting with foo. and a single\n   character\
+              \ extension\n \n \n   &#47;home&#47;*&#47;*\n   Matches &#47;home&#47;gus&#47;data\
+              \ on UNIX platforms\n \n \n   &#47;home&#47;**\n   Matches &#47;home&#47;gus\
+              \ and\n   &#47;home&#47;gus&#47;data on UNIX platforms\n \n \n   C:&#92;&#92;*\n\
+              \   Matches C:&#92;foo and C:&#92;bar on the Windows\n   platform (note\
+              \ that the backslash is escaped; as a string literal in the\n   Java\
+              \ Language the pattern would be \"C:&#92;&#92;&#92;&#92;*\") \n \n \n\
+              \ \n\n  The following rules are used to interpret glob patterns:\n\n\
+              \ \n    The * character matches zero or more characters of a name component\
+              \ without\n   crossing directory boundaries. \n\n    The ** characters\
+              \ matches zero or more characters crossing directory boundaries. \n\n\
+              \    The ? character matches exactly one character of a\n   name component.\n\
+              \n    The backslash character (\\) is used to escape characters\n  \
+              \ that would otherwise be interpreted as special characters. The expression\n\
+              \   \\\\ matches a single backslash and \"\\{\" matches a left brace\n\
+              \   for example.  \n\n    The [ ] characters are a bracket expression\
+              \ that\n   match a single character of a name component out of a set\
+              \ of characters.\n   For example, [abc] matches \"a\", \"b\", or \"\
+              c\".\n   The hyphen (-) may be used to specify a range so [a-z]\n  \
+              \ specifies a range that matches from \"a\" to \"z\" (inclusive).\n\
+              \   These forms can be mixed so [abce-g] matches \"a\", \"b\",\n   \"\
+              c\", \"e\", \"f\" or \"g\". If the character\n   after the [ is a !\
+              \ then it is used for negation so \n   [!a-c] matches any character\
+              \ except \"a\", \"b\", or \n   \"c\".\n    Within a bracket expression\
+              \ the *, ? and \\\n   characters match themselves. The (-) character\
+              \ matches itself if\n   it is the first character within the brackets,\
+              \ or the first character\n   after the ! if negating.\n\n    The { }\
+              \ characters are a group of subpatterns, where\n   the group matches\
+              \ if any subpattern in the group matches. The \",\"\n   character is\
+              \ used to separate the subpatterns. Groups cannot be nested.\n   \n\n\
+              \    Leading period&#47;dot characters in file name are\n   treated\
+              \ as regular characters in match operations. For example,\n   the \"\
+              *\" glob pattern matches file name \".login\".\n   The Files.isHidden(java.nio.file.Path)\
+              \ method may be used to test whether a file\n   is considered hidden.\n\
+              \   \n\n    All other characters match themselves in an implementation\n\
+              \   dependent manner. This includes characters representing any name-separators.\
+              \ \n\n    The matching of root components is highly\n   implementation-dependent\
+              \ and is not specified. \n\n \n\n  When the syntax is \"regex\" then\
+              \ the pattern component is a\n regular expression as defined by the\
+              \ Pattern\n class.\n\n   For both the glob and regex syntaxes, the matching\
+              \ details, such as\n whether the matching is case sensitive, are implementation-dependent\n\
+              \ and therefore not specified."
           - name: getRootDirectories
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Iterable<Path>
+                basic: Iterable
                 full: java.lang.Iterable<java.nio.file.Path>
+              notes: An object to iterate over the root directories
+            notes: "Returns an object to iterate over the paths of the root directories.\n\
+              \n  A file system provides access to a file store that may be composed\n\
+              \ of a number of distinct file hierarchies, each with its own top-level\n\
+              \ root directory. Unless denied by the security manager, each element\
+              \ in\n the returned iterator corresponds to the root directory of a\
+              \ distinct\n file hierarchy. The order of the elements is not defined.\
+              \ The file\n hierarchies may change during the lifetime of the Java\
+              \ virtual machine.\n For example, in some implementations, the insertion\
+              \ of removable media\n may result in the creation of a new file hierarchy\
+              \ with its own\n top-level directory.\n\n  When a security manager is\
+              \ installed, it is invoked to check access\n to the each root directory.\
+              \ If denied, the root directory is not returned\n by the iterator. In\
+              \ the case of the default provider, the SecurityManager.checkRead(String)\
+              \ method is invoked to check read access\n to each root directory. It\
+              \ is system dependent if the permission checks\n are done when the iterator\
+              \ is obtained or during iteration."
           - name: getSeparator
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name separator
+            notes: "Returns the name separator, represented as a string.\n\n  The\
+              \ name separator is used to separate names in a path string. An\n implementation\
+              \ may support multiple name separators in which case this\n method returns\
+              \ an implementation specific default name separator.\n This separator\
+              \ is used when creating path strings by invoking the toString() method.\n\
+              \n  In the case of the default provider, this method returns the same\n\
+              \ separator as File.separator."
           - name: getUserPrincipalLookupService
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: UserPrincipalLookupService
                 full: java.nio.file.attribute.UserPrincipalLookupService
+              notes: The UserPrincipalLookupService for this file system
+            notes: "Returns the UserPrincipalLookupService for this file system\n\
+              \ (optional operation). The resulting lookup service may be used to\n\
+              \ lookup user or group names.\n\n  Usage Example:\n Suppose we want\
+              \ to make \"joe\" the owner of a file:\n \n     UserPrincipalLookupService\
+              \ lookupService = FileSystems.getDefault().getUserPrincipalLookupService();\n\
+              \     Files.setOwner(path, lookupService.lookupPrincipalByName(\"joe\"\
+              ));"
           - name: isOpen
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, this file system is open
+            notes: "Tells whether or not this file system is open.\n\n  File systems\
+              \ created by the default provider are always open."
           - name: isReadOnly
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this file system provides\n          read-only\
+                \ access"
+            notes: "Tells whether or not this file system allows only read-only access\
+              \ to\n its file stores."
           - name: newWatchService
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: WatchService
                 full: java.nio.file.WatchService
+              notes: a new watch service
+            notes: "Constructs a new WatchService (optional operation).\n\n  This\
+              \ method constructs a new watch service that may be used to watch\n\
+              \ registered objects for changes and events."
           - name: provider
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: FileSystemProvider
                 full: java.nio.file.spi.FileSystemProvider
+              notes: The provider that created this file system.
+            notes: Returns the provider that created this file system.
           - name: supportedFileAttributeViews
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Set<String>
+                basic: Set
                 full: java.util.Set<java.lang.String>
-          javaType: class
-          extends: Object
+              notes: "An unmodifiable set of the names of the supported file attribute\n\
+                \          views"
+            notes: "Returns the set of the names of the file\n attribute views supported\
+              \ by this FileSystem.\n\n  The BasicFileAttributeView is required to\
+              \ be supported and\n therefore the set contains at least one element,\
+              \ \"basic\".\n\n  The supportsFileAttributeView(String) method may be\
+              \ used to test if an\n underlying FileStore supports the file attributes\
+              \ identified by a\n file attribute view."

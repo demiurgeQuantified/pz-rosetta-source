@@ -4,18 +4,112 @@ languages:
     packages:
       zombie.core.fonts:
         AngelCodeFont:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          notes: "A font implementation that will parse BMFont format font files.\
+            \ The font files can be output\n by Hiero, which is included with Slick,\
+            \ and also the AngelCode font tool available at:\n\n http://www.angelcode.com/products/bmfont/\n\
+            \n This implementation copes with both the font display and kerning information\n\
+            \ allowing nicer looking paragraphs of text. Note that this utility only\n\
+            \ supports the text BMFont format definition file."
           fields:
+            bSdf:
+              name: bSdf
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            baseDisplayListID:
+              name: baseDisplayListID
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
             chars:
               name: chars
               modifiers:
               - public
               type:
-                basic: CharDef
+                basic: AngelCodeFont.CharDef
+                full: zombie.core.fonts.AngelCodeFont$CharDef[]
               notes: The characters building up the font
+            displayListCaching:
+              name: displayListCaching
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            displayLists:
+              name: displayLists
+              modifiers:
+              - private
+              type:
+                basic: LinkedHashMap
+                full: java.util.LinkedHashMap
+            eldestDisplayList:
+              name: eldestDisplayList
+              modifiers:
+              - private
+              type:
+                basic: AngelCodeFont.DisplayList
+                full: zombie.core.fonts.AngelCodeFont$DisplayList
+            eldestDisplayListID:
+              name: eldestDisplayListID
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            fntFile:
+              name: fntFile
+              modifiers:
+              - private
+              type:
+                basic: File
+                full: java.io.File
+            fontImage:
+              name: fontImage
+              modifiers:
+              - private
+              type:
+                basic: Texture
+                full: zombie.core.textures.Texture
+            lineHeight:
+              name: lineHeight
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            pages:
+              name: pages
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.Short, zombie.core.textures.Texture>
           staticFields:
+            DISPLAY_LIST_CACHE_SIZE:
+              name: DISPLAY_LIST_CACHE_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_CHAR:
+              name: MAX_CHAR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             curA:
               name: curA
               modifiers:
@@ -23,6 +117,7 @@ languages:
               - static
               type:
                 basic: float
+                full: float
             curB:
               name: curB
               modifiers:
@@ -30,6 +125,7 @@ languages:
               - static
               type:
                 basic: float
+                full: float
             curCol:
               name: curCol
               modifiers:
@@ -37,6 +133,7 @@ languages:
               - static
               type:
                 basic: Color
+                full: zombie.core.Color
             curG:
               name: curG
               modifiers:
@@ -44,6 +141,7 @@ languages:
               - static
               type:
                 basic: float
+                full: float
             curR:
               name: curR
               modifiers:
@@ -51,6 +149,23 @@ languages:
               - static
               type:
                 basic: float
+                full: float
+            data:
+              name: data
+              modifiers:
+              - private
+              - static
+              type:
+                basic: char
+                full: char[]
+            s_scale:
+              name: s_scale
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
             xoff:
               name: xoff
               modifiers:
@@ -58,6 +173,7 @@ languages:
               - static
               type:
                 basic: int
+                full: int
             yoff:
               name: yoff
               modifiers:
@@ -65,6 +181,7 @@ languages:
               - static
               type:
                 basic: int
+                full: int
           constructors:
           - modifiers:
             - public
@@ -72,26 +189,30 @@ languages:
             - name: fntFile
               type:
                 basic: String
+                full: java.lang.String
               notes: The location of the font defnition file
             - name: image
               type:
                 basic: Texture
+                full: zombie.core.textures.Texture
               notes: The image to use for the font
-            notes: Create a new font based on a font definition from AngelCode's tool
-              and  the font image generated from the tool.
+            notes: "Create a new font based on a font definition from AngelCode's\
+              \ tool and\n the font image generated from the tool."
           - modifiers:
             - public
             parameters:
             - name: fntFile
               type:
                 basic: String
+                full: java.lang.String
               notes: The location of the font defnition file
             - name: imgFile
               type:
                 basic: String
+                full: java.lang.String
               notes: The location of the font image
-            notes: Create a new font based on a font definition from AngelCode's tool
-              and  the font image generated from the tool.
+            notes: "Create a new font based on a font definition from AngelCode's\
+              \ tool and\n the font image generated from the tool."
           methods:
           - name: destroy
             modifiers:
@@ -99,6 +220,7 @@ languages:
             return:
               type:
                 basic: void
+                full: void
           - name: drawString
             modifiers:
             - public
@@ -106,19 +228,23 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
               notes: The x location at which to draw the string
             - name: y
               type:
                 basic: float
+                full: float
               notes: The y location at which to draw the string
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: The text to be displayed
             return:
               type:
                 basic: void
-            notes: Description copied from interface: Font
+                full: void
+            notes: 'Description copied from interface: Font'
           - name: drawString
             modifiers:
             - public
@@ -126,23 +252,28 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
               notes: The x location at which to draw the string
             - name: y
               type:
                 basic: float
+                full: float
               notes: The y location at which to draw the string
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: The text to be displayed
             - name: col
               type:
                 basic: Color
+                full: zombie.core.Color
               notes: The colour to draw with
             return:
               type:
                 basic: void
-            notes: Description copied from interface: Font
+                full: void
+            notes: 'Description copied from interface: Font'
           - name: drawString
             modifiers:
             - public
@@ -150,27 +281,35 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: r
               type:
                 basic: float
+                full: float
             - name: g
               type:
                 basic: float
+                full: float
             - name: b
               type:
                 basic: float
+                full: float
             - name: a
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           - name: drawString
             modifiers:
             - public
@@ -178,30 +317,39 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: scale
               type:
                 basic: float
+                full: float
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: r
               type:
                 basic: float
+                full: float
             - name: g
               type:
                 basic: float
+                full: float
             - name: b
               type:
                 basic: float
+                full: float
             - name: a
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           - name: drawString
             modifiers:
             - public
@@ -209,31 +357,38 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
               notes: The x location at which to draw the string
             - name: y
               type:
                 basic: float
+                full: float
               notes: The y location at which to draw the string
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: The text to be displayed
             - name: col
               type:
                 basic: Color
+                full: zombie.core.Color
               notes: The colour to draw with
             - name: startIndex
               type:
                 basic: int
+                full: int
               notes: The index of the first character to draw
             - name: endIndex
               type:
                 basic: int
+                full: int
               notes: The index of the last character from the string to draw
             return:
               type:
                 basic: void
-            notes: Description copied from interface: Font
+                full: void
+            notes: 'Description copied from interface: Font'
           - name: drawString
             modifiers:
             - public
@@ -241,33 +396,43 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: r
               type:
                 basic: float
+                full: float
             - name: g
               type:
                 basic: float
+                full: float
             - name: b
               type:
                 basic: float
+                full: float
             - name: a
               type:
                 basic: float
+                full: float
             - name: startIndex
               type:
                 basic: int
+                full: int
             - name: endIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: drawString
             modifiers:
             - public
@@ -275,36 +440,47 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: scale
               type:
                 basic: float
+                full: float
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: r
               type:
                 basic: float
+                full: float
             - name: g
               type:
                 basic: float
+                full: float
             - name: b
               type:
                 basic: float
+                full: float
             - name: a
               type:
                 basic: float
+                full: float
             - name: startIndex
               type:
                 basic: int
+                full: int
             - name: endIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: getHeight
             modifiers:
             - public
@@ -312,20 +488,43 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: The string to obtain the rendered with of
             return:
               type:
                 basic: int
+                full: int
               notes: The width of the given string
-            notes: Description copied from interface: Font
+            notes: 'Description copied from interface: Font'
+          - name: getHeight
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: int
+                full: int
           - name: getLineHeight
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
               notes: The maxium height of any line drawn by this font
-            notes: Description copied from interface: Font
+            notes: 'Description copied from interface: Font'
           - name: getWidth
             modifiers:
             - public
@@ -333,12 +532,14 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: The string to obtain the rendered with of
             return:
               type:
                 basic: int
+                full: int
               notes: The width of the given string
-            notes: Description copied from interface: Font
+            notes: 'Description copied from interface: Font'
           - name: getWidth
             modifiers:
             - public
@@ -346,12 +547,15 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: xAdvance
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: int
+                full: int
           - name: getWidth
             modifiers:
             - public
@@ -359,15 +563,19 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: start
               type:
                 basic: int
-            - name: __end__
+                full: int
+            - name: end
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
+                full: int
           - name: getWidth
             modifiers:
             - public
@@ -375,18 +583,23 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
             - name: start
               type:
                 basic: int
-            - name: __end__
+                full: int
+            - name: end
               type:
                 basic: int
+                full: int
             - name: xadvance
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: int
+                full: int
           - name: getYOffset
             modifiers:
             - public
@@ -394,10 +607,12 @@ languages:
             - name: text
               type:
                 basic: String
+                full: java.lang.String
               notes: The text that is to be tested
             return:
               type:
                 basic: int
+                full: int
               notes: The yoffset from the y draw location at which text will start
             notes: Returns the distance from the y drawing location to the top most
               pixel of the specified text.
@@ -407,24 +622,87 @@ languages:
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isSdf
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: onStateChanged
             modifiers:
             - public
             parameters:
             - name: oldState
               type:
-                basic: State
+                basic: Asset.State
+                full: zombie.asset.Asset$State
             - name: newState
               type:
-                basic: State
+                basic: Asset.State
+                full: zombie.asset.Asset$State
             - name: asset
               type:
                 basic: Asset
+                full: zombie.asset.Asset
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
-          notes: 'A font implementation that will parse BMFont format font files.
-            The font files can be output  by Hiero, which is included with Slick,
-            and also the AngelCode font tool available at:'
+                full: void
+          - name: parseChar
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: AngelCodeFont.CharDef
+                full: zombie.core.fonts.AngelCodeFont$CharDef
+          - name: parseFnt
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: render
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setSdf
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void

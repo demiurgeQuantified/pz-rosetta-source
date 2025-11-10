@@ -4,35 +4,136 @@ languages:
     packages:
       java.lang.ref:
         ReferenceQueue:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "Reference queues, to which registered reference objects are appended\
+            \ by the\n garbage collector after the appropriate reachability changes\
+            \ are detected."
+          fields:
+            head:
+              name: head
+              modifiers:
+              - private
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference<? extends T>
+            lock:
+              name: lock
+              modifiers:
+              - private
+              type:
+                basic: ReferenceQueue.Lock
+                full: java.lang.ref.ReferenceQueue$Lock
+            queueLength:
+              name: queueLength
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ENQUEUED:
+              name: ENQUEUED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<java.lang.Object>
+            'NULL':
+              name: 'NULL'
+              modifiers:
+              - package
+              - static
+              type:
+                basic: ReferenceQueue
+                full: java.lang.ref.ReferenceQueue<java.lang.Object>
           constructors:
           - modifiers:
             - public
+            notes: Constructs a new reference-object queue.
           methods:
+          - name: enqueue
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference<? extends T>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: forEach
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super java.lang.ref.Reference<?
+                  extends T>>
+            return:
+              type:
+                basic: void
+                full: void
           - name: poll
             modifiers:
             - public
             return:
               type:
-                basic: Reference<? extends T>
+                basic: Reference
                 full: java.lang.ref.Reference<? extends T>
-          - name: remove
+              notes: "A reference object, if one was immediately available,\n    \
+                \      otherwise null"
+            notes: "Polls this queue to see if a reference object is available.  If\
+              \ one is\n available without further delay then it is removed from the\
+              \ queue and\n returned.  Otherwise this method immediately returns null."
+          - name: reallyPoll
             modifiers:
-            - public
+            - private
             return:
               type:
-                basic: Reference<? extends T>
+                basic: Reference
                 full: java.lang.ref.Reference<? extends T>
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
+              notes: "If positive, block for up to timeout\n                  milliseconds\
+                \ while waiting for a reference to be\n                  added to\
+                \ this queue.  If zero, block indefinitely."
             return:
               type:
-                basic: Reference<? extends T>
+                basic: Reference
                 full: java.lang.ref.Reference<? extends T>
-          javaType: class
-          extends: Object
+              notes: "A reference object, if one was available within the specified\n\
+                \          timeout period, otherwise null"
+            notes: "Removes the next reference object in this queue, blocking until\
+              \ either\n one becomes available or the given timeout period expires.\n\
+              \n  This method does not offer real-time guarantees: It schedules the\n\
+              \ timeout as if by invoking the Object.wait(long) method."
+          - name: remove
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Reference
+                full: java.lang.ref.Reference<? extends T>
+              notes: A reference object, blocking until one becomes available
+            notes: "Removes the next reference object in this queue, blocking until\
+              \ one\n becomes available."

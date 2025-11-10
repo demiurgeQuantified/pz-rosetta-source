@@ -4,92 +4,318 @@ languages:
     packages:
       java.io:
         File:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "An abstract representation of file and directory pathnames.\n\n\
+            \  User interfaces and operating systems use system-dependent pathname\n\
+            \ strings to name files and directories.  This class presents an\n abstract,\
+            \ system-independent view of hierarchical pathnames.  An\n abstract pathname\
+            \ has two components:\n\n \n  An optional system-dependent prefix string,\n\
+            \      such as a disk-drive specifier, \"/\" for the UNIX root\n     \
+            \ directory, or \"\\\\\\\\\" for a Microsoft Windows UNC pathname, and\n\
+            \  A sequence of zero or more string names.\n \n\n The first name in an\
+            \ abstract pathname may be a directory name or, in the\n case of Microsoft\
+            \ Windows UNC pathnames, a hostname.  Each subsequent name\n in an abstract\
+            \ pathname denotes a directory; the last name may denote\n either a directory\
+            \ or a file.  The empty abstract pathname has no\n prefix and an empty\
+            \ name sequence.\n\n  The conversion of a pathname string to or from an\
+            \ abstract pathname is\n inherently system-dependent.  When an abstract\
+            \ pathname is converted into a\n pathname string, each name is separated\
+            \ from the next by a single copy of\n the default separator character.\
+            \  The default name-separator\n character is defined by the system property\
+            \ file.separator, and\n is made available in the public static fields\
+            \ separator and separatorChar of this class.\n When a pathname string\
+            \ is converted into an abstract pathname, the names\n within it may be\
+            \ separated by the default name-separator character or by any\n other\
+            \ name-separator character that is supported by the underlying system.\n\
+            \n  A pathname, whether abstract or in string form, may be either\n absolute\
+            \ or relative.  An absolute pathname is complete in\n that no other information\
+            \ is required in order to locate the file that it\n denotes.  A relative\
+            \ pathname, in contrast, must be interpreted in terms of\n information\
+            \ taken from some other pathname.  By default the classes in the\n java.io\
+            \ package always resolve relative pathnames against the\n current user\
+            \ directory.  This directory is named by the system property\n user.dir,\
+            \ and is typically the directory in which the Java\n virtual machine was\
+            \ invoked.\n\n  The parent of an abstract pathname may be obtained by\
+            \ invoking\n the getParent() method of this class and consists of the\
+            \ pathname's\n prefix and each name in the pathname's name sequence except\
+            \ for the last.\n Each directory's absolute pathname is an ancestor of\
+            \ any File\n object with an absolute abstract pathname which begins with\
+            \ the directory's\n absolute pathname.  For example, the directory denoted\
+            \ by the abstract\n pathname \"/usr\" is an ancestor of the directory\
+            \ denoted by the\n pathname \"/usr/local/bin\".\n\n  The prefix concept\
+            \ is used to handle root directories on UNIX platforms,\n and drive specifiers,\
+            \ root directories and UNC pathnames on Microsoft Windows platforms,\n\
+            \ as follows:\n\n \n\n  For UNIX platforms, the prefix of an absolute\
+            \ pathname is always\n \"/\".  Relative pathnames have no prefix.  The\
+            \ abstract pathname\n denoting the root directory has the prefix \"/\"\
+            \ and an empty\n name sequence.\n\n  For Microsoft Windows platforms,\
+            \ the prefix of a pathname that contains a drive\n specifier consists\
+            \ of the drive letter followed by \":\" and\n possibly followed by \"\\\
+            \\\" if the pathname is absolute.  The\n prefix of a UNC pathname is \"\
+            \\\\\\\\\"; the hostname and the share\n name are the first two names\
+            \ in the name sequence.  A relative pathname that\n does not specify a\
+            \ drive has no prefix.\n\n \n\n  Instances of this class may or may not\
+            \ denote an actual file-system\n object such as a file or a directory.\
+            \  If it does denote such an object\n then that object resides in a partition.\
+            \  A partition is an\n operating system-specific portion of storage for\
+            \ a file system.  A single\n storage device (e.g. a physical disk-drive,\
+            \ flash memory, CD-ROM) may\n contain multiple partitions.  The object,\
+            \ if any, will reside on the\n partition named by some ancestor of the\
+            \ absolute\n form of this pathname.\n\n  A file system may implement restrictions\
+            \ to certain operations on the\n actual file-system object, such as reading,\
+            \ writing, and executing.  These\n restrictions are collectively known\
+            \ as access permissions.  The file\n system may have multiple sets of\
+            \ access permissions on a single object.\n For example, one set may apply\
+            \ to the object's owner, and another\n may apply to all other users. \
+            \ The access permissions on an object may\n cause some methods in this\
+            \ class to fail.\n\n  Instances of the File class are immutable; that\
+            \ is, once\n created, the abstract pathname represented by a File object\n\
+            \ will never change.\n\n Interoperability with java.nio.file package\n\
+            \n  The java.nio.file\n package defines interfaces and classes for the\
+            \ Java virtual machine to access\n files, file attributes, and file systems.\
+            \ This API may be used to overcome\n many of the limitations of the java.io.File\
+            \ class.\n The toPath method may be used to obtain a Path that uses the\
+            \ abstract path represented by a File object to\n locate a file. The resulting\
+            \ Path may be used with the Files class to provide more efficient and\
+            \ extensive access to\n additional file operations, file attributes, and\
+            \ I/O exceptions to help\n diagnose errors when an operation on a file\
+            \ fails."
+          fields:
+            filePath:
+              name: filePath
+              modifiers:
+              - private
+              type:
+                basic: Path
+                full: java.nio.file.Path
+            path:
+              name: path
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            prefixLength:
+              name: prefixLength
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            status:
+              name: status
+              modifiers:
+              - private
+              type:
+                basic: File.PathStatus
+                full: java.io.File$PathStatus
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            PATH_OFFSET:
+              name: PATH_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            PREFIX_LENGTH_OFFSET:
+              name: PREFIX_LENGTH_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            UNSAFE:
+              name: UNSAFE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            fs:
+              name: fs
+              modifiers:
+              - private
+              - static
+              type:
+                basic: FileSystem
+                full: java.io.FileSystem
             pathSeparator:
               name: pathSeparator
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "The system-dependent path-separator character, represented as\
+                \ a string\n for convenience.  This string contains a single character,\
+                \ namely\n pathSeparatorChar."
             pathSeparatorChar:
               name: pathSeparatorChar
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: char
                 full: char
-                nullable: true
+              notes: "The system-dependent path-separator character.  This field is\n\
+                \ initialized to contain the first character of the value of the system\n\
+                \ property path.separator.  This character is used to\n separate filenames\
+                \ in a sequence of files given as a path list.\n On UNIX systems,\
+                \ this character is ':'; on Microsoft Windows systems it\n is ';'."
             separator:
               name: separator
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+              notes: "The system-dependent default name-separator character, represented\
+                \ as a\n string for convenience.  This string contains a single character,\
+                \ namely\n separatorChar."
             separatorChar:
               name: separatorChar
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: char
                 full: char
-                nullable: true
+              notes: "The system-dependent default name-separator character.  This\
+                \ field is\n initialized to contain the first character of the value\
+                \ of the system\n property file.separator.  On UNIX systems the value\
+                \ of this\n field is '/'; on Microsoft Windows systems it is '\\\\\
+                '."
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: URI
-                full: java.net.URI
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: String
+                full: java.lang.String
+            - name: arg1
               type:
                 basic: File
                 full: java.io.File
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pathname
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-          methods:
-          - name: __toString__
-            modifiers:
+              notes: A pathname string
+            notes: "Creates a new File instance by converting the given\n pathname\
+              \ string into an abstract pathname.  If the given string is\n the empty\
+              \ string, then the result is the empty abstract pathname."
+          - modifiers:
             - public
-            return:
+            parameters:
+            - name: parent
               type:
                 basic: String
                 full: java.lang.String
+              notes: The parent pathname string
+            - name: child
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The child pathname string
+            notes: "Creates a new File instance from a parent pathname string\n and\
+              \ a child pathname string.\n\n  If parent is null then the new\n File\
+              \ instance is created as if by invoking the\n single-argument File constructor\
+              \ on the given\n child pathname string.\n\n  Otherwise the parent pathname\
+              \ string is taken to denote\n a directory, and the child pathname string\
+              \ is taken to\n denote either a directory or a file.  If the child pathname\n\
+              \ string is absolute then it is converted into a relative pathname in\
+              \ a\n system-dependent way.  If parent is the empty string then\n the\
+              \ new File instance is created by converting\n child into an abstract\
+              \ pathname and resolving the result\n against a system-dependent default\
+              \ directory.  Otherwise each pathname\n string is converted into an\
+              \ abstract pathname and the child abstract\n pathname is resolved against\
+              \ the parent."
+          - modifiers:
+            - public
+            parameters:
+            - name: parent
+              type:
+                basic: File
+                full: java.io.File
+              notes: The parent abstract pathname
+            - name: child
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The child pathname string
+            notes: "Creates a new File instance from a parent abstract\n pathname\
+              \ and a child pathname string.\n\n  If parent is null then the new\n\
+              \ File instance is created as if by invoking the\n single-argument File\
+              \ constructor on the given\n child pathname string.\n\n  Otherwise the\
+              \ parent abstract pathname is taken to\n denote a directory, and the\
+              \ child pathname string is taken\n to denote either a directory or a\
+              \ file.  If the child\n pathname string is absolute then it is converted\
+              \ into a relative\n pathname in a system-dependent way.  If parent is\
+              \ the empty\n abstract pathname then the new File instance is created\
+              \ by\n converting child into an abstract pathname and resolving\n the\
+              \ result against a system-dependent default directory.  Otherwise each\n\
+              \ pathname string is converted into an abstract pathname and the child\n\
+              \ abstract pathname is resolved against the parent."
+          - modifiers:
+            - public
+            parameters:
+            - name: uri
+              type:
+                basic: URI
+                full: java.net.URI
+              notes: "An absolute, hierarchical URI with a scheme equal to\n     \
+                \    \"file\", a non-empty path component, and undefined\n       \
+                \  authority, query, and fragment components"
+            notes: "Creates a new File instance by converting the given\n file: URI\
+              \ into an abstract pathname.\n\n  The exact form of a file: URI is system-dependent,\
+              \ hence\n the transformation performed by this constructor is also\n\
+              \ system-dependent.\n\n  For a given abstract pathname f it is guaranteed\
+              \ that\n\n \n new File( f.toURI()).equals( f.getAbsoluteFile())\n \n\
+              \n so long as the original abstract pathname, the URI, and the new abstract\n\
+              \ pathname are all created in (possibly different invocations of) the\
+              \ same\n Java virtual machine.  This relationship typically does not\
+              \ hold,\n however, when a file: URI that is created in a virtual machine\n\
+              \ on one operating system is converted into an abstract pathname in\
+              \ a\n virtual machine on a different operating system."
+          methods:
           - name: canExecute
             modifiers:
             - public
@@ -119,18 +345,6 @@ languages:
               type:
                 basic: File
                 full: java.io.File
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -250,6 +464,13 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+          - name: getPrefixLength
+            modifiers:
+            - package
+            return:
+              type:
+                basic: int
+                full: int
           - name: getTotalSpace
             modifiers:
             - public
@@ -299,6 +520,14 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: isInvalid
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: lastModified
             modifiers:
             - public
@@ -318,7 +547,7 @@ languages:
             - public
             return:
               type:
-                basic: String[]
+                basic: String
                 full: java.lang.String[]
           - name: list
             modifiers:
@@ -330,26 +559,14 @@ languages:
                 full: java.io.FilenameFilter
             return:
               type:
-                basic: String[]
+                basic: String
                 full: java.lang.String[]
           - name: listFiles
             modifiers:
             - public
             return:
               type:
-                basic: File[]
-                full: java.io.File[]
-          - name: listFiles
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: FileFilter
-                full: java.io.FileFilter
-            return:
-              type:
-                basic: File[]
+                basic: File
                 full: java.io.File[]
           - name: listFiles
             modifiers:
@@ -361,7 +578,19 @@ languages:
                 full: java.io.FilenameFilter
             return:
               type:
-                basic: File[]
+                basic: File
+                full: java.io.File[]
+          - name: listFiles
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: FileFilter
+                full: java.io.FileFilter
+            return:
+              type:
+                basic: File
                 full: java.io.File[]
           - name: mkdir
             modifiers:
@@ -377,6 +606,26 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: normalizedList
+            modifiers:
+            - private
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String[]
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: renameTo
             modifiers:
             - public
@@ -397,6 +646,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: boolean
@@ -406,10 +659,6 @@ languages:
             - public
             parameters:
             - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            - name: arg1
               type:
                 basic: boolean
                 full: boolean
@@ -444,6 +693,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: boolean
@@ -456,22 +709,6 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: setWritable
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
             return:
               type:
                 basic: boolean
@@ -485,6 +722,18 @@ languages:
                 basic: boolean
                 full: boolean
             - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: setWritable
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
               type:
                 basic: boolean
                 full: boolean
@@ -499,6 +748,13 @@ languages:
               type:
                 basic: Path
                 full: java.nio.file.Path
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: toURI
             modifiers:
             - public
@@ -513,25 +769,19 @@ languages:
               type:
                 basic: URL
                 full: java.net.URL
-            deprecated: true
-          staticMethods:
-          - name: createTempFile
+          - name: writeObject
             modifiers:
-            - public
-            - static
+            - private
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
-                basic: File
-                full: java.io.File
+                basic: void
+                full: void
+          staticMethods:
           - name: createTempFile
             modifiers:
             - public
@@ -553,13 +803,45 @@ languages:
               type:
                 basic: File
                 full: java.io.File
+          - name: createTempFile
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: File
+                full: java.io.File
           - name: listRoots
             modifiers:
             - public
             - static
             return:
               type:
-                basic: File[]
+                basic: File
                 full: java.io.File[]
-          javaType: class
-          extends: Object
+          - name: slashify
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: String
+                full: java.lang.String

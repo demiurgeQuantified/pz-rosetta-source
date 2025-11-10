@@ -1,0 +1,288 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent.locks:
+        AbstractQueuedSynchronizer.ConditionObject:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "Condition implementation for a AbstractQueuedSynchronizer\n serving\
+            \ as the basis of a Lock implementation.\n\n Method documentation for\
+            \ this class describes mechanics,\n not behavioral specifications from\
+            \ the point of view of Lock\n and Condition users. Exported versions of\
+            \ this class will in\n general need to be accompanied by documentation\
+            \ describing\n condition semantics that rely on those of the associated\n\
+            \ AbstractQueuedSynchronizer.\n\n This class is Serializable, but all\
+            \ fields are transient,\n so deserialized conditions have no waiters."
+          fields:
+            firstWaiter:
+              name: firstWaiter
+              modifiers:
+              - private
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionNode
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode
+            lastWaiter:
+              name: lastWaiter
+              modifiers:
+              - private
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionNode
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode
+            this$0:
+              name: this$0
+              modifiers:
+              - package
+              type:
+                basic: AbstractQueuedSynchronizer
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer
+          methods:
+          - name: await
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Implements interruptible condition wait.\n \n If current thread\
+              \ is interrupted, throw InterruptedException.\n Save lock state returned\
+              \ by AbstractQueuedSynchronizer.getState().\n Invoke AbstractQueuedSynchronizer.release(int)\
+              \ with saved state as argument,\n     throwing IllegalMonitorStateException\
+              \ if it fails.\n Block until signalled or interrupted.\n Reacquire by\
+              \ invoking specialized version of\n     AbstractQueuedSynchronizer.acquire(java.util.concurrent.locks.AbstractQueuedSynchronizer.Node,\
+              \ int, boolean, boolean, boolean, long) with saved state as argument.\n\
+              \ If interrupted while blocked in step 4, throw InterruptedException."
+          - name: await
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: time
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the time argument
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "false if the waiting time detectably elapsed\n         before\
+                \ return from the method, else true"
+            notes: "Implements timed condition wait.\n \n If current thread is interrupted,\
+              \ throw InterruptedException.\n Save lock state returned by AbstractQueuedSynchronizer.getState().\n\
+              \ Invoke AbstractQueuedSynchronizer.release(int) with saved state as\
+              \ argument,\n     throwing IllegalMonitorStateException if it fails.\n\
+              \ Block until signalled, interrupted, or timed out.\n Reacquire by invoking\
+              \ specialized version of\n     AbstractQueuedSynchronizer.acquire(java.util.concurrent.locks.AbstractQueuedSynchronizer.Node,\
+              \ int, boolean, boolean, boolean, long) with saved state as argument.\n\
+              \ If interrupted while blocked in step 4, throw InterruptedException.\n\
+              \ If timed out while blocked in step 4, return false, else true."
+          - name: awaitNanos
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: nanosTimeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait, in nanoseconds
+            return:
+              type:
+                basic: long
+                full: long
+              notes: "an estimate of the nanosTimeout value minus\n         the time\
+                \ spent waiting upon return from this method.\n         A positive\
+                \ value may be used as the argument to a\n         subsequent call\
+                \ to this method to finish waiting out\n         the desired time.\
+                \  A value less than or equal to zero\n         indicates that no\
+                \ time remains."
+            notes: "Implements timed condition wait.\n \n If current thread is interrupted,\
+              \ throw InterruptedException.\n Save lock state returned by AbstractQueuedSynchronizer.getState().\n\
+              \ Invoke AbstractQueuedSynchronizer.release(int) with saved state as\
+              \ argument,\n     throwing IllegalMonitorStateException if it fails.\n\
+              \ Block until signalled, interrupted, or timed out.\n Reacquire by invoking\
+              \ specialized version of\n     AbstractQueuedSynchronizer.acquire(java.util.concurrent.locks.AbstractQueuedSynchronizer.Node,\
+              \ int, boolean, boolean, boolean, long) with saved state as argument.\n\
+              \ If interrupted while blocked in step 4, throw InterruptedException."
+          - name: awaitUninterruptibly
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Implements uninterruptible condition wait.\n \n Save lock state\
+              \ returned by AbstractQueuedSynchronizer.getState().\n Invoke AbstractQueuedSynchronizer.release(int)\
+              \ with saved state as argument,\n     throwing IllegalMonitorStateException\
+              \ if it fails.\n Block until signalled.\n Reacquire by invoking specialized\
+              \ version of\n     AbstractQueuedSynchronizer.acquire(java.util.concurrent.locks.AbstractQueuedSynchronizer.Node,\
+              \ int, boolean, boolean, boolean, long) with saved state as argument."
+          - name: awaitUntil
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: deadline
+              type:
+                basic: Date
+                full: java.util.Date
+              notes: the absolute time to wait until
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "false if the deadline has elapsed upon return, else\n      \
+                \   true"
+            notes: "Implements absolute timed condition wait.\n \n If current thread\
+              \ is interrupted, throw InterruptedException.\n Save lock state returned\
+              \ by AbstractQueuedSynchronizer.getState().\n Invoke AbstractQueuedSynchronizer.release(int)\
+              \ with saved state as argument,\n     throwing IllegalMonitorStateException\
+              \ if it fails.\n Block until signalled, interrupted, or timed out.\n\
+              \ Reacquire by invoking specialized version of\n     AbstractQueuedSynchronizer.acquire(java.util.concurrent.locks.AbstractQueuedSynchronizer.Node,\
+              \ int, boolean, boolean, boolean, long) with saved state as argument.\n\
+              \ If interrupted while blocked in step 4, throw InterruptedException.\n\
+              \ If timed out while blocked in step 4, return false, else true."
+          - name: canReacquire
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionNode
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: doSignal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionNode
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: enableWait
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionNode
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getWaitQueueLength
+            modifiers:
+            - protected
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the estimated number of waiting threads
+            notes: "Returns an estimate of the number of threads waiting on\n this\
+              \ condition.\n Implements AbstractQueuedSynchronizer.getWaitQueueLength(ConditionObject)."
+          - name: getWaitingThreads
+            modifiers:
+            - protected
+            - final
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<java.lang.Thread>
+              notes: the collection of threads
+            notes: "Returns a collection containing those threads that may be\n waiting\
+              \ on this Condition.\n Implements AbstractQueuedSynchronizer.getWaitingThreads(ConditionObject)."
+          - name: hasWaiters
+            modifiers:
+            - protected
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if there are any waiting threads
+            notes: "Queries whether any threads are waiting on this condition.\n Implements\
+              \ AbstractQueuedSynchronizer.hasWaiters(ConditionObject)."
+          - name: isOwnedBy
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: signal
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Moves the longest-waiting thread, if one exists, from the\n wait\
+              \ queue for this condition to the wait queue for the\n owning lock."
+          - name: signalAll
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Moves all threads from the wait queue for this condition to\n\
+              \ the wait queue for the owning lock."
+          - name: unlinkCancelledWaiters
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractQueuedSynchronizer.ConditionNode
+                full: java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode
+            return:
+              type:
+                basic: void
+                full: void

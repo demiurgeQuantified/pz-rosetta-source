@@ -4,237 +4,329 @@ languages:
     packages:
       java.text:
         DateFormat:
+          extends: java.text.Format
+          modifiers:
+          - public
+          - abstract
+          notes: "DateFormat is an abstract class for date/time formatting subclasses\
+            \ which\n formats and parses dates or time in a language-independent manner.\n\
+            \ The date/time formatting subclass, such as SimpleDateFormat, allows\
+            \ for\n formatting (i.e., date &rarr; text), parsing (text &rarr; date),\
+            \ and\n normalization.  The date is represented as a Date object or\n\
+            \ as the milliseconds since January 1, 1970, 00:00:00 GMT.\n\n DateFormat\
+            \ provides many class methods for obtaining default date/time\n formatters\
+            \ based on the default or a given locale and a number of formatting\n\
+            \ styles. The formatting styles include FULL, LONG, MEDIUM, and SHORT.\
+            \ More\n detail and examples of using these styles are provided in the\
+            \ method\n descriptions.\n\n DateFormat helps you to format and parse\
+            \ dates for any locale.\n Your code can be completely independent of the\
+            \ locale conventions for\n months, days of the week, or even the calendar\
+            \ format: lunar vs. solar.\n\n To format a date for the current Locale,\
+            \ use one of the\n static factory methods:\n \n <code>\n myString = DateFormat.getDateInstance().format(myDate);\n\
+            \ </code>\n \n If you are formatting multiple dates, it is\n more efficient\
+            \ to get the format and use it multiple times so that\n the system doesn't\
+            \ have to fetch the information about the local\n language and country\
+            \ conventions multiple times.\n \n <code>\n DateFormat df = DateFormat.getDateInstance();\n\
+            \ for (int i = 0; i < myDate.length; ++i) {\n     output.println(df.format(myDate[i])\
+            \ + \"; \");\n }\n </code>\n \n To format a date for a different Locale,\
+            \ specify it in the\n call to getDateInstance().\n \n <code>\n DateFormat\
+            \ df = DateFormat.getDateInstance(DateFormat.LONG, Locale.FRANCE);\n </code>\n\
+            \ \n\n If the specified locale contains \"ca\" (calendar), \"rg\" (region\
+            \ override),\n and/or \"tz\" (timezone) Unicode\n extensions, the calendar,\
+            \ the country and/or the time zone for formatting\n are overridden. If\
+            \ both \"ca\" and \"rg\" are specified, the calendar from the \"ca\"\n\
+            \ extension supersedes the implicit one from the \"rg\" extension.\n\n\
+            \ You can use a DateFormat to parse also.\n \n <code>\n myDate = df.parse(myString);\n\
+            \ </code>\n \n Use getDateInstance to get the normal date format for that\
+            \ country.\n There are other static factory methods available.\n Use getTimeInstance\
+            \ to get the time format for that country.\n Use getDateTimeInstance to\
+            \ get a date and time format. You can pass in\n different options to these\
+            \ factory methods to control the length of the\n result; from SHORT to\
+            \ MEDIUM to LONG to FULL. The exact result depends\n on the locale, but\
+            \ generally:\n SHORT is completely numeric, such as 12.13.52 or 3:30pm\n\
+            \ MEDIUM is longer, such as Jan 12, 1952\n LONG is longer, such as January\
+            \ 12, 1952 or 3:30:32pm\n FULL is pretty completely specified, such as\n\
+            \ Tuesday, April 12, 1952 AD or 3:30:42pm PST.\n \n\n You can also set\
+            \ the time zone on the format if you wish.\n If you want even more control\
+            \ over the format or parsing,\n (or want to give your users more control),\n\
+            \ you can try casting the DateFormat you get from the factory methods\n\
+            \ to a SimpleDateFormat. This will work for the majority\n of countries;\
+            \ just remember to put it in a try block in case you\n encounter an unusual\
+            \ one.\n\n You can also use forms of the parse and format methods with\n\
+            \ ParsePosition and FieldPosition to\n allow you to\n progressively parse\
+            \ through pieces of a string.\n align any particular field, or find out\
+            \ where it is for selection\n on the screen.\n \n\n Synchronization\n\n\
+            \ \n Date formats are not synchronized.\n It is recommended to create\
+            \ separate format instances for each thread.\n If multiple threads access\
+            \ a format concurrently, it must be synchronized\n externally."
+          fields:
+            calendar:
+              name: calendar
+              modifiers:
+              - protected
+              type:
+                basic: Calendar
+                full: java.util.Calendar
+              notes: "The Calendar instance used for calculating the date-time fields\n\
+                \ and the instant of time. This field is used for both formatting\
+                \ and\n parsing.\n\n Subclasses should initialize this field to a\
+                \ Calendar\n appropriate for the Locale associated with this\n DateFormat."
+            numberFormat:
+              name: numberFormat
+              modifiers:
+              - protected
+              type:
+                basic: NumberFormat
+                full: java.text.NumberFormat
+              notes: "The number formatter that DateFormat uses to format numbers\n\
+                \ in dates and times.  Subclasses should initialize this to a number\
+                \ format\n appropriate for the locale associated with this DateFormat."
           staticFields:
             AM_PM_FIELD:
               name: AM_PM_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for AM_PM field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             DATE_FIELD:
               name: DATE_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for DATE field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             DAY_OF_WEEK_FIELD:
               name: DAY_OF_WEEK_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for DAY_OF_WEEK field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             DAY_OF_WEEK_IN_MONTH_FIELD:
               name: DAY_OF_WEEK_IN_MONTH_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for DAY_OF_WEEK_IN_MONTH field alignment.\n\
+                \ Used in FieldPosition of date/time formatting."
             DAY_OF_YEAR_FIELD:
               name: DAY_OF_YEAR_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for DAY_OF_YEAR field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             DEFAULT:
               name: DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for default style pattern.  Its value is MEDIUM.
             ERA_FIELD:
               name: ERA_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for ERA field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             FULL:
               name: FULL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for full style pattern.
             HOUR0_FIELD:
               name: HOUR0_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for zero-based HOUR field alignment.\n Used\
+                \ in FieldPosition of date/time formatting.\n HOUR0_FIELD is used\
+                \ for the zero-based 12-hour clock.\n For example, 11:30 PM + 1 hour\
+                \ results in 00:30 AM."
             HOUR1_FIELD:
               name: HOUR1_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for one-based HOUR field alignment.\n Used in\
+                \ FieldPosition of date/time formatting.\n HOUR1_FIELD is used for\
+                \ the one-based 12-hour clock.\n For example, 11:30 PM + 1 hour results\
+                \ in 12:30 AM."
             HOUR_OF_DAY0_FIELD:
               name: HOUR_OF_DAY0_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for zero-based HOUR_OF_DAY field alignment.\n\
+                \ Used in FieldPosition of date/time formatting.\n HOUR_OF_DAY0_FIELD\
+                \ is used for the zero-based 24-hour clock.\n For example, 23:59 +\
+                \ 01:00 results in 00:59."
             HOUR_OF_DAY1_FIELD:
               name: HOUR_OF_DAY1_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for one-based HOUR_OF_DAY field alignment.\n\
+                \ Used in FieldPosition of date/time formatting.\n HOUR_OF_DAY1_FIELD\
+                \ is used for the one-based 24-hour clock.\n For example, 23:59 +\
+                \ 01:00 results in 24:59."
             LONG:
               name: LONG
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for long style pattern.
             MEDIUM:
               name: MEDIUM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for medium style pattern.
             MILLISECOND_FIELD:
               name: MILLISECOND_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for MILLISECOND field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             MINUTE_FIELD:
               name: MINUTE_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for MINUTE field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             MONTH_FIELD:
               name: MONTH_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for MONTH field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             SECOND_FIELD:
               name: SECOND_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for SECOND field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             SHORT:
               name: SHORT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Constant for short style pattern.
             TIMEZONE_FIELD:
               name: TIMEZONE_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for TIMEZONE field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
             WEEK_OF_MONTH_FIELD:
               name: WEEK_OF_MONTH_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for WEEK_OF_MONTH field alignment.\n Used in\
+                \ FieldPosition of date/time formatting."
             WEEK_OF_YEAR_FIELD:
               name: WEEK_OF_YEAR_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for WEEK_OF_YEAR field alignment.\n Used in\
+                \ FieldPosition of date/time formatting."
             YEAR_FIELD:
               name: YEAR_FIELD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Useful constant for YEAR field alignment.\n Used in FieldPosition\
+                \ of date/time formatting."
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            notes: Create a new date format.
           methods:
           - name: clone
             modifiers:
@@ -243,72 +335,119 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a clone of this instance.
+            notes: Overrides Cloneable
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the reference object with which to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this object is the same as the obj\n          argument;\
+                \ false otherwise."
+            notes: Overrides equals
           - name: format
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "Must be a Date or a Number representing a\n millisecond offset\
+                \ from the Epoch."
+            - name: toAppendTo
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: The string buffer for the returning date-time string.
+            - name: fieldPosition
+              type:
+                basic: FieldPosition
+                full: java.text.FieldPosition
+              notes: "keeps track on the position of the field within\n the returned\
+                \ string. For example, given a date-time text\n \"1996.07.10 AD at\
+                \ 15:08:56 PDT\", if the given fieldPosition\n is YEAR_FIELD, the\
+                \ begin index and end index of\n fieldPosition will be set to 0 and\
+                \ 4, respectively.\n Notice that if the same date-time field appears\
+                \ more than once in a\n pattern, the fieldPosition will be set for\
+                \ the first occurrence\n of that date-time field. For instance, formatting\
+                \ a Date to the\n date-time string \"1 PM PDT (Pacific Daylight Time)\"\
+                \ using the\n pattern \"h a z (zzzz)\" and the alignment field\n TIMEZONE_FIELD,\
+                \ the begin index and end index of\n fieldPosition will be set to\
+                \ 5 and 8, respectively, for the\n first occurrence of the timezone\
+                \ pattern character 'z'."
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: "the string buffer passed in as toAppendTo,\n         with formatted\
+                \ text appended."
+            notes: "Formats the given Object into a date-time string. The formatted\n\
+              \ string is appended to the given StringBuffer."
+          - name: format
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: date
               type:
                 basic: Date
                 full: java.util.Date
+              notes: a Date to be formatted into a date-time string.
+            - name: toAppendTo
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: the string buffer for the returning date-time string.
+            - name: fieldPosition
+              type:
+                basic: FieldPosition
+                full: java.text.FieldPosition
+              notes: "keeps track on the position of the field within\n the returned\
+                \ string. For example, given a date-time text\n \"1996.07.10 AD at\
+                \ 15:08:56 PDT\", if the given fieldPosition\n is YEAR_FIELD, the\
+                \ begin index and end index of\n fieldPosition will be set to 0 and\
+                \ 4, respectively.\n Notice that if the same date-time field appears\
+                \ more than once in a\n pattern, the fieldPosition will be set for\
+                \ the first occurrence\n of that date-time field. For instance, formatting\
+                \ a Date to the\n date-time string \"1 PM PDT (Pacific Daylight Time)\"\
+                \ using the\n pattern \"h a z (zzzz)\" and the alignment field\n TIMEZONE_FIELD,\
+                \ the begin index and end index of\n fieldPosition will be set to\
+                \ 5 and 8, respectively, for the\n first occurrence of the timezone\
+                \ pattern character 'z'."
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: "the string buffer passed in as toAppendTo, with formatted\n\
+                \ text appended."
+            notes: "Formats a Date into a date-time string. The formatted\n string\
+              \ is appended to the given StringBuffer."
+          - name: format
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: date
+              type:
+                basic: Date
+                full: java.util.Date
+              notes: the time value to be formatted into a date-time string.
             return:
               type:
                 basic: String
                 full: java.lang.String
-          - name: format
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-            - name: arg2
-              type:
-                basic: FieldPosition
-                full: java.text.FieldPosition
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: format
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Date
-                full: java.util.Date
-            - name: arg1
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-            - name: arg2
-              type:
-                basic: FieldPosition
-                full: java.text.FieldPosition
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
+              notes: the formatted date-time string.
+            notes: Formats a Date into a date-time string.
           - name: getCalendar
             modifiers:
             - public
@@ -316,6 +455,8 @@ languages:
               type:
                 basic: Calendar
                 full: java.util.Calendar
+              notes: the calendar associated with this date/time formatter.
+            notes: Gets the calendar associated with this date/time formatter.
           - name: getNumberFormat
             modifiers:
             - public
@@ -323,6 +464,9 @@ languages:
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
+              notes: the number formatter which this date/time formatter uses.
+            notes: "Gets the number formatter which this date/time formatter uses\
+              \ to\n format and parse a time."
           - name: getTimeZone
             modifiers:
             - public
@@ -330,6 +474,9 @@ languages:
               type:
                 basic: TimeZone
                 full: java.util.TimeZone
+              notes: the time zone associated with the calendar of DateFormat.
+            notes: "Gets the time zone.\n This method is equivalent to the following\
+              \ call.\n <code>\n getCalendar().getTimeZone()\n </code>"
           - name: hashCode
             modifiers:
             - public
@@ -337,6 +484,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object.
+            notes: Overrides hashCode
           - name: isLenient
             modifiers:
             - public
@@ -344,180 +493,166 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the calendar is lenient;\n         false otherwise."
+            notes: "Tell whether date/time parsing is to be lenient.\n This method\
+              \ is equivalent to the following call.\n <code>\n getCalendar().isLenient()\n\
+              \ </code>"
           - name: parse
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: String
                 full: java.lang.String
+              notes: A String whose beginning should be parsed.
             return:
               type:
                 basic: Date
                 full: java.util.Date
+              notes: A Date parsed from the string.
+            notes: "Parses text from the beginning of the given string to produce\
+              \ a date.\n The method may not use the entire text of the given string.\n\
+              \ \n See the parse(String, ParsePosition) method for more information\n\
+              \ on date parsing."
           - name: parse
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: The date/time string to be parsed
+            - name: pos
               type:
                 basic: ParsePosition
                 full: java.text.ParsePosition
+              notes: "On input, the position at which to start parsing; on\n     \
+                \         output, the position at which parsing terminated, or the\n\
+                \              start position if the parse failed."
             return:
               type:
                 basic: Date
                 full: java.util.Date
+              notes: A Date, or null if the input could not be parsed
+            notes: "Parse a date/time string according to the given parse position.\
+              \  For\n example, a time text \"07/10/96 4:5 PM, PDT\" will be parsed\
+              \ into a Date\n that is equivalent to Date(837039900000L).\n\n  By default,\
+              \ parsing is lenient: If the input is not in the form used\n by this\
+              \ object's format method but can still be parsed as a date, then\n the\
+              \ parse succeeds.  Clients may insist on strict adherence to the\n format\
+              \ by calling setLenient(false).\n\n This parsing operation uses the\
+              \ calendar to produce\n a Date. As a result, the calendar's date-time\n\
+              \ fields and the TimeZone value may have been\n overwritten, depending\
+              \ on subclass implementations. Any \n TimeZone value that has previously\
+              \ been set by a call to\n setTimeZone may need\n to be restored for\
+              \ further operations."
           - name: parseObject
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: A String, part of which should be parsed.
+            - name: pos
               type:
                 basic: ParsePosition
                 full: java.text.ParsePosition
+              notes: "A ParsePosition object with index and error\n            index\
+                \ information as described above."
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "A Date parsed from the string. In case of\n         error, returns\
+                \ null."
+            notes: "Parses text from a string to produce a Date.\n \n The method attempts\
+              \ to parse text starting at the index given by\n pos.\n If parsing succeeds,\
+              \ then the index of pos is updated\n to the index after the last character\
+              \ used (parsing does not necessarily\n use all characters up to the\
+              \ end of the string), and the parsed\n date is returned. The updated\
+              \ pos can be used to\n indicate the starting point for the next call\
+              \ to this method.\n If an error occurs, then the index of pos is not\n\
+              \ changed, the error index of pos is set to the index of\n the character\
+              \ where the error occurred, and null is returned.\n \n See the parse(String,\
+              \ ParsePosition) method for more information\n on date parsing."
           - name: setCalendar
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newCalendar
               type:
                 basic: Calendar
                 full: java.util.Calendar
+              notes: the new Calendar to be used by the date format
             return:
               type:
                 basic: void
                 full: void
+            notes: "Set the calendar to be used by this date format.  Initially, the\
+              \ default\n calendar for the specified or default locale is used.\n\n\
+              \ Any TimeZone and leniency values that have previously been set are\n\
+              \ overwritten by newCalendar's values."
           - name: setLenient
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: lenient
               type:
                 basic: boolean
                 full: boolean
+              notes: when true, parsing is lenient
             return:
               type:
                 basic: void
                 full: void
+            notes: "Specify whether or not date/time parsing is to be lenient.  With\n\
+              \ lenient parsing, the parser may use heuristics to interpret inputs\
+              \ that\n do not precisely match this object's format.  With strict parsing,\n\
+              \ inputs must match this object's format.\n\n This method is equivalent\
+              \ to the following call.\n <code>\n getCalendar().setLenient(lenient)\n\
+              \ </code>\n\n This leniency value is overwritten by a call to setCalendar()."
           - name: setNumberFormat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newNumberFormat
               type:
                 basic: NumberFormat
                 full: java.text.NumberFormat
+              notes: the given new NumberFormat.
             return:
               type:
                 basic: void
                 full: void
+            notes: Allows you to set the number formatter.
           - name: setTimeZone
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: TimeZone
                 full: java.util.TimeZone
+              notes: the given new time zone.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the time zone for the calendar of this DateFormat object.\n\
+              \ This method is equivalent to the following call.\n <code>\n getCalendar().setTimeZone(zone)\n\
+              \ </code>\n\n The TimeZone set by this method is overwritten by a\n\
+              \ setCalendar call.\n\n The TimeZone set by this method may be overwritten\
+              \ as\n a result of a call to the parse method."
           staticMethods:
-          - name: getAvailableLocales
+          - name: get
             modifiers:
-            - public
+            - private
             - static
-            return:
-              type:
-                basic: Locale[]
-                full: java.util.Locale[]
-          - name: getDateInstance
-            modifiers:
-            - public
-            - static
-            - final
-            return:
-              type:
-                basic: DateFormat
-                full: java.text.DateFormat
-          - name: getDateInstance
-            modifiers:
-            - public
-            - static
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: DateFormat
-                full: java.text.DateFormat
-          - name: getDateInstance
-            modifiers:
-            - public
-            - static
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: Locale
-                full: java.util.Locale
-            return:
-              type:
-                basic: DateFormat
-                full: java.text.DateFormat
-          - name: getDateTimeInstance
-            modifiers:
-            - public
-            - static
-            - final
-            return:
-              type:
-                basic: DateFormat
-                full: java.text.DateFormat
-          - name: getDateTimeInstance
-            modifiers:
-            - public
-            - static
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: DateFormat
-                full: java.text.DateFormat
-          - name: getDateTimeInstance
-            modifiers:
-            - public
-            - static
-            - final
             parameters:
             - name: arg0
               type:
@@ -529,61 +664,246 @@ languages:
                 full: int
             - name: arg2
               type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
                 basic: Locale
                 full: java.util.Locale
             return:
               type:
                 basic: DateFormat
                 full: java.text.DateFormat
+          - name: get
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: LocaleProviderAdapter
+                full: sun.util.locale.provider.LocaleProviderAdapter
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: Locale
+                full: java.util.Locale
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+          - name: getAvailableLocales
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Locale
+                full: java.util.Locale[]
+              notes: "An array of locales for which localized\n         DateFormat\
+                \ instances are available."
+            notes: "Returns an array of all locales for which the\n get*Instance methods\
+              \ of this class can return\n localized instances.\n The returned array\
+              \ represents the union of locales supported by the Java\n runtime and\
+              \ by installed\n DateFormatProvider implementations.\n It must contain\
+              \ at least a Locale instance equal to\n Locale.US."
+          - name: getDateInstance
+            modifiers:
+            - public
+            - final
+            - static
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+              notes: a date formatter.
+            notes: "Gets the date formatter with the default formatting style\n for\
+              \ the default FORMAT locale.\n This is equivalent to calling\n getDateInstance(DEFAULT,\n\
+              \     Locale.getDefault(Locale.Category.FORMAT))."
+          - name: getDateInstance
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: style
+              type:
+                basic: int
+                full: int
+              notes: "the given formatting style. For example,\n SHORT for \"M/d/yy\"\
+                \ in the US locale."
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+              notes: a date formatter.
+            notes: "Gets the date formatter with the given formatting style\n for\
+              \ the default FORMAT locale.\n This is equivalent to calling\n getDateInstance(style,\n\
+              \     Locale.getDefault(Locale.Category.FORMAT))."
+          - name: getDateInstance
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: style
+              type:
+                basic: int
+                full: int
+              notes: "the given formatting style. For example,\n SHORT for \"M/d/yy\"\
+                \ in the US locale."
+            - name: aLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the given locale.
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+              notes: a date formatter.
+            notes: "Gets the date formatter with the given formatting style\n for\
+              \ the given locale."
+          - name: getDateTimeInstance
+            modifiers:
+            - public
+            - final
+            - static
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+              notes: a date/time formatter.
+            notes: "Gets the date/time formatter with the default formatting style\n\
+              \ for the default FORMAT locale.\n This is equivalent to calling\n getDateTimeInstance(DEFAULT,\n\
+              \     DEFAULT, Locale.getDefault(Locale.Category.FORMAT))."
+          - name: getDateTimeInstance
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: dateStyle
+              type:
+                basic: int
+                full: int
+              notes: "the given date formatting style. For example,\n SHORT for \"\
+                M/d/yy\" in the US locale."
+            - name: timeStyle
+              type:
+                basic: int
+                full: int
+              notes: "the given time formatting style. For example,\n SHORT for \"\
+                h:mm a\" in the US locale."
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+              notes: a date/time formatter.
+            notes: "Gets the date/time formatter with the given date and time\n formatting\
+              \ styles for the default FORMAT locale.\n This is equivalent to calling\n\
+              \ getDateTimeInstance(dateStyle,\n     timeStyle, Locale.getDefault(Locale.Category.FORMAT))."
+          - name: getDateTimeInstance
+            modifiers:
+            - public
+            - final
+            - static
+            parameters:
+            - name: dateStyle
+              type:
+                basic: int
+                full: int
+              notes: the given date formatting style.
+            - name: timeStyle
+              type:
+                basic: int
+                full: int
+              notes: the given time formatting style.
+            - name: aLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the given locale.
+            return:
+              type:
+                basic: DateFormat
+                full: java.text.DateFormat
+              notes: a date/time formatter.
+            notes: "Gets the date/time formatter with the given formatting styles\n\
+              \ for the given locale."
           - name: getInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             return:
               type:
                 basic: DateFormat
                 full: java.text.DateFormat
+              notes: a date/time formatter
+            notes: "Get a default date/time formatter that uses the SHORT style for\
+              \ both the\n date and the time."
           - name: getTimeInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             return:
               type:
                 basic: DateFormat
                 full: java.text.DateFormat
+              notes: a time formatter.
+            notes: "Gets the time formatter with the default formatting style\n for\
+              \ the default FORMAT locale.\n This is equivalent to calling\n getTimeInstance(DEFAULT,\n\
+              \     Locale.getDefault(Locale.Category.FORMAT))."
           - name: getTimeInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: style
               type:
                 basic: int
                 full: int
+              notes: "the given formatting style. For example,\n SHORT for \"h:mm\
+                \ a\" in the US locale."
             return:
               type:
                 basic: DateFormat
                 full: java.text.DateFormat
+              notes: a time formatter.
+            notes: "Gets the time formatter with the given formatting style\n for\
+              \ the default FORMAT locale.\n This is equivalent to calling\n getTimeInstance(style,\n\
+              \     Locale.getDefault(Locale.Category.FORMAT))."
           - name: getTimeInstance
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: style
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the given formatting style. For example,\n SHORT for \"h:mm\
+                \ a\" in the US locale."
+            - name: aLocale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: the given locale.
             return:
               type:
                 basic: DateFormat
                 full: java.text.DateFormat
-          javaType: class
-          extends: Format
+              notes: a time formatter.
+            notes: "Gets the time formatter with the given formatting style\n for\
+              \ the given locale."

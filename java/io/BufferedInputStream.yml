@@ -4,25 +4,135 @@ languages:
     packages:
       java.io:
         BufferedInputStream:
+          extends: java.io.FilterInputStream
+          modifiers:
+          - public
+          notes: "A BufferedInputStream adds\n functionality to another input stream-namely,\n\
+            \ the ability to buffer the input and to\n support the mark and reset\n\
+            \ methods. When  the BufferedInputStream\n is created, an internal buffer\
+            \ array is\n created. As bytes  from the stream are read\n or skipped,\
+            \ the internal buffer is refilled\n as necessary  from the contained input\
+            \ stream,\n many bytes at a time. The mark\n operation  remembers a point\
+            \ in the input\n stream and the reset operation\n causes all the  bytes\
+            \ read since the most\n recent mark operation to be\n reread before new\
+            \ bytes are  taken from\n the contained input stream."
+          fields:
+            buf:
+              name: buf
+              modifiers:
+              - protected
+              type:
+                basic: byte
+                full: byte[]
+              notes: "The internal buffer array where the data is stored. When necessary,\n\
+                \ it may be replaced by another array of\n a different size."
+            count:
+              name: count
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The index one greater than the index of the last valid byte\
+                \ in\n the buffer.\n This value is always\n in the range 0 through\
+                \ buf.length;\n elements buf[0] through buf[count-1]\n contain buffered\
+                \ input data obtained\n from the underlying  input stream."
+            marklimit:
+              name: marklimit
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The maximum read ahead allowed after a call to the\n mark method\
+                \ before subsequent calls to the\n reset method fail.\n Whenever the\
+                \ difference between pos\n and markpos exceeds marklimit,\n then the\
+                \  mark may be dropped by setting\n markpos to -1."
+            markpos:
+              name: markpos
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The value of the pos field at the time the last\n mark method\
+                \ was called.\n \n This value is always\n in the range -1 through\
+                \ pos.\n If there is no marked position in  the input\n stream, this\
+                \ field is -1. If\n there is a marked position in the input\n stream,\
+                \  then buf[markpos]\n is the first byte to be supplied as input\n\
+                \ after a reset operation. If\n markpos is not -1,\n then all bytes\
+                \ from positions buf[markpos]\n through  buf[pos-1] must remain\n\
+                \ in the buffer array (though they may be\n moved to  another place\
+                \ in the buffer array,\n with suitable adjustments to the values\n\
+                \ of count,  pos,\n and markpos); they may not\n be discarded unless\
+                \ and until the difference\n between pos and markpos\n exceeds marklimit."
+            pos:
+              name: pos
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The current position in the buffer. This is the index of the\
+                \ next\n character to be read from the buf array.\n \n This value\
+                \ is always in the range 0\n through count. If it is less\n than count,\
+                \ then  buf[pos]\n is the next byte to be supplied as input;\n if\
+                \ it is equal to count, then\n the  next read or skip\n operation\
+                \ will require more bytes to be\n read from the contained  input stream."
+          staticFields:
+            BUF_OFFSET:
+              name: BUF_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            DEFAULT_BUFFER_SIZE:
+              name: DEFAULT_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            U:
+              name: U
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the underlying input stream.
+            notes: "Creates a BufferedInputStream\n and saves its  argument, the input\
+              \ stream\n in, for later use. An internal\n buffer array is created\
+              \ and  stored in buf."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: InputStream
                 full: java.io.InputStream
-            - name: arg1
+              notes: the underlying input stream.
+            - name: size
               type:
                 basic: int
                 full: int
+              notes: the buffer size.
+            notes: "Creates a BufferedInputStream\n with the specified buffer size,\n\
+              \ and saves its  argument, the input stream\n in, for later use.  An\
+              \ internal\n buffer array of length  size\n is created and stored in\
+              \ buf."
           methods:
           - name: available
             modifiers:
@@ -31,6 +141,16 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "an estimate of the number of bytes that can be read (or skipped\n\
+                \             over) from this input stream without blocking."
+            notes: "Returns an estimate of the number of bytes that can be read (or\n\
+              \ skipped over) from this input stream without blocking by the next\n\
+              \ invocation of a method for this input stream. The next invocation\
+              \ might be\n the same thread or another thread.  A single read or skip\
+              \ of this\n many bytes will not block, but may read or skip fewer bytes.\n\
+              \ \n This method returns the sum of the number of bytes remaining to\
+              \ be read in\n the buffer (count - pos) and the result of calling the\n\
+              \ in.available()."
           - name: close
             modifiers:
             - public
@@ -38,18 +158,46 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: mark
+            notes: "Closes this input stream and releases any system resources\n associated\
+              \ with the stream.\n Once the stream has been closed, further read(),\
+              \ available(), reset(),\n or skip() invocations will throw an IOException.\n\
+              \ Closing a previously closed stream has no effect."
+          - name: fill
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
+            - private
             return:
               type:
                 basic: void
                 full: void
+          - name: getBufIfOpen
+            modifiers:
+            - private
+            return:
+              type:
+                basic: byte
+                full: byte[]
+          - name: getInIfOpen
+            modifiers:
+            - private
+            return:
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+          - name: mark
+            modifiers:
+            - public
+            parameters:
+            - name: readlimit
+              type:
+                basic: int
+                full: int
+              notes: "the maximum limit of bytes that can be read before\n       \
+                \               the mark position becomes invalid."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "See the general contract of the mark\n method of InputStream."
           - name: markSupported
             modifiers:
             - public
@@ -57,6 +205,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if this stream type supports\n        \
+                \  the mark and reset methods."
+            notes: "Tests if this input stream supports the mark\n and reset methods.\
+              \ The markSupported\n method of BufferedInputStream returns\n true."
           - name: read
             modifiers:
             - public
@@ -64,13 +216,57 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the next byte of data, or -1 if the end of the\n           \
+                \  stream is reached."
+            notes: "See\n the general contract of the read\n method of InputStream."
           - name: read
             modifiers:
             - public
             parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: destination buffer.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: offset at which to start storing bytes.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: maximum number of bytes to read.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the number of bytes read, or -1 if the end of\n            \
+                \ the stream has been reached."
+            notes: "Reads bytes from this byte-input stream into the specified byte\
+              \ array,\n starting at the given offset.\n\n  This method implements\
+              \ the general contract of the corresponding\n read method of\n the InputStream\
+              \ class.  As an additional\n convenience, it attempts to read as many\
+              \ bytes as possible by repeatedly\n invoking the read method of the\
+              \ underlying stream.  This\n iterated read continues until one of the\
+              \ following\n conditions becomes true: \n\n    The specified number\
+              \ of bytes have been read,\n\n    The read method of the underlying\
+              \ stream returns\n   -1, indicating end-of-file, or\n\n    The available\
+              \ method of the underlying stream\n   returns zero, indicating that\
+              \ further input requests would block.\n\n  If the first read on the\
+              \ underlying stream returns\n -1 to indicate end-of-file then this method\
+              \ returns\n -1.  Otherwise this method returns the number of bytes\n\
+              \ actually read.\n\n  Subclasses of this class are encouraged, but not\
+              \ required, to\n attempt to read as many bytes as possible in the same\
+              \ fashion."
+          - name: read1
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
             - name: arg1
               type:
@@ -91,17 +287,22 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "See the general contract of the reset\n method of InputStream.\n\
+              \ \n If markpos is -1\n (no mark has been set or the mark has been\n\
+              \ invalidated), an IOException\n is thrown. Otherwise, pos is\n set\
+              \ equal to markpos."
           - name: skip
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: long
                 full: long
+              notes: the number of bytes to be skipped.
             return:
               type:
                 basic: long
                 full: long
-          javaType: class
-          extends: FilterInputStream
+              notes: the actual number of bytes skipped.
+            notes: "See the general contract of the skip\n method of InputStream."

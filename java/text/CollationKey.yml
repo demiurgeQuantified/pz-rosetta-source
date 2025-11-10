@@ -1,0 +1,110 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.text:
+        CollationKey:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A CollationKey represents a String under the\n rules of a specific\
+            \ Collator object. Comparing two\n CollationKeys returns the relative\
+            \ order of the\n Strings they represent. Using CollationKeys\n to compare\
+            \ Strings is generally faster than using\n Collator.compare. Thus, when\
+            \ the Strings\n must be compared multiple times, for example when sorting\
+            \ a list\n of Strings. It's more efficient to use CollationKeys.\n\n \n\
+            \ You can not create CollationKeys directly. Rather,\n generate them by\
+            \ calling Collator.getCollationKey.\n You can only compare CollationKeys\
+            \ generated from\n the same Collator object.\n\n \n Generating a CollationKey\
+            \ for a String\n involves examining the entire String\n and converting\
+            \ it to series of bits that can be compared bitwise. This\n allows fast\
+            \ comparisons once the keys are generated. The cost of generating\n keys\
+            \ is recouped in faster comparisons when Strings need\n to be compared\
+            \ many times. On the other hand, the result of a comparison\n is often\
+            \ determined by the first couple of characters of each String.\n Collator.compare\
+            \ examines only as many characters as it needs which\n allows it to be\
+            \ faster when doing single comparisons.\n \n The following example shows\
+            \ how CollationKeys might be used\n to sort a list of Strings.\n \n <code>\n\
+            \ // Create an array of CollationKeys for the Strings to be sorted.\n\
+            \ Collator myCollator = Collator.getInstance();\n CollationKey[] keys\
+            \ = new CollationKey[3];\n keys[0] = myCollator.getCollationKey(\"Tom\"\
+            );\n keys[1] = myCollator.getCollationKey(\"Dick\");\n keys[2] = myCollator.getCollationKey(\"\
+            Harry\");\n sort(keys);\n\n //...\n\n // Inside body of sort routine,\
+            \ compare keys this way\n if (keys[i].compareTo(keys[j]) > 0)\n    //\
+            \ swap keys[i] and keys[j]\n\n //...\n\n // Finally, when we've returned\
+            \ from sort.\n System.out.println(keys[0].getSourceString());\n System.out.println(keys[1].getSourceString());\n\
+            \ System.out.println(keys[2].getSourceString());\n </code>"
+          fields:
+            source:
+              name: source
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the source string
+            notes: CollationKey constructor.
+          methods:
+          - name: compareTo
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: target
+              type:
+                basic: CollationKey
+                full: java.text.CollationKey
+              notes: target CollationKey
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "Returns an integer value. Value is less than zero if this is\
+                \ less\n than target, value is zero if this and target are equal and\
+                \ value is greater than\n zero if this is greater than target."
+            notes: "Compare this CollationKey to the target CollationKey. The collation\
+              \ rules of the\n Collator object which created these keys are applied.\
+              \ Note:\n CollationKeys created by different Collators can not be compared."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getSourceString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the source string of this CollationKey
+            notes: Returns the String that this CollationKey represents.
+          - name: toByteArray
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: byte
+                full: byte[]
+              notes: a byte array representation of the CollationKey
+            notes: "Converts the CollationKey to a sequence of bits. If two CollationKeys\n\
+              \ could be legitimately compared, then one could compare the byte arrays\n\
+              \ for each of those keys to obtain the same result.  Byte arrays are\n\
+              \ organized most significant byte first."

@@ -4,65 +4,109 @@ languages:
     packages:
       java.security:
         Permission:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract class for representing access to a system resource.\n All\
+            \ permissions have a name (whose interpretation depends on the subclass),\n\
+            \ as well as abstract functions for defining the semantics of the\n particular\
+            \ Permission subclass.\n\n Most Permission objects also include an \"\
+            actions\" list that tells the actions\n that are permitted for the object.\
+            \  For example,\n for a java.io.FilePermission object, the permission\
+            \ name is\n the pathname of a file (or directory), and the actions list\n\
+            \ (such as \"read, write\") specifies which actions are granted for the\n\
+            \ specified file (or for files in the specified directory).\n The actions\
+            \ list is optional for Permission objects, such as\n java.lang.RuntimePermission,\n\
+            \ that don't need such a list; you either have the named permission (such\n\
+            \ as \"system.exit\") or you don't.\n\n An important method that must\
+            \ be implemented by each subclass is\n the implies method to compare Permissions.\
+            \ Basically,\n \"permission p1 implies permission p2\" means that\n if\
+            \ one is granted permission p1, one is naturally granted permission p2.\n\
+            \ Thus, this is not an equality test, but rather more of a\n subset test.\n\
+            \n  Permission objects are similar to String objects in that they\n are\
+            \ immutable once they have been created. Subclasses should not\n provide\
+            \ methods that can change the state of a permission\n once it has been\
+            \ created."
+          fields:
+            name:
+              name: name
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: name of the Permission object being created.
+            notes: Constructs a permission with the specified name.
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: checkGuard
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: object
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object being guarded (currently ignored).
             return:
               type:
                 basic: void
                 full: void
-          - name: checkGuard
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Implements the guard interface for a permission. The\n SecurityManager.checkPermission\
+              \ method is called,\n passing this permission object as the permission\
+              \ to check.\n Returns silently if access is granted. Otherwise, throws\n\
+              \ a SecurityException."
           - name: equals
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object we are testing for equality with this object.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if both Permission objects are equivalent.
+            notes: "Checks two Permission objects for equality.\n \n Do not use the\
+              \ equals method for making access control\n decisions; use the implies\
+              \ method."
           - name: getActions
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the actions of this Permission.
+            notes: "Returns the actions as a String. This is abstract\n so subclasses\
+              \ can defer creating a String representation until\n one is needed.\
+              \ Subclasses should always return actions in what they\n consider to\
+              \ be their\n canonical form. For example, two FilePermission objects\
+              \ created via\n the following:\n\n \n   perm1 = new FilePermission(p1,\"\
+              read,write\");\n   perm2 = new FilePermission(p2,\"write,read\");\n\
+              \ \n\n both return\n \"read,write\" when the getActions method is invoked."
           - name: getName
             modifiers:
             - public
@@ -71,25 +115,51 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of this Permission.
+            notes: "Returns the name of this Permission.\n For example, in the case\
+              \ of a java.io.FilePermission,\n the name will be a pathname."
           - name: hashCode
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object.
+            notes: "Returns the hash code value for this Permission object.\n \n The\
+              \ required hashCode behavior for Permission Objects is\n the following:\n\
+              \ \n Whenever it is invoked on the same Permission object more than\n\
+              \     once during an execution of a Java application, the\n     hashCode\
+              \ method\n     must consistently return the same integer. This integer\
+              \ need not\n     remain consistent from one execution of an application\
+              \ to another\n     execution of the same application.\n If two Permission\
+              \ objects are equal according to the\n     equals\n     method, then\
+              \ calling the hashCode method on each of the\n     two Permission objects\
+              \ must produce the same integer result."
           - name: implies
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: permission
               type:
                 basic: Permission
                 full: java.security.Permission
+              notes: the permission to check against.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified permission is implied by this object,\n\
+                \ false if not."
+            notes: "Checks if the specified permission's actions are \"implied by\"\
+              \n this object's actions.\n \n This must be implemented by subclasses\
+              \ of Permission, as they are the\n only ones that can impose semantics\
+              \ on a Permission object.\n\n The implies method is used by the AccessController\
+              \ to determine\n whether or not a requested permission is implied by\
+              \ another permission that\n is known to be valid in the current execution\
+              \ context."
           - name: newPermissionCollection
             modifiers:
             - public
@@ -97,5 +167,20 @@ languages:
               type:
                 basic: PermissionCollection
                 full: java.security.PermissionCollection
-          javaType: class
-          extends: Object
+              notes: "a new PermissionCollection object for this type of Permission,\
+                \ or\n null if one is not defined."
+            notes: "Returns an empty PermissionCollection for a given Permission object,\
+              \ or null if\n one is not defined. Subclasses of class Permission should\n\
+              \ override this if they need to store their permissions in a particular\n\
+              \ PermissionCollection object in order to provide the correct semantics\n\
+              \ when the PermissionCollection.implies method is called.\n If null\
+              \ is returned,\n then the caller of this method is free to store permissions\
+              \ of this\n type in any PermissionCollection they choose (one that uses\
+              \ a Hashtable,\n one that uses a Vector, etc)."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

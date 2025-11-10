@@ -4,52 +4,138 @@ languages:
     packages:
       java.awt:
         Menu:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
+          extends: java.awt.MenuItem
+          modifiers:
+          - public
+          notes: "A Menu object is a pull-down menu component\n that is deployed from\
+            \ a menu bar.\n \n A menu can optionally be a tear-off menu. A tear-off\
+            \ menu\n can be opened and dragged away from its parent menu bar or menu.\n\
+            \ It remains on the screen after the mouse button has been released.\n\
+            \ The mechanism for tearing off a menu is platform dependent, since\n\
+            \ the look and feel of the tear-off menu is determined by its peer.\n\
+            \ On platforms that do not support tear-off menus, the tear-off\n property\
+            \ is ignored.\n \n Each item in a menu must belong to the MenuItem\n class.\
+            \ It can be an instance of MenuItem, a submenu\n (an instance of Menu),\
+            \ or a check box (an instance of\n CheckboxMenuItem)."
+          fields:
+            isHelpMenu:
+              name: isHelpMenu
+              modifiers:
+              - package
               type:
                 basic: boolean
                 full: boolean
+            items:
+              name: items
+              modifiers:
+              - private
+              type:
+                basic: Vector
+                full: java.util.Vector<java.awt.MenuItem>
+            menuSerializedDataVersion:
+              name: menuSerializedDataVersion
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            tearOff:
+              name: tearOff
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            base:
+              name: base
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            nameCounter:
+              name: nameCounter
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: "Constructs a new menu with an empty label. This menu is not\n\
+              \ a tear-off menu."
+          - modifiers:
+            - public
+            parameters:
+            - name: label
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the menu's label in the menu bar, or in\n                  \
+                \ another menu of which this menu is a submenu."
+            notes: "Constructs a new menu with the specified label. This menu is not\n\
+              \ a tear-off menu."
+          - modifiers:
+            - public
+            parameters:
+            - name: label
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the menu's label in the menu bar, or in\n                  \
+                \ another menu of which this menu is a submenu."
+            - name: tearOff
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if true, the menu\n                   is a tear-off menu."
+            notes: "Constructs a new menu with the specified label,\n indicating whether\
+              \ the menu can be torn off.\n \n Tear-off functionality may not be supported\
+              \ by all\n implementations of AWT.  If a particular implementation doesn't\n\
+              \ support tear-off menus, this value is silently ignored."
           methods:
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: mi
               type:
                 basic: MenuItem
                 full: java.awt.MenuItem
+              notes: the menu item to be added
             return:
               type:
                 basic: MenuItem
                 full: java.awt.MenuItem
+              notes: the menu item added
+            notes: "Adds the specified menu item to this menu. If the\n menu item\
+              \ has been part of another menu, removes it\n from that menu."
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: label
               type:
                 basic: String
                 full: java.lang.String
+              notes: the text on the item
             return:
               type:
                 basic: void
                 full: void
+            notes: Adds an item with the specified label to this menu.
           - name: addNotify
             modifiers:
             - public
@@ -57,6 +143,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Creates the menu's peer.  The peer allows us to modify the\n appearance\
+              \ of the menu without changing its functionality."
           - name: addSeparator
             modifiers:
             - public
@@ -64,6 +152,14 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Adds a separator line, or a hypen, to the menu at the current position.
+          - name: constructComponentName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: countItems
             modifiers:
             - public
@@ -71,7 +167,40 @@ languages:
               type:
                 basic: int
                 full: int
-            deprecated: true
+              notes: the number of items in this menu
+            notes: Returns the number of items in this menu.
+          - name: countItemsImpl
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+          - name: deleteShortcut
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MenuShortcut
+                full: java.awt.MenuShortcut
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getAccessibleChildIndex
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MenuComponent
+                full: java.awt.MenuComponent
+            return:
+              type:
+                basic: int
+                full: int
           - name: getAccessibleContext
             modifiers:
             - public
@@ -79,32 +208,26 @@ languages:
               type:
                 basic: AccessibleContext
                 full: javax.accessibility.AccessibleContext
-          - name: getAccessibleContext
-            modifiers:
-            - public
-            return:
-              type:
-                basic: AccessibleContext
-                full: javax.accessibility.AccessibleContext
-          - name: getFont
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Font
-                full: java.awt.Font
+              notes: "an AccessibleAWTMenu that serves as the\n         AccessibleContext\
+                \ of this Menu"
+            notes: "Gets the AccessibleContext associated with this Menu.\n For menus,\
+              \ the AccessibleContext takes the form of an\n AccessibleAWTMenu.\n\
+              \ A new AccessibleAWTMenu instance is created if necessary."
           - name: getItem
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the position of the item to be returned.
             return:
               type:
                 basic: MenuItem
                 full: java.awt.MenuItem
+              notes: the item located at the specified index.
+            notes: Gets the item located at the specified index of this menu.
           - name: getItemCount
             modifiers:
             - public
@@ -112,50 +235,102 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: insert
+              notes: the number of items in this menu
+            notes: Get the number of items in this menu.
+          - name: getItemImpl
             modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
               type:
                 basic: MenuItem
                 full: java.awt.MenuItem
-            - name: arg1
+          - name: getShortcutMenuItem
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
               type:
-                basic: int
-                full: int
+                basic: MenuShortcut
+                full: java.awt.MenuShortcut
             return:
               type:
-                basic: void
-                full: void
+                basic: MenuItem
+                full: java.awt.MenuItem
+          - name: handleShortcut
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: KeyEvent
+                full: java.awt.event.KeyEvent
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: menuitem
               type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
+                basic: MenuItem
+                full: java.awt.MenuItem
+              notes: the menu item to be inserted.
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: "the position at which the menu\n                          item\
+                \ should be inserted."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Inserts a menu item into this menu\n at the specified position."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: label
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the text on the item
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "the position at which the menu item\n                      should\
+                \ be inserted"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Inserts a menu item with the specified label into this menu\n\
+              \ at the specified position.  This is a convenience method for\n insert(menuItem,\
+              \ index)."
           - name: insertSeparator
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: "the position at which the\n                       menu separator\
+                \ should be inserted."
             return:
               type:
                 basic: void
                 full: void
+            notes: Inserts a separator at the specified position.
           - name: isTearOff
             modifiers:
             - public
@@ -163,6 +338,12 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this is a tear-off menu;\n                         false\
+                \ otherwise."
+            notes: "Indicates whether this menu is a tear-off menu.\n \n Tear-off\
+              \ functionality may not be supported by all\n implementations of AWT.\
+              \  If a particular implementation doesn't\n support tear-off menus,\
+              \ this value is silently ignored."
           - name: paramString
             modifiers:
             - public
@@ -170,55 +351,52 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: postEvent
+              notes: the parameter string of this menu
+            notes: "Returns a string representing the state of this Menu.\n This method\
+              \ is intended to be used only for debugging purposes, and the\n content\
+              \ and format of the returned string may vary between\n implementations.\
+              \ The returned string may be empty but may not be\n null."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Event
-                full: java.awt.Event
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
-                basic: boolean
-                full: boolean
-            deprecated: true
+                basic: void
+                full: void
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the position of the item to be removed.
             return:
               type:
                 basic: void
                 full: void
+            notes: Removes the menu item at the specified index from this menu.
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: item
               type:
                 basic: MenuComponent
                 full: java.awt.MenuComponent
+              notes: "the item to be removed from the menu.\n         If item is null\n\
+                \         or is not in this menu, this method does\n         nothing."
             return:
               type:
                 basic: void
                 full: void
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: MenuComponent
-                full: java.awt.MenuComponent
-            return:
-              type:
-                basic: void
-                full: void
+            notes: Removes the specified menu item from this menu.
           - name: removeAll
             modifiers:
             - public
@@ -226,6 +404,7 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Removes all items from this menu.
           - name: removeNotify
             modifiers:
             - public
@@ -233,5 +412,33 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: MenuItem
+            notes: "Removes the menu's peer.  The peer allows us to modify the appearance\n\
+              \ of the menu without changing its functionality."
+          - name: shortcuts
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Enumeration
+                full: java.util.Enumeration<java.awt.MenuShortcut>
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

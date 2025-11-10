@@ -1,0 +1,515 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.awt:
+        ScrollPane:
+          extends: java.awt.Container
+          modifiers:
+          - public
+          notes: "A container class which implements automatic horizontal and/or\n\
+            \ vertical scrolling for a single child component.  The display\n policy\
+            \ for the scrollbars can be set to:\n \n as needed: scrollbars created\
+            \ and shown only when needed by scrollpane\n always: scrollbars created\
+            \ and always shown by the scrollpane\n never: scrollbars never created\
+            \ or shown by the scrollpane\n \n \n The state of the horizontal and vertical\
+            \ scrollbars is represented\n by two ScrollPaneAdjustable objects (one\
+            \ for each\n dimension) which implement the Adjustable interface.\n The\
+            \ API provides methods to access those objects such that the\n attributes\
+            \ on the Adjustable object (such as unitIncrement, value,\n etc.) can\
+            \ be manipulated.\n \n Certain adjustable properties (minimum, maximum,\
+            \ blockIncrement,\n and visibleAmount) are set internally by the scrollpane\
+            \ in accordance\n with the geometry of the scrollpane and its child and\
+            \ these should\n not be set by programs using the scrollpane.\n \n If\
+            \ the scrollbar display policy is defined as \"never\", then the\n scrollpane\
+            \ can still be programmatically scrolled using the\n setScrollPosition()\
+            \ method and the scrollpane will move and clip\n the child's contents\
+            \ appropriately.  This policy is useful if the\n program needs to create\
+            \ and manage its own adjustable controls.\n \n The placement of the scrollbars\
+            \ is controlled by platform-specific\n properties set by the user outside\
+            \ of the program.\n \n The initial size of this container is set to 100x100,\
+            \ but can\n be reset using setSize().\n \n Scrolling with the wheel on\
+            \ a wheel-equipped mouse is enabled by default.\n This can be disabled\
+            \ using setWheelScrollingEnabled.\n Wheel scrolling can be customized\
+            \ by setting the block and\n unit increment of the horizontal and vertical\
+            \ Adjustables.\n For information on how mouse wheel events are dispatched,\
+            \ see\n the class description for MouseWheelEvent.\n \n Insets are used\
+            \ to define any space used by scrollbars and any\n borders created by\
+            \ the scroll pane. getInsets() can be used\n to get the current value\
+            \ for the insets.  If the value of\n scrollbarsAlwaysVisible is false,\
+            \ then the value of the insets\n will change dynamically depending on\
+            \ whether the scrollbars are\n currently visible or not."
+          fields:
+            hAdjustable:
+              name: hAdjustable
+              modifiers:
+              - private
+              type:
+                basic: ScrollPaneAdjustable
+                full: java.awt.ScrollPaneAdjustable
+            scrollbarDisplayPolicy:
+              name: scrollbarDisplayPolicy
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            vAdjustable:
+              name: vAdjustable
+              modifiers:
+              - private
+              type:
+                basic: ScrollPaneAdjustable
+                full: java.awt.ScrollPaneAdjustable
+            wheelScrollingEnabled:
+              name: wheelScrollingEnabled
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            SCROLLBARS_ALWAYS:
+              name: SCROLLBARS_ALWAYS
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Specifies that horizontal/vertical scrollbars should always\
+                \ be\n shown regardless of the respective sizes of the scrollpane\
+                \ and child."
+            SCROLLBARS_AS_NEEDED:
+              name: SCROLLBARS_AS_NEEDED
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Specifies that horizontal/vertical scrollbar should be shown\n\
+                \ only when the size of the child exceeds the size of the scrollpane\n\
+                \ in the horizontal/vertical dimension."
+            SCROLLBARS_NEVER:
+              name: SCROLLBARS_NEVER
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Specifies that horizontal/vertical scrollbars should never be\
+                \ shown\n regardless of the respective sizes of the scrollpane and\
+                \ child."
+            base:
+              name: base
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            defaultWheelScroll:
+              name: defaultWheelScroll
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            nameCounter:
+              name: nameCounter
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: "Create a new scrollpane container with a scrollbar display\n policy\
+              \ of \"as needed\"."
+          - modifiers:
+            - public
+            parameters:
+            - name: scrollbarDisplayPolicy
+              type:
+                basic: int
+                full: int
+              notes: policy for when scrollbars should be shown
+            notes: Create a new scrollpane container.
+          methods:
+          - name: addImpl
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: comp
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: the component to be added
+            - name: constraints
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: not applicable
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: position of child component (must be <= 0)
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Adds the specified component to this scroll pane container.\n\
+              \ If the scroll pane has an existing child component, that\n component\
+              \ is removed and the new one is added."
+          - name: addNotify
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Creates the scroll pane's peer.
+          - name: addToPanel
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Component
+                full: java.awt.Component
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: autoProcessMouseWheel
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: MouseWheelEvent
+                full: java.awt.event.MouseWheelEvent
+            return:
+              type:
+                basic: void
+                full: void
+          - name: calculateChildSize
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Dimension
+                full: java.awt.Dimension
+          - name: constructComponentName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: doLayout
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Lays out this container by resizing its child to its preferred\
+              \ size.\n If the new preferred size of the child causes the current\
+              \ scroll\n position to be invalid, the scroll position is set to the\
+              \ closest\n valid position."
+          - name: eventTypeEnabled
+            modifiers:
+            - protected
+            parameters:
+            - name: type
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+            notes: If wheel scrolling is enabled, we return true for MouseWheelEvents
+          - name: getAccessibleContext
+            modifiers:
+            - public
+            return:
+              type:
+                basic: AccessibleContext
+                full: javax.accessibility.AccessibleContext
+              notes: "an AccessibleAWTScrollPane that serves as the\n         AccessibleContext\
+                \ of this ScrollPane"
+            notes: "Gets the AccessibleContext associated with this ScrollPane.\n\
+              \ For scroll panes, the AccessibleContext takes the form of an\n AccessibleAWTScrollPane.\n\
+              \ A new AccessibleAWTScrollPane instance is created if necessary."
+          - name: getHAdjustable
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Adjustable
+                full: java.awt.Adjustable
+              notes: the horizontal scrollbar state
+            notes: "Returns the ScrollPaneAdjustable object which\n represents the\
+              \ state of the horizontal scrollbar.\n The declared return type of this\
+              \ method is\n Adjustable to maintain backward compatibility."
+          - name: getHScrollbarHeight
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the height of a horizontal scrollbar in pixels
+            notes: "Returns the height that would be occupied by a horizontal\n scrollbar,\
+              \ which is independent of whether it is currently\n displayed by the\
+              \ scroll pane or not."
+          - name: getScrollPosition
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: the coordinate position for the current scroll position
+            notes: "Returns the current x,y position within the child which is displayed\n\
+              \ at the 0,0 location of the scrolled panel's view port.\n This is a\
+              \ convenience method which interfaces with the adjustable\n objects\
+              \ which represent the state of the scrollbars."
+          - name: getScrollbarDisplayPolicy
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the display policy for the scrollbars
+            notes: Returns the display policy for the scrollbars.
+          - name: getVAdjustable
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Adjustable
+                full: java.awt.Adjustable
+              notes: the vertical scrollbar state
+            notes: "Returns the ScrollPaneAdjustable object which\n represents the\
+              \ state of the vertical scrollbar.\n The declared return type of this\
+              \ method is\n Adjustable to maintain backward compatibility."
+          - name: getVScrollbarWidth
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the width of a vertical scrollbar in pixels
+            notes: "Returns the width that would be occupied by a vertical\n scrollbar,\
+              \ which is independent of whether it is currently\n displayed by the\
+              \ scroll pane or not."
+          - name: getViewportSize
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Dimension
+                full: java.awt.Dimension
+              notes: the size of the view port in pixels
+            notes: Returns the current size of the scroll pane's view port.
+          - name: isWheelScrollingEnabled
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the wheel scrolling enabled;\n         otherwise false"
+            notes: "Indicates whether or not scrolling will take place in response\
+              \ to\n the mouse wheel.  Wheel scrolling is enabled by default."
+          - name: layout
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: paramString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the parameter string of this scroll pane
+            notes: "Returns a string representing the state of this\n ScrollPane.\
+              \ This\n method is intended to be used only for debugging purposes,\
+              \ and the\n content and format of the returned string may vary between\n\
+              \ implementations. The returned string may be empty but may not be\n\
+              \ null."
+          - name: printComponents
+            modifiers:
+            - public
+            parameters:
+            - name: g
+              type:
+                basic: Graphics
+                full: java.awt.Graphics
+              notes: the specified Graphics window
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Prints the component in this scroll pane.
+          - name: processMouseWheelEvent
+            modifiers:
+            - protected
+            parameters:
+            - name: e
+              type:
+                basic: MouseWheelEvent
+                full: java.awt.event.MouseWheelEvent
+              notes: the mouse wheel event
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Process mouse wheel events that are delivered to this\n ScrollPane\
+              \ by scrolling an appropriate amount.\n Note that if the event parameter\
+              \ is null\n the behavior is unspecified and may result in an\n exception."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setLayout
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: mgr
+              type:
+                basic: LayoutManager
+                full: java.awt.LayoutManager
+              notes: the specified layout manager
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the layout manager for this container.  This method is\n\
+              \ overridden to prevent the layout mgr from being set."
+          - name: setScrollPosition
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: the x position to scroll to
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: the y position to scroll to
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Scrolls to the specified position within the child component.\n\
+              \ A call to this method is only valid if the scroll pane contains\n\
+              \ a child.  Specifying a position outside of the legal scrolling bounds\n\
+              \ of the child will scroll to the closest legal position.\n Legal bounds\
+              \ are defined to be the rectangle:\n x = 0, y = 0, width = (child width\
+              \ - view port width),\n height = (child height - view port height).\n\
+              \ This is a convenience method which interfaces with the Adjustable\n\
+              \ objects which represent the state of the scrollbars."
+          - name: setScrollPosition
+            modifiers:
+            - public
+            parameters:
+            - name: p
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: the Point representing the position to scroll to
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Scrolls to the specified position within the child component.\n\
+              \ A call to this method is only valid if the scroll pane contains\n\
+              \ a child and the specified position is within legal scrolling bounds\n\
+              \ of the child.  Specifying a position outside of the legal scrolling\n\
+              \ bounds of the child will scroll to the closest legal position.\n Legal\
+              \ bounds are defined to be the rectangle:\n x = 0, y = 0, width = (child\
+              \ width - view port width),\n height = (child height - view port height).\n\
+              \ This is a convenience method which interfaces with the Adjustable\n\
+              \ objects which represent the state of the scrollbars."
+          - name: setWheelScrollingEnabled
+            modifiers:
+            - public
+            parameters:
+            - name: handleWheel
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if scrolling should be done\n                      automatically\
+                \ for a MouseWheelEvent,\n                      false otherwise."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Enables/disables scrolling in response to movement of the mouse\
+              \ wheel.\n Wheel scrolling is enabled by default."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

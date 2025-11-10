@@ -4,6 +4,10 @@ languages:
     packages:
       zombie.core:
         Action:
+          extends: java.lang.Object
+          modifiers:
+          - package
+          - abstract
           fields:
             duration:
               name: duration
@@ -12,15 +16,70 @@ languages:
               type:
                 basic: long
                 full: long
-                nullable: true
-          methods:
-          - name: getPacketSizeBytes
-            modifiers:
-            - public
-            return:
+            endTime:
+              name: endTime
+              modifiers:
+              - protected
+              type:
+                basic: long
+                full: long
+            id:
+              name: id
+              modifiers:
+              - protected
+              type:
+                basic: byte
+                full: byte
+            playerID:
+              name: playerID
+              modifiers:
+              - package
+              type:
+                basic: PlayerID
+                full: zombie.network.fields.character.PlayerID
+            startTime:
+              name: startTime
+              modifiers:
+              - protected
+              type:
+                basic: long
+                full: long
+            state:
+              name: state
+              modifiers:
+              - protected
+              type:
+                basic: Transaction.TransactionState
+                full: zombie.core.Transaction$TransactionState
+          staticFields:
+            TimeoutForInfinitiveActions:
+              name: TimeoutForInfinitiveActions
+              modifiers:
+              - protected
+              - static
               type:
                 basic: int
                 full: int
+            lastId:
+              name: lastId
+              modifiers:
+              - protected
+              - static
+              type:
+                basic: byte
+                full: byte
+          constructors:
+          - modifiers:
+            - package
+          methods:
+          - name: getDuration
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: float
+                full: float
           - name: getProgress
             modifiers:
             - public
@@ -40,14 +99,18 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isConsistent
+          - name: isUsingTimeout
             modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - package
+            - abstract
+            return:
               type:
-                basic: UdpConnection
-                full: zombie.core.raknet.UdpConnection
+                basic: boolean
+                full: boolean
+          - name: isValid
+            modifiers:
+            - package
+            - abstract
             return:
               type:
                 basic: boolean
@@ -68,22 +131,14 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: parse
+          - name: perform
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            - name: arg1
-              type:
-                basic: UdpConnection
-                full: zombie.core.raknet.UdpConnection
+            - package
+            - abstract
             return:
               type:
-                basic: void
-                full: void
+                basic: boolean
+                full: boolean
           - name: set
             modifiers:
             - public
@@ -114,7 +169,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: TransactionState
+                basic: Transaction.TransactionState
                 full: zombie.core.Transaction$TransactionState
             return:
               type:
@@ -127,14 +182,26 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: write
+          - name: start
             modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - package
+            - abstract
+            return:
               type:
-                basic: ByteBufferWriter
-                full: zombie.core.network.ByteBufferWriter
+                basic: void
+                full: void
+          - name: stop
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+          - name: update
+            modifiers:
+            - package
+            - abstract
             return:
               type:
                 basic: void
@@ -151,5 +218,3 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object

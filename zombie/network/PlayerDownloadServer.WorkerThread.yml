@@ -4,16 +4,81 @@ languages:
     packages:
       zombie.network:
         PlayerDownloadServer.WorkerThread:
+          extends: java.lang.Thread
+          modifiers:
+          - public
+          - final
           fields:
+            bQuit:
+              name: bQuit
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            bReady:
+              name: bReady
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
             cancelQ:
               name: cancelQ
               modifiers:
               - public
-              - final
               type:
-                basic: ConcurrentLinkedQueue<Integer>
+                basic: ConcurrentLinkedQueue
                 full: java.util.concurrent.ConcurrentLinkedQueue<java.lang.Integer>
-                nullable: true
+            cancelled:
+              name: cancelled
+              modifiers:
+              - package
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.lang.Integer>
+            commandQ:
+              name: commandQ
+              modifiers:
+              - package
+              type:
+                basic: LinkedBlockingQueue
+                full: java.util.concurrent.LinkedBlockingQueue<zombie.network.PlayerDownloadServer$WorkerThreadCommand>
+            compressor:
+              name: compressor
+              modifiers:
+              - package
+              type:
+                basic: Deflater
+                full: java.util.zip.Deflater
+            crcMaker:
+              name: crcMaker
+              modifiers:
+              - package
+              type:
+                basic: CRC32
+                full: java.util.zip.CRC32
+            freeRequests:
+              name: freeRequests
+              modifiers:
+              - package
+              type:
+                basic: ConcurrentLinkedQueue
+                full: java.util.concurrent.ConcurrentLinkedQueue<zombie.network.ClientChunkRequest>
+            inMemoryZip:
+              name: inMemoryZip
+              modifiers:
+              - package
+              type:
+                basic: byte
+                full: byte[]
+            this$0:
+              name: this$0
+              modifiers:
+              - package
+              type:
+                basic: PlayerDownloadServer
+                full: zombie.network.PlayerDownloadServer
           constructors:
           - modifiers:
             - public
@@ -29,12 +94,40 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Chunk
+                basic: ClientChunkRequest.Chunk
                 full: zombie.network.ClientChunkRequest$Chunk
             return:
               type:
                 basic: int
                 full: int
+          - name: isRequestCancelled
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClientChunkRequest.Chunk
+                full: zombie.network.ClientChunkRequest$Chunk
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: putCommand
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: PlayerDownloadServer.EThreadCommand
+                full: zombie.network.PlayerDownloadServer$EThreadCommand
+            - name: arg1
+              type:
+                basic: ClientChunkRequest
+                full: zombie.network.ClientChunkRequest
+            return:
+              type:
+                basic: void
+                full: void
           - name: run
             modifiers:
             - public
@@ -42,5 +135,62 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Thread
+          - name: runInner
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sendArray
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClientChunkRequest
+                full: zombie.network.ClientChunkRequest
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sendChunk
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClientChunkRequest.Chunk
+                full: zombie.network.ClientChunkRequest$Chunk
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sendLargeArea
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClientChunkRequest
+                full: zombie.network.ClientChunkRequest
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sendNotRequired
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClientChunkRequest.Chunk
+                full: zombie.network.ClientChunkRequest$Chunk
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void

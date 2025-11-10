@@ -4,193 +4,515 @@ languages:
     packages:
       java.awt.geom:
         AffineTransform:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The AffineTransform class represents a 2D affine transform\n that\
+            \ performs a linear mapping from 2D coordinates to other 2D\n coordinates\
+            \ that preserves the \"straightness\" and\n \"parallelness\" of lines.\
+            \  Affine transformations can be constructed\n using sequences of translations,\
+            \ scales, flips, rotations, and shears.\n \n Such a coordinate transformation\
+            \ can be represented by a 3 row by\n 3 column matrix with an implied last\
+            \ row of [ 0 0 1 ].  This matrix\n transforms source coordinates (x,y)\
+            \ into\n destination coordinates (x',y') by considering\n them to be a\
+            \ column vector and multiplying the coordinate vector\n by the matrix\
+            \ according to the following process:\n \n      [ x']   [  m00  m01  m02\
+            \  ] [ x ]   [ m00x + m01y + m02 ]\n      [ y'] = [  m10  m11  m12  ]\
+            \ [ y ] = [ m10x + m11y + m12 ]\n      [ 1 ]   [   0    0    1   ] [ 1\
+            \ ]   [         1         ]\n \n Handling 90-Degree Rotations\n \n In\
+            \ some variations of the rotate methods in the\n AffineTransform class,\
+            \ a double-precision argument\n specifies the angle of rotation in radians.\n\
+            \ These methods have special handling for rotations of approximately\n\
+            \ 90 degrees (including multiples such as 180, 270, and 360 degrees),\n\
+            \ so that the common case of quadrant rotation is handled more\n efficiently.\n\
+            \ This special handling can cause angles very close to multiples of\n\
+            \ 90 degrees to be treated as if they were exact multiples of\n 90 degrees.\n\
+            \ For small multiples of 90 degrees the range of angles treated\n as a\
+            \ quadrant rotation is approximately 0.00000121 degrees wide.\n This section\
+            \ explains why such special care is needed and how\n it is implemented.\n\
+            \ \n Since 90 degrees is represented as PI/2 in radians,\n and since PI\
+            \ is a transcendental (and therefore irrational) number,\n it is not possible\
+            \ to exactly represent a multiple of 90 degrees as\n an exact double precision\
+            \ value measured in radians.\n As a result it is theoretically impossible\
+            \ to describe quadrant\n rotations (90, 180, 270 or 360 degrees) using\
+            \ these values.\n Double precision floating point values can get very\
+            \ close to\n non-zero multiples of PI/2 but never close enough\n for the\
+            \ sine or cosine to be exactly 0.0, 1.0 or -1.0.\n The implementations\
+            \ of Math.sin() and\n Math.cos() correspondingly never return 0.0\n for\
+            \ any case other than Math.sin(0.0).\n These same implementations do,\
+            \ however, return exactly 1.0 and\n -1.0 for some range of numbers around\
+            \ each multiple of 90\n degrees since the correct answer is so close to\
+            \ 1.0 or -1.0 that\n the double precision significand cannot represent\
+            \ the difference\n as accurately as it can for numbers that are near 0.0.\n\
+            \ \n The net result of these issues is that if the\n Math.sin() and Math.cos()\
+            \ methods\n are used to directly generate the values for the matrix modifications\n\
+            \ during these radian-based rotation operations then the resulting\n transform\
+            \ is never strictly classifiable as a quadrant rotation\n even for a simple\
+            \ case like rotate(Math.PI/2.0),\n due to minor variations in the matrix\
+            \ caused by the non-0.0 values\n obtained for the sine and cosine.\n If\
+            \ these transforms are not classified as quadrant rotations then\n subsequent\
+            \ code which attempts to optimize further operations based\n upon the\
+            \ type of the transform will be relegated to its most general\n implementation.\n\
+            \ \n Because quadrant rotations are fairly common,\n this class should\
+            \ handle these cases reasonably quickly, both in\n applying the rotations\
+            \ to the transform and in applying the resulting\n transform to the coordinates.\n\
+            \ To facilitate this optimal handling, the methods which take an angle\n\
+            \ of rotation measured in radians attempt to detect angles that are\n\
+            \ intended to be quadrant rotations and treat them as such.\n These methods\
+            \ therefore treat an angle theta as a quadrant\n rotation if either Math.sin(theta)\
+            \ or\n Math.cos(theta) returns exactly 1.0 or -1.0.\n As a rule of thumb,\
+            \ this property holds true for a range of\n approximately 0.0000000211\
+            \ radians (or 0.00000121 degrees) around\n small multiples of Math.PI/2.0."
+          fields:
+            m00:
+              name: m00
+              modifiers:
+              - package
+              type:
+                basic: double
+                full: double
+            m01:
+              name: m01
+              modifiers:
+              - package
+              type:
+                basic: double
+                full: double
+            m02:
+              name: m02
+              modifiers:
+              - package
+              type:
+                basic: double
+                full: double
+            m10:
+              name: m10
+              modifiers:
+              - package
+              type:
+                basic: double
+                full: double
+            m11:
+              name: m11
+              modifiers:
+              - package
+              type:
+                basic: double
+                full: double
+            m12:
+              name: m12
+              modifiers:
+              - package
+              type:
+                basic: double
+                full: double
+            state:
+              name: state
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
+            APPLY_IDENTITY:
+              name: APPLY_IDENTITY
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            APPLY_SCALE:
+              name: APPLY_SCALE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            APPLY_SHEAR:
+              name: APPLY_SHEAR
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            APPLY_TRANSLATE:
+              name: APPLY_TRANSLATE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            HI_IDENTITY:
+              name: HI_IDENTITY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            HI_SCALE:
+              name: HI_SCALE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            HI_SHEAR:
+              name: HI_SHEAR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            HI_SHIFT:
+              name: HI_SHIFT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            HI_TRANSLATE:
+              name: HI_TRANSLATE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             TYPE_FLIP:
               name: TYPE_FLIP
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This flag bit indicates that the transform defined by this object\n\
+                \ performs a mirror image flip about some axis which changes the\n\
+                \ normally right handed coordinate system into a left handed\n system\
+                \ in addition to the conversions indicated by other flag bits.\n A\
+                \ right handed coordinate system is one where the positive X\n axis\
+                \ rotates counterclockwise to overlay the positive Y axis\n similar\
+                \ to the direction that the fingers on your right hand\n curl when\
+                \ you stare end on at your thumb.\n A left handed coordinate system\
+                \ is one where the positive X\n axis rotates clockwise to overlay\
+                \ the positive Y axis similar\n to the direction that the fingers\
+                \ on your left hand curl.\n There is no mathematical way to determine\
+                \ the angle of the\n original flipping or mirroring transformation\
+                \ since all angles\n of flip are identical given an appropriate adjusting\
+                \ rotation."
             TYPE_GENERAL_ROTATION:
               name: TYPE_GENERAL_ROTATION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This flag bit indicates that the transform defined by this object\n\
+                \ performs a rotation by an arbitrary angle in addition to the\n conversions\
+                \ indicated by other flag bits.\n A rotation changes the angles of\
+                \ vectors by the same amount\n regardless of the original direction\
+                \ of the vector and without\n changing the length of the vector.\n\
+                \ This flag bit is mutually exclusive with the\n TYPE_QUADRANT_ROTATION\
+                \ flag."
             TYPE_GENERAL_SCALE:
               name: TYPE_GENERAL_SCALE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This flag bit indicates that the transform defined by this object\n\
+                \ performs a general scale in addition to the conversions indicated\n\
+                \ by other flag bits.\n A general scale multiplies the length of vectors\
+                \ by different\n amounts in the x and y directions without changing\
+                \ the angle\n between perpendicular vectors.\n This flag bit is mutually\
+                \ exclusive with the TYPE_UNIFORM_SCALE flag."
             TYPE_GENERAL_TRANSFORM:
               name: TYPE_GENERAL_TRANSFORM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This constant indicates that the transform defined by this object\n\
+                \ performs an arbitrary conversion of the input coordinates.\n If\
+                \ this transform can be classified by any of the above constants,\n\
+                \ the type will either be the constant TYPE_IDENTITY or a\n combination\
+                \ of the appropriate flag bits for the various coordinate\n conversions\
+                \ that this transform performs."
             TYPE_IDENTITY:
               name: TYPE_IDENTITY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This constant indicates that the transform defined by this object\n\
+                \ is an identity transform.\n An identity transform is one in which\
+                \ the output coordinates are\n always the same as the input coordinates.\n\
+                \ If this transform is anything other than the identity transform,\n\
+                \ the type will either be the constant GENERAL_TRANSFORM or a\n combination\
+                \ of the appropriate flag bits for the various coordinate\n conversions\
+                \ that this transform performs."
             TYPE_MASK_ROTATION:
               name: TYPE_MASK_ROTATION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: This constant is a bit mask for any of the rotation flag bits.
             TYPE_MASK_SCALE:
               name: TYPE_MASK_SCALE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: This constant is a bit mask for any of the scale flag bits.
             TYPE_QUADRANT_ROTATION:
               name: TYPE_QUADRANT_ROTATION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This flag bit indicates that the transform defined by this object\n\
+                \ performs a quadrant rotation by some multiple of 90 degrees in\n\
+                \ addition to the conversions indicated by other flag bits.\n A rotation\
+                \ changes the angles of vectors by the same amount\n regardless of\
+                \ the original direction of the vector and without\n changing the\
+                \ length of the vector.\n This flag bit is mutually exclusive with\
+                \ the TYPE_GENERAL_ROTATION flag."
             TYPE_TRANSLATION:
               name: TYPE_TRANSLATION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This flag bit indicates that the transform defined by this object\n\
+                \ performs a translation in addition to the conversions indicated\n\
+                \ by other flag bits.\n A translation moves the coordinates by a constant\
+                \ amount in x\n and y without changing the length or angle of vectors."
             TYPE_UNIFORM_SCALE:
               name: TYPE_UNIFORM_SCALE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This flag bit indicates that the transform defined by this object\n\
+                \ performs a uniform scale in addition to the conversions indicated\n\
+                \ by other flag bits.\n A uniform scale multiplies the length of vectors\
+                \ by the same amount\n in both the x and y directions without changing\
+                \ the angle between\n vectors.\n This flag bit is mutually exclusive\
+                \ with the TYPE_GENERAL_SCALE flag."
+            TYPE_UNKNOWN:
+              name: TYPE_UNKNOWN
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            rot90conversion:
+              name: rot90conversion
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
-            - public
-          - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: double[]
-                full: double[]
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: double
+                full: double
+            - name: arg1
               type:
-                basic: float[]
-                full: float[]
+                basic: double
+                full: double
+            - name: arg2
+              type:
+                basic: double
+                full: double
+            - name: arg3
+              type:
+                basic: double
+                full: double
+            - name: arg4
+              type:
+                basic: double
+                full: double
+            - name: arg5
+              type:
+                basic: double
+                full: double
+            - name: arg6
+              type:
+                basic: int
+                full: int
+          - modifiers:
+            - public
+            notes: "Constructs a new AffineTransform representing the\n Identity transformation."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: Tx
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: the AffineTransform object to copy
+            notes: "Constructs a new AffineTransform that is a copy of\n the specified\
+              \ AffineTransform object."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m00
               type:
-                basic: double
-                full: double
-            - name: arg1
+                basic: float
+                full: float
+              notes: the X coordinate scaling element of the 3x3 matrix
+            - name: m10
               type:
-                basic: double
-                full: double
-            - name: arg2
+                basic: float
+                full: float
+              notes: the Y coordinate shearing element of the 3x3 matrix
+            - name: m01
               type:
-                basic: double
-                full: double
-            - name: arg3
+                basic: float
+                full: float
+              notes: the X coordinate shearing element of the 3x3 matrix
+            - name: m11
               type:
-                basic: double
-                full: double
-            - name: arg4
+                basic: float
+                full: float
+              notes: the Y coordinate scaling element of the 3x3 matrix
+            - name: m02
               type:
-                basic: double
-                full: double
-            - name: arg5
+                basic: float
+                full: float
+              notes: the X coordinate translation element of the 3x3 matrix
+            - name: m12
               type:
-                basic: double
-                full: double
+                basic: float
+                full: float
+              notes: the Y coordinate translation element of the 3x3 matrix
+            notes: "Constructs a new AffineTransform from 6 floating point\n values\
+              \ representing the 6 specifiable entries of the 3x3\n transformation\
+              \ matrix."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: flatmatrix
               type:
                 basic: float
-                full: float
-            - name: arg1
+                full: float[]
+              notes: "the float array containing the values to be set\n in the new\
+                \ AffineTransform object. The length of the\n array is assumed to\
+                \ be at least 4. If the length of the array is\n less than 6, only\
+                \ the first 4 values are taken. If the length of\n the array is greater\
+                \ than 6, the first 6 values are taken."
+            notes: "Constructs a new AffineTransform from an array of\n floating point\
+              \ values representing either the 4 non-translation\n entries or the\
+              \ 6 specifiable entries of the 3x3 transformation\n matrix.  The values\
+              \ are retrieved from the array as\n { m00 m10 m01 m11 [m02 m12]}."
+          - modifiers:
+            - public
+            parameters:
+            - name: m00
               type:
-                basic: float
-                full: float
-            - name: arg2
+                basic: double
+                full: double
+              notes: the X coordinate scaling element of the 3x3 matrix
+            - name: m10
               type:
-                basic: float
-                full: float
-            - name: arg3
+                basic: double
+                full: double
+              notes: the Y coordinate shearing element of the 3x3 matrix
+            - name: m01
               type:
-                basic: float
-                full: float
-            - name: arg4
+                basic: double
+                full: double
+              notes: the X coordinate shearing element of the 3x3 matrix
+            - name: m11
               type:
-                basic: float
-                full: float
-            - name: arg5
+                basic: double
+                full: double
+              notes: the Y coordinate scaling element of the 3x3 matrix
+            - name: m02
               type:
-                basic: float
-                full: float
+                basic: double
+                full: double
+              notes: the X coordinate translation element of the 3x3 matrix
+            - name: m12
+              type:
+                basic: double
+                full: double
+              notes: the Y coordinate translation element of the 3x3 matrix
+            notes: "Constructs a new AffineTransform from 6 double\n precision values\
+              \ representing the 6 specifiable entries of the 3x3\n transformation\
+              \ matrix."
+          - modifiers:
+            - public
+            parameters:
+            - name: flatmatrix
+              type:
+                basic: double
+                full: double[]
+              notes: "the double array containing the values to be set\n in the new\
+                \ AffineTransform object. The length of the\n array is assumed to\
+                \ be at least 4. If the length of the array is\n less than 6, only\
+                \ the first 4 values are taken. If the length of\n the array is greater\
+                \ than 6, the first 6 values are taken."
+            notes: "Constructs a new AffineTransform from an array of\n double precision\
+              \ values representing either the 4 non-translation\n entries or the\
+              \ 6 specifiable entries of the 3x3 transformation\n matrix. The values\
+              \ are retrieved from the array as\n { m00 m10 m01 m11 [m02 m12]}."
           methods:
-          - name: __toString__
+          - name: calculateType
             modifiers:
-            - public
+            - private
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: void
+                full: void
           - name: clone
             modifiers:
             - public
@@ -198,18 +520,32 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "an Object that is a copy of this\n AffineTransform object."
+            notes: Returns a copy of this AffineTransform object.
           - name: concatenate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: Tx
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform object to be\n concatenated with this AffineTransform\
+                \ object."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates an AffineTransform Tx to\n this AffineTransform Cx\
+              \ in the most commonly useful\n way to provide a new user space\n that\
+              \ is mapped to the former user space by Tx.\n Cx is updated to perform\
+              \ the combined transformation.\n Transforming a point p by the updated\
+              \ transform Cx' is\n equivalent to first transforming p by Tx and then\n\
+              \ transforming the result by the original transform Cx like this:\n\
+              \ Cx'(p) = Cx(Tx(p))\n In matrix notation, if this transform Cx is\n\
+              \ represented by the matrix [this] and Tx is represented\n by the matrix\
+              \ [Tx] then this method does the following:\n \n          [this] = [this]\
+              \ x [Tx]"
           - name: createInverse
             modifiers:
             - public
@@ -217,74 +553,130 @@ languages:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "a new AffineTransform object representing the\n inverse transformation."
+            notes: "Returns an AffineTransform object representing the\n inverse transformation.\n\
+              \ The inverse transform Tx' of this transform Tx\n maps coordinates\
+              \ transformed by Tx back\n to their original coordinates.\n In other\
+              \ words, Tx'(Tx(p)) = p = Tx(Tx'(p)).\n \n If this transform maps all\
+              \ coordinates onto a point or a line\n then it will not have an inverse,\
+              \ since coordinates that do\n not lie on the destination point or line\
+              \ will not have an inverse\n mapping.\n The getDeterminant method can\
+              \ be used to determine if this\n transform has no inverse, in which\
+              \ case an exception will be\n thrown if the createInverse method is\
+              \ called."
           - name: createTransformedShape
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pSrc
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "the specified Shape object to be\n transformed by this transform."
             return:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a new Shape object that defines the geometry\n of the transformed\
+                \ Shape, or null if pSrc is null."
+            notes: "Returns a new Shape object defined by the geometry of the\n specified\
+              \ Shape after it has been transformed by\n this transform."
           - name: deltaTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ptSrc
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
-            - name: arg1
+              notes: the distance vector to be delta transformed
+            - name: ptDst
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: the resulting transformed distance vector
             return:
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "ptDst, which contains the result of the\n transformation."
+            notes: "Transforms the relative distance vector specified by\n ptSrc and\
+              \ stores the result in ptDst.\n A relative distance vector is transformed\
+              \ without applying the\n translation components of the affine transformation\
+              \ matrix\n using the following equations:\n \n  [  x' ]   [  m00  m01\
+              \ (m02) ] [  x  ]   [ m00x + m01y ]\n  [  y' ] = [  m10  m11 (m12) ]\
+              \ [  y  ] = [ m10x + m11y ]\n  [ (1) ]   [  (0)  (0) ( 1 ) ] [ (1) ]\
+              \   [     (1)     ]\n \n If ptDst is null, a new\n Point2D object is\
+              \ allocated and then the result of the\n transform is stored in this\
+              \ object.\n In either case, ptDst, which contains the\n transformed\
+              \ point, is returned for convenience.\n If ptSrc and ptDst are the same\
+              \ object,\n the input point is correctly overwritten with the transformed\n\
+              \ point."
           - name: deltaTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: srcPts
               type:
-                basic: double[]
+                basic: double
                 full: double[]
-            - name: arg1
+              notes: "the array containing the source distance vectors.\n Each vector\
+                \ is stored as a pair of relative x, y coordinates."
+            - name: srcOff
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the offset to the first vector to be transformed\n in the source\
+                \ array"
+            - name: dstPts
               type:
-                basic: double[]
+                basic: double
                 full: double[]
-            - name: arg3
+              notes: "the array into which the transformed distance vectors\n are\
+                \ returned.  Each vector is stored as a pair of relative\n x, y coordinates."
+            - name: dstOff
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: "the offset to the location of the first\n transformed vector\
+                \ that is stored in the destination array"
+            - name: numPts
               type:
                 basic: int
                 full: int
+              notes: "the number of vector coordinate pairs to be\n transformed"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Transforms an array of relative distance vectors by this\n transform.\n\
+              \ A relative distance vector is transformed without applying the\n translation\
+              \ components of the affine transformation matrix\n using the following\
+              \ equations:\n \n  [  x' ]   [  m00  m01 (m02) ] [  x  ]   [ m00x +\
+              \ m01y ]\n  [  y' ] = [  m10  m11 (m12) ] [  y  ] = [ m10x + m11y ]\n\
+              \  [ (1) ]   [  (0)  (0) ( 1 ) ] [ (1) ]   [     (1)     ]\n \n The\
+              \ two coordinate array sections can be exactly the same or\n can be\
+              \ overlapping sections of the same array without affecting the\n validity\
+              \ of the results.\n This method ensures that no source coordinates are\n\
+              \ overwritten by a previous operation before they can be transformed.\n\
+              \ The coordinates are stored in the arrays starting at the indicated\n\
+              \ offset in the order [x0, y0, x1, y1, ..., xn, yn]."
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the Object to test for equality with this\n AffineTransform"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if obj equals this\n AffineTransform object; false otherwise."
+            notes: "Returns true if this AffineTransform\n represents the same affine\
+              \ coordinate transform as the specified\n argument."
           - name: getDeterminant
             modifiers:
             - public
@@ -292,18 +684,47 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "the determinant of the matrix used to transform the\n coordinates."
+            notes: "Returns the determinant of the matrix representation of the transform.\n\
+              \ The determinant is useful both to determine if the transform can\n\
+              \ be inverted and to get a single value representing the\n combined\
+              \ X and Y scaling of the transform.\n \n If the determinant is non-zero,\
+              \ then this transform is\n invertible and the various methods that depend\
+              \ on the inverse\n transform do not need to throw a\n NoninvertibleTransformException.\n\
+              \ If the determinant is zero then this transform can not be\n inverted\
+              \ since the transform maps all input coordinates onto\n a line or a\
+              \ point.\n If the determinant is near enough to zero then inverse transform\n\
+              \ operations might not carry enough precision to produce meaningful\n\
+              \ results.\n \n If this transform represents a uniform scale, as indicated\
+              \ by\n the getType method then the determinant also\n represents the\
+              \ square of the uniform scale factor by which all of\n the points are\
+              \ expanded from or contracted towards the origin.\n If this transform\
+              \ represents a non-uniform scale or more general\n transform then the\
+              \ determinant is not likely to represent a\n value useful for any purpose\
+              \ other than determining if inverse\n transforms are possible.\n \n\
+              \ Mathematically, the determinant is calculated using the formula:\n\
+              \ \n          |  m00  m01  m02  |\n          |  m10  m11  m12  |  =\
+              \  m00 * m11 - m01 * m10\n          |   0    0    1   |"
           - name: getMatrix
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: flatmatrix
               type:
-                basic: double[]
+                basic: double
                 full: double[]
+              notes: "the double array used to store the returned\n values."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Retrieves the 6 specifiable values in the 3x3 affine transformation\n\
+              \ matrix and places them into an array of double precisions values.\n\
+              \ The values are stored in the array as\n { m00 m10 m01 m11 m02 m12\
+              \ }.\n An array of 4 doubles can also be specified, in which case only\
+              \ the\n first four elements representing the non-transform\n parts of\
+              \ the array are retrieved and the values are stored into\n the array\
+              \ as { m00 m10 m01 m11 }"
           - name: getScaleX
             modifiers:
             - public
@@ -311,6 +732,15 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "a double value that is m00 element of the\n         3x3 affine\
+                \ transformation matrix."
+            notes: "Returns the m00 element of the 3x3 affine transformation matrix.\n\
+              \ This matrix factor determines how input X coordinates will affect\
+              \ output\n X coordinates and is one element of the scale of the transform.\n\
+              \ To measure the full amount by which X coordinates are stretched or\n\
+              \ contracted by this transform, use the following code:\n \n     Point2D\
+              \ p = new Point2D.Double(1, 0);\n     p = tx.deltaTransform(p, p);\n\
+              \     double scaleX = p.distance(0, 0);"
           - name: getScaleY
             modifiers:
             - public
@@ -318,6 +748,15 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "a double value that is m11 element of the\n         3x3 affine\
+                \ transformation matrix."
+            notes: "Returns the m11 element of the 3x3 affine transformation matrix.\n\
+              \ This matrix factor determines how input Y coordinates will affect\
+              \ output\n Y coordinates and is one element of the scale of the transform.\n\
+              \ To measure the full amount by which Y coordinates are stretched or\n\
+              \ contracted by this transform, use the following code:\n \n     Point2D\
+              \ p = new Point2D.Double(0, 1);\n     p = tx.deltaTransform(p, p);\n\
+              \     double scaleY = p.distance(0, 0);"
           - name: getShearX
             modifiers:
             - public
@@ -325,6 +764,10 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "a double value that is the X coordinate of the shearing\n  element\
+                \ of the affine transformation matrix."
+            notes: "Returns the X coordinate shearing element (m01) of the 3x3\n affine\
+              \ transformation matrix."
           - name: getShearY
             modifiers:
             - public
@@ -332,6 +775,10 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "a double value that is the Y coordinate of the shearing\n  element\
+                \ of the affine transformation matrix."
+            notes: "Returns the Y coordinate shearing element (m10) of the 3x3\n affine\
+              \ transformation matrix."
           - name: getTranslateX
             modifiers:
             - public
@@ -339,6 +786,10 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "a double value that is the X coordinate of the translation\n\
+                \  element of the affine transformation matrix."
+            notes: "Returns the X coordinate of the translation element (m02) of the\n\
+              \ 3x3 affine transformation matrix."
           - name: getTranslateY
             modifiers:
             - public
@@ -346,6 +797,10 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "a double value that is the Y coordinate of the translation\n\
+                \  element of the affine transformation matrix."
+            notes: "Returns the Y coordinate of the translation element (m12) of the\n\
+              \ 3x3 affine transformation matrix."
           - name: getType
             modifiers:
             - public
@@ -353,6 +808,16 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the OR combination of any of the indicated flags that\n apply\
+                \ to this transform"
+            notes: "Retrieves the flag bits describing the conversion properties of\n\
+              \ this transform.\n The return value is either one of the constants\
+              \ TYPE_IDENTITY\n or TYPE_GENERAL_TRANSFORM, or a combination of the\n\
+              \ appropriate flag bits.\n A valid combination of flag bits is an exclusive\
+              \ OR operation\n that can combine\n the TYPE_TRANSLATION flag bit\n\
+              \ in addition to either of the\n TYPE_UNIFORM_SCALE or TYPE_GENERAL_SCALE\
+              \ flag bits\n as well as either of the\n TYPE_QUADRANT_ROTATION or TYPE_GENERAL_ROTATION\
+              \ flag bits."
           - name: hashCode
             modifiers:
             - public
@@ -360,50 +825,78 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code for this transform.
+            notes: Returns the hashcode for this transform.
           - name: inverseTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ptSrc
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
-            - name: arg1
+              notes: the point to be inverse transformed
+            - name: ptDst
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: the resulting transformed point
             return:
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "ptDst, which contains the result of the\n inverse transform."
+            notes: "Inverse transforms the specified ptSrc and stores the\n result\
+              \ in ptDst.\n If ptDst is null, a new\n Point2D object is allocated\
+              \ and then the result of the\n transform is stored in this object.\n\
+              \ In either case, ptDst, which contains the transformed\n point, is\
+              \ returned for convenience.\n If ptSrc and ptDst are the same\n object,\
+              \ the input point is correctly overwritten with the\n transformed point."
           - name: inverseTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: srcPts
               type:
-                basic: double[]
+                basic: double
                 full: double[]
-            - name: arg1
+              notes: "the array containing the source point coordinates.\n Each point\
+                \ is stored as a pair of x, y coordinates."
+            - name: srcOff
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the offset to the first point to be transformed\n in the source\
+                \ array"
+            - name: dstPts
               type:
-                basic: double[]
+                basic: double
                 full: double[]
-            - name: arg3
+              notes: "the array into which the transformed point\n coordinates are\
+                \ returned.  Each point is stored as a pair of\n x, y coordinates."
+            - name: dstOff
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: "the offset to the location of the first\n transformed point\
+                \ that is stored in the destination array"
+            - name: numPts
               type:
                 basic: int
                 full: int
+              notes: the number of point objects to be transformed
             return:
               type:
                 basic: void
                 full: void
+            notes: "Inverse transforms an array of double precision coordinates by\n\
+              \ this transform.\n The two coordinate array sections can be exactly\
+              \ the same or\n can be overlapping sections of the same array without\
+              \ affecting the\n validity of the results.\n This method ensures that\
+              \ no source coordinates are\n overwritten by a previous operation before\
+              \ they can be transformed.\n The coordinates are stored in the arrays\
+              \ starting at the specified\n offset in the order [x0, y0, x1, y1, ...,\
+              \ xn, yn]."
           - name: invert
             modifiers:
             - public
@@ -411,6 +904,15 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to the inverse of itself.\n The inverse transform\
+              \ Tx' of this transform Tx\n maps coordinates transformed by Tx back\n\
+              \ to their original coordinates.\n In other words, Tx'(Tx(p)) = p =\
+              \ Tx(Tx'(p)).\n \n If this transform maps all coordinates onto a point\
+              \ or a line\n then it will not have an inverse, since coordinates that\
+              \ do\n not lie on the destination point or line will not have an inverse\n\
+              \ mapping.\n The getDeterminant method can be used to determine if this\n\
+              \ transform has no inverse, in which case an exception will be\n thrown\
+              \ if the invert method is called."
           - name: isIdentity
             modifiers:
             - public
@@ -418,46 +920,88 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this AffineTransform is\n an identity transform; false\
+                \ otherwise."
+            notes: "Returns true if this AffineTransform is\n an identity transform."
           - name: preConcatenate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: Tx
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform object to be\n concatenated with this AffineTransform\
+                \ object."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates an AffineTransform Tx to\n this AffineTransform Cx\n\
+              \ in a less commonly used way such that Tx modifies the\n coordinate\
+              \ transformation relative to the absolute pixel\n space rather than\
+              \ relative to the existing user space.\n Cx is updated to perform the\
+              \ combined transformation.\n Transforming a point p by the updated transform\
+              \ Cx' is\n equivalent to first transforming p by the original transform\n\
+              \ Cx and then transforming the result by\n Tx like this:\n Cx'(p) =\
+              \ Tx(Cx(p))\n In matrix notation, if this transform Cx\n is represented\
+              \ by the matrix [this] and Tx is\n represented by the matrix [Tx] then\
+              \ this method does the\n following:\n \n          [this] = [Tx] x [this]"
           - name: quadrantRotate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: numquadrants
               type:
                 basic: int
                 full: int
+              notes: the number of 90 degree arcs to rotate by
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates this transform with a transform that rotates\n coordinates\
+              \ by the specified number of quadrants.\n This is equivalent to calling:\n\
+              \ \n     rotate(numquadrants * Math.PI / 2.0);\n \n Rotating by a positive\
+              \ number of quadrants rotates points on\n the positive X axis toward\
+              \ the positive Y axis."
           - name: quadrantRotate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: numquadrants
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of 90 degree arcs to rotate by
+            - name: anchorx
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate of the rotation anchor point
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Concatenates this transform with a transform that rotates\n coordinates\
+              \ by the specified number of quadrants around\n the specified anchor\
+              \ point.\n This method is equivalent to calling:\n \n     rotate(numquadrants\
+              \ * Math.PI / 2.0, anchorx, anchory);\n \n Rotating by a positive number\
+              \ of quadrants rotates points on\n the positive X axis toward the positive\
+              \ Y axis."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -466,70 +1010,139 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: theta
               type:
                 basic: double
                 full: double
+              notes: the angle of rotation measured in radians
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates this transform with a rotation transformation.\n\
+              \ This is equivalent to calling concatenate(R), where R is an\n AffineTransform\
+              \ represented by the following matrix:\n \n          [   cos(theta)\
+              \    -sin(theta)    0   ]\n          [   sin(theta)     cos(theta) \
+              \   0   ]\n          [       0              0         1   ]\n \n Rotating\
+              \ by a positive angle theta rotates points on the positive\n X axis\
+              \ toward the positive Y axis.\n Note also the discussion of\n Handling\
+              \ 90-Degree Rotations\n above."
           - name: rotate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: theta
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the angle of rotation measured in radians
+            - name: anchorx
               type:
                 basic: double
                 full: double
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
+              type:
+                basic: double
+                full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates this transform with a transform that rotates\n coordinates\
+              \ around an anchor point.\n This operation is equivalent to translating\
+              \ the coordinates so\n that the anchor point is at the origin (S1),\
+              \ then rotating them\n about the new origin (S2), and finally translating\
+              \ so that the\n intermediate origin is restored to the coordinates of\
+              \ the original\n anchor point (S3).\n \n This operation is equivalent\
+              \ to the following sequence of calls:\n \n     translate(anchorx, anchory);\
+              \      // S3: final translation\n     rotate(theta);               \
+              \     // S2: rotate around anchor\n     translate(-anchorx, -anchory);\
+              \    // S1: translate anchor to origin\n \n Rotating by a positive angle\
+              \ theta rotates points on the positive\n X axis toward the positive\
+              \ Y axis.\n Note also the discussion of\n Handling 90-Degree Rotations\n\
+              \ above."
           - name: rotate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: vecx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate of the rotation vector
+            - name: vecy
               type:
                 basic: double
                 full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
+              notes: the Y coordinate of the rotation vector
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates this transform with a transform that rotates\n coordinates\
+              \ according to a rotation vector.\n All coordinates rotate about the\
+              \ origin by the same amount.\n The amount of rotation is such that coordinates\
+              \ along the former\n positive X axis will subsequently align with the\
+              \ vector pointing\n from the origin to the specified vector coordinates.\n\
+              \ If both vecx and vecy are 0.0,\n no additional rotation is added to\
+              \ this transform.\n This operation is equivalent to calling:\n \n  \
+              \        rotate(Math.atan2(vecy, vecx));"
           - name: rotate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: vecx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate of the rotation vector
+            - name: vecy
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the Y coordinate of the rotation vector
+            - name: anchorx
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate of the rotation anchor point
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Concatenates this transform with a transform that rotates\n coordinates\
+              \ around an anchor point according to a rotation\n vector.\n All coordinates\
+              \ rotate about the specified anchor coordinates\n by the same amount.\n\
+              \ The amount of rotation is such that coordinates along the former\n\
+              \ positive X axis will subsequently align with the vector pointing\n\
+              \ from the origin to the specified vector coordinates.\n If both vecx\
+              \ and vecy are 0.0,\n the transform is not modified in any way.\n This\
+              \ method is equivalent to calling:\n \n     rotate(Math.atan2(vecy,\
+              \ vecx), anchorx, anchory);"
+          - name: rotate180
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: rotate270
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: rotate90
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -538,18 +1151,26 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: sx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the factor by which coordinates are scaled along the\n X axis\
+                \ direction"
+            - name: sy
               type:
                 basic: double
                 full: double
+              notes: "the factor by which coordinates are scaled along the\n Y axis\
+                \ direction"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates this transform with a scaling transformation.\n This\
+              \ is equivalent to calling concatenate(S), where S is an\n AffineTransform\
+              \ represented by the following matrix:\n \n          [   sx   0    0\
+              \   ]\n          [   0    sy   0   ]\n          [   0    0    1   ]"
           - name: setToIdentity
             modifiers:
             - public
@@ -557,551 +1178,907 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Resets this transform to the Identity transform.
           - name: setToQuadrantRotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: numquadrants
               type:
                 basic: int
                 full: int
+              notes: the number of 90 degree arcs to rotate by
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a rotation transformation that rotates\n\
+              \ coordinates by the specified number of quadrants.\n This operation\
+              \ is equivalent to calling:\n \n     setToRotation(numquadrants * Math.PI\
+              \ / 2.0);\n \n Rotating by a positive number of quadrants rotates points\
+              \ on\n the positive X axis toward the positive Y axis."
           - name: setToQuadrantRotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: numquadrants
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of 90 degree arcs to rotate by
+            - name: anchorx
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a translated rotation transformation\n\
+              \ that rotates coordinates by the specified number of quadrants\n around\
+              \ the specified anchor point.\n This operation is equivalent to calling:\n\
+              \ \n     setToRotation(numquadrants * Math.PI / 2.0, anchorx, anchory);\n\
+              \ \n Rotating by a positive number of quadrants rotates points on\n\
+              \ the positive X axis toward the positive Y axis."
           - name: setToRotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: theta
               type:
                 basic: double
                 full: double
+              notes: the angle of rotation measured in radians
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a rotation transformation.\n The matrix\
+              \ representing this transform becomes:\n \n          [   cos(theta)\
+              \    -sin(theta)    0   ]\n          [   sin(theta)     cos(theta) \
+              \   0   ]\n          [       0              0         1   ]\n \n Rotating\
+              \ by a positive angle theta rotates points on the positive\n X axis\
+              \ toward the positive Y axis.\n Note also the discussion of\n Handling\
+              \ 90-Degree Rotations\n above."
           - name: setToRotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: theta
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the angle of rotation measured in radians
+            - name: anchorx
               type:
                 basic: double
                 full: double
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
+              type:
+                basic: double
+                full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a translated rotation transformation.\n\
+              \ This operation is equivalent to translating the coordinates so\n that\
+              \ the anchor point is at the origin (S1), then rotating them\n about\
+              \ the new origin (S2), and finally translating so that the\n intermediate\
+              \ origin is restored to the coordinates of the original\n anchor point\
+              \ (S3).\n \n This operation is equivalent to the following sequence\
+              \ of calls:\n \n     setToTranslation(anchorx, anchory); // S3: final\
+              \ translation\n     rotate(theta);                      // S2: rotate\
+              \ around anchor\n     translate(-anchorx, -anchory);      // S1: translate\
+              \ anchor to origin\n \n The matrix representing this transform becomes:\n\
+              \ \n          [   cos(theta)    -sin(theta)    x-x*cos+y*sin  ]\n  \
+              \        [   sin(theta)     cos(theta)    y-x*sin-y*cos  ]\n       \
+              \   [       0              0               1        ]\n \n Rotating\
+              \ by a positive angle theta rotates points on the positive\n X axis\
+              \ toward the positive Y axis.\n Note also the discussion of\n Handling\
+              \ 90-Degree Rotations\n above."
           - name: setToRotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: vecx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate of the rotation vector
+            - name: vecy
               type:
                 basic: double
                 full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
+              notes: the Y coordinate of the rotation vector
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a rotation transformation that rotates\n\
+              \ coordinates according to a rotation vector.\n All coordinates rotate\
+              \ about the origin by the same amount.\n The amount of rotation is such\
+              \ that coordinates along the former\n positive X axis will subsequently\
+              \ align with the vector pointing\n from the origin to the specified\
+              \ vector coordinates.\n If both vecx and vecy are 0.0,\n the transform\
+              \ is set to an identity transform.\n This operation is equivalent to\
+              \ calling:\n \n     setToRotation(Math.atan2(vecy, vecx));"
           - name: setToRotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: vecx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate of the rotation vector
+            - name: vecy
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the Y coordinate of the rotation vector
+            - name: anchorx
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a rotation transformation that rotates\n\
+              \ coordinates around an anchor point according to a rotation\n vector.\n\
+              \ All coordinates rotate about the specified anchor coordinates\n by\
+              \ the same amount.\n The amount of rotation is such that coordinates\
+              \ along the former\n positive X axis will subsequently align with the\
+              \ vector pointing\n from the origin to the specified vector coordinates.\n\
+              \ If both vecx and vecy are 0.0,\n the transform is set to an identity\
+              \ transform.\n This operation is equivalent to calling:\n \n     setToTranslation(Math.atan2(vecy,\
+              \ vecx), anchorx, anchory);"
           - name: setToScale
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: sx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the factor by which coordinates are scaled along the\n X axis\
+                \ direction"
+            - name: sy
               type:
                 basic: double
                 full: double
+              notes: "the factor by which coordinates are scaled along the\n Y axis\
+                \ direction"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a scaling transformation.\n The matrix\
+              \ representing this transform becomes:\n \n          [   sx   0    0\
+              \   ]\n          [   0    sy   0   ]\n          [   0    0    1   ]"
           - name: setToShear
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: shx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the multiplier by which coordinates are shifted in the\n direction\
+                \ of the positive X axis as a factor of their Y coordinate"
+            - name: shy
               type:
                 basic: double
                 full: double
+              notes: "the multiplier by which coordinates are shifted in the\n direction\
+                \ of the positive Y axis as a factor of their X coordinate"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a shearing transformation.\n The matrix\
+              \ representing this transform becomes:\n \n          [   1   shx   0\
+              \   ]\n          [  shy   1    0   ]\n          [   0    0    1   ]"
           - name: setToTranslation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: tx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the distance by which coordinates are translated in the\n X\
+                \ axis direction"
+            - name: ty
               type:
                 basic: double
                 full: double
+              notes: "the distance by which coordinates are translated in the\n Y\
+                \ axis direction"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a translation transformation.\n The matrix\
+              \ representing this transform becomes:\n \n          [   1    0    tx\
+              \  ]\n          [   0    1    ty  ]\n          [   0    0    1   ]"
           - name: setTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: Tx
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform object from which to\n copy the transform"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to a copy of the transform in the specified\n\
+              \ AffineTransform object."
           - name: setTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m00
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate scaling element of the 3x3 matrix
+            - name: m10
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the Y coordinate shearing element of the 3x3 matrix
+            - name: m01
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the X coordinate shearing element of the 3x3 matrix
+            - name: m11
               type:
                 basic: double
                 full: double
-            - name: arg4
+              notes: the Y coordinate scaling element of the 3x3 matrix
+            - name: m02
               type:
                 basic: double
                 full: double
-            - name: arg5
+              notes: the X coordinate translation element of the 3x3 matrix
+            - name: m12
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate translation element of the 3x3 matrix
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets this transform to the matrix specified by the 6\n double\
+              \ precision values."
           - name: shear
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: shx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the multiplier by which coordinates are shifted in the\n direction\
+                \ of the positive X axis as a factor of their Y coordinate"
+            - name: shy
               type:
                 basic: double
                 full: double
+              notes: "the multiplier by which coordinates are shifted in the\n direction\
+                \ of the positive Y axis as a factor of their X coordinate"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Concatenates this transform with a shearing transformation.\n\
+              \ This is equivalent to calling concatenate(SH), where SH is an\n AffineTransform\
+              \ represented by the following matrix:\n \n          [   1   shx   0\
+              \   ]\n          [  shy   1    0   ]\n          [   0    0    1   ]"
+          - name: stateError
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: transform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ptSrc
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
-            - name: arg1
+              notes: the specified Point2D to be transformed
+            - name: ptDst
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "the specified Point2D that stores the\n result of transforming\
+                \ ptSrc"
             return:
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "the ptDst after transforming\n ptSrc and storing the result\
+                \ in ptDst."
+            notes: "Transforms the specified ptSrc and stores the result\n in ptDst.\n\
+              \ If ptDst is null, a new Point2D\n object is allocated and then the\
+              \ result of the transformation is\n stored in this object.\n In either\
+              \ case, ptDst, which contains the\n transformed point, is returned for\
+              \ convenience.\n If ptSrc and ptDst are the same\n object, the input\
+              \ point is correctly overwritten with\n the transformed point."
           - name: transform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ptSrc
               type:
-                basic: double[]
-                full: double[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: transform
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: transform
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: transform
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: transform
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Point2D[]
+                basic: Point2D
                 full: java.awt.geom.Point2D[]
-            - name: arg1
+              notes: the array containing the source point objects
+            - name: srcOff
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the offset to the first point object to be\n transformed in\
+                \ the source array"
+            - name: ptDst
               type:
-                basic: Point2D[]
+                basic: Point2D
                 full: java.awt.geom.Point2D[]
-            - name: arg3
+              notes: "the array into which the transform point objects are\n returned"
+            - name: dstOff
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: "the offset to the location of the first\n transformed point\
+                \ object that is stored in the destination array"
+            - name: numPts
               type:
                 basic: int
                 full: int
+              notes: the number of point objects to be transformed
             return:
               type:
                 basic: void
                 full: void
+            notes: "Transforms an array of point objects by this transform.\n If any\
+              \ element of the ptDst array is\n null, a new Point2D object is allocated\n\
+              \ and stored into that element before storing the results of the\n transformation.\n\
+              \ \n Note that this method does not take any precautions to\n avoid\
+              \ problems caused by storing results into Point2D\n objects that will\
+              \ be used as the source for calculations\n further down the source array.\n\
+              \ This method does guarantee that if a specified Point2D\n object is\
+              \ both the source and destination for the same single point\n transform\
+              \ operation then the results will not be stored until\n the calculations\
+              \ are complete to avoid storing the results on\n top of the operands.\n\
+              \ If, however, the destination Point2D object for one\n operation is\
+              \ the same object as the source Point2D\n object for another operation\
+              \ further down the source array then\n the original coordinates in that\
+              \ point are overwritten before\n they can be converted."
+          - name: transform
+            modifiers:
+            - public
+            parameters:
+            - name: srcPts
+              type:
+                basic: float
+                full: float[]
+              notes: "the array containing the source point coordinates.\n Each point\
+                \ is stored as a pair of x, y coordinates."
+            - name: srcOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the first point to be transformed\n in the source\
+                \ array"
+            - name: dstPts
+              type:
+                basic: float
+                full: float[]
+              notes: "the array into which the transformed point coordinates\n are\
+                \ returned.  Each point is stored as a pair of x, y\n coordinates."
+            - name: dstOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the location of the first\n transformed point\
+                \ that is stored in the destination array"
+            - name: numPts
+              type:
+                basic: int
+                full: int
+              notes: the number of points to be transformed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Transforms an array of floating point coordinates by this transform.\n\
+              \ The two coordinate array sections can be exactly the same or\n can\
+              \ be overlapping sections of the same array without affecting the\n\
+              \ validity of the results.\n This method ensures that no source coordinates\
+              \ are overwritten by a\n previous operation before they can be transformed.\n\
+              \ The coordinates are stored in the arrays starting at the specified\n\
+              \ offset in the order [x0, y0, x1, y1, ..., xn, yn]."
+          - name: transform
+            modifiers:
+            - public
+            parameters:
+            - name: srcPts
+              type:
+                basic: double
+                full: double[]
+              notes: "the array containing the source point coordinates.\n Each point\
+                \ is stored as a pair of x, y coordinates."
+            - name: srcOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the first point to be transformed\n in the source\
+                \ array"
+            - name: dstPts
+              type:
+                basic: double
+                full: double[]
+              notes: "the array into which the transformed point\n coordinates are\
+                \ returned.  Each point is stored as a pair of\n x, y coordinates."
+            - name: dstOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the location of the first\n transformed point\
+                \ that is stored in the destination array"
+            - name: numPts
+              type:
+                basic: int
+                full: int
+              notes: the number of point objects to be transformed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Transforms an array of double precision coordinates by this transform.\n\
+              \ The two coordinate array sections can be exactly the same or\n can\
+              \ be overlapping sections of the same array without affecting the\n\
+              \ validity of the results.\n This method ensures that no source coordinates\
+              \ are\n overwritten by a previous operation before they can be transformed.\n\
+              \ The coordinates are stored in the arrays starting at the indicated\n\
+              \ offset in the order [x0, y0, x1, y1, ..., xn, yn]."
+          - name: transform
+            modifiers:
+            - public
+            parameters:
+            - name: srcPts
+              type:
+                basic: float
+                full: float[]
+              notes: "the array containing the source point coordinates.\n Each point\
+                \ is stored as a pair of x, y coordinates."
+            - name: srcOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the first point to be transformed\n in the source\
+                \ array"
+            - name: dstPts
+              type:
+                basic: double
+                full: double[]
+              notes: "the array into which the transformed point coordinates\n are\
+                \ returned.  Each point is stored as a pair of x, y\n coordinates."
+            - name: dstOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the location of the first\n transformed point\
+                \ that is stored in the destination array"
+            - name: numPts
+              type:
+                basic: int
+                full: int
+              notes: the number of points to be transformed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Transforms an array of floating point coordinates by this transform\n\
+              \ and stores the results into an array of doubles.\n The coordinates\
+              \ are stored in the arrays starting at the specified\n offset in the\
+              \ order [x0, y0, x1, y1, ..., xn, yn]."
+          - name: transform
+            modifiers:
+            - public
+            parameters:
+            - name: srcPts
+              type:
+                basic: double
+                full: double[]
+              notes: "the array containing the source point coordinates.\n Each point\
+                \ is stored as a pair of x, y coordinates."
+            - name: srcOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the first point to be transformed\n in the source\
+                \ array"
+            - name: dstPts
+              type:
+                basic: float
+                full: float[]
+              notes: "the array into which the transformed point\n coordinates are\
+                \ returned.  Each point is stored as a pair of\n x, y coordinates."
+            - name: dstOff
+              type:
+                basic: int
+                full: int
+              notes: "the offset to the location of the first\n transformed point\
+                \ that is stored in the destination array"
+            - name: numPts
+              type:
+                basic: int
+                full: int
+              notes: the number of point objects to be transformed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Transforms an array of double precision coordinates by this transform\n\
+              \ and stores the results into an array of floats.\n The coordinates\
+              \ are stored in the arrays starting at the specified\n offset in the\
+              \ order [x0, y0, x1, y1, ..., xn, yn]."
           - name: translate
             modifiers:
             - public
             parameters:
+            - name: tx
+              type:
+                basic: double
+                full: double
+              notes: "the distance by which coordinates are translated in the\n X\
+                \ axis direction"
+            - name: ty
+              type:
+                basic: double
+                full: double
+              notes: "the distance by which coordinates are translated in the\n Y\
+                \ axis direction"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Concatenates this transform with a translation transformation.\n\
+              \ This is equivalent to calling concatenate(T), where T is an\n AffineTransform\
+              \ represented by the following matrix:\n \n          [   1    0    tx\
+              \  ]\n          [   0    1    ty  ]\n          [   0    0    1   ]"
+          - name: updateState
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: double
-                full: double
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
                 basic: void
                 full: void
           staticMethods:
+          - name: _matround
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: double
+                full: double
+            return:
+              type:
+                basic: double
+                full: double
           - name: getQuadrantRotateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: numquadrants
               type:
                 basic: int
                 full: int
+              notes: the number of 90 degree arcs to rotate by
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that rotates\n  coordinates by the\
+                \ specified number of quadrants."
+            notes: "Returns a transform that rotates coordinates by the specified\n\
+              \ number of quadrants.\n This operation is equivalent to calling:\n\
+              \ \n     AffineTransform.getRotateInstance(numquadrants * Math.PI /\
+              \ 2.0);\n \n Rotating by a positive number of quadrants rotates points\
+              \ on\n the positive X axis toward the positive Y axis."
           - name: getQuadrantRotateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: numquadrants
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of 90 degree arcs to rotate by
+            - name: anchorx
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that rotates\n  coordinates by the\
+                \ specified number of quadrants around the\n  specified anchor point."
+            notes: "Returns a transform that rotates coordinates by the specified\n\
+              \ number of quadrants around the specified anchor point.\n This operation\
+              \ is equivalent to calling:\n \n     AffineTransform.getRotateInstance(numquadrants\
+              \ * Math.PI / 2.0,\n                                       anchorx,\
+              \ anchory);\n \n Rotating by a positive number of quadrants rotates\
+              \ points on\n the positive X axis toward the positive Y axis."
           - name: getRotateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: theta
               type:
                 basic: double
                 full: double
+              notes: the angle of rotation measured in radians
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that is a rotation\n  transformation,\
+                \ created with the specified angle of rotation."
+            notes: "Returns a transform representing a rotation transformation.\n\
+              \ The matrix representing the returned transform is:\n \n          [\
+              \   cos(theta)    -sin(theta)    0   ]\n          [   sin(theta)   \
+              \  cos(theta)    0   ]\n          [       0              0         1\
+              \   ]\n \n Rotating by a positive angle theta rotates points on the\
+              \ positive\n X axis toward the positive Y axis.\n Note also the discussion\
+              \ of\n Handling 90-Degree Rotations\n above."
           - name: getRotateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: theta
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the angle of rotation measured in radians
+            - name: anchorx
               type:
                 basic: double
                 full: double
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
+              type:
+                basic: double
+                full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that rotates\n  coordinates around\
+                \ the specified point by the specified angle of\n  rotation."
+            notes: "Returns a transform that rotates coordinates around an anchor\
+              \ point.\n This operation is equivalent to translating the coordinates\
+              \ so\n that the anchor point is at the origin (S1), then rotating them\n\
+              \ about the new origin (S2), and finally translating so that the\n intermediate\
+              \ origin is restored to the coordinates of the original\n anchor point\
+              \ (S3).\n \n This operation is equivalent to the following sequence\
+              \ of calls:\n \n     AffineTransform Tx = new AffineTransform();\n \
+              \    Tx.translate(anchorx, anchory);    // S3: final translation\n \
+              \    Tx.rotate(theta);                  // S2: rotate around anchor\n\
+              \     Tx.translate(-anchorx, -anchory);  // S1: translate anchor to\
+              \ origin\n \n The matrix representing the returned transform is:\n \n\
+              \          [   cos(theta)    -sin(theta)    x-x*cos+y*sin  ]\n     \
+              \     [   sin(theta)     cos(theta)    y-x*sin-y*cos  ]\n          [\
+              \       0              0               1        ]\n \n Rotating by a\
+              \ positive angle theta rotates points on the positive\n X axis toward\
+              \ the positive Y axis.\n Note also the discussion of\n Handling 90-Degree\
+              \ Rotations\n above."
           - name: getRotateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: vecx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate of the rotation vector
+            - name: vecy
               type:
                 basic: double
                 full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
+              notes: the Y coordinate of the rotation vector
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that rotates\n  coordinates according\
+                \ to the specified rotation vector."
+            notes: "Returns a transform that rotates coordinates according to\n a\
+              \ rotation vector.\n All coordinates rotate about the origin by the\
+              \ same amount.\n The amount of rotation is such that coordinates along\
+              \ the former\n positive X axis will subsequently align with the vector\
+              \ pointing\n from the origin to the specified vector coordinates.\n\
+              \ If both vecx and vecy are 0.0,\n an identity transform is returned.\n\
+              \ This operation is equivalent to calling:\n \n     AffineTransform.getRotateInstance(Math.atan2(vecy,\
+              \ vecx));"
           - name: getRotateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: vecx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the X coordinate of the rotation vector
+            - name: vecy
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: the Y coordinate of the rotation vector
+            - name: anchorx
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the X coordinate of the rotation anchor point
+            - name: anchory
               type:
                 basic: double
                 full: double
+              notes: the Y coordinate of the rotation anchor point
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that rotates\n  coordinates around\
+                \ the specified point according to the\n  specified rotation vector."
+            notes: "Returns a transform that rotates coordinates around an anchor\n\
+              \ point according to a rotation vector.\n All coordinates rotate about\
+              \ the specified anchor coordinates\n by the same amount.\n The amount\
+              \ of rotation is such that coordinates along the former\n positive X\
+              \ axis will subsequently align with the vector pointing\n from the origin\
+              \ to the specified vector coordinates.\n If both vecx and vecy are 0.0,\n\
+              \ an identity transform is returned.\n This operation is equivalent\
+              \ to calling:\n \n     AffineTransform.getRotateInstance(Math.atan2(vecy,\
+              \ vecx),\n                                       anchorx, anchory);"
           - name: getScaleInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: sx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the factor by which coordinates are scaled along the\n X axis\
+                \ direction"
+            - name: sy
               type:
                 basic: double
                 full: double
+              notes: "the factor by which coordinates are scaled along the\n Y axis\
+                \ direction"
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that scales\n  coordinates by the\
+                \ specified factors."
+            notes: "Returns a transform representing a scaling transformation.\n The\
+              \ matrix representing the returned transform is:\n \n          [   sx\
+              \   0    0   ]\n          [   0    sy   0   ]\n          [   0    0\
+              \    1   ]"
           - name: getShearInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: shx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the multiplier by which coordinates are shifted in the\n direction\
+                \ of the positive X axis as a factor of their Y coordinate"
+            - name: shy
               type:
                 basic: double
                 full: double
+              notes: "the multiplier by which coordinates are shifted in the\n direction\
+                \ of the positive Y axis as a factor of their X coordinate"
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an AffineTransform object that shears\n  coordinates by the\
+                \ specified multipliers."
+            notes: "Returns a transform representing a shearing transformation.\n\
+              \ The matrix representing the returned transform is:\n \n          [\
+              \   1   shx   0   ]\n          [  shy   1    0   ]\n          [   0\
+              \    0    1   ]"
           - name: getTranslateInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: tx
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the distance by which coordinates are translated in the\n X\
+                \ axis direction"
+            - name: ty
               type:
                 basic: double
                 full: double
+              notes: "the distance by which coordinates are translated in the\n Y\
+                \ axis direction"
             return:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
-          javaType: class
-          extends: Object
+              notes: "an AffineTransform object that represents a\n  translation transformation,\
+                \ created with the specified vector."
+            notes: "Returns a transform representing a translation transformation.\n\
+              \ The matrix representing the returned transform is:\n \n          [\
+              \   1    0    tx  ]\n          [   0    1    ty  ]\n          [   0\
+              \    0    1   ]"

@@ -4,48 +4,92 @@ languages:
     packages:
       zombie.iso.objects:
         IsoTree:
+          extends: zombie.iso.IsoObject
           modifiers:
           - public
           fields:
             LogYield:
               name: LogYield
               modifiers:
-              - public
+              - private
               type:
                 basic: int
+                full: int
             bRenderFlag:
               name: bRenderFlag
               modifiers:
               - public
               type:
                 basic: boolean
-            damage:
-              name: damage
+                full: boolean
+            bUseTreeShader:
+              name: bUseTreeShader
               modifiers:
               - public
               type:
+                basic: boolean
+                full: boolean
+            bWasFaded:
+              name: bWasFaded
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean
+            damage:
+              name: damage
+              modifiers:
+              - private
+              type:
                 basic: int
+                full: int
             fadeAlpha:
               name: fadeAlpha
               modifiers:
               - public
               type:
                 basic: float
+                full: float
             size:
               name: size
               modifiers:
               - public
               type:
                 basic: int
+                full: int
           staticFields:
             MAX_SIZE:
               name: MAX_SIZE
               modifiers:
-              - public
+              - private
               - static
-              - final
               type:
                 basic: int
+                full: int
+            s_chopTreeHighlighted:
+              name: s_chopTreeHighlighted
+              modifiers:
+              - private
+              - static
+              type:
+                basic: IsoTree
+                full: zombie.iso.objects.IsoTree
+            s_chopTreeIndicators:
+              name: s_chopTreeIndicators
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            s_chopTreeLocation:
+              name: s_chopTreeLocation
+              modifiers:
+              - private
+              - static
+              type:
+                basic: IsoGameCharacter.Location
+                full: zombie.characters.IsoGameCharacter$Location[]
           constructors:
           - modifiers:
             - public
@@ -55,24 +99,29 @@ languages:
             - name: cell
               type:
                 basic: IsoCell
+                full: zombie.iso.IsoCell
           - modifiers:
             - public
             parameters:
             - name: sq
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: gid
               type:
                 basic: String
+                full: java.lang.String
           - modifiers:
             - public
             parameters:
             - name: sq
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: gid
               type:
                 basic: IsoSprite
+                full: zombie.iso.sprite.IsoSprite
           methods:
           - name: Damage
             modifiers:
@@ -81,9 +130,11 @@ languages:
             - name: amount
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           - name: HitByVehicle
             modifiers:
             - public
@@ -91,12 +142,15 @@ languages:
             - name: vehicle
               type:
                 basic: BaseVehicle
+                full: zombie.vehicles.BaseVehicle
             - name: amount
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           - name: WeaponHit
             modifiers:
             - public
@@ -104,36 +158,94 @@ languages:
             - name: owner
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             - name: weapon
               type:
                 basic: HandWeapon
+                full: zombie.inventory.types.HandWeapon
             return:
               type:
                 basic: void
+                full: void
+          - name: WeaponHitEffects
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            - name: arg1
+              type:
+                basic: HandWeapon
+                full: zombie.inventory.types.HandWeapon
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkChopTreeIndicator
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkMoveWithWind
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: dropWood
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: getHealth
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
+          - name: getLogYield
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
           - name: getMaxHealth
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getObjectName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
+          - name: getRenderSquare
+            modifiers:
+            - public
+            return:
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getSize
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getSlowFactor
             modifiers:
             - public
@@ -141,15 +253,18 @@ languages:
             - name: chr
               type:
                 basic: IsoMovingObject
+                full: zombie.iso.IsoMovingObject
             return:
               type:
                 basic: float
+                full: float
           - name: initTree
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: isMaskClicked
             modifiers:
             - public
@@ -157,15 +272,26 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: flip
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isUpdateAlphaDuringRender
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: load
             modifiers:
             - public
@@ -173,15 +299,19 @@ languages:
             - name: input
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: WorldVersion
               type:
                 basic: int
+                full: int
             - name: IS_DEBUG_SAVE
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: render
             modifiers:
             - public
@@ -189,33 +319,74 @@ languages:
             - name: x
               type:
                 basic: float
+                full: float
             - name: y
               type:
                 basic: float
+                full: float
             - name: z
               type:
                 basic: float
+                full: float
             - name: col
               type:
                 basic: ColorInfo
+                full: zombie.core.textures.ColorInfo
             - name: bDoAttached
               type:
                 basic: boolean
+                full: boolean
             - name: bWallLightingPass
               type:
                 basic: boolean
+                full: boolean
             - name: shader
               type:
                 basic: Shader
+                full: zombie.core.opengl.Shader
             return:
               type:
                 basic: void
+                full: void
+          - name: renderInner
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            - name: arg3
+              type:
+                basic: ColorInfo
+                full: zombie.core.textures.ColorInfo
+            - name: arg4
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg5
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
           - name: reset
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -223,12 +394,15 @@ languages:
             - name: output
               type:
                 basic: ByteBuffer
+                full: java.nio.ByteBuffer
             - name: IS_DEBUG_SAVE
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: setHealth
             modifiers:
             - public
@@ -236,9 +410,11 @@ languages:
             - name: health
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setSprite
             modifiers:
             - public
@@ -246,11 +422,45 @@ languages:
             - name: sprite
               type:
                 basic: IsoSprite
+                full: zombie.iso.sprite.IsoSprite
               notes: the sprite to set
             return:
               type:
                 basic: void
+                full: void
+          - name: toppleTree
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toppleTree
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
+          - name: checkChopTreeIndicators
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: getNew
             modifiers:
             - public
@@ -258,6 +468,20 @@ languages:
             return:
               type:
                 basic: IsoTree
+                full: zombie.iso.objects.IsoTree
+          - name: renderChopTreeIndicator
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: void
+                full: void
           - name: renderChopTreeIndicators
             modifiers:
             - public
@@ -265,6 +489,7 @@ languages:
             return:
               type:
                 basic: void
+                full: void
           - name: setChopTreeCursorLocation
             modifiers:
             - public
@@ -273,17 +498,20 @@ languages:
             - name: playerIndex
               type:
                 basic: int
+                full: int
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
-          javaType: class
-          extends: IsoObject
+                full: void

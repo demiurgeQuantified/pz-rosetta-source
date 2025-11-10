@@ -4,51 +4,109 @@ languages:
     packages:
       java.awt.image.renderable:
         RenderContext:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A RenderContext encapsulates the information needed to produce a\n\
+            \ specific rendering from a RenderableImage.  It contains the area to\n\
+            \ be rendered specified in rendering-independent terms, the\n resolution\
+            \ at which the rendering is to be performed, and hints\n used to control\
+            \ the rendering process.\n\n  Users create RenderContexts and pass them\
+            \ to the\n RenderableImage via the createRendering method.  Most of the\
+            \ methods of\n RenderContexts are not meant to be used directly by applications,\n\
+            \ but by the RenderableImage and operator classes to which it is\n passed.\n\
+            \n  The AffineTransform parameter passed into and out of this class\n\
+            \ are cloned.  The RenderingHints and Shape parameters are not\n necessarily\
+            \ cloneable and are therefore only reference copied.\n Altering RenderingHints\
+            \ or Shape instances that are in use by\n instances of RenderContext may\
+            \ have undesired side effects."
+          fields:
+            aoi:
+              name: aoi
+              modifiers:
+              - package
+              type:
+                basic: Shape
+                full: java.awt.Shape
+            hints:
+              name: hints
+              modifiers:
+              - package
+              type:
+                basic: RenderingHints
+                full: java.awt.RenderingHints
+            usr2dev:
+              name: usr2dev
+              modifiers:
+              - package
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: usr2dev
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
-            - name: arg1
-              type:
-                basic: RenderingHints
-                full: java.awt.RenderingHints
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
-            - name: arg1
+              notes: an AffineTransform.
+            - name: aoi
               type:
                 basic: Shape
                 full: java.awt.Shape
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
-            - name: arg1
-              type:
-                basic: Shape
-                full: java.awt.Shape
-            - name: arg2
+              notes: a Shape representing the area of interest.
+            - name: hints
               type:
                 basic: RenderingHints
                 full: java.awt.RenderingHints
+              notes: a RenderingHints object containing rendering hints.
+            notes: "Constructs a RenderContext with a given transform.\n The area\
+              \ of interest is supplied as a Shape,\n and the rendering hints are\
+              \ supplied as a RenderingHints object."
+          - modifiers:
+            - public
+            parameters:
+            - name: usr2dev
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+              notes: an AffineTransform.
+            notes: "Constructs a RenderContext with a given transform.\n The area\
+              \ of interest is taken to be the entire renderable area.\n No rendering\
+              \ hints are used."
+          - modifiers:
+            - public
+            parameters:
+            - name: usr2dev
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+              notes: an AffineTransform.
+            - name: hints
+              type:
+                basic: RenderingHints
+                full: java.awt.RenderingHints
+              notes: a RenderingHints object containing rendering hints.
+            notes: "Constructs a RenderContext with a given transform and rendering\
+              \ hints.\n The area of interest is taken to be the entire renderable\
+              \ area."
+          - modifiers:
+            - public
+            parameters:
+            - name: usr2dev
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+              notes: an AffineTransform.
+            - name: aoi
+              type:
+                basic: Shape
+                full: java.awt.Shape
+              notes: a Shape representing the area of interest.
+            notes: "Constructs a RenderContext with a given transform and area of\
+              \ interest.\n The area of interest is supplied as a Shape.\n No rendering\
+              \ hints are used."
           methods:
           - name: clone
             modifiers:
@@ -57,31 +115,46 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the new cloned RenderContext.
+            notes: "Makes a copy of a RenderContext. The area of interest is copied\n\
+              \ by reference.  The usr2dev AffineTransform and hints are cloned,\n\
+              \ while the area of interest is copied by reference."
           - name: concatenateTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: modTransform
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform to append to the\n        current usr2dev\
+                \ transform."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Modifies the current user-to-device transform by appending another\n\
+              \ transform.  In matrix notation the operation is:\n \n [this] = [this]\
+              \ x [modTransform]"
           - name: concetenateTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: modTransform
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform to append to the\n        current usr2dev\
+                \ transform."
             return:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Modifies the current user-to-device transform by appending another\n\
+              \ transform.  In matrix notation the operation is:\n \n [this] = [this]\
+              \ x [modTransform]\n \n This method does the same thing as the concatenateTransform\n\
+              \ method.  It is here for backward compatibility with previous releases\n\
+              \ which misspelled the method name."
           - name: getAreaOfInterest
             modifiers:
             - public
@@ -89,6 +162,9 @@ languages:
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: "a reference to the area of interest of the RenderContext,\n\
+                \         or null if none is specified."
+            notes: "Gets the ares of interest currently contained in the\n RenderContext."
           - name: getRenderingHints
             modifiers:
             - public
@@ -96,6 +172,9 @@ languages:
               type:
                 basic: RenderingHints
                 full: java.awt.RenderingHints
+              notes: "a RenderingHints object that represents\n the rendering hints\
+                \ of this RenderContext."
+            notes: Gets the rendering hints of this RenderContext.
           - name: getTransform
             modifiers:
             - public
@@ -103,66 +182,85 @@ languages:
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: a reference to the current AffineTransform.
+            notes: Gets the current user-to-device AffineTransform.
           - name: preConcatenateTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: modTransform
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform to prepend to the\n        current usr2dev\
+                \ transform."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Modifies the current user-to-device transform by prepending another\n\
+              \ transform.  In matrix notation the operation is:\n \n [this] = [modTransform]\
+              \ x [this]"
           - name: preConcetenateTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: modTransform
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "the AffineTransform to prepend to the\n        current usr2dev\
+                \ transform."
             return:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Modifies the current user-to-device transform by prepending another\n\
+              \ transform.  In matrix notation the operation is:\n \n [this] = [modTransform]\
+              \ x [this]\n \n This method does the same thing as the preConcatenateTransform\n\
+              \ method.  It is here for backward compatibility with previous releases\n\
+              \ which misspelled the method name."
           - name: setAreaOfInterest
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newAoi
               type:
                 basic: Shape
                 full: java.awt.Shape
+              notes: The new area of interest.
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the current area of interest.  The old area is discarded.
           - name: setRenderingHints
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: hints
               type:
                 basic: RenderingHints
                 full: java.awt.RenderingHints
+              notes: "a RenderingHints object that represents\n the rendering hints\
+                \ to assign to this RenderContext."
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the rendering hints of this RenderContext.
           - name: setTransform
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newTransform
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: the new AffineTransform.
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Sets the current user-to-device AffineTransform contained\n in\
+              \ the RenderContext to a given transform."

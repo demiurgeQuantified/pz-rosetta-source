@@ -4,125 +4,139 @@ languages:
     packages:
       java.lang:
         System.Logger:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "System.Logger instances log messages that will be\n routed to the\
+            \ underlying logging framework the LoggerFinder uses.\n\n System.Logger\
+            \ instances are typically obtained from\n the System class, by calling\n\
+            \ System.getLogger(loggerName)\n or System.getLogger(loggerName, bundle)."
           methods:
           - name: getName
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the logger name.
+            notes: Returns the name of this logger.
           - name: isLoggable
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: level
               type:
-                basic: Level
+                basic: System.Logger.Level
                 full: java.lang.System$Logger$Level
+              notes: the log message level.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the given log message level is currently\n         being\
+                \ logged."
+            notes: "Checks if a message of the given level would be logged by\n this\
+              \ logger."
+          - name: log
+            modifiers:
+            - public
+            parameters:
+            - name: level
+              type:
+                basic: System.Logger.Level
+                full: java.lang.System$Logger$Level
+              notes: the log message level.
+            - name: msg
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the string message (or a key in the message catalog, if\n this\
+                \ logger is a localized logger);\n can be null."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Logs a message.
           - name: log
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: Level
+                basic: System.Logger.Level
                 full: java.lang.System$Logger$Level
             - name: arg1
+              type:
+                basic: Supplier
+                full: java.util.function.Supplier<java.lang.String>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: log
+            modifiers:
+            - public
+            parameters:
+            - name: level
+              type:
+                basic: System.Logger.Level
+                full: java.lang.System$Logger$Level
+              notes: the log message level.
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to log.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Logs a message produced from the given object.\n\n If the logger\
+              \ is currently enabled for the given log message level then\n a message\
+              \ is logged that, by default, is the result produced from\n calling\
+              \  toString on the given object.\n Otherwise, the object is not operated\
+              \ on."
           - name: log
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: level
               type:
-                basic: Level
+                basic: System.Logger.Level
                 full: java.lang.System$Logger$Level
-            - name: arg1
+              notes: the log message level.
+            - name: msg
               type:
                 basic: String
                 full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
-          - name: log
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Level
-                full: java.lang.System$Logger$Level
-            - name: arg1
-              type:
-                basic: Supplier<String>
-                full: java.util.function.Supplier<java.lang.String>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: log
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Level
-                full: java.lang.System$Logger$Level
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg2
-              type:
-                basic: Object[]
-                full: java.lang.Object[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: log
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Level
-                full: java.lang.System$Logger$Level
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg2
+              notes: "the string message (or a key in the message catalog, if\n this\
+                \ logger is a localized logger);\n can be null."
+            - name: thrown
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: "a Throwable associated with the log message;\n        can be\
+                \ null."
             return:
               type:
                 basic: void
                 full: void
+            notes: Logs a message associated with a given throwable.
           - name: log
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: Level
+                basic: System.Logger.Level
                 full: java.lang.System$Logger$Level
             - name: arg1
               type:
-                basic: Supplier<String>
+                basic: Supplier
                 full: java.util.function.Supplier<java.lang.String>
             - name: arg2
               type:
@@ -138,19 +152,15 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Level
+                basic: System.Logger.Level
                 full: java.lang.System$Logger$Level
             - name: arg1
               type:
-                basic: ResourceBundle
-                full: java.util.ResourceBundle
-            - name: arg2
-              type:
                 basic: String
                 full: java.lang.String
-            - name: arg3
+            - name: arg2
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -159,10 +169,46 @@ languages:
           - name: log
             modifiers:
             - public
+            - abstract
+            parameters:
+            - name: level
+              type:
+                basic: System.Logger.Level
+                full: java.lang.System$Logger$Level
+              notes: the log message level.
+            - name: bundle
+              type:
+                basic: ResourceBundle
+                full: java.util.ResourceBundle
+              notes: "a resource bundle to localize msg; can be\n null."
+            - name: msg
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the string message (or a key in the message catalog,\n     \
+                \       if bundle is not null); can be null."
+            - name: thrown
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: "a Throwable associated with the log message;\n        can be\
+                \ null."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Logs a localized message associated with a given throwable.\n\n\
+              \ If the given resource bundle is non-null,  the msg\n string is localized\
+              \ using the given resource bundle.\n Otherwise the msg string is not\
+              \ localized."
+          - name: log
+            modifiers:
+            - public
+            - abstract
             parameters:
             - name: arg0
               type:
-                basic: Level
+                basic: System.Logger.Level
                 full: java.lang.System$Logger$Level
             - name: arg1
               type:
@@ -174,11 +220,9 @@ languages:
                 full: java.lang.String
             - name: arg3
               type:
-                basic: Throwable
-                full: java.lang.Throwable
+                basic: Object
+                full: java.lang.Object[]
             return:
               type:
                 basic: void
                 full: void
-          javaType: interface
-          extends: null

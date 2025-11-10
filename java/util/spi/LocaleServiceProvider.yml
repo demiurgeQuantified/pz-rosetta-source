@@ -1,0 +1,163 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.spi:
+        LocaleServiceProvider:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This is the super class of all the locale sensitive service provider\n\
+            \ interfaces (SPIs).\n \n Locale sensitive  service provider interfaces\
+            \ are interfaces that\n correspond to locale sensitive classes in the\
+            \ java.text\n and java.util packages. The interfaces enable the\n construction\
+            \ of locale sensitive objects and the retrieval of\n localized names for\
+            \ these packages. Locale sensitive factory methods\n and methods for name\
+            \ retrieval in the java.text and\n java.util packages use implementations\
+            \ of the provider\n interfaces to offer support for locales beyond the\
+            \ set of locales\n supported by the Java runtime environment itself.\n\
+            \n Packaging of Locale Sensitive Service Provider Implementations\n Implementations\
+            \ of these locale sensitive services can be made available\n by adding\
+            \ them to the application's class path. A provider identifies itself with\
+            \ a\n provider-configuration file in the resource directory META-INF/services,\n\
+            \ using the fully qualified provider interface class name as the file\
+            \ name.\n The file should contain a list of fully-qualified concrete provider\
+            \ class names,\n one per line. A line is terminated by any one of a line\
+            \ feed ('\\n'), a carriage\n return ('\\r'), or a carriage return followed\
+            \ immediately by a line feed. Space\n and tab characters surrounding each\
+            \ name, as well as blank lines, are ignored.\n The comment character is\
+            \ '#' ('#'); on each line all characters following\n the first comment\
+            \ character are ignored. The file must be encoded in UTF-8.\n \n If a\
+            \ particular concrete provider class is named in more than one configuration\n\
+            \ file, or is named in the same configuration file more than once, then\
+            \ the\n duplicates will be ignored. The configuration file naming a particular\
+            \ provider\n need not be in the same jar file or other distribution unit\
+            \ as the provider itself.\n The provider must be accessible from the same\
+            \ class loader that was initially\n queried to locate the configuration\
+            \ file; this is not necessarily the class loader\n that loaded the file.\n\
+            \ \n For example, an implementation of the\n DateFormatProvider class\
+            \ should\n take the form of a jar file which contains the file:\n \n META-INF/services/java.text.spi.DateFormatProvider\n\
+            \ \n And the file java.text.spi.DateFormatProvider should have\n a line\
+            \ such as:\n \n <code>com.foo.DateFormatProviderImpl</code>\n \n which\
+            \ is the fully qualified class name of the class implementing\n DateFormatProvider.\n\
+            \ Invocation of Locale Sensitive Services\n \n Locale sensitive factory\
+            \ methods and methods for name retrieval in the\n java.text and java.util\
+            \ packages invoke\n service provider methods when needed to support the\
+            \ requested locale.\n The methods first check whether the Java runtime\
+            \ environment itself\n supports the requested locale, and use its support\
+            \ if available.\n Otherwise, they call the isSupportedLocale\n methods\
+            \ of installed providers for the appropriate interface to find one that\n\
+            \ supports the requested locale. If such a provider is found, its other\n\
+            \ methods are called to obtain the requested object or name.  When checking\n\
+            \ whether a locale is supported, the \n locale's extensions are ignored\
+            \ by default. (If locale's extensions should\n also be checked, the isSupportedLocale\
+            \ method must be overridden.)\n If neither the Java runtime environment\
+            \ itself nor an installed provider\n supports the requested locale, the\
+            \ methods go through a list of candidate\n locales and repeat the availability\
+            \ check for each until a match is found.\n The algorithm used for creating\
+            \ a list of candidate locales is same as\n the one used by ResourceBundle\
+            \ by default (see\n getCandidateLocales\n for the details).  Even if a\
+            \ locale is resolved from the candidate list,\n methods that return requested\
+            \ objects or names are invoked with the original\n requested locale including\
+            \ Locale extensions. The Java runtime\n environment must support the root\
+            \ locale for all locale sensitive services in\n order to guarantee that\
+            \ this process terminates.\n \n Providers of names (but not providers\
+            \ of other objects) are allowed to\n return null for some name requests\
+            \ even for locales that they claim to\n support by including them in their\
+            \ return value for\n getAvailableLocales. Similarly, the Java runtime\n\
+            \ environment itself may not have all names for all locales that it\n\
+            \ supports. This is because the sets of objects for which names are\n\
+            \ requested can be large and vary over time, so that it's not always\n\
+            \ feasible to cover them completely. If the Java runtime environment or\
+            \ a\n provider returns null instead of a name, the lookup will proceed\
+            \ as\n described above as if the locale was not supported.\n \n The search\
+            \ order of locale sensitive services can\n be configured by using the\
+            \ java.locale.providers system property.\n This system property declares\
+            \ the user's preferred order for looking up\n the locale sensitive services\
+            \ separated by a comma. It is only read at\n the Java runtime startup,\
+            \ so the later call to System.setProperty() won't\n affect the order.\n\
+            \ \n Java Runtime Environment provides the following four locale providers:\n\
+            \ \n  \"CLDR\": A provider based on Unicode Consortium's\n CLDR Project.\n\
+            \  \"COMPAT\": represents the locale sensitive services that is compatible\n\
+            \ with the prior JDK releases up to JDK8 (same as JDK8's \"JRE\").\n \
+            \ \"SPI\": represents the locale sensitive services implementing the subclasses\
+            \ of\n this LocaleServiceProvider class.\n  \"HOST\": A provider that\
+            \ reflects the user's custom settings in the\n underlying operating system.\
+            \ This provider may not be available, depending\n on the Java Runtime\
+            \ Environment implementation.\n  \"JRE\": represents a synonym to \"COMPAT\"\
+            . This name\n is deprecated and will be removed in the future release\
+            \ of JDK.\n \n \n For example, if the following is specified in the property:\n\
+            \ \n java.locale.providers=SPI,CLDR,COMPAT\n \n the locale sensitive services\
+            \ in the SPI providers are looked up first. If the\n desired locale sensitive\
+            \ service is not available, then the runtime looks for CLDR,\n COMPAT\
+            \ in that order.\n \n The default order for looking up the preferred locale\
+            \ providers is \"CLDR,COMPAT\",\n so specifying \"CLDR,COMPAT\" is identical\
+            \ to the default behavior. Applications which\n require implementations\
+            \ of the locale sensitive services must explicitly specify\n \"SPI\" in\
+            \ order for the Java runtime to load them from the classpath."
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Void
+                full: java.lang.Void
+          - modifiers:
+            - protected
+            notes: Initializes a new locale service provider.
+          methods:
+          - name: getAvailableLocales
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: Locale
+                full: java.util.Locale[]
+              notes: "An array of all locales for which this locale service provider\n\
+                \ can provide localized objects or names."
+            notes: "Returns an array of all locales for which this locale service\
+              \ provider\n can provide localized objects or names. This information\
+              \ is used to\n compose getAvailableLocales() values of the locale-dependent\n\
+              \ services, such as DateFormat.getAvailableLocales().\n\n The array\
+              \ returned by this method should not include two or more\n Locale objects\
+              \ only differing in their extensions."
+          - name: isSupportedLocale
+            modifiers:
+            - public
+            parameters:
+            - name: locale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: a Locale to be tested
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the given locale is supported by this\n         provider;\
+                \ false otherwise."
+            notes: "Returns true if the given locale is supported by\n this locale\
+              \ service provider. The given locale may contain\n extensions that should\
+              \ be\n taken into account for the support determination.\n\n The default\
+              \ implementation returns true if the given locale\n is equal to any\
+              \ of the available Locales returned by\n getAvailableLocales() with\
+              \ ignoring any extensions in both the\n given locale and the available\
+              \ locales. Concrete locale service\n provider implementations should\
+              \ override this method if those\n implementations are Locale extensions-aware.\
+              \ For example,\n DecimalFormatSymbolsProvider implementations will need\
+              \ to check\n extensions in the given locale to see if any numbering\
+              \ system is\n specified and can be supported. However, CollatorProvider\n\
+              \ implementations may not be affected by any particular numbering systems,\n\
+              \ and in that case, extensions for numbering systems should be ignored."
+          staticMethods:
+          - name: checkPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void

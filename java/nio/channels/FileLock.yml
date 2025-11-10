@@ -4,15 +4,152 @@ languages:
     packages:
       java.nio.channels:
         FileLock:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            - final
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A token representing a lock on a region of a file.\n\n  A file-lock\
+            \ object is created each time a lock is acquired on a file via\n one of\
+            \ the lock or tryLock methods of the\n FileChannel class, or the lock\n\
+            \ or tryLock\n methods of the AsynchronousFileChannel class.\n\n  A file-lock\
+            \ object is initially valid.  It remains valid until the lock\n is released\
+            \ by invoking the release method, by closing the\n channel that was used\
+            \ to acquire it, or by the termination of the Java\n virtual machine,\
+            \ whichever comes first.  The validity of a lock may be\n tested by invoking\
+            \ its isValid method.\n\n  A file lock is either exclusive or shared.\
+            \  A shared lock\n prevents other concurrently-running programs from acquiring\
+            \ an overlapping\n exclusive lock, but does allow them to acquire overlapping\
+            \ shared locks.  An\n exclusive lock prevents other programs from acquiring\
+            \ an overlapping lock of\n either type.  Once it is released, a lock has\
+            \ no further effect on the locks\n that may be acquired by other programs.\n\
+            \n  Whether a lock is exclusive or shared may be determined by invoking\
+            \ its\n isShared method.  Some platforms do not support shared\n locks,\
+            \ in which case a request for a shared lock is automatically converted\n\
+            \ into a request for an exclusive lock.\n\n  The locks held on a particular\
+            \ file by a single Java virtual machine do\n not overlap.  The overlaps\
+            \ method may be used to test\n whether a candidate lock range overlaps\
+            \ an existing lock.\n\n  A file-lock object records the file channel upon\
+            \ whose file the lock is\n held, the type and validity of the lock, and\
+            \ the position and size of the\n locked region.  Only the validity of\
+            \ a lock is subject to change over time;\n all other aspects of a lock's\
+            \ state are immutable.\n\n  File locks are held on behalf of the entire\
+            \ Java virtual machine.\n They are not suitable for controlling access\
+            \ to a file by multiple\n threads within the same virtual machine.\n\n\
+            \  File-lock objects are safe for use by multiple concurrent threads.\n\
+            \n\n  Platform dependencies \n\n  This file-locking API is intended to\
+            \ map directly to the native locking\n facility of the underlying operating\
+            \ system.  Thus the locks held on a file\n should be visible to all programs\
+            \ that have access to the file, regardless\n of the language in which\
+            \ those programs are written.\n\n  Whether or not a lock actually prevents\
+            \ another program from accessing\n the content of the locked region is\
+            \ system-dependent and therefore\n unspecified.  The native file-locking\
+            \ facilities of some systems are merely\n advisory, meaning that programs\
+            \ must cooperatively observe a known\n locking protocol in order to guarantee\
+            \ data integrity.  On other systems\n native file locks are mandatory,\
+            \ meaning that if one program locks a\n region of a file then other programs\
+            \ are actually prevented from accessing\n that region in a way that would\
+            \ violate the lock.  On yet other systems,\n whether native file locks\
+            \ are advisory or mandatory is configurable on a\n per-file basis.  To\
+            \ ensure consistent and correct behavior across platforms,\n it is strongly\
+            \ recommended that the locks provided by this API be used as if\n they\
+            \ were advisory locks.\n\n  On some systems, acquiring a mandatory lock\
+            \ on a region of a file\n prevents that region from being mapped into\
+            \ memory, and vice versa.  Programs that combine\n locking and mapping\
+            \ should be prepared for this combination to fail.\n\n  On some systems,\
+            \ closing a channel releases all locks held by the Java\n virtual machine\
+            \ on the underlying file regardless of whether the locks were\n acquired\
+            \ via that channel or via another channel open on the same file.  It\n\
+            \ is strongly recommended that, within a program, a unique channel be\
+            \ used to\n acquire all locks on any given file.\n\n  Some network filesystems\
+            \ permit file locking to be used with\n memory-mapped files only when\
+            \ the locked regions are page-aligned and a\n whole multiple of the underlying\
+            \ hardware's page size.  Some network\n filesystems do not implement file\
+            \ locks on regions that extend past a\n certain position, often 230 or\
+            \ 231.  In general, great\n care should be taken when locking files that\
+            \ reside on network filesystems."
+          fields:
+            channel:
+              name: channel
+              modifiers:
+              - private
               type:
-                basic: String
-                full: java.lang.String
+                basic: Channel
+                full: java.nio.channels.Channel
+            position:
+              name: position
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            shared:
+              name: shared
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            size:
+              name: size
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: channel
+              type:
+                basic: FileChannel
+                full: java.nio.channels.FileChannel
+              notes: The file channel upon whose file this lock is held
+            - name: position
+              type:
+                basic: long
+                full: long
+              notes: "The position within the file at which the locked region starts;\n\
+                \         must be non-negative"
+            - name: size
+              type:
+                basic: long
+                full: long
+              notes: "The size of the locked region; must be non-negative, and the\
+                \ sum\n         position + size must be non-negative"
+            - name: shared
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this lock is shared,\n         false if it is exclusive"
+            notes: Initializes a new instance of this class.
+          - modifiers:
+            - protected
+            parameters:
+            - name: channel
+              type:
+                basic: AsynchronousFileChannel
+                full: java.nio.channels.AsynchronousFileChannel
+              notes: The channel upon whose file this lock is held
+            - name: position
+              type:
+                basic: long
+                full: long
+              notes: "The position within the file at which the locked region starts;\n\
+                \         must be non-negative"
+            - name: size
+              type:
+                basic: long
+                full: long
+              notes: "The size of the locked region; must be non-negative, and the\
+                \ sum\n         position + size must be non-negative"
+            - name: shared
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this lock is shared,\n         false if it is exclusive"
+            notes: Initializes a new instance of this class.
+          methods:
           - name: acquiredBy
             modifiers:
             - public
@@ -20,6 +157,8 @@ languages:
               type:
                 basic: Channel
                 full: java.nio.channels.Channel
+              notes: The channel upon whose file this lock was acquired.
+            notes: Returns the channel upon whose file this lock was acquired.
           - name: channel
             modifiers:
             - public
@@ -28,6 +167,10 @@ languages:
               type:
                 basic: FileChannel
                 full: java.nio.channels.FileChannel
+              notes: "The file channel, or null if the file lock was not\n       \
+                \   acquired by a file channel."
+            notes: "Returns the file channel upon whose file this lock was acquired.\n\
+              \n  This method has been superseded by the acquiredBy\n method."
           - name: close
             modifiers:
             - public
@@ -36,14 +179,9 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "This method invokes the release() method. It was added\n to the\
+              \ class so that it could be used in conjunction with the\n automatic\
+              \ resource management block construct."
           - name: isShared
             modifiers:
             - public
@@ -52,30 +190,42 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if lock is shared,\n         false if it is exclusive"
+            notes: Tells whether this lock is shared.
           - name: isValid
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, this lock is valid
+            notes: "Tells whether or not this lock is valid.\n\n  A lock object remains\
+              \ valid until it is released or the associated\n file channel is closed,\
+              \ whichever comes first."
           - name: overlaps
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: position
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: The starting position of the lock range
+            - name: size
               type:
                 basic: long
                 full: long
+              notes: The size of the lock range
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this lock and the given lock\n       \
+                \   range overlap by at least one byte"
+            notes: Tells whether or not this lock overlaps the given lock range.
           - name: position
             modifiers:
             - public
@@ -84,13 +234,22 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: The position
+            notes: "Returns the position within the file of the first byte of the\
+              \ locked\n region.\n\n  A locked region need not be contained within,\
+              \ or even overlap, the\n actual underlying file, so the value returned\
+              \ by this method may exceed\n the file's current size."
           - name: release
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
+            notes: "Releases this lock.\n\n  If this lock object is valid then invoking\
+              \ this method releases the\n lock and renders the object invalid.  If\
+              \ this lock object is invalid\n then invoking this method has no effect."
           - name: size
             modifiers:
             - public
@@ -99,5 +258,16 @@ languages:
               type:
                 basic: long
                 full: long
-          javaType: class
-          extends: Object
+              notes: The size of the locked region
+            notes: "Returns the size of the locked region in bytes.\n\n  A locked\
+              \ region need not be contained within, or even overlap, the\n actual\
+              \ underlying file, so the value returned by this method may exceed\n\
+              \ the file's current size."
+          - name: toString
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String

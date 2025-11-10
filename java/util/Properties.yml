@@ -4,31 +4,124 @@ languages:
     packages:
       java.util:
         Properties:
+          extends: java.util.Hashtable<java.lang.Object, java.lang.Object>
+          modifiers:
+          - public
+          notes: "The Properties class represents a persistent set of\n properties.\
+            \ The Properties can be saved to a stream\n or loaded from a stream. Each\
+            \ key and its corresponding value in\n the property list is a string.\n\
+            \ \n A property list can contain another property list as its\n \"defaults\"\
+            ; this second property list is searched if\n the property key is not found\
+            \ in the original property list.\n \n Because Properties inherits from\
+            \ Hashtable, the\n put and putAll methods can be applied to a\n Properties\
+            \ object.  Their use is strongly discouraged as they\n allow the caller\
+            \ to insert entries whose keys or values are not\n Strings.  The setProperty\
+            \ method should be used\n instead.  If the store or save method is called\n\
+            \ on a \"compromised\" Properties object that contains a\n non-String\
+            \ key or value, the call will fail. Similarly,\n the call to the propertyNames\
+            \ or list method\n will fail if it is called on a \"compromised\" Properties\n\
+            \ object that contains a non-String key.\n\n \n The iterators returned\
+            \ by the iterator method of this class's\n \"collection views\" (that\
+            \ is, entrySet(), keySet(), and\n values()) may not fail-fast (unlike\
+            \ the Hashtable implementation).\n These iterators are guaranteed to traverse\
+            \ elements as they existed upon\n construction exactly once, and may (but\
+            \ are not guaranteed to) reflect any\n modifications subsequent to construction.\n\
+            \ \n The load(Reader) /\n store(Writer, String)\n methods load and store\
+            \ properties from and to a character based stream\n in a simple line-oriented\
+            \ format specified below.\n\n The load(InputStream) /\n store(OutputStream,\
+            \ String)\n methods work the same way as the load(Reader)/store(Writer,\
+            \ String) pair, except\n the input/output stream is encoded in ISO 8859-1\
+            \ character encoding.\n Characters that cannot be directly represented\
+            \ in this encoding can be written using\n Unicode escapes as defined in\
+            \ section 3.3 of\n The Java Language Specification;\n only a single 'u'\
+            \ character is allowed in an escape\n sequence.\n\n  The loadFromXML(InputStream)\
+            \ and storeToXML(OutputStream, String, String) methods load and store\
+            \ properties\n in a simple XML format.  By default the UTF-8 character\
+            \ encoding is used,\n however a specific encoding may be specified if\
+            \ required. Implementations\n are required to support UTF-8 and UTF-16\
+            \ and may support other encodings.\n An XML properties document has the\
+            \ following DOCTYPE declaration:\n\n \n <!DOCTYPE properties SYSTEM \"\
+            http://java.sun.com/dtd/properties.dtd\">\n \n Note that the system URI\
+            \ (http://java.sun.com/dtd/properties.dtd) is\n not accessed when exporting\
+            \ or importing properties; it merely\n serves as a string to uniquely\
+            \ identify the DTD, which is:\n \n    <?xml version=\"1.0\" encoding=\"\
+            UTF-8\"?>\n\n    <!-- DTD for properties -->\n\n    <!ELEMENT properties\
+            \ ( comment?, entry* ) >\n\n    <!ATTLIST properties version CDATA #FIXED\
+            \ \"1.0\">\n\n    <!ELEMENT comment (#PCDATA) >\n\n    <!ELEMENT entry\
+            \ (#PCDATA) >\n\n    <!ATTLIST entry key CDATA #REQUIRED>\n \n\n This\
+            \ class is thread-safe: multiple threads can share a single\n Properties\
+            \ object without the need for external synchronization."
+          fields:
+            defaults:
+              name: defaults
+              modifiers:
+              - protected
+              type:
+                basic: Properties
+                full: java.util.Properties
+              notes: "A property list that contains default values for any keys not\n\
+                \ found in this property list."
+            map:
+              name: map
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentHashMap
+                full: java.util.concurrent.ConcurrentHashMap<java.lang.Object, java.lang.Object>
+          staticFields:
+            UNSAFE:
+              name: UNSAFE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: Creates an empty property list with no default values.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
+              notes: "the Properties will be sized to\n         accommodate this many\
+                \ elements"
+            notes: "Creates an empty property list with no default values, and with\
+              \ an\n initial size accommodating the specified number of elements without\
+              \ the\n need to dynamically resize."
           - modifiers:
             - public
+            parameters:
+            - name: defaults
+              type:
+                basic: Properties
+                full: java.util.Properties
+              notes: the defaults.
+            notes: Creates an empty property list with the specified defaults.
+          - modifiers:
+            - private
             parameters:
             - name: arg0
               type:
                 basic: Properties
                 full: java.util.Properties
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+            - name: arg1
               type:
-                basic: String
-                full: java.lang.String
+                basic: int
+                full: int
+          methods:
           - name: clear
             modifiers:
             - public
@@ -53,7 +146,7 @@ languages:
                 full: java.lang.Object
             - name: arg1
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
                   java.lang.Object, ?>
             return:
@@ -70,7 +163,7 @@ languages:
                 full: java.lang.Object
             - name: arg1
               type:
-                basic: Function<Object, ?>
+                basic: Function
                 full: java.util.function.Function<? super java.lang.Object, ?>
             return:
               type:
@@ -86,7 +179,7 @@ languages:
                 full: java.lang.Object
             - name: arg1
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
                   java.lang.Object, ?>
             return:
@@ -134,15 +227,39 @@ languages:
             - public
             return:
               type:
-                basic: Enumeration<Object>
+                basic: Enumeration
                 full: java.util.Enumeration<java.lang.Object>
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<Object, Object>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<java.lang.Object, java.lang.Object>>
+          - name: enumerate
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Object>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: enumerateStringProperties
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.String>
+            return:
+              type:
+                basic: void
+                full: void
           - name: equals
             modifiers:
             - public
@@ -161,7 +278,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: BiConsumer<Object, Object>
+                basic: BiConsumer
                 full: java.util.function.BiConsumer<? super java.lang.Object, ? super
                   java.lang.Object>
             return:
@@ -200,30 +317,44 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
+              notes: the property key.
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the value in this property list with the specified key value.
+            notes: "Searches for the property with the specified key in this property\
+              \ list.\n If the key is not found in this property list, the default\
+              \ property list,\n and its defaults, recursively, are then checked.\
+              \ The method returns\n null if the property is not found."
           - name: getProperty
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the hashtable key.
+            - name: defaultValue
               type:
                 basic: String
                 full: java.lang.String
+              notes: a default value.
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the value in this property list with the specified key value.
+            notes: "Searches for the property with the specified key in this property\
+              \ list.\n If the key is not found in this property list, the default\
+              \ property list,\n and its defaults, recursively, are then checked.\
+              \ The method returns the\n default value argument if the property is\
+              \ not found."
           - name: hashCode
             modifiers:
             - public
@@ -243,75 +374,218 @@ languages:
             - public
             return:
               type:
-                basic: Set<Object>
+                basic: Set
                 full: java.util.Set<java.lang.Object>
           - name: keys
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<Object>
+                basic: Enumeration
                 full: java.util.Enumeration<java.lang.Object>
           - name: list
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: PrintStream
                 full: java.io.PrintStream
+              notes: an output stream.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Prints this property list out to the specified output stream.\n\
+              \ This method is useful for debugging."
           - name: list
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: PrintWriter
                 full: java.io.PrintWriter
+              notes: an output stream.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Prints this property list out to the specified output stream.\n\
+              \ This method is useful for debugging."
           - name: load
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: InputStream
-                full: java.io.InputStream
-            return:
-              type:
-                basic: void
-                full: void
-          - name: load
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: reader
               type:
                 basic: Reader
                 full: java.io.Reader
+              notes: the input character stream.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Reads a property list (key and element pairs) from the input\n\
+              \ character stream in a simple line-oriented format.\n \n Properties\
+              \ are processed in terms of lines. There are two\n kinds of line, natural\
+              \ lines and logical lines.\n A natural line is defined as a line of\n\
+              \ characters that is terminated either by a set of line terminator\n\
+              \ characters (\\n or \\r or \\r\\n)\n or by the end of the stream. A\
+              \ natural line may be either a blank line,\n a comment line, or hold\
+              \ all or some of a key-element pair. A logical\n line holds all the\
+              \ data of a key-element pair, which may be spread\n out across several\
+              \ adjacent natural lines by escaping\n the line terminator sequence\
+              \ with a backslash character\n \\.  Note that a comment line cannot\
+              \ be extended\n in this manner; every natural line that is a comment\
+              \ must have\n its own comment indicator, as described below. Lines are\
+              \ read from\n input until the end of the stream is reached.\n\n \n A\
+              \ natural line that contains only white space characters is\n considered\
+              \ blank and is ignored.  A comment line has an ASCII\n '#' or '!' as\
+              \ its first non-white\n space character; comment lines are also ignored\
+              \ and do not\n encode key-element information.  In addition to line\n\
+              \ terminators, this format considers the characters space\n (' ', '\\\
+              u0020'), tab\n ('\\t', '\\u0009'), and form feed\n ('\\f', '\\u000C')\
+              \ to be white\n space.\n\n \n If a logical line is spread across several\
+              \ natural lines, the\n backslash escaping the line terminator sequence,\
+              \ the line\n terminator sequence, and any white space at the start of\
+              \ the\n following line have no affect on the key or element values.\n\
+              \ The remainder of the discussion of key and element parsing\n (when\
+              \ loading) will assume all the characters constituting\n the key and\
+              \ element appear on a single natural line after\n line continuation\
+              \ characters have been removed.  Note that\n it is not sufficient to\
+              \ only examine the character\n preceding a line terminator sequence\
+              \ to decide if the line\n terminator is escaped; there must be an odd\
+              \ number of\n contiguous backslashes for the line terminator to be escaped.\n\
+              \ Since the input is processed from left to right, a\n non-zero even\
+              \ number of 2n contiguous backslashes\n before a line terminator (or\
+              \ elsewhere) encodes n\n backslashes after escape processing.\n\n \n\
+              \ The key contains all of the characters in the line starting\n with\
+              \ the first non-white space character and up to, but not\n including,\
+              \ the first unescaped '=',\n ':', or white space character other than\
+              \ a line\n terminator. All of these key termination characters may be\n\
+              \ included in the key by escaping them with a preceding backslash\n\
+              \ character; for example,\n\n \\:\\=\n\n would be the two-character\
+              \ key \":=\".  Line\n terminator characters can be included using \\\
+              r and\n \\n escape sequences.  Any white space after the\n key is skipped;\
+              \ if the first non-white space character after\n the key is '=' or ':',\
+              \ then it is\n ignored and any white space characters after it are also\n\
+              \ skipped.  All remaining characters on the line become part of\n the\
+              \ associated element string; if there are no remaining\n characters,\
+              \ the element is the empty string\n \"\".  Once the raw character sequences\n\
+              \ constituting the key and element are identified, escape\n processing\
+              \ is performed as described above.\n\n \n As an example, each of the\
+              \ following three lines specifies the key\n \"Truth\" and the associated\
+              \ element value\n \"Beauty\":\n \n Truth = Beauty\n  Truth:Beauty\n\
+              \ Truth                    :Beauty\n \n As another example, the following\
+              \ three lines specify a single\n property:\n \n fruits             \
+              \              apple, banana, pear, \\\n                           \
+              \       cantaloupe, watermelon, \\\n                               \
+              \   kiwi, mango\n \n The key is \"fruits\" and the associated element\
+              \ is:\n \"apple, banana, pear, cantaloupe, watermelon, kiwi, mango\"\
+              \n Note that a space appears before each \\ so that a space\n will appear\
+              \ after each comma in the final result; the \\,\n line terminator, and\
+              \ leading white space on the continuation line are\n merely discarded\
+              \ and are not replaced by one or more other\n characters.\n \n As a\
+              \ third example, the line:\n cheeses\n \n specifies that the key is\
+              \ \"cheeses\" and the associated\n element is the empty string \"\"\
+              .\n \n \n Characters in keys and elements can be represented in escape\n\
+              \ sequences similar to those used for character and string literals\n\
+              \ (see sections 3.3 and 3.10.6 of\n The Java Language Specification).\n\
+              \n The differences from the character escape sequences and Unicode\n\
+              \ escapes used for characters and strings are:\n\n \n  Octal escapes\
+              \ are not recognized.\n\n  The character sequence \\b does not\n represent\
+              \ a backspace character.\n\n  The method does not treat a backslash\
+              \ character,\n \\, before a non-valid escape character as an\n error;\
+              \ the backslash is silently dropped.  For example, in a\n Java string\
+              \ the sequence \"\\z\" would cause a\n compile time error.  In contrast,\
+              \ this method silently drops\n the backslash.  Therefore, this method\
+              \ treats the two character\n sequence \"\\b\" as equivalent to the single\n\
+              \ character 'b'.\n\n  Escapes are not necessary for single and double\
+              \ quotes;\n however, by the rule above, single and double quote characters\n\
+              \ preceded by a backslash still yield single and double quote\n characters,\
+              \ respectively.\n\n  Only a single 'u' character is allowed in a Unicode\
+              \ escape\n sequence.\n\n \n \n The specified stream remains open after\
+              \ this method returns."
+          - name: load
+            modifiers:
+            - public
+            parameters:
+            - name: inStream
+              type:
+                basic: InputStream
+                full: java.io.InputStream
+              notes: the input stream.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reads a property list (key and element pairs) from the input\n\
+              \ byte stream. The input stream is in a simple line-oriented\n format\
+              \ as specified in\n load(Reader) and is assumed to use\n the ISO 8859-1\
+              \ character encoding; that is each byte is one Latin1\n character. Characters\
+              \ not in Latin1, and certain special characters,\n are represented in\
+              \ keys and elements using Unicode escapes as defined in\n section 3.3\
+              \ of\n The Java Language Specification.\n \n The specified stream remains\
+              \ open after this method returns."
+          - name: load0
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Properties.LineReader
+                full: java.util.Properties$LineReader
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadConvert
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: char
+                full: char[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: loadFromXML
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the input stream from which to read the XML document.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Loads all of the properties represented by the XML document on\
+              \ the\n specified input stream into this properties table.\n\n The XML\
+              \ document must have the following DOCTYPE declaration:\n \n <!DOCTYPE\
+              \ properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n \n\
+              \ Furthermore, the document must satisfy the properties DTD described\n\
+              \ above.\n\n  An implementation is required to read XML documents that\
+              \ use the\n \"UTF-8\" or \"UTF-16\" encoding. An implementation may\n\
+              \ support additional encodings.\n\n The specified stream is closed after\
+              \ this method returns."
           - name: merge
             modifiers:
             - public
@@ -326,7 +600,7 @@ languages:
                 full: java.lang.Object
             - name: arg2
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
                   java.lang.Object, ?>
             return:
@@ -338,8 +612,14 @@ languages:
             - public
             return:
               type:
-                basic: Enumeration<?>
+                basic: Enumeration
                 full: java.util.Enumeration<?>
+              notes: "an enumeration of all the keys in this property list, including\n\
+                \          the keys in the default property list."
+            notes: "Returns an enumeration of all the keys in this property list,\n\
+              \ including distinct keys in the default property list if a key\n of\
+              \ the same name has not already been found from the main\n properties\
+              \ list."
           - name: put
             modifiers:
             - public
@@ -362,7 +642,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Map<?, ?>
+                basic: Map
                 full: java.util.Map<?, ?>
             return:
               type:
@@ -384,6 +664,25 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+          - name: readHashtable
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: rehash
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
           - name: remove
             modifiers:
             - public
@@ -412,22 +711,6 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: Object
-                full: java.lang.Object
           - name: replace
             modifiers:
             - public
@@ -448,13 +731,29 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: replace
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: replaceAll
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: BiFunction<Object, Object, ?>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super java.lang.Object, ? super
                   java.lang.Object, ?>
             return:
@@ -465,22 +764,25 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-            - name: arg1
+              notes: an output stream.
+            - name: comments
               type:
                 basic: String
                 full: java.lang.String
+              notes: a description of the property list.
             return:
               type:
                 basic: void
                 full: void
-            deprecated: true
-          - name: setProperty
+            notes: "Calls the store(OutputStream out, String comments) method\n and\
+              \ suppresses IOExceptions that were thrown."
+          - name: saveConvert
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -488,12 +790,40 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
                 basic: String
                 full: java.lang.String
+          - name: setProperty
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the key to be placed into this property list.
+            - name: value
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the value corresponding to key.
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the previous value of the specified key in this property\n \
+                \            list, or null if it did not have one."
+            notes: "Calls the Hashtable method put. Provided for\n parallelism with\
+              \ the getProperty method. Enforces use of\n strings for property keys\
+              \ and values. The value returned is the\n result of the Hashtable call\
+              \ to put."
           - name: size
             modifiers:
             - public
@@ -505,66 +835,93 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: writer
               type:
-                basic: OutputStream
-                full: java.io.OutputStream
-            - name: arg1
+                basic: Writer
+                full: java.io.Writer
+              notes: an output character stream writer.
+            - name: comments
               type:
                 basic: String
                 full: java.lang.String
+              notes: a description of the property list.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes this property list (key and element pairs) in this\n Properties\
+              \ table to the output character stream in a\n format suitable for using\
+              \ the load(Reader)\n method.\n \n Properties from the defaults table\
+              \ of this Properties\n table (if any) are not written out by this method.\n\
+              \ \n If the comments argument is not null, then an ASCII #\n character,\
+              \ the comments string, and a line separator are first written\n to the\
+              \ output stream. Thus, the comments can serve as an\n identifying comment.\
+              \ Any one of a line feed ('\\n'), a carriage\n return ('\\r'), or a\
+              \ carriage return followed immediately by a line feed\n in comments\
+              \ is replaced by a line separator generated by the Writer\n and if the\
+              \ next character in comments is not character # or\n character ! then\
+              \ an ASCII # is written out\n after that line separator.\n \n Next,\
+              \ a comment line is always written, consisting of an ASCII\n # character,\
+              \ the current date and time (as if produced\n by the toString method\
+              \ of Date for the\n current time), and a line separator as generated\
+              \ by the Writer.\n \n Then every entry in this Properties table is\n\
+              \ written out, one per line. For each entry the key string is\n written,\
+              \ then an ASCII =, then the associated\n element string. For the key,\
+              \ all space characters are\n written with a preceding \\ character.\
+              \  For the\n element, leading space characters, but not embedded or\
+              \ trailing\n space characters, are written with a preceding \\\n character.\
+              \ The key and element characters #,\n !, =, and : are written\n with\
+              \ a preceding backslash to ensure that they are properly loaded.\n \n\
+              \ After the entries have been written, the output stream is flushed.\n\
+              \ The output stream remains open after this method returns."
           - name: store
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
-                basic: Writer
-                full: java.io.Writer
-            - name: arg1
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: an output stream.
+            - name: comments
               type:
                 basic: String
                 full: java.lang.String
+              notes: a description of the property list.
             return:
               type:
                 basic: void
                 full: void
-          - name: storeToXML
+            notes: "Writes this property list (key and element pairs) in this\n Properties\
+              \ table to the output stream in a format suitable\n for loading into\
+              \ a Properties table using the\n load(InputStream) method.\n \n Properties\
+              \ from the defaults table of this Properties\n table (if any) are not\
+              \ written out by this method.\n \n This method outputs the comments,\
+              \ properties keys and values in\n the same format as specified in\n\
+              \ store(Writer),\n with the following differences:\n \n The stream is\
+              \ written using the ISO 8859-1 character encoding.\n\n Characters not\
+              \ in Latin-1 in the comments are written as\n \\uxxxx for their appropriate\
+              \ unicode\n hexadecimal value xxxx.\n\n Characters less than \\u0020\
+              \ and characters greater\n than \\u007E in property keys or values are\
+              \ written\n as \\uxxxx for the appropriate hexadecimal\n value xxxx.\n\
+              \ \n \n After the entries have been written, the output stream is flushed.\n\
+              \ The output stream remains open after this method returns."
+          - name: store0
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: OutputStream
-                full: java.io.OutputStream
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
-          - name: storeToXML
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: OutputStream
-                full: java.io.OutputStream
+                basic: BufferedWriter
+                full: java.io.BufferedWriter
             - name: arg1
               type:
                 basic: String
                 full: java.lang.String
             - name: arg2
               type:
-                basic: String
-                full: java.lang.String
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
@@ -573,35 +930,153 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: os
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-            - name: arg1
+              notes: the output stream on which to emit the XML document.
+            - name: comment
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: "a description of the property list, or null\n        if no comment\
+                \ is desired."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Emits an XML document representing all of the properties contained\n\
+              \ in this table.\n\n  An invocation of this method of the form props.storeToXML(os,\n\
+              \ comment) behaves in exactly the same way as the invocation\n props.storeToXML(os,\
+              \ comment, \"UTF-8\");."
+          - name: storeToXML
+            modifiers:
+            - public
+            parameters:
+            - name: os
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream on which to emit the XML document.
+            - name: comment
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "a description of the property list, or null\n              \
+                \    if no comment is desired."
+            - name: encoding
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the name of a supported\n                  \n              \
+                \    character encoding"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Emits an XML document representing all of the properties contained\n\
+              \ in this table, using the specified encoding.\n\n The XML document\
+              \ will have the following DOCTYPE declaration:\n \n <!DOCTYPE properties\
+              \ SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n \n\n If the specified\
+              \ comment is null then no comment\n will be stored in the document.\n\
+              \n  An implementation is required to support writing of XML documents\n\
+              \ that use the \"UTF-8\" or \"UTF-16\" encoding. An\n implementation\
+              \ may support additional encodings.\n\n The specified stream remains\
+              \ open after this method returns.\n\n This method behaves the same as\n\
+              \ storeToXML(OutputStream os, String comment, Charset charset)\n except\
+              \ that it will look up the charset\n using the given encoding name."
+          - name: storeToXML
+            modifiers:
+            - public
+            parameters:
+            - name: os
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the output stream on which to emit the XML document.
+            - name: comment
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "a description of the property list, or null\n              \
+                \    if no comment is desired."
+            - name: charset
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: the charset
             return:
               type:
                 basic: void
                 full: void
+            notes: "Emits an XML document representing all of the properties contained\n\
+              \ in this table, using the specified encoding.\n\n The XML document\
+              \ will have the following DOCTYPE declaration:\n \n <!DOCTYPE properties\
+              \ SYSTEM \"http://java.sun.com/dtd/properties.dtd\">\n \n\n If the specified\
+              \ comment is null then no comment\n will be stored in the document.\n\
+              \n  An implementation is required to support writing of XML documents\n\
+              \ that use the \"UTF-8\" or \"UTF-16\" encoding. An\n implementation\
+              \ may support additional encodings.\n\n  Unmappable characters for the\
+              \ specified charset will be encoded as\n numeric character references.\n\
+              \n The specified stream remains open after this method returns."
           - name: stringPropertyNames
             modifiers:
             - public
             return:
               type:
-                basic: Set<String>
+                basic: Set
                 full: java.util.Set<java.lang.String>
+              notes: "an unmodifiable set of keys in this property list where\n  \
+                \        the key and its corresponding value are strings,\n      \
+                \    including the keys in the default property list."
+            notes: "Returns an unmodifiable set of keys from this property list\n\
+              \ where the key and its corresponding value are strings,\n including\
+              \ distinct keys in the default property list if a key\n of the same\
+              \ name has not already been found from the main\n properties list. \
+              \ Properties whose key or value is not\n of type String are omitted.\n\
+              \ \n The returned set is not backed by this Properties object.\n Changes\
+              \ to this Properties object are not reflected in the\n returned set."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: values
             modifiers:
             - public
             return:
               type:
-                basic: Collection<Object>
+                basic: Collection
                 full: java.util.Collection<java.lang.Object>
-          javaType: class
-          extends: Hashtable<Object, Object>
+          - name: writeHashtable
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: writeComments
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: BufferedWriter
+                full: java.io.BufferedWriter
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void

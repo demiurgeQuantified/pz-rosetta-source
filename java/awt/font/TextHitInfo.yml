@@ -4,38 +4,98 @@ languages:
     packages:
       java.awt.font:
         TextHitInfo:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "The TextHitInfo class represents a character position in a\n text\
+            \ model, and a bias, or \"side,\" of the character.  Biases are\n either\
+            \ leading (the left edge, for a left-to-right character)\n or trailing\
+            \ (the right edge, for a left-to-right character).\n Instances of TextHitInfo\
+            \ are used to specify caret and\n insertion positions within text.\n \n\
+            \ For example, consider the text \"abc\".  TextHitInfo.trailing(1)\n corresponds\
+            \ to the right side of the 'b' in the text.\n \n TextHitInfo is used primarily\
+            \ by TextLayout and\n clients of TextLayout.  Clients of TextLayout\n\
+            \ query TextHitInfo instances for an insertion offset, where\n new text\
+            \ is inserted into the text model.  The insertion offset is equal\n to\
+            \ the character position in the TextHitInfo if the bias\n is leading,\
+            \ and one character after if the bias is trailing.  The\n insertion offset\
+            \ for TextHitInfo.trailing(1) is 2.\n \n Sometimes it is convenient to\
+            \ construct a TextHitInfo with\n the same insertion offset as an existing\
+            \ one, but on the opposite\n character.  The getOtherHit method constructs\
+            \ a new\n TextHitInfo with the same insertion offset as an existing\n\
+            \ one, with a hit on the character on the other side of the insertion\
+            \ offset.\n Calling getOtherHit on trailing(1) would return leading(2).\n\
+            \ In general, getOtherHit for trailing(n) returns\n leading(n+1) and getOtherHit\
+            \ for leading(n)\n returns trailing(n-1).\n \n Example:\n Converting a\
+            \ graphical point to an insertion point within a text\n model\n \n TextLayout\
+            \ layout = ...;\n Point2D.Float hitPoint = ...;\n TextHitInfo hitInfo\
+            \ = layout.hitTestChar(hitPoint.x, hitPoint.y);\n int insPoint = hitInfo.getInsertionIndex();\n\
+            \ // insPoint is relative to layout;  may need to adjust for use\n //\
+            \ in a text model"
+          fields:
+            charIndex:
+              name: charIndex
+              modifiers:
+              - private
               type:
-                basic: String
-                full: java.lang.String
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TextHitInfo
-                full: java.awt.font.TextHitInfo
-            return:
+                basic: int
+                full: int
+            isLeadingEdge:
+              name: isLeadingEdge
+              modifiers:
+              - private
               type:
                 basic: boolean
                 full: boolean
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the Object to test for equality
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified Object\n equals this TextHitInfo; false\
+                \ otherwise."
+            notes: "Returns true if the specified Object is a\n TextHitInfo and equals\
+              \ this TextHitInfo."
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: hitInfo
+              type:
+                basic: TextHitInfo
+                full: java.awt.font.TextHitInfo
+              notes: a specified TextHitInfo
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the specified TextHitInfo\n has the same charIndex and\
+                \ isLeadingEdge\n as this TextHitInfo."
+            notes: "Returns true if the specified TextHitInfo\n has the same charIndex\
+              \ and isLeadingEdge\n as this TextHitInfo.  This is not the same as\
+              \ having\n the same insertion offset."
           - name: getCharIndex
             modifiers:
             - public
@@ -43,6 +103,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the index of the character hit.
+            notes: Returns the index of the character hit.
           - name: getInsertionIndex
             modifiers:
             - public
@@ -50,18 +112,28 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the insertion index.
+            notes: "Returns the insertion index.  This is the character index if\n\
+              \ the leading edge of the character was hit, and one greater\n than\
+              \ the character index if the trailing edge was hit."
           - name: getOffsetHit
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: delta
               type:
                 basic: int
                 full: int
+              notes: the value to offset this charIndex
             return:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: "a TextHitInfo whose charIndex is\n offset by delta from the\
+                \ charIndex of\n this TextHitInfo."
+            notes: "Creates a TextHitInfo whose character index is offset\n by delta\
+              \ from the charIndex of this\n TextHitInfo. This TextHitInfo remains\n\
+              \ unchanged."
           - name: getOtherHit
             modifiers:
             - public
@@ -69,6 +141,9 @@ languages:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: "a TextHitInfo on the other side of the\n insertion point."
+            notes: "Creates a TextHitInfo on the other side of the\n insertion point.\
+              \  This TextHitInfo remains unchanged."
           - name: hashCode
             modifiers:
             - public
@@ -76,6 +151,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the hash code of this TextHitInfo, which is\n also the charIndex\
+                \ of this TextHitInfo."
+            notes: Returns the hash code.
           - name: isLeadingEdge
             modifiers:
             - public
@@ -83,58 +161,83 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the leading edge of the character was\n hit; false otherwise."
+            notes: "Returns true if the leading edge of the character was\n hit."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: afterOffset
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
+              notes: "an offset associated with the character after\n the offset"
             return:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: a TextHitInfo at the specified offset.
+            notes: "Creates a TextHitInfo at the specified offset,\n associated with\
+              \ the character after the offset."
           - name: beforeOffset
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
+              notes: "an offset associated with the character before\n the offset"
             return:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: a TextHitInfo at the specified offset.
+            notes: "Creates a TextHitInfo at the specified offset,\n associated with\
+              \ the character before the offset."
           - name: leading
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: charIndex
               type:
                 basic: int
                 full: int
+              notes: the index of the character hit
             return:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: "a TextHitInfo on the leading edge of the\n character at the\
+                \ specified charIndex."
+            notes: "Creates a TextHitInfo on the leading edge of the\n character at\
+              \ the specified charIndex."
           - name: trailing
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: charIndex
               type:
                 basic: int
                 full: int
+              notes: the index of the character hit
             return:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
-          javaType: class
-          extends: Object
+              notes: "a TextHitInfo on the trailing edge of the\n character at the\
+                \ specified charIndex."
+            notes: "Creates a hit on the trailing edge of the character at\n the specified\
+              \ charIndex."

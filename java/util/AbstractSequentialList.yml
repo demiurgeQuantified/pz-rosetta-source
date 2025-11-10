@@ -4,97 +4,191 @@ languages:
     packages:
       java.util:
         AbstractSequentialList:
+          extends: java.util.AbstractList<E>
+          modifiers:
+          - public
+          - abstract
+          notes: "This class provides a skeletal implementation of the List\n interface\
+            \ to minimize the effort required to implement this interface\n backed\
+            \ by a \"sequential access\" data store (such as a linked list).  For\n\
+            \ random access data (such as an array), AbstractList should be used\n\
+            \ in preference to this class.\n\n This class is the opposite of the AbstractList\
+            \ class in the sense\n that it implements the \"random access\" methods\
+            \ (get(int index),\n set(int index, E element), add(int index, E element)\
+            \ and\n remove(int index)) on top of the list's list iterator, instead\
+            \ of\n the other way around.\n\n To implement a list the programmer needs\
+            \ only to extend this class and\n provide implementations for the listIterator\
+            \ and size\n methods.  For an unmodifiable list, the programmer need only\
+            \ implement the\n list iterator's hasNext, next, hasPrevious,\n previous\
+            \ and index methods.\n\n For a modifiable list the programmer should additionally\
+            \ implement the list\n iterator's set method.  For a variable-size list\
+            \ the programmer\n should additionally implement the list iterator's remove\
+            \ and\n add methods.\n\n The programmer should generally provide a void\
+            \ (no argument) and collection\n constructor, as per the recommendation\
+            \ in the Collection interface\n specification.\n\n This class is a member\
+            \ of the\n \n Java Collections Framework."
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Sole constructor.  (For invocation by subclass constructors, typically\n\
+              \ implicit.)"
           methods:
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: index at which the specified element is to be inserted
+            - name: element
               type:
                 basic: E
                 full: E
+              notes: element to be inserted
             return:
               type:
                 basic: void
                 full: void
+            notes: "Inserts the specified element at the specified position in this\
+              \ list\n (optional operation).  Shifts the element currently at that\
+              \ position\n (if any) and any subsequent elements to the right (adds\
+              \ one to their\n indices).\n\n This implementation first gets a list\
+              \ iterator pointing to the\n indexed element (with listIterator(index)).\
+              \  Then, it\n inserts the specified element with ListIterator.add.\n\
+              \n Note that this implementation will throw an\n UnsupportedOperationException\
+              \ if the list iterator does not\n implement the add operation."
           - name: addAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "index at which to insert the first element from the\n      \
+                \        specified collection"
+            - name: c
               type:
-                basic: Collection<? extends E>
+                basic: Collection
                 full: java.util.Collection<? extends E>
+              notes: collection containing elements to be added to this list
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this list changed as a result of the call
+            notes: "Inserts all of the elements in the specified collection into this\n\
+              \ list at the specified position (optional operation).  Shifts the\n\
+              \ element currently at that position (if any) and any subsequent\n elements\
+              \ to the right (increases their indices).  The new elements\n will appear\
+              \ in this list in the order that they are returned by the\n specified\
+              \ collection's iterator.  The behavior of this operation is\n undefined\
+              \ if the specified collection is modified while the\n operation is in\
+              \ progress.  (Note that this will occur if the specified\n collection\
+              \ is this list, and it's nonempty.)\n\n This implementation gets an\
+              \ iterator over the specified collection and\n a list iterator over\
+              \ this list pointing to the indexed element (with\n listIterator(index)).\
+              \  Then, it iterates over the specified\n collection, inserting the\
+              \ elements obtained from the iterator into this\n list, one at a time,\
+              \ using ListIterator.add followed by\n ListIterator.next (to skip over\
+              \ the added element).\n\n Note that this implementation will throw an\n\
+              \ UnsupportedOperationException if the list iterator returned by\n the\
+              \ listIterator method does not implement the add\n operation."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: index of the element to return
             return:
               type:
                 basic: E
                 full: E
+              notes: the element at the specified position in this list
+            notes: "Returns the element at the specified position in this list.\n\n\
+              \ This implementation first gets a list iterator pointing to the\n indexed\
+              \ element (with listIterator(index)).  Then, it gets\n the element using\
+              \ ListIterator.next and returns it."
           - name: iterator
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<E>
+                basic: Iterator
                 full: java.util.Iterator<E>
+              notes: an iterator over the elements in this list (in proper sequence)
+            notes: "Returns an iterator over the elements in this list (in proper\n\
+              \ sequence).\n\n This implementation merely returns a list iterator\
+              \ over the list."
           - name: listIterator
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: "index of first element to be returned from the list\n      \
+                \   iterator (by a call to the next method)"
             return:
               type:
-                basic: ListIterator<E>
+                basic: ListIterator
                 full: java.util.ListIterator<E>
+              notes: "a list iterator over the elements in this list (in proper\n\
+                \         sequence)"
+            notes: "Returns a list iterator over the elements in this list (in proper\n\
+              \ sequence)."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the index of the element to be removed
             return:
               type:
                 basic: E
                 full: E
+              notes: the element previously at the specified position
+            notes: "Removes the element at the specified position in this list (optional\n\
+              \ operation).  Shifts any subsequent elements to the left (subtracts\
+              \ one\n from their indices).  Returns the element that was removed from\
+              \ the\n list.\n\n This implementation first gets a list iterator pointing\
+              \ to the\n indexed element (with listIterator(index)).  Then, it removes\n\
+              \ the element with ListIterator.remove.\n\n Note that this implementation\
+              \ will throw an\n UnsupportedOperationException if the list iterator\
+              \ does not\n implement the remove operation."
           - name: set
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: index of the element to replace
+            - name: element
               type:
                 basic: E
                 full: E
+              notes: element to be stored at the specified position
             return:
               type:
                 basic: E
                 full: E
-          javaType: class
-          extends: AbstractList<E>
+              notes: the element previously at the specified position
+            notes: "Replaces the element at the specified position in this list with\
+              \ the\n specified element (optional operation).\n\n This implementation\
+              \ first gets a list iterator pointing to the\n indexed element (with\
+              \ listIterator(index)).  Then, it gets\n the current element using ListIterator.next\
+              \ and replaces it\n with ListIterator.set.\n\n Note that this implementation\
+              \ will throw an\n UnsupportedOperationException if the list iterator\
+              \ does not\n implement the set operation."

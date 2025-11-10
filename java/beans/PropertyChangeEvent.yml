@@ -4,34 +4,97 @@ languages:
     packages:
       java.beans:
         PropertyChangeEvent:
+          extends: java.util.EventObject
+          modifiers:
+          - public
+          notes: "A \"PropertyChange\" event gets delivered whenever a bean changes\
+            \ a \"bound\"\n or \"constrained\" property.  A PropertyChangeEvent object\
+            \ is sent as an\n argument to the PropertyChangeListener and VetoableChangeListener\
+            \ methods.\n \n Normally PropertyChangeEvents are accompanied by the name\
+            \ and the old\n and new value of the changed property.  If the new value\
+            \ is a primitive\n type (such as int or boolean) it must be wrapped as\
+            \ the\n corresponding java.lang.* Object type (such as Integer or Boolean).\n\
+            \ \n Null values may be provided for the old and the new values if their\n\
+            \ true values are not known.\n \n An event source may send a null object\
+            \ as the name to indicate that an\n arbitrary set of if its properties\
+            \ have changed.  In this case the\n old and new values should also be\
+            \ null."
+          fields:
+            newValue:
+              name: newValue
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            oldValue:
+              name: oldValue
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            propagationId:
+              name: propagationId
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            propertyName:
+              name: propertyName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
+            - name: source
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the bean that fired the event
+            - name: propertyName
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the programmatic name of the property that was changed
+            - name: oldValue
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the old value of the property
+            - name: newValue
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the new value of the property
+            notes: Constructs a new PropertyChangeEvent.
+          methods:
+          - name: appendTo
+            modifiers:
+            - package
+            parameters:
             - name: arg0
               type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg2
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg3
-              type:
-                basic: Object
-                full: java.lang.Object
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
+                basic: StringBuilder
+                full: java.lang.StringBuilder
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: void
+                full: void
           - name: getNewValue
             modifiers:
             - public
@@ -39,6 +102,9 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "The new value for the property, expressed as an Object.\n  \
+                \        May be null if multiple properties have changed."
+            notes: Gets the new value for the property, expressed as an Object.
           - name: getOldValue
             modifiers:
             - public
@@ -46,6 +112,9 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "The old value for the property, expressed as an Object.\n  \
+                \        May be null if multiple properties have changed."
+            notes: Gets the old value for the property, expressed as an Object.
           - name: getPropagationId
             modifiers:
             - public
@@ -53,6 +122,13 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the propagationId object associated with a bound/constrained\n\
+                \          property update."
+            notes: "The \"propagationId\" field is reserved for future use.  In Beans\
+              \ 1.0\n the sole requirement is that if a listener catches a PropertyChangeEvent\n\
+              \ and then fires a PropertyChangeEvent of its own, then it should\n\
+              \ make sure that it propagates the propagationId field from its\n incoming\
+              \ event to its outgoing event."
           - name: getPropertyName
             modifiers:
             - public
@@ -60,17 +136,27 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The programmatic name of the property that was changed.\n  \
+                \        May be null if multiple properties have changed."
+            notes: Gets the programmatic name of the property that was changed.
           - name: setPropagationId
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: propagationId
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: The propagationId object for the event.
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: EventObject
+            notes: Sets the propagationId object for the event.
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

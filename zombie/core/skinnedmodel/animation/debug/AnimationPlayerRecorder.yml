@@ -4,9 +4,70 @@ languages:
     packages:
       zombie.core.skinnedmodel.animation.debug:
         AnimationPlayerRecorder:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          notes: Used for recording the activity of an AnimationPlayer
+          fields:
+            m_animationEventFrame:
+              name: m_animationEventFrame
+              modifiers:
+              - private
+              type:
+                basic: AnimationEventRecordingFrame
+                full: zombie.core.skinnedmodel.animation.debug.AnimationEventRecordingFrame
+            m_animationNodeFrame:
+              name: m_animationNodeFrame
+              modifiers:
+              - private
+              type:
+                basic: AnimationNodeRecordingFrame
+                full: zombie.core.skinnedmodel.animation.debug.AnimationNodeRecordingFrame
+            m_animationTrackFrame:
+              name: m_animationTrackFrame
+              modifiers:
+              - private
+              type:
+                basic: AnimationTrackRecordingFrame
+                full: zombie.core.skinnedmodel.animation.debug.AnimationTrackRecordingFrame
+            m_animationVariableFrame:
+              name: m_animationVariableFrame
+              modifiers:
+              - private
+              type:
+                basic: AnimationVariableRecordingFrame
+                full: zombie.core.skinnedmodel.animation.debug.AnimationVariableRecordingFrame
+            m_character:
+              name: m_character
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            m_isLineActive:
+              name: m_isLineActive
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_isRecording:
+              name: m_isRecording
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            s_isInitialized:
+              name: s_isInitialized
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
@@ -14,69 +75,95 @@ languages:
             - name: owner
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
           methods:
-          - name: beginLine
+          - name: close
             modifiers:
             - public
-            parameters:
-            - name: frameNo
-              type:
-                basic: int
             return:
               type:
                 basic: void
+                full: void
           - name: discardRecording
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: endLine
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
+                full: void
           - name: getOwner
             modifiers:
             - public
             return:
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+          - name: hasActiveLine
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isRecording
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: logAIState
             modifiers:
             - public
             parameters:
-            - name: state
+            - name: arg0
               type:
                 basic: State
-            - name: subStates
+                full: zombie.ai.State
+            - name: arg1
               type:
                 basic: List
-                full: List<StateMachine.SubstateSlot>
+                full: java.util.List<zombie.ai.StateMachine$SubstateSlot>
             return:
               type:
                 basic: void
+                full: void
           - name: logActionState
             modifiers:
             - public
             parameters:
-            - name: state
+            - name: arg0
+              type:
+                basic: ActionGroup
+                full: zombie.characters.action.ActionGroup
+            - name: arg1
               type:
                 basic: ActionState
-            - name: childStates
+                full: zombie.characters.action.ActionState
+            - name: arg2
               type:
                 basic: List
-                full: List<ActionState>
+                full: java.util.List<zombie.characters.action.ActionState>
             return:
               type:
                 basic: void
+                full: void
+          - name: logAnimEvent
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg1
+              type:
+                basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
+            return:
+              type:
+                basic: void
+                full: void
           - name: logAnimNode
             modifiers:
             - public
@@ -84,9 +171,11 @@ languages:
             - name: liveNode
               type:
                 basic: LiveAnimNode
+                full: zombie.core.skinnedmodel.advancedanimation.LiveAnimNode
             return:
               type:
                 basic: void
+                full: void
           - name: logAnimState
             modifiers:
             - public
@@ -94,35 +183,50 @@ languages:
             - name: state
               type:
                 basic: AnimState
+                full: zombie.core.skinnedmodel.advancedanimation.AnimState
             return:
               type:
                 basic: void
+                full: void
           - name: logAnimWeights
             modifiers:
             - public
             parameters:
-            - name: tracks
+            - name: arg0
               type:
-                basic: List
-                full: List<AnimationTrack>
-            - name: animBlendIndices
-              type:
-                basic: int[]
-            - name: animBlendWeights
-              type:
-                basic: float[]
-            - name: deferredMovement
+                basic: LiveAnimationTrackEntries
+                full: zombie.core.skinnedmodel.animation.LiveAnimationTrackEntries
+            - name: arg1
               type:
                 basic: Vector2
+                full: zombie.iso.Vector2
+            - name: arg2
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
             return:
               type:
                 basic: void
+                full: void
           - name: logCharacterPos
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: logGlobalAnimEvent
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
+            return:
+              type:
+                basic: void
+                full: void
           - name: logVariables
             modifiers:
             - public
@@ -130,9 +234,23 @@ languages:
             - name: varSource
               type:
                 basic: IAnimationVariableSource
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimationVariableSource
             return:
               type:
                 basic: void
+                full: void
+          - name: newFrame
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: setRecording
             modifiers:
             - public
@@ -140,10 +258,77 @@ languages:
             - name: value
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
+          - name: writeFrame
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
+          - name: backupOldRecordings
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: discardOldRecordings
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getRecordingDir
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getTimeStampedFileName
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getTimeStampedFilePath
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: init
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: void
+                full: void
           - name: openFileStream
             modifiers:
             - public
@@ -152,16 +337,16 @@ languages:
             - name: key
               type:
                 basic: String
+                full: java.lang.String
             - name: append
               type:
                 basic: boolean
+                full: boolean
             - name: fileNameConsumer
               type:
                 basic: Consumer
-                full: Consumer<String>
+                full: java.util.function.Consumer<java.lang.String>
             return:
               type:
                 basic: PrintStream
-          javaType: class
-          extends: Object
-          notes: Used for recording the activity of an AnimationPlayer
+                full: java.io.PrintStream

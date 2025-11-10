@@ -4,9 +4,506 @@ languages:
     packages:
       java.net:
         SocketPermission:
+          extends: java.security.Permission
+          modifiers:
+          - public
+          - final
+          notes: "This class represents access to a network via sockets.\n A SocketPermission\
+            \ consists of a\n host specification and a set of \"actions\" specifying\
+            \ ways to\n connect to that host. The host is specified as\n \n    host\
+            \ = (hostname | IPv4address | iPv6reference) [:portrange]\n    portrange\
+            \ = portnumber | -portnumber | portnumber-[portnumber]\n \n The host is\
+            \ expressed as a DNS name, as a numerical IP address,\n or as \"localhost\"\
+            \ (for the local machine).\n The wildcard \"*\" may be included once in\
+            \ a DNS name host\n specification. If it is included, it must be in the\
+            \ leftmost\n position, as in \"*.example.com\".\n \n The format of the\
+            \ IPv6reference should follow that specified in RFC 2732: Format\n for\
+            \ Literal IPv6 Addresses in URLs:\n \n    ipv6reference = \"[\" IPv6address\
+            \ \"]\"\n\n For example, you can construct a SocketPermission instance\n\
+            \ as the following:\n \n    String hostAddress = inetaddress.getHostAddress();\n\
+            \    if (inetaddress instanceof Inet6Address) {\n        sp = new SocketPermission(\"\
+            [\" + hostAddress + \"]:\" + port, action);\n    } else {\n        sp\
+            \ = new SocketPermission(hostAddress + \":\" + port, action);\n    }\n\
+            \ \n or\n \n    String host = url.getHost();\n    sp = new SocketPermission(host\
+            \ + \":\" + port, action);\n \n \n The full uncompressed form of\n an\
+            \ IPv6 literal address is also valid.\n \n The port or portrange is optional.\
+            \ A port specification of the\n form \"N-\", where N is a port number,\
+            \ signifies all ports\n numbered N and above, while a specification of\
+            \ the\n form \"-N\" indicates all ports numbered N and below.\n The special\
+            \ port value 0 refers to the entire ephemeral\n port range. This is a\
+            \ fixed range of ports a system may use to\n allocate dynamic ports from.\
+            \ The actual range may be system dependent.\n \n The possible ways to\
+            \ connect to the host are\n \n accept\n connect\n listen\n resolve\n \n\
+            \ The \"listen\" action is only meaningful when used with \"localhost\"\
+            \ and\n means the ability to bind to a specified port.\n The \"resolve\"\
+            \ action is implied when any of the other actions are present.\n The action\
+            \ \"resolve\" refers to host/ip name service lookups.\n \n The actions\
+            \ string is converted to lowercase before processing.\n As an example\
+            \ of the creation and meaning of SocketPermissions,\n note that if the\
+            \ following permission:\n\n \n   p1 = new SocketPermission(\"foo.example.com:7777\"\
+            , \"connect,accept\");\n \n\n is granted to some code, it allows that\
+            \ code to connect to port 7777 on\n foo.example.com, and to accept connections\
+            \ on that port.\n\n Similarly, if the following permission:\n\n \n   p2\
+            \ = new SocketPermission(\"localhost:1024-\", \"accept,connect,listen\"\
+            );\n \n\n is granted to some code, it allows that code to\n accept connections\
+            \ on, connect to, or listen on any port between\n 1024 and 65535 on the\
+            \ local host.\n\n Note: Granting code permission to accept or make connections\
+            \ to remote\n hosts may be dangerous because malevolent code can then\
+            \ more easily\n transfer and share confidential data among parties who\
+            \ may not\n otherwise have access to the data."
+          fields:
+            actions:
+              name: actions
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            addresses:
+              name: addresses
+              modifiers:
+              - private
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+            cdomain:
+              name: cdomain
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            cname:
+              name: cname
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            defaultDeny:
+              name: defaultDeny
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            hdomain:
+              name: hdomain
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            hostname:
+              name: hostname
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            init_with_ip:
+              name: init_with_ip
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            invalid:
+              name: invalid
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            mask:
+              name: mask
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            portrange:
+              name: portrange
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            trusted:
+              name: trusted
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            untrusted:
+              name: untrusted
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            wildcard:
+              name: wildcard
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            ACCEPT:
+              name: ACCEPT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ALL:
+              name: ALL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            CONNECT:
+              name: CONNECT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            DEF_EPH_LOW:
+              name: DEF_EPH_LOW
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            LISTEN:
+              name: LISTEN
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            NONE:
+              name: NONE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            PORT_MAX:
+              name: PORT_MAX
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            PORT_MIN:
+              name: PORT_MIN
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            PRIV_PORT_MAX:
+              name: PRIV_PORT_MAX
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            RESOLVE:
+              name: RESOLVE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            debug:
+              name: debug
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Debug
+                full: sun.security.util.Debug
+            debugInit:
+              name: debugInit
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            trustNameService:
+              name: trustNameService
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the hostname or IP address of the computer, optionally\n including\
+                \ a colon followed by a port or port range."
+            - name: action
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the action string.
+            notes: "Creates a new SocketPermission object with the specified actions.\n\
+              \ The host is expressed as a DNS name, or as a numerical IP address.\n\
+              \ Optionally, a port or a portrange may be supplied (separated\n from\
+              \ the DNS name or IP address by a colon).\n \n To specify the local\
+              \ machine, use \"localhost\" as the host.\n Also note: An empty host\
+              \ String (\"\") is equivalent to \"localhost\".\n \n The actions parameter\
+              \ contains a comma-separated list of the\n actions granted for the specified\
+              \ host (and port(s)). Possible actions are\n \"connect\", \"listen\"\
+              , \"accept\", \"resolve\", or\n any combination of those. \"resolve\"\
+              \ is automatically added\n when any of the other three are specified.\n\
+              \ \n Examples of SocketPermission instantiation are the following:\n\
+              \ \n    nr = new SocketPermission(\"www.example.com\", \"connect\");\n\
+              \    nr = new SocketPermission(\"www.example.com:80\", \"connect\");\n\
+              \    nr = new SocketPermission(\"*.example.com\", \"connect\");\n  \
+              \  nr = new SocketPermission(\"*.edu\", \"resolve\");\n    nr = new\
+              \ SocketPermission(\"204.160.241.0\", \"connect\");\n    nr = new SocketPermission(\"\
+              localhost:1024-65535\", \"listen\");\n    nr = new SocketPermission(\"\
+              204.160.241.0:1024-65535\", \"connect\");"
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+          methods:
+          - name: authorized
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: authorizedIPv4
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: authorizedIPv6
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: compareHostnames
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: SocketPermission
+                full: java.net.SocketPermission
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the object to test for equality with this object.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if obj is a SocketPermission, and has the\n  same hostname,\
+                \ port range, and actions as this\n  SocketPermission object. However,\
+                \ port range will be ignored\n  in the comparison if obj only contains\
+                \ the action, 'resolve'."
+            notes: Checks two SocketPermission objects for equality.
+          - name: getActions
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the canonical string representation of the actions.
+            notes: "Returns the canonical string representation of the actions.\n\
+              \ Always returns present actions in the following order:\n connect,\
+              \ listen, accept, resolve."
+          - name: getCanonName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getIP
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getMask
+            modifiers:
+            - package
+            return:
+              type:
+                basic: int
+                full: int
+          - name: hashCode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: a hash code value for this object.
+            notes: Returns the hash code value for this object.
+          - name: implies
+            modifiers:
+            - public
+            parameters:
+            - name: p
+              type:
+                basic: Permission
+                full: java.security.Permission
+              notes: the permission to check against.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the specified permission is implied by this object,\n\
+                \ false if not."
+            notes: "Checks if this socket permission object \"implies\" the\n specified\
+              \ permission.\n \n More specifically, this method first ensures that\
+              \ all of the following\n are true (and returns false if any of them\
+              \ are not):\n \n  p is an instanceof SocketPermission,\n  p's actions\
+              \ are a proper subset of this\n object's actions, and\n  p's port range\
+              \ is included in this port range. Note:\n port range is ignored when\
+              \ p only contains the action, 'resolve'.\n \n\n Then implies checks\
+              \ each of the following, in order,\n and for each returns true if the\
+              \ stated condition is true:\n \n  If this object was initialized with\
+              \ a single IP address and one of p's\n IP addresses is equal to this\
+              \ object's IP address.\n If this object is a wildcard domain (such as\
+              \ *.example.com), and\n p's canonical name (the name without any preceding\
+              \ *)\n ends with this object's canonical host name. For example, *.example.com\n\
+              \ implies *.foo.example.com.\n If this object was not initialized with\
+              \ a single IP address, and one of this\n object's IP addresses equals\
+              \ one of p's IP addresses.\n If this canonical name equals p's canonical\
+              \ name.\n \n\n If none of the above are true, implies returns false."
+          - name: impliesIgnoreMask
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: SocketPermission
+                full: java.net.SocketPermission
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: includesEphemerals
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: init
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: isUntrusted
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: match
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -16,41 +513,6 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          methods:
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: getActions
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-          - name: hashCode
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: implies
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Permission
-                full: java.security.Permission
             return:
               type:
                 basic: boolean
@@ -62,5 +524,155 @@ languages:
               type:
                 basic: PermissionCollection
                 full: java.security.PermissionCollection
-          javaType: class
-          extends: Permission
+              notes: a new PermissionCollection object suitable for storing SocketPermissions.
+            notes: "Returns a new PermissionCollection object for storing SocketPermission\n\
+              \ objects.\n \n SocketPermission objects must be stored in a manner\
+              \ that allows them\n to be inserted into the collection in any order,\
+              \ but that also enables the\n PermissionCollection implies\n method\
+              \ to be implemented in an efficient (and consistent) manner."
+          - name: parsePort
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: int
+                full: int[]
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setDeny
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: checkForIDN
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getActions
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getDebug
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: Debug
+                full: sun.security.util.Debug
+          - name: getHost
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getMask
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: int
+                full: int
+          - name: inRange
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: initEphemeralPorts
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int

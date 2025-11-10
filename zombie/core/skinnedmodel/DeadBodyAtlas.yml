@@ -4,26 +4,166 @@ languages:
     packages:
       zombie.core.skinnedmodel:
         DeadBodyAtlas:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          fields:
+            AtlasList:
+              name: AtlasList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.core.skinnedmodel.DeadBodyAtlas$Atlas>
+            EntryMap:
+              name: EntryMap
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture>
+            RenderJobs:
+              name: RenderJobs
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.core.skinnedmodel.DeadBodyAtlas$RenderJob>
+            bodyParams:
+              name: bodyParams
+              modifiers:
+              - private
+              type:
+                basic: DeadBodyAtlas.BodyParams
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyParams
+            bodyTextureDrawerPool:
+              name: bodyTextureDrawerPool
+              modifiers:
+              - private
+              type:
+                basic: ObjectPool
+                full: zombie.popman.ObjectPool<zombie.core.skinnedmodel.DeadBodyAtlas$BodyTextureDrawer>
+            characterTextureVisualFemale:
+              name: characterTextureVisualFemale
+              modifiers:
+              - private
+              type:
+                basic: DeadBodyAtlas.CharacterTextureVisual
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$CharacterTextureVisual
+            characterTextureVisualMale:
+              name: characterTextureVisualMale
+              modifiers:
+              - private
+              type:
+                basic: DeadBodyAtlas.CharacterTextureVisual
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$CharacterTextureVisual
+            characterTexturesFemale:
+              name: characterTexturesFemale
+              modifiers:
+              - private
+              type:
+                basic: CharacterTextures
+                full: zombie.core.skinnedmodel.CharacterTextures
+            characterTexturesMale:
+              name: characterTexturesMale
+              modifiers:
+              - private
+              type:
+                basic: CharacterTextures
+                full: zombie.core.skinnedmodel.CharacterTextures
+            checksummer:
+              name: checksummer
+              modifiers:
+              - private
+              type:
+                basic: DeadBodyAtlas.Checksummer
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$Checksummer
+            debugDrawInWorld:
+              name: debugDrawInWorld
+              modifiers:
+              - private
+              type:
+                basic: DeadBodyAtlas.DebugDrawInWorld
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$DebugDrawInWorld[]
+            debugDrawTime:
+              name: debugDrawTime
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            fbo:
+              name: fbo
+              modifiers:
+              - private
+              type:
+                basic: TextureFBO
+                full: zombie.core.textures.TextureFBO
+            updateCounter:
+              name: updateCounter
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
             ATLAS_SIZE:
               name: ATLAS_SIZE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
+            DeadBodyAtlasShader:
+              name: DeadBodyAtlasShader
+              modifiers:
+              - public
+              - static
+              type:
+                basic: Shader
+                full: zombie.core.opengl.Shader
+            JobPool:
+              name: JobPool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Stack
+                full: java.util.Stack<zombie.core.skinnedmodel.DeadBodyAtlas$RenderJob>
             instance:
               name: instance
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: DeadBodyAtlas
+                full: zombie.core.skinnedmodel.DeadBodyAtlas
+            s_BodyTextureDepthDrawerPool:
+              name: s_BodyTextureDepthDrawerPool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectPool
+                full: zombie.popman.ObjectPool<zombie.core.skinnedmodel.DeadBodyAtlas$BodyTextureDepthDrawer>
+            tempVector2:
+              name: tempVector2
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
           constructors:
           - modifiers:
             - public
@@ -34,6 +174,27 @@ languages:
             return:
               type:
                 basic: void
+                full: void
+          - name: assignEntryToAtlas
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: DeadBodyAtlas.AtlasEntry
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$AtlasEntry
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: checkLights
             modifiers:
             - public
@@ -41,12 +202,15 @@ languages:
             - name: entryTex
               type:
                 basic: Texture
+                full: zombie.core.textures.Texture
             - name: body
               type:
                 basic: IsoDeadBody
+                full: zombie.iso.objects.IsoDeadBody
             return:
               type:
                 basic: void
+                full: void
           - name: checkLights
             modifiers:
             - public
@@ -54,12 +218,27 @@ languages:
             - name: entryTex
               type:
                 basic: Texture
+                full: zombie.core.textures.Texture
             - name: body
               type:
                 basic: IsoZombie
+                full: zombie.characters.IsoZombie
             return:
               type:
                 basic: void
+                full: void
+          - name: getBodyKey
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: DeadBodyAtlas.BodyParams
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyParams
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getBodyTexture
             modifiers:
             - public
@@ -67,9 +246,11 @@ languages:
             - name: body
               type:
                 basic: IsoDeadBody
+                full: zombie.iso.objects.IsoDeadBody
             return:
               type:
-                basic: BodyTexture
+                basic: DeadBodyAtlas.BodyTexture
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture
           - name: getBodyTexture
             modifiers:
             - public
@@ -77,9 +258,11 @@ languages:
             - name: body
               type:
                 basic: IsoZombie
+                full: zombie.characters.IsoZombie
             return:
               type:
-                basic: BodyTexture
+                basic: DeadBodyAtlas.BodyTexture
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture
           - name: getBodyTexture
             modifiers:
             - public
@@ -87,9 +270,11 @@ languages:
             - name: body
               type:
                 basic: IsoMannequin
+                full: zombie.iso.objects.IsoMannequin
             return:
               type:
-                basic: BodyTexture
+                basic: DeadBodyAtlas.BodyTexture
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture
           - name: getBodyTexture
             modifiers:
             - public
@@ -97,34 +282,71 @@ languages:
             - name: bFemale
               type:
                 basic: boolean
+                full: boolean
             - name: animSet
               type:
                 basic: String
+                full: java.lang.String
             - name: stateName
               type:
                 basic: String
+                full: java.lang.String
             - name: dir
               type:
                 basic: IsoDirections
+                full: zombie.iso.IsoDirections
             - name: frame
               type:
                 basic: int
+                full: int
             - name: trackTime
               type:
                 basic: float
+                full: float
             return:
               type:
-                basic: BodyTexture
+                basic: DeadBodyAtlas.BodyTexture
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture
           - name: getBodyTexture
             modifiers:
             - public
             parameters:
-            - name: body
+            - name: arg0
               type:
-                basic: BodyParams
+                basic: DeadBodyAtlas.BodyParams
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyParams
             return:
               type:
-                basic: BodyTexture
+                basic: DeadBodyAtlas.BodyTexture
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture
+          - name: getLightKey
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: DeadBodyAtlas.BodyParams
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyParams
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: invalidateBodyTexture
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: DeadBodyAtlas.BodyTexture
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$BodyTexture
+            - name: arg1
+              type:
+                basic: IsoDeadBody
+                full: zombie.iso.objects.IsoDeadBody
+            return:
+              type:
+                basic: void
+                full: void
           - name: lightingUpdate
             modifiers:
             - public
@@ -132,29 +354,45 @@ languages:
             - name: updateCounter
               type:
                 basic: int
+                full: int
             - name: lightsChanged
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: render
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: renderDebug
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: renderUI
             modifiers:
             - public
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
+                full: void
+          - name: toBodyAtlas
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: DeadBodyAtlas.RenderJob
+                full: zombie.core.skinnedmodel.DeadBodyAtlas$RenderJob
+            return:
+              type:
+                basic: void
+                full: void

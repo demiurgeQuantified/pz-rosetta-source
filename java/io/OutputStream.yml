@@ -4,9 +4,19 @@ languages:
     packages:
       java.io:
         OutputStream:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This abstract class is the superclass of all classes representing\n\
+            \ an output stream of bytes. An output stream accepts output bytes\n and\
+            \ sends them to some sink.\n \n Applications that need to define a subclass\
+            \ of\n OutputStream must always provide at least a method\n that writes\
+            \ one byte of output."
           constructors:
           - modifiers:
             - public
+            notes: Constructor for subclasses to call.
           methods:
           - name: close
             modifiers:
@@ -15,13 +25,11 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Closes this output stream and releases any system resources\n\
+              \ associated with this stream. The general contract of close\n is that\
+              \ it closes the output stream. A closed stream cannot perform\n output\
+              \ operations and cannot be reopened.\n \n The close method of OutputStream\
+              \ does nothing."
           - name: flush
             modifiers:
             - public
@@ -29,57 +37,86 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: flush
+            notes: "Flushes this output stream and forces any buffered output bytes\n\
+              \ to be written out. The general contract of flush is\n that calling\
+              \ it is an indication that, if any bytes previously\n written have been\
+              \ buffered by the implementation of the output\n stream, such bytes\
+              \ should immediately be written to their\n intended destination.\n \n\
+              \ If the intended destination of this stream is an abstraction provided\
+              \ by\n the underlying operating system, for example a file, then flushing\
+              \ the\n stream guarantees only that bytes previously written to the\
+              \ stream are\n passed to the operating system for writing; it does not\
+              \ guarantee that\n they are actually written to a physical device such\
+              \ as a disk drive.\n \n The flush method of OutputStream does nothing."
+          - name: write
             modifiers:
             - public
+            - abstract
+            parameters:
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: the byte.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes the specified byte to this output stream. The general\n\
+              \ contract for write is that one byte is written\n to the output stream.\
+              \ The byte to be written is the eight\n low-order bits of the argument\
+              \ b. The 24\n high-order bits of b are ignored.\n \n Subclasses of OutputStream\
+              \ must provide an\n implementation for this method."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the data.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes b.length bytes from the specified byte array\n to this\
+              \ output stream. The general contract for write(b)\n is that it should\
+              \ have exactly the same effect as the call\n write(b, 0, b.length)."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the data.
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset in the data.
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the number of bytes to write.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes len bytes from the specified byte array\n starting at offset\
+              \ off to this output stream.\n The general contract for write(b, off,\
+              \ len) is that\n some of the bytes in the array b are written to the\n\
+              \ output stream in order; element b[off] is the first\n byte written\
+              \ and b[off+len-1] is the last byte written\n by this operation.\n \n\
+              \ The write method of OutputStream calls\n the write method of one argument\
+              \ on each of the bytes to be\n written out. Subclasses are encouraged\
+              \ to override this method and\n provide a more efficient implementation.\n\
+              \ \n If b is null, a\n NullPointerException is thrown.\n \n If off is\
+              \ negative, or len is negative, or\n off+len is greater than the length\
+              \ of the array\n b, then an IndexOutOfBoundsException is thrown."
           staticMethods:
           - name: nullOutputStream
             modifiers:
@@ -89,5 +126,11 @@ languages:
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
-          javaType: class
-          extends: Object
+              notes: an OutputStream which discards all bytes
+            notes: "Returns a new OutputStream which discards all bytes.  The\n returned\
+              \ stream is initially open.  The stream is closed by calling\n the close()\
+              \ method.  Subsequent calls to close() have\n no effect.\n\n  While\
+              \ the stream is open, the write(int), \n write(byte[]), and write(byte[],\
+              \ int, int) methods do nothing.\n After the stream has been closed,\
+              \ these methods all throw \n IOException.\n\n  The flush() method does\
+              \ nothing."

@@ -4,6 +4,215 @@ languages:
     packages:
       java.nio.charset:
         CharsetEncoder:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "An engine that can transform a sequence of sixteen-bit Unicode characters\
+            \ into a sequence of\n bytes in a specific charset.\n\n \n\n  The input\
+            \ character sequence is provided in a character buffer or a series\n of\
+            \ such buffers.  The output byte sequence is written to a byte buffer\n\
+            \ or a series of such buffers.  An encoder should always be used by making\n\
+            \ the following sequence of method invocations, hereinafter referred to\
+            \ as an\n encoding operation:\n\n \n\n    Reset the encoder via the reset\
+            \ method, unless it\n   has not been used before; \n\n    Invoke the encode\
+            \ method zero or more times, as\n   long as additional input may be available,\
+            \ passing false for the\n   endOfInput argument and filling the input\
+            \ buffer and flushing the\n   output buffer between invocations; \n\n\
+            \    Invoke the encode method one final time, passing\n   true for the\
+            \ endOfInput argument; and then \n\n    Invoke the flush method so that\
+            \ the encoder can\n   flush any internal state to the output buffer. \n\
+            \n \n\n Each invocation of the encode method will encode as many\n characters\
+            \ as possible from the input buffer, writing the resulting bytes\n to\
+            \ the output buffer.  The encode method returns when more\n input is required,\
+            \ when there is not enough room in the output buffer, or\n when an encoding\
+            \ error has occurred.  In each case a CoderResult\n object is returned\
+            \ to describe the reason for termination.  An invoker can\n examine this\
+            \ object and fill the input buffer, flush the output buffer, or\n attempt\
+            \ to recover from an encoding error, as appropriate, and try again.\n\n\
+            \ \n\n  There are two general types of encoding errors.  If the input\
+            \ character\n sequence is not a legal sixteen-bit Unicode sequence then\
+            \ the input is considered malformed.  If\n the input character sequence\
+            \ is legal but cannot be mapped to a valid\n byte sequence in the given\
+            \ charset then an unmappable character has been encountered.\n\n \n\n\
+            \  How an encoding error is handled depends upon the action requested\
+            \ for\n that type of error, which is described by an instance of the CodingErrorAction\
+            \ class.  The possible error actions are to ignore the erroneous input,\
+            \ report the error to the invoker via\n the returned CoderResult object,\
+            \ or replace the erroneous input with the current value of the\n replacement\
+            \ byte array.  The replacement\n\n\n is initially set to the encoder's\
+            \ default replacement, which often\n (but not always) has the initial\
+            \ value { (byte)'?' };\n\n\n\n\n\n its value may be changed via the replaceWith\
+            \ method.\n\n  The default action for malformed-input and unmappable-character\
+            \ errors\n is to report them.  The\n malformed-input error action may\
+            \ be changed via the onMalformedInput method; the\n unmappable-character\
+            \ action may be changed via the onUnmappableCharacter method.\n\n  This\
+            \ class is designed to handle many of the details of the encoding\n process,\
+            \ including the implementation of error actions.  An encoder for a\n specific\
+            \ charset, which is a concrete subclass of this class, need only\n implement\
+            \ the abstract encodeLoop method, which\n encapsulates the basic encoding\
+            \ loop.  A subclass that maintains internal\n state should, additionally,\
+            \ override the implFlush and\n implReset methods.\n\n  Instances of this\
+            \ class are not safe for use by multiple concurrent\n threads."
+          fields:
+            averageBytesPerChar:
+              name: averageBytesPerChar
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            cachedDecoder:
+              name: cachedDecoder
+              modifiers:
+              - private
+              type:
+                basic: WeakReference
+                full: java.lang.ref.WeakReference<java.nio.charset.CharsetDecoder>
+            charset:
+              name: charset
+              modifiers:
+              - private
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+            malformedInputAction:
+              name: malformedInputAction
+              modifiers:
+              - private
+              type:
+                basic: CodingErrorAction
+                full: java.nio.charset.CodingErrorAction
+            maxBytesPerChar:
+              name: maxBytesPerChar
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            replacement:
+              name: replacement
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            state:
+              name: state
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            unmappableCharacterAction:
+              name: unmappableCharacterAction
+              modifiers:
+              - private
+              type:
+                basic: CodingErrorAction
+                full: java.nio.charset.CodingErrorAction
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ST_CODING:
+              name: ST_CODING
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ST_END:
+              name: ST_END
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ST_FLUSHED:
+              name: ST_FLUSHED
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ST_RESET:
+              name: ST_RESET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            stateNames:
+              name: stateNames
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: cs
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+              notes: The charset that created this encoder
+            - name: averageBytesPerChar
+              type:
+                basic: float
+                full: float
+              notes: "A positive float value indicating the expected number of\n \
+                \        bytes that will be produced for each input character"
+            - name: maxBytesPerChar
+              type:
+                basic: float
+                full: float
+              notes: "A positive float value indicating the maximum number of\n  \
+                \       bytes that will be produced for each input character"
+            - name: replacement
+              type:
+                basic: byte
+                full: byte[]
+              notes: "The initial replacement; must not be null, must have\n     \
+                \    non-zero length, must not be longer than maxBytesPerChar,\n \
+                \        and must be legal"
+            notes: "Initializes a new encoder.  The new encoder will have the given\n\
+              \ bytes-per-char and replacement values."
+          - modifiers:
+            - protected
+            parameters:
+            - name: cs
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+              notes: The charset that created this encoder
+            - name: averageBytesPerChar
+              type:
+                basic: float
+                full: float
+              notes: "A positive float value indicating the expected number of\n \
+                \        bytes that will be produced for each input character"
+            - name: maxBytesPerChar
+              type:
+                basic: float
+                full: float
+              notes: "A positive float value indicating the maximum number of\n  \
+                \       bytes that will be produced for each input character"
+            notes: "Initializes a new encoder.  The new encoder will have the given\n\
+              \ bytes-per-char values and its replacement will be the\n byte array\
+              \ { (byte)'?' }."
           methods:
           - name: averageBytesPerChar
             modifiers:
@@ -13,30 +222,72 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: "The average number of bytes produced\n          per character\
+                \ of input"
+            notes: "Returns the average number of bytes that will be produced for\
+              \ each\n character of input.  This heuristic value may be used to estimate\
+              \ the size\n of the output buffer required for a given input sequence."
+          - name: canEncode
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: CharBuffer
+                full: java.nio.CharBuffer
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: canEncode
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: char
                 full: char
+              notes: The given character
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this encoder can encode\n          the\
+                \ given character"
+            notes: "Tells whether or not this encoder can encode the given character.\n\
+              \n  This method returns false if the given character is a\n surrogate\
+              \ character; such characters can be interpreted only when they\n are\
+              \ members of a pair consisting of a high surrogate followed by a low\n\
+              \ surrogate.  The canEncode(CharSequence) method may be used to test\
+              \ whether or not a\n character sequence can be encoded.\n\n  This method\
+              \ may modify this encoder's state; it should therefore not\n be invoked\
+              \ if an encoding operation is already in\n progress.\n\n  The default\
+              \ implementation of this method is not very efficient; it\n should generally\
+              \ be overridden to improve performance."
           - name: canEncode
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cs
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
+              notes: The given character sequence
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this encoder can encode\n          the\
+                \ given character without throwing any exceptions and without\n  \
+                \        performing any replacements"
+            notes: "Tells whether or not this encoder can encode the given character\n\
+              \ sequence.\n\n  If this method returns false for a particular character\n\
+              \ sequence then more information about why the sequence cannot be encoded\n\
+              \ may be obtained by performing a full encoding\n operation.\n\n  This\
+              \ method may modify this encoder's state; it should therefore not\n\
+              \ be invoked if an encoding operation is already in progress.\n\n  The\
+              \ default implementation of this method is not very efficient; it\n\
+              \ should generally be overridden to improve performance."
           - name: charset
             modifiers:
             - public
@@ -45,65 +296,277 @@ languages:
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: This encoder's charset
+            notes: Returns the charset that created this encoder.
           - name: encode
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: CharBuffer
                 full: java.nio.CharBuffer
-            return:
+              notes: The input character buffer
+            - name: out
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
-          - name: encode
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: CharBuffer
-                full: java.nio.CharBuffer
-            - name: arg1
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            - name: arg2
+              notes: The output byte buffer
+            - name: endOfInput
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the invoker can provide no\n         additional\
+                \ input characters beyond those in the given buffer"
             return:
               type:
                 basic: CoderResult
                 full: java.nio.charset.CoderResult
+              notes: A coder-result object describing the reason for termination
+            notes: "Encodes as many characters as possible from the given input buffer,\n\
+              \ writing the results to the given output buffer.\n\n  The buffers are\
+              \ read from, and written to, starting at their current\n positions.\
+              \  At most in.remaining() characters\n will be read and at most out.remaining()\n\
+              \ bytes will be written.  The buffers' positions will be advanced to\n\
+              \ reflect the characters read and the bytes written, but their marks\
+              \ and\n limits will not be modified.\n\n  In addition to reading characters\
+              \ from the input buffer and writing\n bytes to the output buffer, this\
+              \ method returns a CoderResult\n object to describe its reason for termination:\n\
+              \n \n\n    CoderResult.UNDERFLOW indicates that as much of the\n   input\
+              \ buffer as possible has been encoded.  If there is no further\n   input\
+              \ then the invoker can proceed to the next step of the\n   encoding\
+              \ operation.  Otherwise this method\n   should be invoked again with\
+              \ further input.  \n\n    CoderResult.OVERFLOW indicates that there\
+              \ is\n   insufficient space in the output buffer to encode any more\
+              \ characters.\n   This method should be invoked again with an output\
+              \ buffer that has\n   more remaining bytes. This is\n   typically done\
+              \ by draining any encoded bytes from the output\n   buffer.  \n\n  \
+              \  A malformed-input result indicates that a malformed-input\n   error\
+              \ has been detected.  The malformed characters begin at the input\n\
+              \   buffer's (possibly incremented) position; the number of malformed\n\
+              \   characters may be determined by invoking the result object's length\
+              \ method.  This case applies only if the\n   malformed action of this\
+              \ encoder\n   is CodingErrorAction.REPORT; otherwise the malformed input\n\
+              \   will be ignored or replaced, as requested.  \n\n    An unmappable-character\
+              \ result indicates that an\n   unmappable-character error has been detected.\
+              \  The characters that\n   encode the unmappable character begin at\
+              \ the input buffer's (possibly\n   incremented) position; the number\
+              \ of such characters may be determined\n   by invoking the result object's\
+              \ length\n   method.  This case applies only if the unmappable action\
+              \ of this encoder is CodingErrorAction.REPORT; otherwise the unmappable\
+              \ character will be\n   ignored or replaced, as requested.  \n\n \n\n\
+              \ In any case, if this method is to be reinvoked in the same encoding\n\
+              \ operation then care should be taken to preserve any characters remaining\n\
+              \ in the input buffer so that they are available to the next invocation.\n\
+              \n  The endOfInput parameter advises this method as to whether\n the\
+              \ invoker can provide further input beyond that contained in the given\n\
+              \ input buffer.  If there is a possibility of providing additional input\n\
+              \ then the invoker should pass false for this parameter; if there\n\
+              \ is no possibility of providing further input then the invoker should\n\
+              \ pass true.  It is not erroneous, and in fact it is quite\n common,\
+              \ to pass false in one invocation and later discover that\n no further\
+              \ input was actually available.  It is critical, however, that\n the\
+              \ final invocation of this method in a sequence of invocations always\n\
+              \ pass true so that any remaining unencoded input will be treated\n\
+              \ as being malformed.\n\n  This method works by invoking the encodeLoop\n\
+              \ method, interpreting its results, handling error conditions, and\n\
+              \ reinvoking it as necessary."
+          - name: encode
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: in
+              type:
+                basic: CharBuffer
+                full: java.nio.CharBuffer
+              notes: The input character buffer
+            return:
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: "A newly-allocated byte buffer containing the result of the\n\
+                \         encoding operation.  The buffer's position will be zero\
+                \ and its\n         limit will follow the last byte written."
+            notes: "Convenience method that encodes the remaining content of a single\
+              \ input\n character buffer into a newly-allocated byte buffer.\n\n \
+              \ This method implements an entire encoding\n operation; that is, it\
+              \ resets this encoder, then it encodes the\n characters in the given\
+              \ character buffer, and finally it flushes this\n encoder.  This method\
+              \ should therefore not be invoked if an encoding\n operation is already\
+              \ in progress."
+          - name: encodeLoop
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: in
+              type:
+                basic: CharBuffer
+                full: java.nio.CharBuffer
+              notes: The input character buffer
+            - name: out
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: The output byte buffer
+            return:
+              type:
+                basic: CoderResult
+                full: java.nio.charset.CoderResult
+              notes: A coder-result object describing the reason for termination
+            notes: "Encodes one or more characters into one or more bytes.\n\n  This\
+              \ method encapsulates the basic encoding loop, encoding as many\n characters\
+              \ as possible until it either runs out of input, runs out of room\n\
+              \ in the output buffer, or encounters an encoding error.  This method\
+              \ is\n invoked by the encode method, which handles result\n interpretation\
+              \ and error recovery.\n\n  The buffers are read from, and written to,\
+              \ starting at their current\n positions.  At most in.remaining() characters\n\
+              \ will be read, and at most out.remaining()\n bytes will be written.\
+              \  The buffers' positions will be advanced to\n reflect the characters\
+              \ read and the bytes written, but their marks and\n limits will not\
+              \ be modified.\n\n  This method returns a CoderResult object to describe\
+              \ its\n reason for termination, in the same manner as the encode\n method.\
+              \  Most implementations of this method will handle encoding errors\n\
+              \ by returning an appropriate result object for interpretation by the\n\
+              \ encode method.  An optimized implementation may instead\n examine\
+              \ the relevant error action and implement that action itself.\n\n  An\
+              \ implementation of this method may perform arbitrary lookahead by\n\
+              \ returning CoderResult.UNDERFLOW until it receives sufficient\n input."
           - name: flush
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The output byte buffer
             return:
               type:
                 basic: CoderResult
                 full: java.nio.charset.CoderResult
+              notes: "A coder-result object, either CoderResult.UNDERFLOW or\n   \
+                \       CoderResult.OVERFLOW"
+            notes: "Flushes this encoder.\n\n  Some encoders maintain internal state\
+              \ and may need to write some\n final bytes to the output buffer once\
+              \ the overall input sequence has\n been read.\n\n  Any additional output\
+              \ is written to the output buffer beginning at\n its current position.\
+              \  At most out.remaining()\n bytes will be written.  The buffer's position\
+              \ will be advanced\n appropriately, but its mark and limit will not\
+              \ be modified.\n\n  If this method completes successfully then it returns\
+              \ CoderResult.UNDERFLOW.  If there is insufficient room in the output\n\
+              \ buffer then it returns CoderResult.OVERFLOW.  If this happens\n then\
+              \ this method must be invoked again, with an output buffer that has\n\
+              \ more room, in order to complete the current encoding\n operation.\n\
+              \n  If this encoder has already been flushed then invoking this method\n\
+              \ has no effect.\n\n  This method invokes the implFlush method to\n\
+              \ perform the actual flushing operation."
+          - name: implFlush
+            modifiers:
+            - protected
+            parameters:
+            - name: out
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: The output byte buffer
+            return:
+              type:
+                basic: CoderResult
+                full: java.nio.charset.CoderResult
+              notes: "A coder-result object, either CoderResult.UNDERFLOW or\n   \
+                \       CoderResult.OVERFLOW"
+            notes: "Flushes this encoder.\n\n  The default implementation of this\
+              \ method does nothing, and always\n returns CoderResult.UNDERFLOW. \
+              \ This method should be overridden\n by encoders that may need to write\
+              \ final bytes to the output buffer\n once the entire input sequence\
+              \ has been read."
+          - name: implOnMalformedInput
+            modifiers:
+            - protected
+            parameters:
+            - name: newAction
+              type:
+                basic: CodingErrorAction
+                full: java.nio.charset.CodingErrorAction
+              notes: The new action
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports a change to this encoder's malformed-input action.\n\n\
+              \  The default implementation of this method does nothing.  This method\n\
+              \ should be overridden by encoders that require notification of changes\
+              \ to\n the malformed-input action."
+          - name: implOnUnmappableCharacter
+            modifiers:
+            - protected
+            parameters:
+            - name: newAction
+              type:
+                basic: CodingErrorAction
+                full: java.nio.charset.CodingErrorAction
+              notes: The new action
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports a change to this encoder's unmappable-character action.\n\
+              \n  The default implementation of this method does nothing.  This method\n\
+              \ should be overridden by encoders that require notification of changes\
+              \ to\n the unmappable-character action."
+          - name: implReplaceWith
+            modifiers:
+            - protected
+            parameters:
+            - name: newReplacement
+              type:
+                basic: byte
+                full: byte[]
+              notes: The replacement value
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reports a change to this encoder's replacement value.\n\n  The\
+              \ default implementation of this method does nothing.  This method\n\
+              \ should be overridden by encoders that require notification of changes\
+              \ to\n the replacement."
+          - name: implReset
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Resets this encoder, clearing any charset-specific internal state.\n\
+              \n  The default implementation of this method does nothing.  This method\n\
+              \ should be overridden by encoders that maintain internal state."
           - name: isLegalReplacement
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: repl
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: The byte array to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the given byte array\n          is a legal\
+                \ replacement value for this encoder"
+            notes: "Tells whether or not the given byte array is a legal replacement\
+              \ value\n for this encoder.\n\n  A replacement is legal if, and only\
+              \ if, it is a legal sequence of\n bytes in this encoder's charset; that\
+              \ is, it must be possible to decode\n the replacement into one or more\
+              \ sixteen-bit Unicode characters.\n\n  The default implementation of\
+              \ this method is not very efficient; it\n should generally be overridden\
+              \ to improve performance."
           - name: malformedInputAction
             modifiers:
             - public
@@ -111,6 +574,8 @@ languages:
               type:
                 basic: CodingErrorAction
                 full: java.nio.charset.CodingErrorAction
+              notes: The current malformed-input action, which is never null
+            notes: Returns this encoder's current action for malformed-input errors.
           - name: maxBytesPerChar
             modifiers:
             - public
@@ -119,53 +584,80 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: "The maximum number of bytes that will be produced per\n    \
+                \      character of input"
+            notes: "Returns the maximum number of bytes that will be produced for\
+              \ each\n character of input.  This value may be used to compute the\
+              \ worst-case size\n of the output buffer required for a given input\
+              \ sequence. This value\n accounts for any necessary content-independent\
+              \ prefix or suffix\n\n bytes, such as byte-order marks."
           - name: onMalformedInput
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newAction
               type:
                 basic: CodingErrorAction
                 full: java.nio.charset.CodingErrorAction
+              notes: The new action; must not be null
             return:
               type:
                 basic: CharsetEncoder
                 full: java.nio.charset.CharsetEncoder
+              notes: This encoder
+            notes: "Changes this encoder's action for malformed-input errors.\n\n\
+              \  This method invokes the implOnMalformedInput method, passing the\
+              \ new action."
           - name: onUnmappableCharacter
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newAction
               type:
                 basic: CodingErrorAction
                 full: java.nio.charset.CodingErrorAction
+              notes: The new action; must not be null
             return:
               type:
                 basic: CharsetEncoder
                 full: java.nio.charset.CharsetEncoder
+              notes: This encoder
+            notes: "Changes this encoder's action for unmappable-character errors.\n\
+              \n  This method invokes the implOnUnmappableCharacter method, passing\
+              \ the new action."
           - name: replaceWith
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newReplacement
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "The new replacement; must not be\n         null, must have non-zero\
+                \ length,\n\n\n\n\n\n         must not be longer than the value returned\
+                \ by the\n         maxBytesPerChar method, and\n         must be legal"
             return:
               type:
                 basic: CharsetEncoder
                 full: java.nio.charset.CharsetEncoder
+              notes: This encoder
+            notes: "Changes this encoder's replacement value.\n\n  This method invokes\
+              \ the implReplaceWith\n method, passing the new replacement, after checking\
+              \ that the new\n replacement is acceptable."
           - name: replacement
             modifiers:
             - public
             - final
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "This encoder's current replacement,\n          which is never\
+                \ null and is never empty"
+            notes: Returns this encoder's replacement value.
           - name: reset
             modifiers:
             - public
@@ -174,6 +666,26 @@ languages:
               type:
                 basic: CharsetEncoder
                 full: java.nio.charset.CharsetEncoder
+              notes: This encoder
+            notes: "Resets this encoder, clearing any internal state.\n\n  This method\
+              \ resets charset-independent state and also invokes the\n implReset\
+              \ method in order to perform any\n charset-specific reset actions."
+          - name: throwIllegalStateException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: unmappableCharacterAction
             modifiers:
             - public
@@ -181,5 +693,7 @@ languages:
               type:
                 basic: CodingErrorAction
                 full: java.nio.charset.CodingErrorAction
-          javaType: class
-          extends: Object
+              notes: "The current unmappable-character action, which is never\n  \
+                \       null"
+            notes: Returns this encoder's current action for unmappable-character
+              errors.

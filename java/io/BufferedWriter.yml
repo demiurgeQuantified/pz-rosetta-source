@@ -4,29 +4,103 @@ languages:
     packages:
       java.io:
         BufferedWriter:
+          extends: java.io.Writer
+          modifiers:
+          - public
+          notes: "Writes text to a character-output stream, buffering characters so\
+            \ as to\n provide for the efficient writing of single characters, arrays,\
+            \ and strings.\n\n  The buffer size may be specified, or the default size\
+            \ may be accepted.\n The default is large enough for most purposes.\n\n\
+            \  A newLine() method is provided, which uses the platform's own notion\
+            \ of\n line separator as defined by the system property line.separator.\n\
+            \ Not all platforms use the newline character ('\\n') to terminate lines.\n\
+            \ Calling this method to terminate each output line is therefore preferred\
+            \ to\n writing a newline character directly.\n\n  In general, a Writer\
+            \ sends its output immediately to the underlying\n character or byte stream.\
+            \  Unless prompt output is required, it is advisable\n to wrap a BufferedWriter\
+            \ around any Writer whose write() operations may be\n costly, such as\
+            \ FileWriters and OutputStreamWriters.  For example,\n\n \n PrintWriter\
+            \ out\n   = new PrintWriter(new BufferedWriter(new FileWriter(\"foo.out\"\
+            )));\n \n\n will buffer the PrintWriter's output to the file.  Without\
+            \ buffering, each\n invocation of a print() method would cause characters\
+            \ to be converted into\n bytes that would then be written immediately\
+            \ to the file, which can be very\n inefficient."
+          fields:
+            cb:
+              name: cb
+              modifiers:
+              - private
+              type:
+                basic: char
+                full: char[]
+            nChars:
+              name: nChars
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            nextChar:
+              name: nextChar
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            out:
+              name: out
+              modifiers:
+              - private
+              type:
+                basic: Writer
+                full: java.io.Writer
+          staticFields:
+            defaultCharBufferSize:
+              name: defaultCharBufferSize
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: Writer
                 full: java.io.Writer
+              notes: A Writer
+            notes: "Creates a buffered character-output stream that uses a default-sized\n\
+              \ output buffer."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: Writer
                 full: java.io.Writer
-            - name: arg1
+              notes: A Writer
+            - name: sz
               type:
                 basic: int
                 full: int
+              notes: Output-buffer size, a positive integer
+            notes: "Creates a new buffered character-output stream that uses an output\n\
+              \ buffer of the given size."
           methods:
           - name: close
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: 'Description copied from class: Writer'
+          - name: ensureOpen
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -38,6 +112,30 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Flushes the stream.
+          - name: flushBuffer
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: min
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
           - name: newLine
             modifiers:
             - public
@@ -45,57 +143,74 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Writes a line separator.  The line separator string is defined\
+              \ by the\n system property line.separator, and is not necessarily a\
+              \ single\n newline ('\\n') character."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: int
                 full: int
+              notes: int specifying a character to be written
             return:
               type:
                 basic: void
                 full: void
+            notes: Writes a single character.
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cbuf
               type:
-                basic: char[]
+                basic: char
                 full: char[]
-            - name: arg1
+              notes: A character array
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: Offset from which to start reading characters
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: Number of characters to write
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes a portion of an array of characters.\n\n  Ordinarily this\
+              \ method stores characters from the given array into\n this stream's\
+              \ buffer, flushing the buffer to the underlying stream as\n needed.\
+              \  If the requested length is at least as large as the buffer,\n however,\
+              \ then this method will flush the buffer and write the characters\n\
+              \ directly to the underlying stream.  Thus redundant\n BufferedWriters\
+              \ will not copy data unnecessarily."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: String to be written
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: Offset from which to start reading characters
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: Number of characters to be written
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Writer
+            notes: Writes a portion of a String.

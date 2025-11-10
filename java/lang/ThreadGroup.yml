@@ -4,33 +4,134 @@ languages:
     packages:
       java.lang:
         ThreadGroup:
-          constructors:
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A thread group represents a set of threads. In addition, a thread\n\
+            \ group can also include other thread groups. The thread groups form\n\
+            \ a tree in which every thread group except the initial thread group\n\
+            \ has a parent.\n \n A thread is allowed to access information about its\
+            \ own thread\n group, but not to access information about its thread group's\n\
+            \ parent thread group or any other thread groups."
+          fields:
+            daemon:
+              name: daemon
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            destroyed:
+              name: destroyed
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            groups:
+              name: groups
+              modifiers:
+              - package
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup[]
+            maxPriority:
+              name: maxPriority
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            nUnstartedThreads:
+              name: nUnstartedThreads
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            name:
+              name: name
+              modifiers:
+              - package
               type:
                 basic: String
                 full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            ngroups:
+              name: ngroups
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            nthreads:
+              name: nthreads
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            parent:
+              name: parent
+              modifiers:
+              - private
               type:
                 basic: ThreadGroup
                 full: java.lang.ThreadGroup
+            threads:
+              name: threads
+              modifiers:
+              - package
+              type:
+                basic: Thread
+                full: java.lang.Thread[]
+          constructors:
+          - modifiers:
+            - private
+          - modifiers:
+            - public
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the new thread group.
+            notes: "Constructs a new thread group. The parent of this new group is\n\
+              \ the thread group of the currently running thread.\n \n The checkAccess\
+              \ method of the parent thread group is\n called with no arguments; this\
+              \ may result in a security exception."
+          - modifiers:
+            - public
+            parameters:
+            - name: parent
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+              notes: the parent thread group.
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the new thread group.
+            notes: "Creates a new thread group. The parent of this new group is the\n\
+              \ specified thread group.\n \n The checkAccess method of the parent\
+              \ thread group is\n called with no arguments; this may result in a security\
+              \ exception."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Void
+                full: java.lang.Void
             - name: arg1
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+            - name: arg2
               type:
                 basic: String
                 full: java.lang.String
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: activeCount
             modifiers:
             - public
@@ -38,6 +139,16 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "an estimate of the number of active threads in this thread\n\
+                \          group and in any other thread group that has this thread\n\
+                \          group as an ancestor"
+            notes: "Returns an estimate of the number of active threads in this thread\n\
+              \ group and its subgroups. Recursively iterates over all subgroups in\n\
+              \ this thread group.\n\n  The value returned is only an estimate because\
+              \ the number of\n threads may change dynamically while this method traverses\
+              \ internal\n data structures, and might be affected by the presence\
+              \ of certain\n system threads. This method is intended primarily for\
+              \ debugging\n and monitoring purposes."
           - name: activeGroupCount
             modifiers:
             - public
@@ -45,19 +156,61 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the number of active thread groups with this thread group as\n\
+                \          an ancestor"
+            notes: "Returns an estimate of the number of active groups in this\n thread\
+              \ group and its subgroups. Recursively iterates over\n all subgroups\
+              \ in this thread group.\n\n  The value returned is only an estimate\
+              \ because the number of\n thread groups may change dynamically while\
+              \ this method traverses\n internal data structures. This method is intended\
+              \ primarily for\n debugging and monitoring purposes."
+          - name: add
+            modifiers:
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+            return:
+              type:
+                basic: void
+                full: void
+          - name: add
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            return:
+              type:
+                basic: void
+                full: void
+          - name: addUnstarted
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
           - name: allowThreadSuspension
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
                 basic: boolean
                 full: boolean
+              notes: boolean to allow or disallow suspension
             return:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: true on success
+            notes: Used by VM to control lowmem implicit suspension.
           - name: checkAccess
             modifiers:
             - public
@@ -66,7 +219,10 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Determines if the currently running thread has permission to\n\
+              \ modify this thread group.\n \n If there is a security manager, its\
+              \ checkAccess method\n is called with this thread group as its argument.\
+              \ This may result\n in throwing a SecurityException."
           - name: destroy
             modifiers:
             - public
@@ -75,40 +231,75 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Destroys this thread group and all of its subgroups. This thread\n\
+              \ group must be empty, indicating that all threads that had been in\n\
+              \ this thread group have since stopped.\n \n First, the checkAccess\
+              \ method of this thread group is\n called with no arguments; this may\
+              \ result in a security exception."
           - name: enumerate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: list
               type:
-                basic: Thread[]
+                basic: Thread
                 full: java.lang.Thread[]
+              notes: an array into which to put the list of threads
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of threads put into the array
+            notes: "Copies into the specified array every active thread in this\n\
+              \ thread group and its subgroups.\n\n  An invocation of this method\
+              \ behaves in exactly the same\n way as the invocation\n\n \n enumerate(list,\
+              \ true)"
           - name: enumerate
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: list
               type:
-                basic: ThreadGroup[]
-                full: java.lang.ThreadGroup[]
+                basic: Thread
+                full: java.lang.Thread[]
+              notes: an array into which to put the list of threads
+            - name: recurse
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if true, recursively enumerate all subgroups of this\n     \
+                \    thread group"
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of threads put into the array
+            notes: "Copies into the specified array every active thread in this\n\
+              \ thread group. If recurse is true,\n this method recursively enumerates\
+              \ all subgroups of this\n thread group and references to every active\
+              \ thread in these\n subgroups are also included. If the array is too\
+              \ short to\n hold all the threads, the extra threads are silently ignored.\n\
+              \n  An application might use the activeCount\n method to get an estimate\
+              \ of how big the array should be, however\n if the array is too short\
+              \ to hold all the threads, the extra threads\n are silently ignored.\
+              \  If it is critical to obtain every active\n thread in this thread\
+              \ group, the caller should verify that the returned\n int value is strictly\
+              \ less than the length of list.\n\n  Due to the inherent race condition\
+              \ in this method, it is recommended\n that the method only be used for\
+              \ debugging and monitoring purposes."
           - name: enumerate
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Thread[]
+                basic: Thread
                 full: java.lang.Thread[]
             - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
               type:
                 basic: boolean
                 full: boolean
@@ -120,11 +311,64 @@ languages:
             modifiers:
             - public
             parameters:
+            - name: list
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup[]
+              notes: an array into which to put the list of thread groups
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of thread groups put into the array
+            notes: "Copies into the specified array references to every active\n subgroup\
+              \ in this thread group and its subgroups.\n\n  An invocation of this\
+              \ method behaves in exactly the same\n way as the invocation\n\n \n\
+              \ enumerate(list, true)"
+          - name: enumerate
+            modifiers:
+            - public
+            parameters:
+            - name: list
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup[]
+              notes: an array into which to put the list of thread groups
+            - name: recurse
+              type:
+                basic: boolean
+                full: boolean
+              notes: if true, recursively enumerate all subgroups
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of thread groups put into the array
+            notes: "Copies into the specified array references to every active\n subgroup\
+              \ in this thread group. If recurse is\n true, this method recursively\
+              \ enumerates all subgroups of this\n thread group and references to\
+              \ every active thread group in these\n subgroups are also included.\n\
+              \n  An application might use the\n activeGroupCount method to\n get\
+              \ an estimate of how big the array should be, however if the\n array\
+              \ is too short to hold all the thread groups, the extra thread\n groups\
+              \ are silently ignored.  If it is critical to obtain every\n active\
+              \ subgroup in this thread group, the caller should verify that\n the\
+              \ returned int value is strictly less than the length of\n list.\n\n\
+              \  Due to the inherent race condition in this method, it is recommended\n\
+              \ that the method only be used for debugging and monitoring purposes."
+          - name: enumerate
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: ThreadGroup[]
+                basic: ThreadGroup
                 full: java.lang.ThreadGroup[]
             - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
               type:
                 basic: boolean
                 full: boolean
@@ -140,6 +384,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the maximum priority that a thread in this thread group\n  \
+                \        can have."
+            notes: "Returns the maximum priority of this thread group. Threads that\
+              \ are\n part of this group cannot have a higher priority than the maximum\n\
+              \ priority."
           - name: getName
             modifiers:
             - public
@@ -148,6 +397,8 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of this thread group.
+            notes: Returns the name of this thread group.
           - name: getParent
             modifiers:
             - public
@@ -156,6 +407,11 @@ languages:
               type:
                 basic: ThreadGroup
                 full: java.lang.ThreadGroup
+              notes: "the parent of this thread group. The top-level thread group\n\
+                \          is the only thread group whose parent is null."
+            notes: "Returns the parent of this thread group.\n \n First, if the parent\
+              \ is not null, the\n checkAccess method of the parent thread group is\n\
+              \ called with no arguments; this may result in a security exception."
           - name: interrupt
             modifiers:
             - public
@@ -164,6 +420,11 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Interrupts all threads in this thread group.\n \n First, the checkAccess\
+              \ method of this thread group is\n called with no arguments; this may\
+              \ result in a security exception.\n \n This method then calls the interrupt\
+              \ method on all the\n threads in this thread group and in all of its\
+              \ subgroups."
           - name: isDaemon
             modifiers:
             - public
@@ -172,7 +433,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: "true if this thread group is a daemon thread group;\n      \
+                \    false otherwise."
+            notes: "Tests if this thread group is a daemon thread group. A\n daemon\
+              \ thread group is automatically destroyed when its last\n thread is\
+              \ stopped or its last thread group is destroyed."
           - name: isDestroyed
             modifiers:
             - public
@@ -180,10 +445,29 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: true if this object is destroyed
+            notes: Tests if this thread group has been destroyed.
           - name: list
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints information about this thread group to the standard\n output.\
+              \ This method is useful only for debugging."
+          - name: list
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: PrintStream
+                full: java.io.PrintStream
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: void
@@ -193,14 +477,43 @@ languages:
             - public
             - final
             parameters:
+            - name: g
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+              notes: a thread group.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this thread group is the thread group\n          argument\
+                \ or one of its ancestor thread groups;\n          false otherwise."
+            notes: "Tests if this thread group is either the thread group\n argument\
+              \ or one of its ancestor thread groups."
+          - name: remove
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
                 basic: ThreadGroup
                 full: java.lang.ThreadGroup
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: void
+                full: void
+          - name: remove
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            return:
+              type:
+                basic: void
+                full: void
           - name: resume
             modifiers:
             - public
@@ -209,34 +522,59 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Resumes all threads in this thread group.\n \n First, the checkAccess\
+              \ method of this thread group is\n called with no arguments; this may\
+              \ result in a security exception.\n \n This method then calls the resume\
+              \ method on all the\n threads in this thread group and in all of its\
+              \ sub groups."
           - name: setDaemon
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: daemon
               type:
                 basic: boolean
                 full: boolean
+              notes: "if true, marks this thread group as\n                      a\
+                \ daemon thread group; otherwise, marks this\n                   \
+                \   thread group as normal."
             return:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Changes the daemon status of this thread group.\n \n First, the\
+              \ checkAccess method of this thread group is\n called with no arguments;\
+              \ this may result in a security exception.\n \n A daemon thread group\
+              \ is automatically destroyed when its last\n thread is stopped or its\
+              \ last thread group is destroyed."
           - name: setMaxPriority
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: pri
               type:
                 basic: int
                 full: int
+              notes: the new priority of the thread group.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the maximum priority of the group. Threads in the thread\n\
+              \ group that already have a higher priority are not affected.\n \n First,\
+              \ the checkAccess method of this thread group is\n called with no arguments;\
+              \ this may result in a security exception.\n \n If the pri argument\
+              \ is less than\n Thread.MIN_PRIORITY or greater than\n Thread.MAX_PRIORITY,\
+              \ the maximum priority of the group\n remains unchanged.\n \n Otherwise,\
+              \ the priority of this ThreadGroup object is set to the\n smaller of\
+              \ the specified pri and the maximum permitted\n priority of the parent\
+              \ of this thread group. (If this thread group\n is the system thread\
+              \ group, which has no parent, then its maximum\n priority is simply\
+              \ set to pri.) Then this method is\n called recursively, with pri as\
+              \ its argument, for\n every thread group that belongs to this thread\
+              \ group."
           - name: stop
             modifiers:
             - public
@@ -245,7 +583,23 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Stops all threads in this thread group.\n \n First, the checkAccess\
+              \ method of this thread group is\n called with no arguments; this may\
+              \ result in a security exception.\n \n This method then calls the stop\
+              \ method on all the\n threads in this thread group and in all of its\
+              \ subgroups."
+          - name: stopOrSuspend
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: suspend
             modifiers:
             - public
@@ -254,38 +608,87 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
-          - name: uncaughtException
+            notes: "Suspends all threads in this thread group.\n \n First, the checkAccess\
+              \ method of this thread group is\n called with no arguments; this may\
+              \ result in a security exception.\n \n This method then calls the suspend\
+              \ method on all the\n threads in this thread group and in all of its\
+              \ subgroups."
+          - name: threadStartFailed
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
                 basic: Thread
                 full: java.lang.Thread
-            - name: arg1
-              type:
-                basic: Throwable
-                full: java.lang.Throwable
             return:
               type:
                 basic: void
                 full: void
-          - name: uncaughtException
+          - name: threadTerminated
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
                 basic: Thread
                 full: java.lang.Thread
-            - name: arg1
-              type:
-                basic: Throwable
-                full: java.lang.Throwable
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: uncaughtException
+            modifiers:
+            - public
+            parameters:
+            - name: t
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: the thread that is about to exit.
+            - name: e
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: the uncaught exception.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Called by the Java Virtual Machine when a thread in this\n thread\
+              \ group stops because of an uncaught exception, and the thread\n does\
+              \ not have a specific Thread.UncaughtExceptionHandler\n installed.\n\
+              \ \n The uncaughtException method of\n ThreadGroup does the following:\n\
+              \ \n If this thread group has a parent thread group, the\n     uncaughtException\
+              \ method of that parent is called\n     with the same two arguments.\n\
+              \ Otherwise, this method checks to see if there is a\n     default\n\
+              \     uncaught exception handler installed, and if so, its\n     uncaughtException\
+              \ method is called with the same\n     two arguments.\n Otherwise, this\
+              \ method determines if the Throwable\n     argument is an instance of\
+              \ ThreadDeath. If so, nothing\n     special is done. Otherwise, a message\
+              \ containing the\n     thread's name, as returned from the thread's\
+              \ getName method, and a stack backtrace,\n     using the Throwable's\
+              \ printStackTrace method, is\n     printed to the standard error stream.\n\
+              \ \n \n Applications can override this method in subclasses of\n ThreadGroup\
+              \ to provide alternative handling of\n uncaught exceptions."
+          staticMethods:
+          - name: checkParentAccess
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void

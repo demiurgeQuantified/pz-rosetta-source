@@ -4,30 +4,169 @@ languages:
     packages:
       java.nio:
         FloatBuffer:
+          extends: java.nio.Buffer
+          modifiers:
+          - public
+          - abstract
+          notes: "A float buffer.\n\n  This class defines four categories of operations\
+            \ upon\n float buffers:\n\n \n\n    Absolute and relative get and\n  \
+            \ put methods that read and write\n   single floats; \n\n    Absolute\
+            \ and relative bulk get\n   methods that transfer contiguous sequences\
+            \ of floats from this buffer\n   into an array; and\n\n    Absolute and\
+            \ relative bulk put\n   methods that transfer contiguous sequences of\
+            \ floats from a\n   float array{#if[char]?,&#32;a&#32;string,} or some\
+            \ other float\n   buffer into this buffer;{#if[!byte]?&#32;and} \n\n\n\
+            \n\n\n\n\n\n\n\n\n\n\n\n    A method for compacting\n   a float buffer.\
+            \  \n\n \n\n  Float buffers can be created either by allocation, which\
+            \ allocates space for the buffer's\n\n\n\n\n\n\n\n\n content, by wrapping\
+            \ an existing\n float array {#if[char]?or&#32;string} into a buffer, or\
+            \ by creating a\n view of an existing byte buffer.\n\n\n\n\n\n\n\n\n\n\
+            \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
+            \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
+            \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  Like a byte buffer,\
+            \ a float buffer is either direct or non-direct.  A\n float buffer created\
+            \ via the wrap methods of this class will\n be non-direct.  A float buffer\
+            \ created as a view of a byte buffer will\n be direct if, and only if,\
+            \ the byte buffer itself is direct.  Whether or not\n a float buffer is\
+            \ direct may be determined by invoking the isDirect method.  \n\n\n\n\n\
+            \n\n\n\n\n\n\n\n\n\n\n\n\n\n  Methods in this class that do not otherwise\
+            \ have a value to return are\n specified to return the buffer upon which\
+            \ they are invoked.  This allows\n method invocations to be chained."
+          fields:
+            hb:
+              name: hb
+              modifiers:
+              - package
+              type:
+                basic: float
+                full: float[]
+            isReadOnly:
+              name: isReadOnly
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            offset:
+              name: offset
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            ARRAY_BASE_OFFSET:
+              name: ARRAY_BASE_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: float
+                full: float[]
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float[]
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: array
             modifiers:
             - public
             - final
             return:
               type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: The array that backs this buffer
+            notes: "Returns the float array that backs this\n buffer  (optional operation).\n\
+              \n  Modifications to this buffer's content will cause the returned\n\
+              \ array's content to be modified, and vice versa.\n\n  Invoke the hasArray\
+              \ method before invoking this\n method in order to ensure that this\
+              \ buffer has an accessible backing\n array."
           - name: array
             modifiers:
             - public
-            - final
             return:
               type:
-                basic: float[]
-                full: float[]
+                basic: Object
+                full: java.lang.Object
           - name: arrayOffset
             modifiers:
             - public
@@ -36,20 +175,57 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The offset within this buffer's array\n          of the first\
+                \ element of the buffer"
+            notes: "Returns the offset within this buffer's backing array of the first\n\
+              \ element of the buffer  (optional operation).\n\n  If this buffer is\
+              \ backed by an array then buffer position p\n corresponds to array index\
+              \ p + arrayOffset().\n\n  Invoke the hasArray method before invoking\
+              \ this\n method in order to ensure that this buffer has an accessible\
+              \ backing\n array."
           - name: asReadOnlyBuffer
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: The new, read-only float buffer
+            notes: "Creates a new, read-only float buffer that shares this buffer's\n\
+              \ content.\n\n  The content of the new buffer will be that of this buffer.\
+              \  Changes\n to this buffer's content will be visible in the new buffer;\
+              \ the new\n buffer itself, however, will be read-only and will not allow\
+              \ the shared\n content to be modified.  The two buffers' position, limit,\
+              \ and mark\n values will be independent.\n\n  The new buffer's capacity,\
+              \ limit, position,\n\n\n\n\n mark values, and byte order will be identical\
+              \ to those of this buffer.\n\n\n  If this buffer is itself read-only\
+              \ then this method behaves in\n exactly the same way as the duplicate\
+              \ method."
+          - name: base
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: clear
             modifiers:
             - public
+            - final
             return:
               type:
-                basic: Buffer
-                full: java.nio.Buffer
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Clears this buffer.  The position is set to zero, the limit is\
+              \ set to\n the capacity, and the mark is discarded.\n\n  Invoke this\
+              \ method before using a sequence of channel-read or\n put operations\
+              \ to fill this buffer.  For example:\n\n \n buf.clear();     // Prepare\
+              \ buffer for reading\n in.read(buf);    // Read data\n\n  This method\
+              \ does not actually erase the data in the buffer, but it\n is named\
+              \ as if it did because it will most often be used in situations\n in\
+              \ which that might as well be the case."
           - name: clear
             modifiers:
             - public
@@ -60,10 +236,47 @@ languages:
           - name: compact
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Compacts this buffer  (optional operation).\n\n  The floats between\
+              \ the buffer's current position and its limit,\n if any, are copied\
+              \ to the beginning of the buffer.  That is, the\n float at index p =\
+              \ position() is copied\n to index zero, the float at index p + 1 is\
+              \ copied\n to index one, and so forth until the float at index\n limit()\
+              \ - 1 is copied to index\n n = limit() - 1 - p.\n The buffer's position\
+              \ is then set to n+1 and its limit is set to\n its capacity.  The mark,\
+              \ if defined, is discarded.\n\n  The buffer's position is set to the\
+              \ number of floats copied,\n rather than to zero, so that an invocation\
+              \ of this method can be\n followed immediately by an invocation of another\
+              \ relative put\n method."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: that
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: the object to be compared.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "A negative integer, zero, or a positive integer as this buffer\n\
+                \          is less than, equal to, or greater than the given buffer"
+            notes: "Compares this buffer to another.\n\n  Two float buffers are compared\
+              \ by comparing their sequences of\n remaining elements lexicographically,\
+              \ without regard to the starting\n position of each sequence within\
+              \ its corresponding buffer.\n\n Pairs of float elements are compared\
+              \ as if by invoking\n Float.compare(float,float), except that\n -0.0\
+              \ and 0.0 are considered to be equal.\n Float.NaN is considered by this\
+              \ method to be equal\n to itself and greater than all other float values\n\
+              \ (including Float.POSITIVE_INFINITY).\n\n\n\n\n\n  A float buffer is\
+              \ not comparable to any other type of object."
           - name: compareTo
             modifiers:
             - public
@@ -76,56 +289,75 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: compareTo
+          - name: duplicate
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
+            - abstract
             return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
-            return:
-              type:
-                basic: int
-                full: int
+              notes: The new float buffer
+            notes: "Creates a new float buffer that shares this buffer's content.\n\
+              \n  The content of the new buffer will be that of this buffer.  Changes\n\
+              \ to this buffer's content will be visible in the new buffer, and vice\n\
+              \ versa; the two buffers' position, limit, and mark values will be\n\
+              \ independent.\n\n  The new buffer's capacity, limit, position,\n\n\n\
+              \n\n mark values, and byte order will be identical to those of this\
+              \ buffer.\n\n The new buffer will be direct if, and only if, this buffer\
+              \ is direct, and\n it will be read-only if, and only if, this buffer\
+              \ is read-only."
           - name: duplicate
             modifiers:
             - public
             return:
               type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: duplicate
-            modifiers:
-            - public
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
+                basic: Buffer
+                full: java.nio.Buffer
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ob
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: The object to which this buffer is to be compared
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this buffer is equal to the\n        \
+                \   given object"
+            notes: "Tells whether or not this buffer is equal to another object.\n\
+              \n  Two float buffers are equal if, and only if,\n\n \n\n    They have\
+              \ the same element type,  \n\n    They have the same number of remaining\
+              \ elements, and\n   \n\n    The two sequences of remaining elements,\
+              \ considered\n   independently of their starting positions, are pointwise\
+              \ equal.\n\n   This method considers two float elements a and b\n  \
+              \ to be equal if\n   (a == b) || (Float.isNaN(a) && Float.isNaN(b)).\n\
+              \   The values -0.0 and +0.0 are considered to be\n   equal, unlike\
+              \ Float.equals(Object).\n\n   \n\n \n\n  A float buffer is not equal\
+              \ to any other type of object."
+          - name: flip
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Flips this buffer.  The limit is set to the current position and\
+              \ then\n the position is set to zero.  If the mark is defined then it\
+              \ is\n discarded.\n\n  After a sequence of channel-read or put operations,\
+              \ invoke\n this method to prepare for a sequence of channel-write or\
+              \ relative\n get operations.  For example:\n\n \n buf.put(magic);  \
+              \  // Prepend header\n in.read(buf);      // Read data into rest of\
+              \ buffer\n buf.flip();        // Flip buffer\n out.write(buf);    //\
+              \ Write header + data to channel\n\n  This method is often used in conjunction\
+              \ with the compact method when transferring data from\n one place to\
+              \ another."
           - name: flip
             modifiers:
             - public
@@ -133,83 +365,161 @@ languages:
               type:
                 basic: Buffer
                 full: java.nio.Buffer
-          - name: flip
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
           - name: get
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: float
                 full: float
+              notes: The float at the buffer's current position
+            notes: "Relative get method.  Reads the float at this buffer's\n current\
+              \ position, and then increments the position."
           - name: get
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
-              type:
-                basic: float[]
-                full: float[]
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: The index from which the float will be read
             return:
               type:
                 basic: float
                 full: float
+              notes: The float at the given index
+            notes: "Absolute get method.  Reads the float at the given\n index."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dst
+              type:
+                basic: float
+                full: float[]
+              notes: The array into which floats are to be written
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "The offset within the array of the first float to be\n     \
+                \    written; must be non-negative and no larger than\n         dst.length"
+            - name: length
               type:
-                basic: float[]
-                full: float[]
+                basic: int
+                full: int
+              notes: "The maximum number of floats to be written to the given\n  \
+                \       array; must be non-negative and no larger than\n         dst.length"
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Relative bulk get method.\n\n  This method transfers floats from\
+              \ this buffer into the given\n destination array.  If there are fewer\
+              \ floats remaining in the\n buffer than are required to satisfy the\
+              \ request, that is, if\n length > remaining(), then no\n floats are\
+              \ transferred and a BufferUnderflowException is\n thrown.\n\n  Otherwise,\
+              \ this method copies length floats from this\n buffer into the given\
+              \ array, starting at the current position of this\n buffer and at the\
+              \ given offset in the array.  The position of this\n buffer is then\
+              \ incremented by length.\n\n  In other words, an invocation of this\
+              \ method of the form\n src.get(dst, off, len) has exactly the same effect\
+              \ as\n the loop\n\n <code>\n     for (int i = off; i < off + len; i++)\n\
+              \         dst[i] = src.get();\n </code>\n\n except that it first checks\
+              \ that there are sufficient floats in\n this buffer and it is potentially\
+              \ much more efficient."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dst
               type:
-                basic: float[]
+                basic: float
                 full: float[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+              notes: The destination array
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Relative bulk get method.\n\n  This method transfers floats from\
+              \ this buffer into the given\n destination array.  An invocation of\
+              \ this method of the form\n src.get(a) behaves in exactly the same way\
+              \ as the invocation\n\n \n     src.get(a, 0, a.length)"
           - name: get
             modifiers:
             - public
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The index in this buffer from which the first float will be\n\
+                \         read; must be non-negative and less than limit()"
+            - name: dst
+              type:
+                basic: float
+                full: float[]
+              notes: The destination array
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: "The offset within the array of the first float to be\n     \
+                \    written; must be non-negative and less than\n         dst.length"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of floats to be written to the given array;\n   \
+                \      must be non-negative and no larger than the smaller of\n  \
+                \       limit()"
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Absolute bulk get method.\n\n  This method transfers length floats\
+              \ from this\n buffer into the given array, starting at the given index\
+              \ in this\n buffer and at the given offset in the array.  The position\
+              \ of this\n buffer is unchanged.\n\n  An invocation of this method of\
+              \ the form\n src.get(index, dst, offset, length)\n has exactly the same\
+              \ effect as the following loop except that it first\n checks the consistency\
+              \ of the supplied parameters and it is potentially\n much more efficient:\n\
+              \n <code>\n     for (int i = offset, j = index; i < offset + length;\
+              \ i++, j++)\n         dst[i] = src.get(j);\n </code>"
+          - name: get
+            modifiers:
+            - public
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The index in this buffer from which the first float will be\n\
+                \         read; must be non-negative and less than limit()"
+            - name: dst
+              type:
+                basic: float
+                full: float[]
+              notes: The destination array
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Absolute bulk get method.\n\n  This method transfers floats from\
+              \ this buffer into the given\n destination array.  The position of this\
+              \ buffer is unchanged.  An\n invocation of this method of the form\n\
+              \ src.get(index, dst) behaves in exactly the same\n way as the invocation:\n\
+              \n \n     src.get(index, dst, 0, dst.length)"
+          - name: getArray
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -217,7 +527,7 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: float[]
+                basic: float
                 full: float[]
             - name: arg2
               type:
@@ -239,6 +549,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, this buffer\n          is backed by an\
+                \ array and is not read-only"
+            notes: "Tells whether or not this buffer is backed by an accessible float\n\
+              \ array.\n\n  If this method returns true then the array\n and arrayOffset\
+              \ methods may safely be invoked."
           - name: hashCode
             modifiers:
             - public
@@ -246,46 +561,65 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The current hash code of this buffer
+            notes: "Returns the current hash code of this buffer.\n\n  The hash code\
+              \ of a float buffer depends only upon its remaining\n elements; that\
+              \ is, upon the elements from position() up to, and\n including, the\
+              \ element at limit() - 1.\n\n  Because buffer hash codes are content-dependent,\
+              \ it is inadvisable\n to use buffers as keys in hash maps or similar\
+              \ data structures unless it\n is known that their contents will not\
+              \ change."
           - name: isDirect
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, this buffer is direct
+            notes: Tells whether or not this float buffer is direct.
           - name: limit
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newLimit
               type:
                 basic: int
                 full: int
+              notes: "The new limit value; must be non-negative\n         and no larger\
+                \ than this buffer's capacity"
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Sets this buffer's limit.  If the position is larger than the\
+              \ new limit\n then it is set to the new limit.  If the mark is defined\
+              \ and larger than\n the new limit then it is discarded."
           - name: limit
             modifiers:
             - public
-            - final
             parameters:
             - name: arg0
               type:
                 basic: int
                 full: int
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: mark
-            modifiers:
-            - public
             return:
               type:
                 basic: Buffer
                 full: java.nio.Buffer
+          - name: mark
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: Sets this buffer's mark at its position.
           - name: mark
             modifiers:
             - public
@@ -297,38 +631,64 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: that
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: The byte buffer to be tested for a mismatch with this buffer
             return:
               type:
                 basic: int
                 full: int
+              notes: "The relative index of the first mismatch between this and the\n\
+                \          given buffer, otherwise -1 if no mismatch."
+            notes: "Finds and returns the relative index of the first mismatch between\
+              \ this\n buffer and a given buffer.  The index is relative to the\n\
+              \ position of each buffer and will be in the range of\n 0 (inclusive)\
+              \ up to the smaller of the remaining\n elements in each buffer (exclusive).\n\
+              \n  If the two buffers share a common prefix then the returned index\
+              \ is\n the length of the common prefix and it follows that there is\
+              \ a mismatch\n between the two buffers at that index within the respective\
+              \ buffers.\n If one buffer is a proper prefix of the other then the\
+              \ returned index is\n the smaller of the remaining elements in each\
+              \ buffer, and it follows that\n the index is only valid for the buffer\
+              \ with the larger number of\n remaining elements.\n Otherwise, there\
+              \ is no mismatch."
           - name: order
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: ByteOrder
                 full: java.nio.ByteOrder
+              notes: This buffer's byte order
+            notes: "Retrieves this buffer's byte order.\n\n  The byte order of a float\
+              \ buffer created by allocation or by\n wrapping an existing float array\
+              \ is the native order of the underlying\n hardware.  The byte order\
+              \ of a float buffer created as a view of a byte buffer is that of the\n\
+              \ byte buffer at the moment that the view is created."
           - name: position
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newPosition
               type:
                 basic: int
                 full: int
+              notes: "The new position value; must be non-negative\n         and no\
+                \ larger than the current limit"
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Sets this buffer's position.  If the mark is defined and larger\
+              \ than the\n new position then it is discarded."
           - name: position
             modifiers:
             - public
-            - final
             parameters:
             - name: arg0
               type:
@@ -336,64 +696,255 @@ languages:
                 full: int
             return:
               type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
+                basic: Buffer
+                full: java.nio.Buffer
           - name: put
             modifiers:
             - public
-            - final
+            - abstract
             parameters:
-            - name: arg0
-              type:
-                basic: float[]
-                full: float[]
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: f
               type:
                 basic: float
                 full: float
+              notes: The float to be written
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Relative put method  (optional operation).\n\n  Writes the given\
+              \ float into this buffer at the current\n position, and then increments\
+              \ the position."
           - name: put
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The index at which the float will be written
+            - name: f
               type:
-                basic: float[]
-                full: float[]
+                basic: float
+                full: float
+              notes: The float value to be written
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Absolute put method  (optional operation).\n\n  Writes the given\
+              \ float into this buffer at the given\n index."
           - name: put
             modifiers:
             - public
+            parameters:
+            - name: src
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: "The source buffer from which floats are to be read;\n      \
+                \   must not be this buffer"
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Relative bulk put method  (optional operation).\n\n  This method\
+              \ transfers the floats remaining in the given source\n buffer into this\
+              \ buffer.  If there are more floats remaining in the\n source buffer\
+              \ than in this buffer, that is, if\n src.remaining() > remaining(),\n\
+              \ then no floats are transferred and a BufferOverflowException is thrown.\n\
+              \n  Otherwise, this method copies\n n = src.remaining() floats from\
+              \ the given\n buffer into this buffer, starting at each buffer's current\
+              \ position.\n The positions of both buffers are then incremented by\
+              \ n.\n\n  In other words, an invocation of this method of the form\n\
+              \ dst.put(src) has exactly the same effect as the loop\n\n \n     while\
+              \ (src.hasRemaining())\n         dst.put(src.get()); \n\n except that\
+              \ it first checks that there is sufficient space in this\n buffer and\
+              \ it is potentially much more efficient.  If this buffer and\n the source\
+              \ buffer share the same backing array or memory, then the\n result will\
+              \ be as if the source elements were first copied to an\n intermediate\
+              \ location before being written into this buffer."
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The index in this buffer at which the first float will be\n\
+                \        written; must be non-negative and less than limit()"
+            - name: src
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: The buffer from which floats are to be read
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: "The index within the source buffer of the first float to be\n\
+                \        read; must be non-negative and less than src.limit()"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of floats to be read from the given buffer;\n   \
+                \     must be non-negative and no larger than the smaller of\n   \
+                \     limit()"
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Absolute bulk put method  (optional operation).\n\n  This method\
+              \ transfers length floats into this buffer from\n the given source buffer,\
+              \ starting at the given offset in the\n source buffer and the given\
+              \ index in this buffer. The positions\n of both buffers are unchanged.\n\
+              \n  In other words, an invocation of this method of the form\n dst.put(index,\
+              \ src, offset, length)\n has exactly the same effect as the loop\n\n\
+              \ <code>\n for (int i = offset, j = index; i < offset + length; i++,\
+              \ j++)\n     dst.put(j, src.get(i));\n </code>\n\n except that it first\
+              \ checks the consistency of the supplied parameters\n and it is potentially\
+              \ much more efficient.  If this buffer and\n the source buffer share\
+              \ the same backing array or memory, then the\n result will be as if\
+              \ the source elements were first copied to an\n intermediate location\
+              \ before being written into this buffer."
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: src
+              type:
+                basic: float
+                full: float[]
+              notes: The array from which floats are to be read
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: "The offset within the array of the first float to be read;\n\
+                \         must be non-negative and no larger than src.length"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of floats to be read from the given array;\n    \
+                \     must be non-negative and no larger than\n         src.length"
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Relative bulk put method  (optional operation).\n\n  This method\
+              \ transfers floats into this buffer from the given\n source array. \
+              \ If there are more floats to be copied from the array\n than remain\
+              \ in this buffer, that is, if\n length > remaining(), then no\n floats\
+              \ are transferred and a BufferOverflowException is\n thrown.\n\n  Otherwise,\
+              \ this method copies length floats from the\n given array into this\
+              \ buffer, starting at the given offset in the array\n and at the current\
+              \ position of this buffer.  The position of this buffer\n is then incremented\
+              \ by length.\n\n  In other words, an invocation of this method of the\
+              \ form\n dst.put(src, off, len) has exactly the same effect as\n the\
+              \ loop\n\n <code>\n     for (int i = off; i < off + len; i++)\n    \
+              \     dst.put(src[i]);\n </code>\n\n except that it first checks that\
+              \ there is sufficient space in this\n buffer and it is potentially much\
+              \ more efficient."
+          - name: put
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: src
+              type:
+                basic: float
+                full: float[]
+              notes: The source array
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Relative bulk put method  (optional operation).\n\n  This method\
+              \ transfers the entire content of the given source\n float array into\
+              \ this buffer.  An invocation of this method of the\n form dst.put(a)\
+              \ behaves in exactly the same way as the\n invocation\n\n \n     dst.put(a,\
+              \ 0, a.length)"
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The index in this buffer at which the first float will be\n\
+                \         written; must be non-negative and less than limit()"
+            - name: src
+              type:
+                basic: float
+                full: float[]
+              notes: The array from which floats are to be read
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: "The offset within the array of the first float to be read;\n\
+                \         must be non-negative and less than src.length"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of floats to be read from the given array;\n    \
+                \     must be non-negative and no larger than the smaller of\n   \
+                \      limit()"
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Absolute bulk put method  (optional operation).\n\n  This method\
+              \ transfers length floats from the given\n array, starting at the given\
+              \ offset in the array and at the given index\n in this buffer.  The\
+              \ position of this buffer is unchanged.\n\n  An invocation of this method\
+              \ of the form\n dst.put(index, src, offset, length)\n has exactly the\
+              \ same effect as the following loop except that it first\n checks the\
+              \ consistency of the supplied parameters and it is potentially\n much\
+              \ more efficient:\n\n <code>\n     for (int i = offset, j = index; i\
+              \ < offset + length; i++, j++)\n         dst.put(j, src[i]);\n </code>"
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The index in this buffer at which the first float will be\n\
+                \         written; must be non-negative and less than limit()"
+            - name: src
+              type:
+                basic: float
+                full: float[]
+              notes: The array from which floats are to be read
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Absolute bulk put method  (optional operation).\n\n  This method\
+              \ copies floats into this buffer from the given source\n array.  The\
+              \ position of this buffer is unchanged.  An invocation of this\n method\
+              \ of the form dst.put(index, src)\n behaves in exactly the same way\
+              \ as the invocation:\n\n \n     dst.put(index, src, 0, src.length);"
+          - name: putArray
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -402,42 +953,6 @@ languages:
             - name: arg1
               type:
                 basic: float
-                full: float
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: float[]
                 full: float[]
             - name: arg2
               type:
@@ -451,9 +966,9 @@ languages:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
-          - name: put
+          - name: putBuffer
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
@@ -473,15 +988,19 @@ languages:
                 full: int
             return:
               type:
+                basic: void
+                full: void
+          - name: reset
+            modifiers:
+            - public
+            - final
+            return:
+              type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
-          - name: reset
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
+              notes: This buffer
+            notes: "Resets this buffer's position to the previously-marked position.\n\
+              \n  Invoking this method neither changes nor discards the mark's\n value."
           - name: reset
             modifiers:
             - public
@@ -492,10 +1011,18 @@ languages:
           - name: rewind
             modifiers:
             - public
+            - final
             return:
               type:
-                basic: Buffer
-                full: java.nio.Buffer
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: This buffer
+            notes: "Rewinds this buffer.  The position is set to zero and the mark\
+              \ is\n discarded.\n\n  Invoke this method before a sequence of channel-write\
+              \ or get\n operations, assuming that the limit has already been set\n\
+              \ appropriately.  For example:\n\n \n out.write(buf);    // Write remaining\
+              \ data\n buf.rewind();      // Rewind buffer\n buf.get(array);    //\
+              \ Copy data into array"
           - name: rewind
             modifiers:
             - public
@@ -506,17 +1033,57 @@ languages:
           - name: slice
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Buffer
-                full: java.nio.Buffer
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: The new float buffer
+            notes: "Creates a new float buffer whose content is a shared subsequence\
+              \ of\n this buffer's content.\n\n  The content of the new buffer will\
+              \ start at this buffer's current\n position.  Changes to this buffer's\
+              \ content will be visible in the new\n buffer, and vice versa; the two\
+              \ buffers' position, limit, and mark\n values will be independent.\n\
+              \n  The new buffer's position will be zero, its capacity and its limit\n\
+              \ will be the number of floats remaining in this buffer, its mark will\
+              \ be\n undefined, and its byte order will be\n\n\n\n identical to that\
+              \ of this buffer.\n\n The new buffer will be direct if, and only if,\
+              \ this buffer is direct, and\n it will be read-only if, and only if,\
+              \ this buffer is read-only."
           - name: slice
             modifiers:
             - public
+            - abstract
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The position in this buffer at which the content of the new\n\
+                \          buffer will start; must be non-negative and no larger than\n\
+                \          limit()"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of elements the new buffer will contain; must be\n\
+                \          non-negative and no larger than limit()"
             return:
               type:
-                basic: Buffer
-                full: java.nio.Buffer
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: The new buffer
+            notes: "Creates a new float buffer whose content is a shared subsequence\
+              \ of\n this buffer's content.\n\n  The content of the new buffer will\
+              \ start at position index\n in this buffer, and will contain length\
+              \ elements. Changes to\n this buffer's content will be visible in the\
+              \ new buffer, and vice versa;\n the two buffers' position, limit, and\
+              \ mark values will be independent.\n\n  The new buffer's position will\
+              \ be zero, its capacity and its limit\n will be length, its mark will\
+              \ be undefined, and its byte order\n will be\n\n\n\n identical to that\
+              \ of this buffer.\n\n The new buffer will be direct if, and only if,\
+              \ this buffer is direct,\n and it will be read-only if, and only if,\
+              \ this buffer is read-only."
           - name: slice
             modifiers:
             - public
@@ -536,66 +1103,110 @@ languages:
           - name: slice
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: Buffer
                 full: java.nio.Buffer
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           staticMethods:
           - name: allocate
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: capacity
               type:
                 basic: int
                 full: int
+              notes: The new buffer's capacity, in floats
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
-          - name: wrap
+              notes: The new float buffer
+            notes: "Allocates a new float buffer.\n\n  The new buffer's position will\
+              \ be zero, its limit will be its\n capacity, its mark will be undefined,\
+              \ each of its elements will be\n initialized to zero, and its byte order\
+              \ will be\n\n\n\n the native order of the underlying\n hardware.\n\n\
+              \ It will have a backing array, and its\n array offset will be zero."
+          - name: compare
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: float[]
-                full: float[]
-            return:
-              type:
-                basic: FloatBuffer
-                full: java.nio.FloatBuffer
-          - name: wrap
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: float[]
-                full: float[]
+                basic: float
+                full: float
             - name: arg1
               type:
-                basic: int
-                full: int
-            - name: arg2
+                basic: float
+                full: float
+            return:
               type:
                 basic: int
                 full: int
+          - name: wrap
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: array
+              type:
+                basic: float
+                full: float[]
+              notes: The array that will back the new buffer
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: "The offset of the subarray to be used; must be non-negative\
+                \ and\n         no larger than array.length.  The new buffer's position\n\
+                \         will be set to this value."
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The length of the subarray to be used;\n         must be non-negative\
+                \ and no larger than\n         array.length"
             return:
               type:
                 basic: FloatBuffer
                 full: java.nio.FloatBuffer
-          javaType: class
-          extends: Buffer
+              notes: The new float buffer
+            notes: "Wraps a float array into a buffer.\n\n  The new buffer will be\
+              \ backed by the given float array;\n that is, modifications to the buffer\
+              \ will cause the array to be modified\n and vice versa.  The new buffer's\
+              \ capacity will be\n array.length, its position will be offset, its\
+              \ limit\n will be offset + length, its mark will be undefined, and its\n\
+              \ byte order will be\n\n\n\n the native order of the underlying\n hardware.\n\
+              \n Its backing array will be the given array, and\n its array offset\
+              \ will be zero."
+          - name: wrap
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: array
+              type:
+                basic: float
+                full: float[]
+              notes: The array that will back this buffer
+            return:
+              type:
+                basic: FloatBuffer
+                full: java.nio.FloatBuffer
+              notes: The new float buffer
+            notes: "Wraps a float array into a buffer.\n\n  The new buffer will be\
+              \ backed by the given float array;\n that is, modifications to the buffer\
+              \ will cause the array to be modified\n and vice versa.  The new buffer's\
+              \ capacity and limit will be\n array.length, its position will be zero,\
+              \ its mark will be\n undefined, and its byte order will be\n\n\n\n the\
+              \ native order of the underlying\n hardware.\n\n Its backing array will\
+              \ be the given array, and its\n array offset will be zero."

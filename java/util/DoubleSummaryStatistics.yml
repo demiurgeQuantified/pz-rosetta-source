@@ -4,84 +4,116 @@ languages:
     packages:
       java.util:
         DoubleSummaryStatistics:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.lang.Object
+          modifiers:
+          - public
+          fields:
+            count:
+              name: count
+              modifiers:
+              - private
               type:
                 basic: long
                 full: long
-            - name: arg1
+            max:
+              name: max
+              modifiers:
+              - private
               type:
                 basic: double
                 full: double
-            - name: arg2
+            min:
+              name: min
+              modifiers:
+              - private
               type:
                 basic: double
                 full: double
-            - name: arg3
+            simpleSum:
+              name: simpleSum
+              modifiers:
+              - private
               type:
                 basic: double
                 full: double
+            sum:
+              name: sum
+              modifiers:
+              - private
+              type:
+                basic: double
+                full: double
+            sumCompensation:
+              name: sumCompensation
+              modifiers:
+              - private
+              type:
+                basic: double
+                full: double
+          constructors:
+          - modifiers:
+            - public
+            notes: "Constructs an empty instance with zero count, zero sum,\n Double.POSITIVE_INFINITY\
+              \ min, Double.NEGATIVE_INFINITY\n max and zero average."
+          - modifiers:
+            - public
+            parameters:
+            - name: count
+              type:
+                basic: long
+                full: long
+              notes: the count of values
+            - name: min
+              type:
+                basic: double
+                full: double
+              notes: the minimum value
+            - name: max
+              type:
+                basic: double
+                full: double
+              notes: the maximum value
+            - name: sum
+              type:
+                basic: double
+                full: double
+              notes: the sum of all values
+            notes: "Constructs a non-empty instance with the specified count,\n min,\
+              \ max, and sum.\n\n If count is zero then the remaining arguments are\
+              \ ignored and\n an empty instance is constructed.\n\n If the arguments\
+              \ are inconsistent then an IllegalArgumentException\n is thrown.  The\
+              \ necessary consistent argument conditions are:\n \n   count >= 0\n\
+              \   (min <= max && !isNaN(sum)) || (isNaN(min) && isNaN(max) && isNaN(sum))"
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: accept
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: double
                 full: double
+              notes: the input value
             return:
               type:
                 basic: void
                 full: void
-          - name: accept
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: void
-                full: void
-          - name: andThen
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: DoubleConsumer
-                full: java.util.function.DoubleConsumer
-            return:
-              type:
-                basic: DoubleConsumer
-                full: java.util.function.DoubleConsumer
+            notes: Records another value into the summary information.
           - name: combine
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: DoubleSummaryStatistics
                 full: java.util.DoubleSummaryStatistics
+              notes: another DoubleSummaryStatistics
             return:
               type:
                 basic: void
                 full: void
+            notes: "Combines the state of another DoubleSummaryStatistics into this\n\
+              \ one."
           - name: getAverage
             modifiers:
             - public
@@ -90,6 +122,11 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: the arithmetic mean of values, or zero if none
+            notes: "Returns the arithmetic mean of values recorded, or zero if no\n\
+              \ values have been recorded.\n\n  The computed average can vary numerically\
+              \ and have the\n special case behavior as computing the sum; see getSum()\n\
+              \ for details."
           - name: getCount
             modifiers:
             - public
@@ -98,6 +135,8 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the count of values
+            notes: Return the count of values recorded.
           - name: getMax
             modifiers:
             - public
@@ -106,6 +145,12 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "the maximum recorded value, Double.NaN if any recorded\n value\
+                \ was NaN or Double.NEGATIVE_INFINITY if no values were\n recorded"
+            notes: "Returns the maximum recorded value, Double.NaN if any recorded\n\
+              \ value was NaN or Double.NEGATIVE_INFINITY if no values were\n recorded.\
+              \ Unlike the numerical comparison operators, this method\n considers\
+              \ negative zero to be strictly smaller than positive zero."
           - name: getMin
             modifiers:
             - public
@@ -114,6 +159,12 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "the minimum recorded value, Double.NaN if any recorded\n value\
+                \ was NaN or Double.POSITIVE_INFINITY if no values were\n recorded"
+            notes: "Returns the minimum recorded value, Double.NaN if any recorded\n\
+              \ value was NaN or Double.POSITIVE_INFINITY if no values were\n recorded.\
+              \ Unlike the numerical comparison operators, this method\n considers\
+              \ negative zero to be strictly smaller than positive zero."
           - name: getSum
             modifiers:
             - public
@@ -122,5 +173,48 @@ languages:
               type:
                 basic: double
                 full: double
-          javaType: class
-          extends: Object
+              notes: the sum of values, or zero if none
+            notes: "Returns the sum of values recorded, or zero if no values have\
+              \ been\n recorded.\n\n  The value of a floating-point sum is a function\
+              \ both of the\n input values as well as the order of addition operations.\
+              \ The\n order of addition operations of this method is intentionally\n\
+              \ not defined to allow for implementation flexibility to improve\n the\
+              \ speed and accuracy of the computed result.\n\n In particular, this\
+              \ method may be implemented using compensated\n summation or other technique\
+              \ to reduce the error bound in the\n numerical sum compared to a simple\
+              \ summation of double\n values.\n\n Because of the unspecified order\
+              \ of operations and the\n possibility of using differing summation schemes,\
+              \ the output of\n this method may vary on the same input values.\n\n\
+              \ Various conditions can result in a non-finite sum being\n computed.\
+              \ This can occur even if the all the recorded values\n being summed\
+              \ are finite. If any recorded value is non-finite,\n the sum will be\
+              \ non-finite:\n\n \n\n If any recorded value is a NaN, then the final\
+              \ sum will be\n NaN.\n\n If the recorded values contain one or more\
+              \ infinities, the\n sum will be infinite or NaN.\n\n \n\n If the recorded\
+              \ values contain infinities of opposite sign,\n the sum will be NaN.\n\
+              \n If the recorded values contain infinities of one sign and\n an intermediate\
+              \ sum overflows to an infinity of the opposite\n sign, the sum may be\
+              \ NaN.\n\n \n\n \n\n It is possible for intermediate sums of finite\
+              \ values to\n overflow into opposite-signed infinities; if that occurs,\
+              \ the\n final sum will be NaN even if the recorded values are all\n\
+              \ finite.\n\n If all the recorded values are zero, the sign of zero\
+              \ is\n not guaranteed to be preserved in the final sum."
+          - name: sumWithCompensation
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: double
+                full: double
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

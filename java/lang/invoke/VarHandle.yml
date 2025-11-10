@@ -4,28 +4,430 @@ languages:
     packages:
       java.lang.invoke:
         VarHandle:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            - final
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A VarHandle is a dynamically strongly typed reference to a variable,\
+            \ or to a\n parametrically-defined family of variables, including static\
+            \ fields,\n non-static fields, array elements, or components of an off-heap\
+            \ data\n structure.  Access to such variables is supported under various\n\
+            \ access modes, including plain read/write access, volatile\n read/write\
+            \ access, and compare-and-set.\n\n VarHandles are immutable and have no\
+            \ visible state.  VarHandles cannot be\n subclassed by the user.\n\n A\
+            \ VarHandle has:\n \n a variable type T, the type of every variable referenced\n\
+            \ by this VarHandle; and\n a list of coordinate types\n CT1, CT2, ...,\
+            \ CTn, the types of coordinate expressions that\n jointly locate a variable\
+            \ referenced by this VarHandle.\n \n Variable and coordinate types may\
+            \ be primitive or reference, and are\n represented by Class objects. \
+            \ The list of coordinate types may be\n empty.\n\n Factory methods that\
+            \ produce or lookup VarHandle instances document the supported variable\
+            \ type and the list\n of coordinate types.\n\n Each access mode is associated\
+            \ with one access mode method, a\n signature polymorphic method named\n\
+            \ for the access mode.  When an access mode method is invoked on a VarHandle\n\
+            \ instance, the initial arguments to the invocation are coordinate expressions\n\
+            \ that indicate in precisely which object the variable is to be accessed.\n\
+            \ Trailing arguments to the invocation represent values of importance\
+            \ to the\n access mode.  For example, the various compare-and-set or compare-and-exchange\n\
+            \ access modes require two trailing arguments for the variable's expected\
+            \ value\n and new value.\n\n The arity and types of arguments to the invocation\
+            \ of an access mode\n method are not checked statically.  Instead, each\
+            \ access mode method\n specifies an access mode type,\n represented as\
+            \ an instance of MethodType, that serves as a kind of\n method signature\
+            \ against which the arguments are checked dynamically.  An\n access mode\
+            \ type gives formal parameter types in terms of the coordinate\n types\
+            \ of a VarHandle instance and the types for values of importance to the\n\
+            \ access mode.  An access mode type also gives a return type, often in\
+            \ terms of\n the variable type of a VarHandle instance.  When an access\
+            \ mode method is\n invoked on a VarHandle instance, the symbolic type\
+            \ descriptor at the\n call site, the run time types of arguments to the\
+            \ invocation, and the run\n time type of the return value, must match\
+            \ the types\n given in the access mode type.  A runtime exception will\
+            \ be thrown if the\n match fails.\n\n For example, the access mode method\
+            \ compareAndSet(java.lang.Object...) specifies that if\n its receiver\
+            \ is a VarHandle instance with coordinate types\n CT1, ..., CTn and variable\
+            \ type T, then its access mode type\n is (CT1 c1, ..., CTn cn, T expectedValue,\
+            \ T newValue)boolean.\n Suppose that a VarHandle instance can access array\
+            \ elements, and that its\n coordinate types are String[] and int while\
+            \ its variable type\n is String.  The access mode type for compareAndSet\
+            \ on this\n VarHandle instance would be\n (String[] c1, int c2, String\
+            \ expectedValue, String newValue)boolean.\n Such a VarHandle instance\
+            \ may be produced by the\n array factory method and\n access array elements\
+            \ as follows:\n  <code>\n String[] sa = ...\n VarHandle avh = MethodHandles.arrayElementVarHandle(String[].class);\n\
+            \ boolean r = avh.compareAndSet(sa, 10, \"expected\", \"new\");\n </code>\n\
+            \n Access modes control atomicity and consistency properties.\n Plain\
+            \ read (get) and write (set)\n accesses are guaranteed to be bitwise atomic\
+            \ only for references\n and for primitive values of at most 32 bits, and\
+            \ impose no observable\n ordering constraints with respect to threads\
+            \ other than the\n executing thread. Opaque operations are bitwise atomic\
+            \ and\n coherently ordered with respect to accesses to the same variable.\n\
+            \ In addition to obeying Opaque properties, Acquire mode\n reads and their\
+            \ subsequent accesses are ordered after matching\n Release mode writes\
+            \ and their previous accesses.  In\n addition to obeying Acquire and Release\
+            \ properties, all\n Volatile operations are totally ordered with respect\
+            \ to\n each other.\n\n Access modes are grouped into the following categories:\n\
+            \ \n read access modes that get the value of a variable under specified\n\
+            \ memory ordering effects.\n The set of corresponding access mode methods\
+            \ belonging to this group\n consists of the methods\n get,\n getVolatile,\n\
+            \ getAcquire,\n getOpaque.\n write access modes that set the value of\
+            \ a variable under specified\n memory ordering effects.\n The set of corresponding\
+            \ access mode methods belonging to this group\n consists of the methods\n\
+            \ set,\n setVolatile,\n setRelease,\n setOpaque.\n atomic update access\
+            \ modes that, for example, atomically compare and set\n the value of a\
+            \ variable under specified memory ordering effects.\n The set of corresponding\
+            \ access mode methods belonging to this group\n consists of the methods\n\
+            \ compareAndSet,\n weakCompareAndSetPlain,\n weakCompareAndSet,\n weakCompareAndSetAcquire,\n\
+            \ weakCompareAndSetRelease,\n compareAndExchangeAcquire,\n compareAndExchange,\n\
+            \ compareAndExchangeRelease,\n getAndSet,\n getAndSetAcquire,\n getAndSetRelease.\n\
+            \ numeric atomic update access modes that, for example, atomically get\
+            \ and\n set with addition the value of a variable under specified memory\
+            \ ordering\n effects.\n The set of corresponding access mode methods belonging\
+            \ to this group\n consists of the methods\n getAndAdd,\n getAndAddAcquire,\n\
+            \ getAndAddRelease,\n bitwise atomic update access modes that, for example,\
+            \ atomically get and\n bitwise OR the value of a variable under specified\
+            \ memory ordering\n effects.\n The set of corresponding access mode methods\
+            \ belonging to this group\n consists of the methods\n getAndBitwiseOr,\n\
+            \ getAndBitwiseOrAcquire,\n getAndBitwiseOrRelease,\n getAndBitwiseAnd,\n\
+            \ getAndBitwiseAndAcquire,\n getAndBitwiseAndRelease,\n getAndBitwiseXor,\n\
+            \ getAndBitwiseXorAcquire,\n getAndBitwiseXorRelease.\n \n\n Factory methods\
+            \ that produce or lookup VarHandle instances document the set of access\
+            \ modes that are\n supported, which may also include documenting restrictions\
+            \ based on the\n variable type and whether a variable is read-only.  If\
+            \ an access mode is not\n supported then the corresponding access mode\
+            \ method will on invocation throw\n an UnsupportedOperationException.\
+            \  Factory methods should document\n any additional undeclared exceptions\
+            \ that may be thrown by access mode\n methods.\n The get access mode is\
+            \ supported for all\n VarHandle instances and the corresponding method\
+            \ never throws\n UnsupportedOperationException.\n If a VarHandle references\
+            \ a read-only variable (for example a final\n field) then write, atomic\
+            \ update, numeric atomic update, and bitwise atomic\n update access modes\
+            \ are not supported and corresponding methods throw\n UnsupportedOperationException.\n\
+            \ Read/write access modes (if supported), with the exception of\n get\
+            \ and set, provide atomic access for\n reference types and all primitive\
+            \ types.\n Unless stated otherwise in the documentation of a factory method,\
+            \ the access\n modes get and set (if supported) provide atomic access\
+            \ for\n reference types and all primitives types, with the exception of\
+            \ long\n and double on 32-bit platforms.\n\n Access modes will override\
+            \ any memory ordering effects specified at\n the declaration site of a\
+            \ variable.  For example, a VarHandle accessing\n a field using the get\
+            \ access mode will access the field as\n specified by its access mode\
+            \ even if that field is declared\n volatile.  When mixed access is performed\
+            \ extreme care should be\n taken since the Java Memory Model may permit\
+            \ surprising results.\n\n In addition to supporting access to variables\
+            \ under various access modes,\n a set of static methods, referred to as\
+            \ memory fence methods, is also\n provided for fine-grained control of\
+            \ memory ordering.\n\n The Java Language Specification permits other threads\
+            \ to observe operations\n as if they were executed in orders different\
+            \ than are apparent in program\n source code, subject to constraints arising,\
+            \ for example, from the use of\n locks, volatile fields or VarHandles.\
+            \  The static methods,\n fullFence, acquireFence,\n releaseFence, loadLoadFence\
+            \ and\n storeStoreFence, can also be used to impose\n constraints.  Their\
+            \ specifications, as is the case for certain access modes,\n are phrased\
+            \ in terms of the lack of \"reorderings\" -- observable ordering\n effects\
+            \ that might otherwise occur if the fence was not present.  More\n precise\
+            \ phrasing of the specification of access mode methods and memory fence\n\
+            \ methods may accompany future updates of the Java Language Specification.\n\
+            \n Compiling invocation of access mode methods\n A Java method call expression\
+            \ naming an access mode method can invoke a\n VarHandle from Java source\
+            \ code.  From the viewpoint of source code, these\n methods can take any\
+            \ arguments and their polymorphic result (if expressed)\n can be cast\
+            \ to any return type.  Formally this is accomplished by giving the\n access\
+            \ mode methods variable arity Object arguments and\n Object return types\
+            \ (if the return type is polymorphic), but they\n have an additional quality\
+            \ called signature polymorphism which\n connects this freedom of invocation\
+            \ directly to the JVM execution stack.\n \n As is usual with virtual methods,\
+            \ source-level calls to access mode methods\n compile to an invokevirtual\
+            \ instruction.  More unusually, the\n compiler must record the actual\
+            \ argument types, and may not perform method\n invocation conversions\
+            \ on the arguments.  Instead, it must generate\n instructions to push\
+            \ them on the stack according to their own unconverted\n types.  The VarHandle\
+            \ object itself will be pushed on the stack before the\n arguments.  The\
+            \ compiler then generates an invokevirtual instruction\n that invokes\
+            \ the access mode method with a symbolic type descriptor which\n describes\
+            \ the argument and return types.\n \n To issue a complete symbolic type\
+            \ descriptor, the compiler must also\n determine the return type (if polymorphic).\
+            \  This is based on a cast on the\n method invocation expression, if there\
+            \ is one, or else Object if the\n invocation is an expression, or else\
+            \ void if the invocation is a\n statement.  The cast may be to a primitive\
+            \ type (but not void).\n \n As a corner case, an uncasted null argument\
+            \ is given a symbolic type\n descriptor of java.lang.Void.  The ambiguity\
+            \ with the type\n Void is harmless, since there are no references of type\
+            \ Void\n except the null reference.\n\n\n Performing invocation of access\
+            \ mode methods\n The first time an invokevirtual instruction is executed\
+            \ it is linked\n by symbolically resolving the names in the instruction\
+            \ and verifying that\n the method call is statically legal.  This also\
+            \ holds for calls to access mode\n methods.  In this case, the symbolic\
+            \ type descriptor emitted by the compiler\n is checked for correct syntax,\
+            \ and names it contains are resolved.  Thus, an\n invokevirtual instruction\
+            \ which invokes an access mode method will\n always link, as long as the\
+            \ symbolic type descriptor is syntactically\n well-formed and the types\
+            \ exist.\n \n When the invokevirtual is executed after linking, the receiving\n\
+            \ VarHandle's access mode type is first checked by the JVM to ensure that\
+            \ it\n matches the symbolic type descriptor.  If the type\n match fails,\
+            \ it means that the access mode method which the caller is\n invoking\
+            \ is not present on the individual VarHandle being invoked.\n\n \n Invocation\
+            \ of an access mode method behaves, by default, as if an invocation of\n\
+            \ MethodHandle.invoke(java.lang.Object...), where the receiving method\
+            \ handle accepts the\n VarHandle instance as the leading argument.  More\
+            \ specifically, the\n following, where {access-mode} corresponds to the\
+            \ access mode method\n name:\n  <code>\n VarHandle vh = ..\n R r = (R)\
+            \ vh.{access-mode}(p1, p2, ..., pN);\n </code>\n behaves as if:\n  <code>\n\
+            \ VarHandle vh = ..\n VarHandle.AccessMode am = VarHandle.AccessMode.valueFromMethodName(\"\
+            {access-mode}\");\n MethodHandle mh = MethodHandles.varHandleExactInvoker(\n\
+            \                       am,\n                       vh.accessModeType(am));\n\
+            \n R r = (R) mh.invoke(vh, p1, p2, ..., pN)\n </code>\n (modulo access\
+            \ mode methods do not declare throwing of Throwable).\n This is equivalent\
+            \ to:\n  <code>\n MethodHandle mh = MethodHandles.lookup().findVirtual(\n\
+            \                       VarHandle.class,\n                       \"{access-mode}\"\
+            ,\n                       MethodType.methodType(R, p1, p2, ..., pN));\n\
+            \n R r = (R) mh.invokeExact(vh, p1, p2, ..., pN)\n </code>\n where the\
+            \ desired method type is the symbolic type descriptor and a\n MethodHandle.invokeExact(java.lang.Object...)\
+            \ is performed, since before invocation of the\n target, the handle will\
+            \ apply reference casts as necessary and box, unbox, or\n widen primitive\
+            \ values, as if by asType (see also\n MethodHandles.varHandleInvoker(java.lang.invoke.VarHandle.AccessMode,\
+            \ java.lang.invoke.MethodType)).\n\n More concisely, such behavior is\
+            \ equivalent to:\n  <code>\n VarHandle vh = ..\n VarHandle.AccessMode\
+            \ am = VarHandle.AccessMode.valueFromMethodName(\"{access-mode}\");\n\
+            \ MethodHandle mh = vh.toMethodHandle(am);\n\n R r = (R) mh.invoke(p1,\
+            \ p2, ..., pN)\n </code>\n Where, in this case, the method handle is bound\
+            \ to the VarHandle instance.\n\n \n A VarHandle's invocation behavior\
+            \ can be adjusted (see withInvokeExactBehavior()) such that invocation\
+            \ of\n an access mode method behaves as if invocation of MethodHandle.invokeExact(java.lang.Object...),\n\
+            \ where the receiving method handle accepts the VarHandle instance as\
+            \ the leading argument.\n More specifically, the following, where {access-mode}\
+            \ corresponds to the access mode method\n name:\n  <code>\n VarHandle\
+            \ vh = ..\n R r = (R) vh.{access-mode}(p1, p2, ..., pN);\n </code>\n behaves\
+            \ as if:\n  <code>\n VarHandle vh = ..\n VarHandle.AccessMode am = VarHandle.AccessMode.valueFromMethodName(\"\
+            {access-mode}\");\n MethodHandle mh = MethodHandles.varHandleExactInvoker(\n\
+            \                       am,\n                       vh.accessModeType(am));\n\
+            \n R r = (R) mh.invokeExact(vh, p1, p2, ..., pN)\n </code>\n (modulo access\
+            \ mode methods do not declare throwing of Throwable).\n\n More concisely,\
+            \ such behavior is equivalent to:\n  <code>\n VarHandle vh = ..\n VarHandle.AccessMode\
+            \ am = VarHandle.AccessMode.valueFromMethodName(\"{access-mode}\");\n\
+            \ MethodHandle mh = vh.toMethodHandle(am);\n\n R r = (R) mh.invokeExact(p1,\
+            \ p2, ..., pN)\n </code>\n Where, in this case, the method handle is bound\
+            \ to the VarHandle instance.\n\n Invocation checking\n In typical programs,\
+            \ VarHandle access mode type matching will usually\n succeed.  But if\
+            \ a match fails, the JVM will throw a\n WrongMethodTypeException.\n \n\
+            \ Thus, an access mode type mismatch which might show up as a linkage\
+            \ error\n in a statically typed program can show up as a dynamic\n WrongMethodTypeException\
+            \ in a program which uses VarHandles.\n \n Because access mode types contain\
+            \ \"live\" Class objects, method type\n matching takes into account both\
+            \ type names and class loaders.\n Thus, even if a VarHandle VH is created\
+            \ in one class loader\n L1 and used in another L2, VarHandle access mode\
+            \ method\n calls are type-safe, because the caller's symbolic type descriptor,\
+            \ as\n resolved in L2, is matched against the original callee method's\n\
+            \ symbolic type descriptor, as resolved in L1.  The resolution in\n L1\
+            \ happens when VH is created and its access mode types are\n assigned,\
+            \ while the resolution in L2 happens when the\n invokevirtual instruction\
+            \ is linked.\n \n Apart from type descriptor checks, a VarHandles's capability\
+            \ to\n access it's variables is unrestricted.\n If a VarHandle is formed\
+            \ on a non-public variable by a class that has access\n to that variable,\
+            \ the resulting VarHandle can be used in any place by any\n caller who\
+            \ receives a reference to it.\n \n Unlike with the Core Reflection API,\
+            \ where access is checked every time a\n reflective method is invoked,\
+            \ VarHandle access checking is performed\n when the VarHandle is\n created.\n\
+            \ Thus, VarHandles to non-public variables, or to variables in non-public\n\
+            \ classes, should generally be kept secret.  They should not be passed\
+            \ to\n untrusted code unless their use from the untrusted code would be\
+            \ harmless.\n\n\n VarHandle creation\n Java code can create a VarHandle\
+            \ that directly accesses any field that is\n accessible to that code.\
+            \  This is done via a reflective, capability-based\n API called MethodHandles.Lookup.\n\
+            \ For example, a VarHandle for a non-static field can be obtained\n from\
+            \ Lookup.findVarHandle.\n There is also a conversion method from Core\
+            \ Reflection API objects,\n Lookup.unreflectVarHandle.\n \n Access to\
+            \ protected field members is restricted to receivers only of the\n accessing\
+            \ class, or one of its subclasses, and the accessing class must in\n turn\
+            \ be a subclass (or package sibling) of the protected member's defining\n\
+            \ class.  If a VarHandle refers to a protected non-static field of a declaring\n\
+            \ class outside the current package, the receiver argument will be narrowed\
+            \ to\n the type of the accessing class.\n\n Interoperation between VarHandles\
+            \ and the Core Reflection API\n Using factory methods in the Lookup API,\
+            \ any field represented by a Core Reflection API object\n can be converted\
+            \ to a behaviorally equivalent VarHandle.\n For example, a reflective\
+            \ Field can\n be converted to a VarHandle using\n Lookup.unreflectVarHandle.\n\
+            \ The resulting VarHandles generally provide more direct and efficient\n\
+            \ access to the underlying fields.\n \n As a special case, when the Core\
+            \ Reflection API is used to view the\n signature polymorphic access mode\
+            \ methods in this class, they appear as\n ordinary non-polymorphic methods.\
+            \  Their reflective appearance, as viewed by\n Class.getDeclaredMethod,\n\
+            \ is unaffected by their special status in this API.\n For example, Method.getModifiers\n\
+            \ will report exactly those modifier bits required for any similarly\n\
+            \ declared method, including in this case native and varargs\n bits.\n\
+            \ \n As with any reflected method, these methods (when reflected) may\
+            \ be invoked\n directly via java.lang.reflect.Method.invoke,\n via JNI,\
+            \ or indirectly via\n Lookup.unreflect.\n However, such reflective calls\
+            \ do not result in access mode method\n invocations.  Such a call, if\
+            \ passed the required argument (a single one, of\n type Object[]), will\
+            \ ignore the argument and will throw an\n UnsupportedOperationException.\n\
+            \ \n Since invokevirtual instructions can natively invoke VarHandle\n\
+            \ access mode methods under any symbolic type descriptor, this reflective\
+            \ view\n conflicts with the normal presentation of these methods via bytecodes.\n\
+            \ Thus, these native methods, when reflectively viewed by\n Class.getDeclaredMethod,\
+            \ may be regarded as placeholders only.\n \n In order to obtain an invoker\
+            \ method for a particular access mode type,\n use MethodHandles.varHandleExactInvoker(java.lang.invoke.VarHandle.AccessMode,\
+            \ java.lang.invoke.MethodType) or\n MethodHandles.varHandleInvoker(java.lang.invoke.VarHandle.AccessMode,\
+            \ java.lang.invoke.MethodType).  The\n Lookup.findVirtual\n API is also\
+            \ able to return a method handle to call an access mode method for\n any\
+            \ specified access mode type and is equivalent in behavior to\n MethodHandles.varHandleInvoker(java.lang.invoke.VarHandle.AccessMode,\
+            \ java.lang.invoke.MethodType).\n\n Interoperation between VarHandles\
+            \ and Java generics\n A VarHandle can be obtained for a variable, such\
+            \ as a field, which is\n declared with Java generic types.  As with the\
+            \ Core Reflection API, the\n VarHandle's variable type will be constructed\
+            \ from the erasure of the\n source-level type.  When a VarHandle access\
+            \ mode method is invoked, the\n types\n of its arguments or the return\
+            \ value cast type may be generic types or type\n instances.  If this occurs,\
+            \ the compiler will replace those types by their\n erasures when it constructs\
+            \ the symbolic type descriptor for the\n invokevirtual instruction."
+          fields:
+            exact:
+              name: exact
+              modifiers:
+              - package
               type:
-                basic: String
-                full: java.lang.String
+                basic: boolean
+                full: boolean
+            typesAndInvokers:
+              name: typesAndInvokers
+              modifiers:
+              - package
+              type:
+                basic: VarHandle.TypesAndInvokers
+                full: java.lang.invoke.VarHandle$TypesAndInvokers
+            vform:
+              name: vform
+              modifiers:
+              - package
+              type:
+                basic: VarForm
+                full: java.lang.invoke.VarForm
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            AIOOBE_SUPPLIER:
+              name: AIOOBE_SUPPLIER
+              modifiers:
+              - package
+              - static
+              type:
+                basic: BiFunction
+                full: java.util.function.BiFunction<java.lang.String, java.util.List<java.lang.Number>,
+                  java.lang.ArrayIndexOutOfBoundsException>
+            VFORM_OFFSET:
+              name: VFORM_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: VarForm
+                full: java.lang.invoke.VarForm
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: VarForm
+                full: java.lang.invoke.VarForm
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+          methods:
           - name: accessModeType
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: accessMode
               type:
-                basic: AccessMode
+                basic: VarHandle.AccessMode
                 full: java.lang.invoke.VarHandle$AccessMode
+              notes: "the access mode, corresponding to the\n signature-polymorphic\
+                \ method of the same name"
             return:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+              notes: the access mode type for the given access mode
+            notes: "Obtains the access mode type for this VarHandle and a given access\
+              \ mode.\n\n The access mode type's parameter types will consist of a\
+              \ prefix that\n is the coordinate types of this VarHandle followed by\
+              \ further\n types as defined by the access mode method.\n The access\
+              \ mode type's return type is defined by the return type of the\n access\
+              \ mode method."
+          - name: accessModeType
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: accessModeTypeUncached
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: accessModeTypeUncached
+            modifiers:
+            - package
+            - abstract
+            parameters:
+            - name: arg0
+              type:
+                basic: VarHandle.AccessType
+                full: java.lang.invoke.VarHandle$AccessType
+            return:
+              type:
+                basic: MethodType
+                full: java.lang.invoke.MethodType
+          - name: asDirect
+            modifiers:
+            - package
+            return:
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+          - name: checkExactAccessMode
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: VarHandle.AccessDescriptor
+                full: java.lang.invoke.VarHandle$AccessDescriptor
+            return:
+              type:
+                basic: void
+                full: void
           - name: compareAndExchange
             modifiers:
             - public
@@ -33,7 +435,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -46,7 +448,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -59,7 +461,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -72,7 +474,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -83,21 +485,17 @@ languages:
             - public
             return:
               type:
-                basic: List<Class<?>>
+                basic: List
                 full: java.util.List<java.lang.Class<?>>
+              notes: "the coordinate types for this VarHandle. The returned\n list\
+                \ is unmodifiable"
+            notes: Returns the coordinate types for this VarHandle.
           - name: describeConstable
             modifiers:
             - public
             return:
               type:
-                basic: VarHandleDesc>
-                full: java.util.Optional<java.lang.invoke.VarHandle$VarHandleDesc>
-          - name: describeConstable
-            modifiers:
-            - public
-            return:
-              type:
-                basic: VarHandleDesc>
+                basic: Optional
                 full: java.util.Optional<java.lang.invoke.VarHandle$VarHandleDesc>
           - name: get
             modifiers:
@@ -106,7 +504,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -119,7 +517,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -132,7 +530,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -145,7 +543,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -158,7 +556,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -171,7 +569,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -184,7 +582,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -197,7 +595,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -210,7 +608,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -223,7 +621,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -236,7 +634,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -249,7 +647,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -262,7 +660,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -275,7 +673,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -288,7 +686,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -301,7 +699,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -314,12 +712,37 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+          - name: getMethodHandle
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
+          - name: getMethodHandleUncached
+            modifiers:
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: MethodHandle
+                full: java.lang.invoke.MethodHandle
           - name: getOpaque
             modifiers:
             - public
@@ -327,12 +750,20 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+          - name: getTypesAndInvokers
+            modifiers:
+            - private
+            - final
+            return:
+              type:
+                basic: VarHandle.TypesAndInvokers
+                full: java.lang.invoke.VarHandle$TypesAndInvokers
           - name: getVolatile
             modifiers:
             - public
@@ -340,7 +771,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -353,15 +784,31 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this VarHandle has invoke-exact behavior.
+            notes: Returns true if this VarHandle has invoke-exact behavior.
           - name: isAccessModeSupported
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: accessMode
               type:
-                basic: AccessMode
+                basic: VarHandle.AccessMode
                 full: java.lang.invoke.VarHandle$AccessMode
+              notes: "the access mode, corresponding to the\n signature-polymorphic\
+                \ method of the same name"
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the given access mode is supported, otherwise\n false."
+            notes: "Returns true if the given access mode is supported, otherwise\n\
+              \ false.\n\n The return of a false value for a given access mode indicates\n\
+              \ that an UnsupportedOperationException is thrown on invocation\n of\
+              \ the corresponding access mode method."
+          - name: isDirect
+            modifiers:
+            - package
             return:
               type:
                 basic: boolean
@@ -373,7 +820,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -386,7 +833,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -399,7 +846,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -412,8 +859,28 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: target
+            modifiers:
+            - package
+            return:
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+          - name: throwWrongMethodTypeException
+            modifiers:
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: VarHandle.AccessDescriptor
+                full: java.lang.invoke.VarHandle$AccessDescriptor
             return:
               type:
                 basic: void
@@ -422,21 +889,57 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: accessMode
               type:
-                basic: AccessMode
+                basic: VarHandle.AccessMode
                 full: java.lang.invoke.VarHandle$AccessMode
+              notes: "the access mode, corresponding to the\n signature-polymorphic\
+                \ method of the same name"
             return:
               type:
                 basic: MethodHandle
                 full: java.lang.invoke.MethodHandle
+              notes: a method handle bound to this VarHandle and the given access
+                mode
+            notes: "Obtains a method handle bound to this VarHandle and the given\
+              \ access\n mode."
+          - name: toString
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: unsupported
+            modifiers:
+            - package
+            return:
+              type:
+                basic: RuntimeException
+                full: java.lang.RuntimeException
+          - name: updateVarForm
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: VarForm
+                full: java.lang.invoke.VarForm
+            return:
+              type:
+                basic: void
+                full: void
           - name: varType
             modifiers:
             - public
             return:
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
+              notes: the variable type of variables referenced by this VarHandle
+            notes: Returns the variable type of variables referenced by this VarHandle.
           - name: weakCompareAndSet
             modifiers:
             - public
@@ -444,7 +947,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -457,7 +960,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -470,7 +973,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -483,7 +986,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
             return:
               type:
@@ -492,17 +995,32 @@ languages:
           - name: withInvokeBehavior
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: VarHandle
                 full: java.lang.invoke.VarHandle
+              notes: a VarHandle with invoke behavior
+            notes: "Returns a VarHandle, with access to the same variable(s) as this\
+              \ VarHandle, but whose\n invocation behavior of access mode methods\
+              \ is adjusted to\n invoke behavior.\n \n If this VarHandle already has\
+              \ invoke behavior this VarHandle is returned.\n \n Invoking hasInvokeExactBehavior()\
+              \ on the returned var handle\n is guaranteed to return false."
           - name: withInvokeExactBehavior
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: VarHandle
                 full: java.lang.invoke.VarHandle
+              notes: a VarHandle with invoke-exact behavior
+            notes: "Returns a VarHandle, with access to the same variable(s) as this\
+              \ VarHandle, but whose\n invocation behavior of access mode methods\
+              \ is adjusted to\n invoke-exact behavior.\n \n If this VarHandle already\
+              \ has invoke-exact behavior this VarHandle is returned.\n \n Invoking\
+              \ hasInvokeExactBehavior() on the returned var handle\n is guaranteed\
+              \ to return true."
           staticMethods:
           - name: acquireFence
             modifiers:
@@ -512,6 +1030,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Ensures that loads before the fence will not be reordered with\
+              \ loads and\n stores after the fence."
           - name: fullFence
             modifiers:
             - public
@@ -520,6 +1040,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Ensures that loads and stores before the fence will not be reordered\n\
+              \ with\n loads and stores after the fence."
           - name: loadLoadFence
             modifiers:
             - public
@@ -528,6 +1050,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Ensures that loads before the fence will not be reordered with\n\
+              \ loads after the fence."
           - name: releaseFence
             modifiers:
             - public
@@ -536,6 +1060,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Ensures that loads and stores before the fence will not be\n reordered\
+              \ with stores after the fence."
           - name: storeStoreFence
             modifiers:
             - public
@@ -544,5 +1070,5 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Ensures that stores before the fence will not be reordered with\n\
+              \ stores after the fence."

@@ -4,160 +4,414 @@ languages:
     packages:
       java.nio.channels:
         AsynchronousFileChannel:
-          methods:
-          - name: close
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "An asynchronous channel for reading, writing, and manipulating a\
+            \ file.\n\n  An asynchronous file channel is created when a file is opened\
+            \ by invoking\n one of the open methods defined by this class. The file\
+            \ contains\n a variable-length sequence of bytes that can be read and\
+            \ written and whose\n current size can be queried. The size of the file\
+            \ increases\n when bytes are written beyond its  current size; the size\
+            \ of the file decreases\n when it is truncated.\n\n  An asynchronous file\
+            \ channel does not have a current position\n within the file. Instead,\
+            \ the file position is specified to each read and\n write method that\
+            \ initiates asynchronous operations. A CompletionHandler\n is specified\
+            \ as a parameter and is invoked to consume the result of the I/O\n operation.\
+            \ This class also defines read and write methods that initiate\n asynchronous\
+            \ operations, returning a Future to represent the pending\n result of\
+            \ the operation. The Future may be used to check if the\n operation has\
+            \ completed, wait for its completion, and retrieve the result.\n\n  In\
+            \ addition to read and write operations, this class defines the\n following\
+            \ operations: \n\n \n\n    Updates made to a file may be forced\n   out\
+            \ to the underlying storage device, ensuring that data are not\n   lost\
+            \ in the event of a system crash.  \n\n    A region of a file may be locked\
+            \ against\n   access by other programs.  \n\n \n\n  An AsynchronousFileChannel\
+            \ is associated with a thread pool to\n which tasks are submitted to handle\
+            \ I/O events and dispatch to completion\n handlers that consume the results\
+            \ of I/O operations on the channel. The\n completion handler for an I/O\
+            \ operation initiated on a channel is guaranteed\n to be invoked by one\
+            \ of the threads in the thread pool (This ensures that the\n completion\
+            \ handler is run by a thread with the expected identity).\n Where an I/O\
+            \ operation completes immediately, and the initiating thread is\n itself\
+            \ a thread in the thread pool, then the completion handler may be invoked\n\
+            \ directly by the initiating thread. When an AsynchronousFileChannel is\n\
+            \ created without specifying a thread pool then the channel is associated\
+            \ with\n a system-dependent default thread pool that may be shared with\
+            \ other\n channels. The default thread pool is configured by the system\
+            \ properties\n defined by the AsynchronousChannelGroup class.\n\n  Channels\
+            \ of this type are safe for use by multiple concurrent threads. The\n\
+            \ close method may be invoked at any time, as specified\n by the Channel\
+            \ interface. This causes all outstanding asynchronous\n operations on\
+            \ the channel to complete with the exception AsynchronousCloseException.\
+            \ Multiple read and write operations may be\n outstanding at the same\
+            \ time. When multiple read and write operations are\n outstanding then\
+            \ the ordering of the I/O operations, and the order that the\n completion\
+            \ handlers are invoked, is not specified; they are not, in particular,\n\
+            \ guaranteed to execute in the order that the operations were initiated.\
+            \ The\n ByteBuffers used when reading or writing are not\n safe for use\
+            \ by multiple concurrent I/O operations. Furthermore, after an I/O\n operation\
+            \ is initiated then care should be taken to ensure that the buffer is\n\
+            \ not accessed until after the operation has completed.\n\n  As with FileChannel,\
+            \ the view of a file provided by an instance of\n this class is guaranteed\
+            \ to be consistent with other views of the same file\n provided by other\
+            \ instances in the same program.  The view provided by an\n instance of\
+            \ this class may or may not, however, be consistent with the views\n seen\
+            \ by other concurrently-running programs due to caching performed by the\n\
+            \ underlying operating system and delays induced by network-filesystem\
+            \ protocols.\n This is true regardless of the language in which these\
+            \ other programs are\n written, and whether they are running on the same\
+            \ machine or on some other\n machine.  The exact nature of any such inconsistencies\
+            \ are system-dependent\n and are therefore unspecified."
+          staticFields:
+            NO_ATTRIBUTES:
+              name: NO_ATTRIBUTES
+              modifiers:
+              - private
+              - static
               type:
-                basic: void
-                full: void
+                basic: FileAttribute
+                full: java.nio.file.attribute.FileAttribute<?>[]
+          constructors:
+          - modifiers:
+            - protected
+            notes: Initializes a new instance of this class.
+          methods:
           - name: force
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: metaData
               type:
                 basic: boolean
                 full: boolean
+              notes: "If true then this method is required to force changes\n    \
+                \      to both the file's content and metadata to be written to\n\
+                \          storage; otherwise, it need only force content changes\
+                \ to be\n          written"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Forces any updates to this channel's file to be written to the\
+              \ storage\n device that contains it.\n\n  If this channel's file resides\
+              \ on a local storage device then when\n this method returns it is guaranteed\
+              \ that all changes made to the file\n since this channel was created,\
+              \ or since this method was last invoked,\n will have been written to\
+              \ that device.  This is useful for ensuring that\n critical information\
+              \ is not lost in the event of a system crash.\n\n  If the file does\
+              \ not reside on a local device then no such guarantee\n is made.\n\n\
+              \  The metaData parameter can be used to limit the number of\n I/O operations\
+              \ that this method is required to perform.  Passing\n false for this\
+              \ parameter indicates that only updates to the\n file's content need\
+              \ be written to storage; passing true\n indicates that updates to both\
+              \ the file's content and metadata must be\n written, which generally\
+              \ requires at least one more I/O operation.\n Whether this parameter\
+              \ actually has any effect is dependent upon the\n underlying operating\
+              \ system and is therefore unspecified.\n\n  Invoking this method may\
+              \ cause an I/O operation to occur even if the\n channel was only opened\
+              \ for reading.  Some operating systems, for\n example, maintain a last-access\
+              \ time as part of a file's metadata, and\n this time is updated whenever\
+              \ the file is read.  Whether or not this is\n actually done is system-dependent\
+              \ and is therefore unspecified.\n\n  This method is only guaranteed\
+              \ to force changes that were made to\n this channel's file via the methods\
+              \ defined in this class."
           - name: lock
             modifiers:
             - public
+            - abstract
+            parameters:
+            - name: position
+              type:
+                basic: long
+                full: long
+              notes: "The position at which the locked region is to start; must be\n\
+                \          non-negative"
+            - name: size
+              type:
+                basic: long
+                full: long
+              notes: "The size of the locked region; must be non-negative, and the\
+                \ sum\n          position + size must be non-negative"
+            - name: shared
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true to request a shared lock, in which case this\n        \
+                \  channel must be open for reading (and possibly writing);\n    \
+                \      false to request an exclusive lock, in which case this\n  \
+                \        channel must be open for writing (and possibly reading)"
+            - name: attachment
+              type:
+                basic: A
+                full: A
+              notes: The object to attach to the I/O operation; can be null
+            - name: handler
+              type:
+                basic: CompletionHandler
+                full: java.nio.channels.CompletionHandler<java.nio.channels.FileLock,
+                  ? super A>
+              notes: The handler for consuming the result
             return:
               type:
-                basic: Future<FileLock>
-                full: java.util.concurrent.Future<java.nio.channels.FileLock>
+                basic: void
+                full: void
+            notes: "Acquires a lock on the given region of this channel's file.\n\n\
+              \  This method initiates an operation to acquire a lock on the given\n\
+              \ region of this channel's file. The handler parameter is a\n completion\
+              \ handler that is invoked when the lock is acquired (or the\n operation\
+              \ fails). The result passed to the completion handler is the\n resulting\
+              \ FileLock.\n\n  The region specified by the position and size\n parameters\
+              \ need not be contained within, or even overlap, the actual\n underlying\
+              \ file.  Lock regions are fixed in size; if a locked region\n initially\
+              \ contains the end of the file and the file grows beyond the\n region\
+              \ then the new portion of the file will not be covered by the lock.\n\
+              \ If a file is expected to grow in size and a lock on the entire file\
+              \ is\n required then a region starting at zero, and no smaller than\
+              \ the\n expected maximum size of the file, should be locked.  The two-argument\n\
+              \ lock(Object,CompletionHandler) method simply locks a region\n of size\
+              \ Long.MAX_VALUE. If a lock that overlaps the requested\n region is\
+              \ already held by this Java virtual machine, or this method has\n been\
+              \ invoked to lock an overlapping region and that operation has not\n\
+              \ completed, then this method throws OverlappingFileLockException.\n\
+              \n  Some operating systems do not support a mechanism to acquire a file\n\
+              \ lock in an asynchronous manner. Consequently an implementation may\n\
+              \ acquire the file lock in a background thread or from a task executed\
+              \ by\n a thread in the associated thread pool. If there are many lock\
+              \ operations\n outstanding then it may consume threads in the Java virtual\
+              \ machine for\n indefinite periods.\n\n  Some operating systems do not\
+              \ support shared locks, in which case a\n request for a shared lock\
+              \ is automatically converted into a request for\n an exclusive lock.\
+              \  Whether the newly-acquired lock is shared or\n exclusive may be tested\
+              \ by invoking the resulting lock object's isShared method.\n\n  File\
+              \ locks are held on behalf of the entire Java virtual machine.\n They\
+              \ are not suitable for controlling access to a file by multiple\n threads\
+              \ within the same virtual machine."
           - name: lock
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: attachment
               type:
                 basic: A
                 full: A
-            - name: arg1
+              notes: The object to attach to the I/O operation; can be null
+            - name: handler
               type:
-                basic: CompletionHandler<FileLock, ? super A>
+                basic: CompletionHandler
                 full: java.nio.channels.CompletionHandler<java.nio.channels.FileLock,
                   ? super A>
+              notes: The handler for consuming the result
             return:
               type:
                 basic: void
                 full: void
+            notes: "Acquires an exclusive lock on this channel's file.\n\n  This method\
+              \ initiates an operation to acquire a lock on the given\n region of\
+              \ this channel's file. The handler parameter is a\n completion handler\
+              \ that is invoked when the lock is acquired (or the\n operation fails).\
+              \ The result passed to the completion handler is the\n resulting FileLock.\n\
+              \n  An invocation of this method of the form ch.lock(att,handler)\n\
+              \ behaves in exactly the same way as the invocation\n \n     ch.<a href=\"\
+              #lock(long,long,boolean,A,java.nio.channels.CompletionHandler)\"><code>lock</code></a>(0L,\
+              \ Long.MAX_VALUE, false, att, handler)"
           - name: lock
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: position
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "The position at which the locked region is to start; must be\n\
+                \          non-negative"
+            - name: size
               type:
                 basic: long
                 full: long
-            - name: arg2
+              notes: "The size of the locked region; must be non-negative, and the\
+                \ sum\n          position + size must be non-negative"
+            - name: shared
               type:
                 basic: boolean
                 full: boolean
+              notes: "true to request a shared lock, in which case this\n        \
+                \  channel must be open for reading (and possibly writing);\n    \
+                \      false to request an exclusive lock, in which case this\n  \
+                \        channel must be open for writing (and possibly reading)"
             return:
               type:
-                basic: Future<FileLock>
+                basic: Future
                 full: java.util.concurrent.Future<java.nio.channels.FileLock>
+              notes: a Future object representing the pending result
+            notes: "Acquires a lock on the given region of this channel's file.\n\n\
+              \  This method initiates an operation to acquire a lock on the given\n\
+              \ region of this channel's file.  The method behaves in exactly the\
+              \ same\n manner as the lock(long, long, boolean, Object, CompletionHandler)\n\
+              \ method except that instead of specifying a completion handler, this\n\
+              \ method returns a Future representing the pending result. The\n Future's\
+              \ get method returns the FileLock on successful completion."
           - name: lock
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: long
-                full: long
-            - name: arg2
-              type:
-                basic: boolean
-                full: boolean
-            - name: arg3
-              type:
-                basic: A
-                full: A
-            - name: arg4
-              type:
-                basic: CompletionHandler<FileLock, ? super A>
-                full: java.nio.channels.CompletionHandler<java.nio.channels.FileLock,
-                  ? super A>
+            - final
             return:
               type:
-                basic: void
-                full: void
+                basic: Future
+                full: java.util.concurrent.Future<java.nio.channels.FileLock>
+              notes: a Future object representing the pending result
+            notes: "Acquires an exclusive lock on this channel's file.\n\n  This method\
+              \ initiates an operation to acquire an exclusive lock on this\n channel's\
+              \ file. The method returns a Future representing the\n pending result\
+              \ of the operation. The Future's get method returns the FileLock on\
+              \ successful completion.\n\n  An invocation of this method behaves in\
+              \ exactly the same way as the\n invocation\n \n     ch.<a href=\"#lock(long,long,boolean)\"\
+              ><code>lock</code></a>(0L, Long.MAX_VALUE, false)"
           - name: read
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: dst
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
-            - name: arg1
+              notes: The buffer into which bytes are to be transferred
+            - name: position
               type:
                 basic: long
                 full: long
-            return:
-              type:
-                basic: Future<Integer>
-                full: java.util.concurrent.Future<java.lang.Integer>
-          - name: read
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            - name: arg1
-              type:
-                basic: long
-                full: long
-            - name: arg2
+              notes: "The file position at which the transfer is to begin;\n     \
+                \     must be non-negative"
+            - name: attachment
               type:
                 basic: A
                 full: A
-            - name: arg3
+              notes: The object to attach to the I/O operation; can be null
+            - name: handler
               type:
-                basic: CompletionHandler<Integer, ? super A>
+                basic: CompletionHandler
                 full: java.nio.channels.CompletionHandler<java.lang.Integer, ? super
                   A>
+              notes: The handler for consuming the result
             return:
               type:
                 basic: void
                 full: void
+            notes: "Reads a sequence of bytes from this channel into the given buffer,\n\
+              \ starting at the given file position.\n\n  This method initiates the\
+              \ reading of a sequence of bytes from this\n channel into the given\
+              \ buffer, starting at the given file position. The\n result of the read\
+              \ is the number of bytes read or -1 if the given\n position is greater\
+              \ than or equal to the file's size at the time that the\n read is attempted.\n\
+              \n  This method works in the same manner as the AsynchronousByteChannel.read(ByteBuffer,Object,CompletionHandler)\n\
+              \ method, except that bytes are read starting at the given file position.\n\
+              \ If the given file position is greater than the file's size at the\
+              \ time\n that the read is attempted then no bytes are read."
+          - name: read
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: dst
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: The buffer into which bytes are to be transferred
+            - name: position
+              type:
+                basic: long
+                full: long
+              notes: "The file position at which the transfer is to begin;\n     \
+                \     must be non-negative"
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future<java.lang.Integer>
+              notes: A Future object representing the pending result
+            notes: "Reads a sequence of bytes from this channel into the given buffer,\n\
+              \ starting at the given file position.\n\n  This method initiates the\
+              \ reading of a sequence of bytes from this\n channel into the given\
+              \ buffer, starting at the given file position. This\n method returns\
+              \ a Future representing the pending result of the\n operation. The Future's\
+              \ get method returns\n the number of bytes read or -1 if the given position\
+              \ is greater\n than or equal to the file's size at the time that the\
+              \ read is attempted.\n\n  This method works in the same manner as the\
+              \ AsynchronousByteChannel.read(ByteBuffer) method, except that bytes\
+              \ are\n read starting at the given file position. If the given file\
+              \ position is\n greater than the file's size at the time that the read\
+              \ is attempted then\n no bytes are read."
           - name: size
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: long
                 full: long
+              notes: The current size of this channel's file, measured in bytes
+            notes: Returns the current size of this channel's file.
           - name: truncate
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: size
               type:
                 basic: long
                 full: long
+              notes: The new size, a non-negative byte count
             return:
               type:
                 basic: AsynchronousFileChannel
                 full: java.nio.channels.AsynchronousFileChannel
+              notes: This file channel
+            notes: "Truncates this channel's file to the given size.\n\n  If the given\
+              \ size is less than the file's current size then the file\n is truncated,\
+              \ discarding any bytes beyond the new end of the file.  If\n the given\
+              \ size is greater than or equal to the file's current size then\n the\
+              \ file is not modified."
+          - name: tryLock
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: position
+              type:
+                basic: long
+                full: long
+              notes: "The position at which the locked region is to start; must be\n\
+                \         non-negative"
+            - name: size
+              type:
+                basic: long
+                full: long
+              notes: "The size of the locked region; must be non-negative, and the\
+                \ sum\n         position + size must be non-negative"
+            - name: shared
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true to request a shared lock,\n         false to request an\
+                \ exclusive lock"
+            return:
+              type:
+                basic: FileLock
+                full: java.nio.channels.FileLock
+              notes: "A lock object representing the newly-acquired lock,\n      \
+                \    or null if the lock could not be acquired\n          because\
+                \ another program holds an overlapping lock"
+            notes: "Attempts to acquire a lock on the given region of this channel's\
+              \ file.\n\n  This method does not block. An invocation always returns\
+              \ immediately,\n either having acquired a lock on the requested region\
+              \ or having failed to\n do so.  If it fails to acquire a lock because\
+              \ an overlapping lock is held\n by another program then it returns null.\
+              \  If it fails to acquire\n a lock for any other reason then an appropriate\
+              \ exception is thrown."
           - name: tryLock
             modifiers:
             - public
@@ -166,67 +420,86 @@ languages:
               type:
                 basic: FileLock
                 full: java.nio.channels.FileLock
-          - name: tryLock
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: long
-                full: long
-            - name: arg2
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: FileLock
-                full: java.nio.channels.FileLock
+              notes: "A lock object representing the newly-acquired lock,\n      \
+                \    or null if the lock could not be acquired\n          because\
+                \ another program holds an overlapping lock"
+            notes: "Attempts to acquire an exclusive lock on this channel's file.\n\
+              \n  An invocation of this method of the form ch.tryLock()\n behaves\
+              \ in exactly the same way as the invocation\n\n \n     ch.<a href=\"\
+              #tryLock(long,long,boolean)\"><code>tryLock</code></a>(0L, Long.MAX_VALUE,\
+              \ false)"
           - name: write
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: src
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
-            - name: arg1
+              notes: The buffer from which bytes are to be transferred
+            - name: position
               type:
                 basic: long
                 full: long
-            return:
-              type:
-                basic: Future<Integer>
-                full: java.util.concurrent.Future<java.lang.Integer>
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ByteBuffer
-                full: java.nio.ByteBuffer
-            - name: arg1
-              type:
-                basic: long
-                full: long
-            - name: arg2
+              notes: "The file position at which the transfer is to begin;\n     \
+                \     must be non-negative"
+            - name: attachment
               type:
                 basic: A
                 full: A
-            - name: arg3
+              notes: The object to attach to the I/O operation; can be null
+            - name: handler
               type:
-                basic: CompletionHandler<Integer, ? super A>
+                basic: CompletionHandler
                 full: java.nio.channels.CompletionHandler<java.lang.Integer, ? super
                   A>
+              notes: The handler for consuming the result
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes a sequence of bytes to this channel from the given buffer,\
+              \ starting\n at the given file position.\n\n  This method works in the\
+              \ same manner as the AsynchronousByteChannel.write(ByteBuffer,Object,CompletionHandler)\n\
+              \ method, except that bytes are written starting at the given file position.\n\
+              \ If the given position is greater than the file's size, at the time\
+              \ that\n the write is attempted, then the file will be grown to accommodate\
+              \ the new\n bytes; the values of any bytes between the previous end-of-file\
+              \ and the\n newly-written bytes are unspecified."
+          - name: write
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: src
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: The buffer from which bytes are to be transferred
+            - name: position
+              type:
+                basic: long
+                full: long
+              notes: "The file position at which the transfer is to begin;\n     \
+                \     must be non-negative"
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future<java.lang.Integer>
+              notes: A Future object representing the pending result
+            notes: "Writes a sequence of bytes to this channel from the given buffer,\
+              \ starting\n at the given file position.\n\n  This method initiates\
+              \ the writing of a sequence of bytes to this\n channel from the given\
+              \ buffer, starting at the given file position. The\n method returns\
+              \ a Future representing the pending result of the\n write operation.\
+              \ The Future's get method\n returns the number of bytes written.\n\n\
+              \  This method works in the same manner as the AsynchronousByteChannel.write(ByteBuffer)\
+              \ method, except that bytes are\n written starting at the given file\
+              \ position. If the given position is\n greater than the file's size,\
+              \ at the time that the write is attempted,\n then the file will be grown\
+              \ to accommodate the new bytes; the values of\n any bytes between the\
+              \ previous end-of-file and the newly-written bytes\n are unspecified."
           staticMethods:
           - name: open
             modifiers:
@@ -239,8 +512,16 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: OpenOption[]
-                full: java.nio.file.OpenOption[]
+                basic: Set
+                full: java.util.Set<? extends java.nio.file.OpenOption>
+            - name: arg2
+              type:
+                basic: ExecutorService
+                full: java.util.concurrent.ExecutorService
+            - name: arg3
+              type:
+                basic: FileAttribute
+                full: java.nio.file.attribute.FileAttribute<?>[]
             return:
               type:
                 basic: AsynchronousFileChannel
@@ -256,19 +537,9 @@ languages:
                 full: java.nio.file.Path
             - name: arg1
               type:
-                basic: Set<? extends OpenOption>
-                full: java.util.Set<? extends java.nio.file.OpenOption>
-            - name: arg2
-              type:
-                basic: ExecutorService
-                full: java.util.concurrent.ExecutorService
-            - name: arg3
-              type:
-                basic: FileAttribute<?>[>
-                full: java.nio.file.attribute.FileAttribute<?>[]
+                basic: OpenOption
+                full: java.nio.file.OpenOption[]
             return:
               type:
                 basic: AsynchronousFileChannel
                 full: java.nio.channels.AsynchronousFileChannel
-          javaType: class
-          extends: Object

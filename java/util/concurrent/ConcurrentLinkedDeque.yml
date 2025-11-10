@@ -4,120 +4,212 @@ languages:
     packages:
       java.util.concurrent:
         ConcurrentLinkedDeque:
+          extends: java.util.AbstractCollection<E>
+          modifiers:
+          - public
+          notes: "An unbounded concurrent deque based on linked nodes.\n Concurrent\
+            \ insertion, removal, and access operations execute safely\n across multiple\
+            \ threads.\n A ConcurrentLinkedDeque is an appropriate choice when\n many\
+            \ threads will share access to a common collection.\n Like most other\
+            \ concurrent collection implementations, this class\n does not permit\
+            \ the use of null elements.\n\n Iterators and spliterators are\n weakly\
+            \ consistent.\n\n Beware that, unlike in most collections, the size method\n\
+            \ is NOT a constant-time operation. Because of the\n asynchronous nature\
+            \ of these deques, determining the current number\n of elements requires\
+            \ a traversal of the elements, and so may report\n inaccurate results\
+            \ if this collection is modified during traversal.\n\n Bulk operations\
+            \ that add, remove, or examine multiple elements,\n such as addAll(java.util.Collection<?\
+            \ extends E>), removeIf(java.util.function.Predicate<? super E>) or forEach(java.util.function.Consumer<?\
+            \ super E>),\n are not guaranteed to be performed atomically.\n For example,\
+            \ a forEach traversal concurrent with an \n addAll operation might observe\
+            \ only some of the added elements.\n\n This class and its iterator implement\
+            \ all of the optional\n methods of the Deque and Iterator interfaces.\n\
+            \n Memory consistency effects: As with other concurrent collections,\n\
+            \ actions in a thread prior to placing an object into a\n ConcurrentLinkedDeque\n\
+            \ happen-before\n actions subsequent to the access or removal of that\
+            \ element from\n the ConcurrentLinkedDeque in another thread.\n\n This\
+            \ class is a member of the\n \n Java Collections Framework."
+          fields:
+            head:
+              name: head
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            tail:
+              name: tail
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+          staticFields:
+            HEAD:
+              name: HEAD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            HOPS:
+              name: HOPS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ITEM:
+              name: ITEM
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            NEXT:
+              name: NEXT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            NEXT_TERMINATOR:
+              name: NEXT_TERMINATOR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<java.lang.Object>
+            PREV:
+              name: PREV
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            PREV_TERMINATOR:
+              name: PREV_TERMINATOR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<java.lang.Object>
+            TAIL:
+              name: TAIL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: Constructs an empty deque.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<? extends E>
+                basic: Collection
                 full: java.util.Collection<? extends E>
+              notes: the collection of elements to initially contain
+            notes: "Constructs a deque initially containing the elements of\n the\
+              \ given collection, added in traversal order of the\n collection's iterator."
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: element whose presence in this collection is to be ensured
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: add
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true (as specified by Collection.add(E))
+            notes: "Inserts the specified element at the tail of this deque.\n As\
+              \ the deque is unbounded, this method will never throw\n IllegalStateException\
+              \ or return false."
           - name: addAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<? extends E>
+                basic: Collection
                 full: java.util.Collection<? extends E>
+              notes: the elements to be inserted into this deque
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: addAll
+              notes: true if this deque changed as a result of the call
+            notes: "Appends all of the elements in the specified collection to the\
+              \ end of\n this deque, in the order that they are returned by the specified\n\
+              \ collection's iterator.  Attempts to addAll of a deque to\n itself\
+              \ result in IllegalArgumentException."
+          - name: addFirst
             modifiers:
             - public
             parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Inserts the specified element at the front of this deque.\n As\
+              \ the deque is unbounded, this method will never throw\n IllegalStateException."
+          - name: addLast
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Inserts the specified element at the end of this deque.\n As the\
+              \ deque is unbounded, this method will never throw\n IllegalStateException.\n\
+              \n This method is equivalent to add(E)."
+          - name: bulkRemove
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: Collection<? extends E>
-                full: java.util.Collection<? extends E>
+                basic: Predicate
+                full: java.util.function.Predicate<? super E>
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: addFirst
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: void
-                full: void
-          - name: addFirst
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: void
-                full: void
-          - name: addLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: void
-                full: void
-          - name: addLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: void
-                full: void
           - name: clear
             modifiers:
             - public
@@ -125,44 +217,35 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Removes all of the elements from this deque.
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element whose presence in this deque is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if this deque contains the specified element
+            notes: "Returns true if this deque contains the specified element.\n More\
+              \ formally, returns true if and only if this deque contains\n at least\
+              \ one element e such that o.equals(e)."
           - name: descendingIterator
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<E>
+                basic: Iterator
                 full: java.util.Iterator<E>
-          - name: descendingIterator
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Iterator<E>
-                full: java.util.Iterator<E>
+              notes: an iterator over the elements in this deque in reverse order
+            notes: "Returns an iterator over the elements in this deque in reverse\n\
+              \ sequential order.  The elements will be returned in order from\n last\
+              \ (tail) to first (head).\n\n The returned iterator is\n weakly consistent."
           - name: element
             modifiers:
             - public
@@ -170,25 +253,29 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: element
+              notes: the head of the queue represented by this deque
+            notes: 'Description copied from interface: Deque'
+          - name: first
             modifiers:
-            - public
+            - package
             return:
               type:
-                basic: E
-                full: E
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
           - name: forEach
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
-                basic: Consumer<? super E>
+                basic: Consumer
                 full: java.util.function.Consumer<? super E>
+              notes: The action to be performed for each element
             return:
               type:
                 basic: void
                 full: void
+            notes: 'Description copied from interface: Iterable'
           - name: getFirst
             modifiers:
             - public
@@ -196,13 +283,8 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: getFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this deque
+            notes: 'Description copied from interface: Deque'
           - name: getLast
             modifiers:
             - public
@@ -210,13 +292,24 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: getLast
+              notes: the tail of this deque
+            notes: 'Description copied from interface: Deque'
+          - name: initHeadTail
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            - name: arg1
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
             return:
               type:
-                basic: E
-                full: E
+                basic: void
+                full: void
           - name: isEmpty
             modifiers:
             - public
@@ -224,193 +317,29 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this collection contains no elements
+            notes: Returns true if this collection contains no elements.
           - name: iterator
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<E>
+                basic: Iterator
                 full: java.util.Iterator<E>
-          - name: iterator
+              notes: an iterator over the elements in this deque in proper sequence
+            notes: "Returns an iterator over the elements in this deque in proper\
+              \ sequence.\n The elements will be returned in order from first (head)\
+              \ to last (tail).\n\n The returned iterator is\n weakly consistent."
+          - name: last
             modifiers:
-            - public
+            - package
             return:
               type:
-                basic: Iterator<E>
-                full: java.util.Iterator<E>
-          - name: offer
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+          - name: linkFirst
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offer
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offerFirst
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offerFirst
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offerLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: offerLast
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: E
-                full: E
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: peek
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: peek
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: peekFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: peekFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: peekLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: peekLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: poll
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: poll
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: pollFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: pollFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: pollLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: pollLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: pop
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: pop
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
-          - name: push
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -420,14 +349,182 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: push
+          - name: linkLast
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
                 basic: E
                 full: E
+            return:
+              type:
+                basic: void
+                full: void
+          - name: nextTerminator
+            modifiers:
+            - package
+            return:
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+          - name: offer
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true (as specified by Queue.offer(E))
+            notes: "Inserts the specified element at the tail of this deque.\n As\
+              \ the deque is unbounded, this method will never return false."
+          - name: offerFirst
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true (as specified by Deque.offerFirst(E))
+            notes: "Inserts the specified element at the front of this deque.\n As\
+              \ the deque is unbounded, this method will never return false."
+          - name: offerLast
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true (as specified by Deque.offerLast(E))
+            notes: "Inserts the specified element at the end of this deque.\n As the\
+              \ deque is unbounded, this method will never return false.\n\n This\
+              \ method is equivalent to add(E)."
+          - name: peek
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: "the head of the queue represented by this deque, or\n      \
+                \   null if this deque is empty"
+            notes: 'Description copied from interface: Deque'
+          - name: peekFirst
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: the head of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
+          - name: peekLast
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: the tail of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
+          - name: poll
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: "the first element of this deque, or null if\n         this deque\
+                \ is empty"
+            notes: 'Description copied from interface: Deque'
+          - name: pollFirst
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: the head of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
+          - name: pollLast
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: the tail of this deque, or null if this deque is empty
+            notes: 'Description copied from interface: Deque'
+          - name: pop
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: "the element at the front of this deque (which is the top\n \
+                \        of the stack represented by this deque)"
+            notes: 'Description copied from interface: Deque'
+          - name: pred
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            return:
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+          - name: prevTerminator
+            modifiers:
+            - package
+            return:
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+          - name: push
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to push
+            return:
+              type:
+                basic: void
+                full: void
+            notes: 'Description copied from interface: Deque'
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -439,49 +536,44 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: remove
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of the queue represented by this deque
+            notes: 'Description copied from interface: Deque'
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this deque, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the deque contained the specified element
+            notes: "Removes the first occurrence of the specified element from this\
+              \ deque.\n If the deque does not contain the element, it is unchanged.\n\
+              \ More formally, removes the first element e such that\n o.equals(e)\
+              \ (if such an element exists).\n Returns true if this deque contained\
+              \ the specified element\n (or equivalently, if this deque changed as\
+              \ a result of the call).\n\n This method is equivalent to removeFirstOccurrence(Object)."
           - name: removeAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<?>
+                basic: Collection
                 full: java.util.Collection<?>
+              notes: collection containing elements to be removed from this collection
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this collection changed as a result of the\n       \
+                \  call"
+            notes: 'Description copied from class: AbstractCollection'
           - name: removeFirst
             modifiers:
             - public
@@ -489,49 +581,43 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: removeFirst
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the head of this deque
+            notes: 'Description copied from interface: Deque'
           - name: removeFirstOccurrence
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this deque, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: removeFirstOccurrence
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the deque contained the specified element
+            notes: "Removes the first occurrence of the specified element from this\
+              \ deque.\n If the deque does not contain the element, it is unchanged.\n\
+              \ More formally, removes the first element e such that\n o.equals(e)\
+              \ (if such an element exists).\n Returns true if this deque contained\
+              \ the specified element\n (or equivalently, if this deque changed as\
+              \ a result of the call)."
           - name: removeIf
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: filter
               type:
-                basic: Predicate<? super E>
+                basic: Predicate
                 full: java.util.function.Predicate<? super E>
+              notes: "a predicate which returns true for elements to be\n        removed"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if any elements were removed
+            notes: 'Description copied from interface: Collection'
           - name: removeLast
             modifiers:
             - public
@@ -539,49 +625,55 @@ languages:
               type:
                 basic: E
                 full: E
-          - name: removeLast
-            modifiers:
-            - public
-            return:
-              type:
-                basic: E
-                full: E
+              notes: the tail of this deque
+            notes: 'Description copied from interface: Deque'
           - name: removeLastOccurrence
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this deque, if present
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: removeLastOccurrence
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if the deque contained the specified element
+            notes: "Removes the last occurrence of the specified element from this\
+              \ deque.\n If the deque does not contain the element, it is unchanged.\n\
+              \ More formally, removes the last element e such that\n o.equals(e)\
+              \ (if such an element exists).\n Returns true if this deque contained\
+              \ the specified element\n (or equivalently, if this deque changed as\
+              \ a result of the call)."
           - name: retainAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Collection<?>
+                basic: Collection
                 full: java.util.Collection<?>
+              notes: collection containing elements to be retained in this collection
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this collection changed as a result of the call
+            notes: 'Description copied from class: AbstractCollection'
+          - name: screenNullResult
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: E
+                full: E
+            return:
+              type:
+                basic: E
+                full: E
           - name: size
             modifiers:
             - public
@@ -589,38 +681,248 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: size
+              notes: the number of elements in this deque
+            notes: "Returns the number of elements in this deque.  If this deque\n\
+              \ contains more than Integer.MAX_VALUE elements, it\n returns Integer.MAX_VALUE.\n\
+              \n Beware that, unlike in most collections, this method is\n NOT a constant-time\
+              \ operation. Because of the\n asynchronous nature of these deques, determining\
+              \ the current\n number of elements requires traversing them all to count\
+              \ them.\n Additionally, it is possible for the size to change during\n\
+              \ execution of this method, in which case the returned result\n will\
+              \ be inaccurate. Thus, this method is typically not very\n useful in\
+              \ concurrent applications."
+          - name: skipDeletedPredecessors
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
             return:
               type:
-                basic: int
-                full: int
+                basic: void
+                full: void
+          - name: skipDeletedSuccessors
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
           - name: spliterator
             modifiers:
             - public
             return:
               type:
-                basic: Spliterator<E>
+                basic: Spliterator
                 full: java.util.Spliterator<E>
+              notes: a Spliterator over the elements in this deque
+            notes: "Returns a Spliterator over the elements in this deque.\n\n The\
+              \ returned spliterator is\n weakly consistent.\n\n The Spliterator reports\
+              \ Spliterator.CONCURRENT,\n Spliterator.ORDERED, and Spliterator.NONNULL."
+          - name: succ
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            return:
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
           - name: toArray
             modifiers:
             - public
             return:
               type:
-                basic: T[]
-                full: T[]
+                basic: Object
+                full: java.lang.Object[]
+              notes: an array containing all of the elements in this deque
+            notes: "Returns an array containing all of the elements in this deque,\
+              \ in\n proper sequence (from first to last element).\n\n The returned\
+              \ array will be \"safe\" in that no references to it are\n maintained\
+              \ by this deque.  (In other words, this method must allocate\n a new\
+              \ array).  The caller is thus free to modify the returned array.\n\n\
+              \ This method acts as bridge between array-based and collection-based\n\
+              \ APIs."
           - name: toArray
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: a
               type:
-                basic: T[]
+                basic: T
                 full: T[]
+              notes: "the array into which the elements of the deque are to\n    \
+                \      be stored, if it is big enough; otherwise, a new array of the\n\
+                \          same runtime type is allocated for this purpose"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          javaType: class
-          extends: AbstractCollection<E>
+              notes: an array containing all of the elements in this deque
+            notes: "Returns an array containing all of the elements in this deque,\n\
+              \ in proper sequence (from first to last element); the runtime\n type\
+              \ of the returned array is that of the specified array.  If\n the deque\
+              \ fits in the specified array, it is returned therein.\n Otherwise,\
+              \ a new array is allocated with the runtime type of\n the specified\
+              \ array and the size of this deque.\n\n If this deque fits in the specified\
+              \ array with room to spare\n (i.e., the array has more elements than\
+              \ this deque), the element in\n the array immediately following the\
+              \ end of the deque is set to\n null.\n\n Like the toArray() method,\
+              \ this method acts as\n bridge between array-based and collection-based\
+              \ APIs.  Further,\n this method allows precise control over the runtime\
+              \ type of the\n output array, and may, under certain circumstances,\
+              \ be used to\n save allocation costs.\n\n Suppose x is a deque known\
+              \ to contain only strings.\n The following code can be used to dump\
+              \ the deque into a newly\n allocated array of String:\n\n  <code>String[]\
+              \ y = x.toArray(new String[0]);</code>\n\n Note that toArray(new Object[0])\
+              \ is identical in function to\n toArray()."
+          - name: toArrayInternal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object[]
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object[]
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: unlink
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: unlinkFirst
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            - name: arg1
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: unlinkLast
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            - name: arg1
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateHead
+            modifiers:
+            - private
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateTail
+            modifiers:
+            - private
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: lambda$removeAll$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$retainAll$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: newNode
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: E
+                full: E
+            return:
+              type:
+                basic: ConcurrentLinkedDeque.Node
+                full: java.util.concurrent.ConcurrentLinkedDeque$Node<E>

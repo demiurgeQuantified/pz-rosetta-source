@@ -4,89 +4,154 @@ languages:
     packages:
       java.awt.image:
         VolatileImage:
-          staticFields:
-            BITMASK:
-              name: BITMASK
+          extends: java.awt.Image
+          modifiers:
+          - public
+          - abstract
+          notes: "VolatileImage is an image which can lose its\n contents at any time\
+            \ due to circumstances beyond the control of the\n application (e.g.,\
+            \ situations caused by the operating system or by\n other applications).\
+            \ Because of the potential for hardware acceleration,\n a VolatileImage\
+            \ object can have significant performance benefits on\n some platforms.\n\
+            \ \n The drawing surface of an image (the memory where the image contents\n\
+            \ actually reside) can be lost or invalidated, causing the contents of\
+            \ that\n memory to go away.  The drawing surface thus needs to be restored\n\
+            \ or recreated and the contents of that surface need to be\n re-rendered.\
+            \  VolatileImage provides an interface for\n allowing the user to detect\
+            \ these problems and fix them\n when they occur.\n \n When a VolatileImage\
+            \ object is created, limited system resources\n such as video memory (VRAM)\
+            \ may be allocated in order to support\n the image.\n When a VolatileImage\
+            \ object is no longer used, it may be\n garbage-collected and those system\
+            \ resources will be returned,\n but this process does not happen at guaranteed\
+            \ times.\n Applications that create many VolatileImage objects (for example,\n\
+            \ a resizing window may force recreation of its back buffer as the\n size\
+            \ changes) may run out of optimal system resources for new\n VolatileImage\
+            \ objects simply because the old objects have not\n yet been removed from\
+            \ the system.\n (New VolatileImage objects may still be created, but they\n\
+            \ may not perform as well as those created in accelerated\n memory).\n\
+            \ The flush method may be called at any time to proactively release\n\
+            \ the resources used by a VolatileImage so that it does not prevent\n\
+            \ subsequent VolatileImage objects from being accelerated.\n In this way,\
+            \ applications can have more control over the state\n of the resources\
+            \ taken up by obsolete VolatileImage objects.\n \n This image should not\
+            \ be subclassed directly but should be created\n by using the Component.createVolatileImage\
+            \ or\n GraphicsConfiguration.createCompatibleVolatileImage(int, int) methods.\n\
+            \ \n An example of using a VolatileImage object follows:\n \n // image\
+            \ creation\n VolatileImage vImg = createVolatileImage(w, h);\n\n\n //\
+            \ rendering to the image\n void renderOffscreen() {\n      do {\n    \
+            \      if (vImg.validate(getGraphicsConfiguration()) ==\n            \
+            \  VolatileImage.IMAGE_INCOMPATIBLE)\n          {\n              // old\
+            \ vImg doesn't work with new GraphicsConfig; re-create it\n          \
+            \    vImg = createVolatileImage(w, h);\n          }\n          Graphics2D\
+            \ g = vImg.createGraphics();\n          //\n          // miscellaneous\
+            \ rendering commands...\n          //\n          g.dispose();\n      }\
+            \ while (vImg.contentsLost());\n }\n\n\n // copying from the image (here,\
+            \ gScreen is the Graphics\n // object for the onscreen window)\n do {\n\
+            \      int returnCode = vImg.validate(getGraphicsConfiguration());\n \
+            \     if (returnCode == VolatileImage.IMAGE_RESTORED) {\n          //\
+            \ Contents need to be restored\n          renderOffscreen();      // restore\
+            \ contents\n      } else if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE)\
+            \ {\n          // old vImg doesn't work with new GraphicsConfig; re-create\
+            \ it\n          vImg = createVolatileImage(w, h);\n          renderOffscreen();\n\
+            \      }\n      gScreen.drawImage(vImg, 0, 0, this);\n } while (vImg.contentsLost());\n\
+            \ \n \n Note that this class subclasses from the Image class, which\n\
+            \ includes methods that take an ImageObserver parameter for\n asynchronous\
+            \ notifications as information is received from\n a potential ImageProducer.\
+            \  Since this VolatileImage\n is not loaded from an asynchronous source,\
+            \ the various methods that take\n an ImageObserver parameter will behave\
+            \ as if the data has\n already been obtained from the ImageProducer.\n\
+            \ Specifically, this means that the return values from such methods\n\
+            \ will never indicate that the information is not yet available and\n\
+            \ the ImageObserver used in such methods will never\n need to be recorded\
+            \ for an asynchronous callback notification."
+          fields:
+            transparency:
+              name: transparency
               modifiers:
-              - public
-              - static
-              - final
+              - protected
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The transparency value with which this image was created.
+          staticFields:
             IMAGE_INCOMPATIBLE:
               name: IMAGE_INCOMPATIBLE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Validated image is incompatible with supplied\n GraphicsConfiguration\
+                \ object and should be\n re-created as appropriate.  Usage of the\
+                \ image as-is\n after receiving this return code from validate\n is\
+                \ undefined."
             IMAGE_OK:
               name: IMAGE_OK
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Validated image is ready to use as-is.
             IMAGE_RESTORED:
               name: IMAGE_RESTORED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
-            OPAQUE:
-              name: OPAQUE
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: int
-                full: int
-                nullable: true
-            TRANSLUCENT:
-              name: TRANSLUCENT
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: int
-                full: int
-                nullable: true
+              notes: "Validated image has been restored and is now ready to use.\n\
+                \ Note that restoration causes contents of the image to be lost."
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructor for subclasses to call.
           methods:
           - name: contentsLost
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the drawing surface needs to be restored;\n false otherwise."
+            notes: "Returns true if rendering data was lost since last\n validate\
+              \ call.  This method should be called by the\n application at the end\
+              \ of any series of rendering operations to\n or from the image to see\
+              \ whether\n the image needs to be validated and the rendering redone."
           - name: createGraphics
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Graphics2D
                 full: java.awt.Graphics2D
+              notes: "a Graphics2D, used for drawing into this\n          image."
+            notes: "Creates a Graphics2D, which can be used to draw into\n this VolatileImage."
           - name: getCapabilities
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: ImageCapabilities
                 full: java.awt.ImageCapabilities
+              notes: "an ImageCapabilities object that contains\n         the capabilities\
+                \ of this VolatileImage."
+            notes: "Returns an ImageCapabilities object which can be\n inquired as\
+              \ to the specific capabilities of this\n VolatileImage.  This would\
+              \ allow programmers to find\n out more runtime information on the specific\
+              \ VolatileImage\n object that they have created.  For example, the user\n\
+              \ might create a VolatileImage but the system may have\n no video memory\
+              \ left for creating an image of that\n size, so although the object\
+              \ is a VolatileImage, it is\n not as accelerated as other VolatileImage\
+              \ objects on\n this platform might be.  The user might want that\n information\
+              \ to find other solutions to their problem."
           - name: getGraphics
             modifiers:
             - public
@@ -94,20 +159,34 @@ languages:
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: "a Graphics2D, which can be used to draw into\n          this\
+                \ image."
+            notes: "This method returns a Graphics2D, but is here\n for backwards\
+              \ compatibility.  createGraphics is more\n convenient, since it is declared\
+              \ to return a\n Graphics2D."
           - name: getHeight
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: the height of this VolatileImage.
+            notes: Returns the height of the VolatileImage.
           - name: getSnapshot
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
+              notes: "a BufferedImage representation of this\n          VolatileImage"
+            notes: "Returns a static snapshot image of this object.  The\n BufferedImage\
+              \ returned is only current with\n the VolatileImage at the time of the\
+              \ request\n and will not be updated with any future changes to the\n\
+              \ VolatileImage."
           - name: getSource
             modifiers:
             - public
@@ -115,6 +194,19 @@ languages:
               type:
                 basic: ImageProducer
                 full: java.awt.image.ImageProducer
+              notes: "an ImageProducer that can be used to produce the\n pixels for\
+                \ a BufferedImage representation of\n this Image."
+            notes: "This returns an ImageProducer for this VolatileImage.\n Note that\
+              \ the VolatileImage object is optimized for\n rendering operations and\
+              \ blitting to the screen or other\n VolatileImage objects, as opposed\
+              \ to reading back the\n pixels of the image.  Therefore, operations\
+              \ such as\n getSource may not perform as fast as\n operations that do\
+              \ not rely on reading the pixels.\n Note also that the pixel values\
+              \ read from the image are current\n with those in the image only at\
+              \ the time that they are\n retrieved. This method takes a snapshot\n\
+              \ of the image at the time the request is made and the\n ImageProducer\
+              \ object returned works with\n that static snapshot image, not the original\
+              \ VolatileImage.\n Calling getSource()\n is equivalent to calling getSnapshot().getSource()."
           - name: getTransparency
             modifiers:
             - public
@@ -122,31 +214,58 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: getTransparency
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the transparency of this VolatileImage.
+            notes: "Returns the transparency.  Returns either OPAQUE, BITMASK,\n or\
+              \ TRANSLUCENT."
           - name: getWidth
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: the width of this VolatileImage.
+            notes: Returns the width of the VolatileImage.
           - name: validate
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: gc
               type:
                 basic: GraphicsConfiguration
                 full: java.awt.GraphicsConfiguration
+              notes: "a GraphicsConfiguration object for this\n          image to\
+                \ be validated against.  A null gc implies that the\n          validate\
+                \ method should skip the compatibility test."
             return:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Image
+              notes: "IMAGE_OK if the image did not need validation\n          IMAGE_RESTORED\
+                \ if the image needed restoration.\n          Restoration implies\
+                \ that the contents of the image may have\n          been affected\
+                \ and the image may need to be re-rendered.\n          IMAGE_INCOMPATIBLE\
+                \ if the image is incompatible\n          with the GraphicsConfiguration\
+                \ object passed\n          into the validate method.  Incompatibility\n\
+                \          implies that the image may need to be recreated with a\n\
+                \          new Component or\n          GraphicsConfiguration in order\
+                \ to get an image\n          that can be used successfully with this\n\
+                \          GraphicsConfiguration.\n          An incompatible image\
+                \ is not checked for whether restoration\n          was necessary,\
+                \ so the state of the image is unchanged\n          after a return\
+                \ value of IMAGE_INCOMPATIBLE\n          and this return value implies\
+                \ nothing about whether the\n          image needs to be restored."
+            notes: "Attempts to restore the drawing surface of the image if the surface\n\
+              \ had been lost since the last validate call.  Also\n validates this\
+              \ image against the given GraphicsConfiguration\n parameter to see whether\
+              \ operations from this image to the\n GraphicsConfiguration are compatible.\
+              \  An example of an\n incompatible combination might be a situation\
+              \ where a VolatileImage\n object was created on one graphics device\
+              \ and then was used\n to render to a different graphics device.  Since\
+              \ VolatileImage\n objects tend to be very device-specific, this operation\
+              \ might\n not work as intended, so the return code from this validate\n\
+              \ call would note that incompatibility.  A null or incorrect\n value\
+              \ for gc may cause incorrect values to be returned from\n validate and\
+              \ may cause later problems with rendering."

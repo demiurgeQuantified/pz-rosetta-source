@@ -4,28 +4,122 @@ languages:
     packages:
       java.util:
         EnumMap:
+          extends: java.util.AbstractMap<K, V>
+          modifiers:
+          - public
+          notes: "A specialized Map implementation for use with enum type keys.  All\n\
+            \ of the keys in an enum map must come from a single enum type that is\n\
+            \ specified, explicitly or implicitly, when the map is created.  Enum\
+            \ maps\n are represented internally as arrays.  This representation is\
+            \ extremely\n compact and efficient.\n\n Enum maps are maintained in the\
+            \ natural order of their keys\n (the order in which the enum constants\
+            \ are declared).  This is reflected\n in the iterators returned by the\
+            \ collections views (keySet(),\n entrySet(), and values()).\n\n Iterators\
+            \ returned by the collection views are weakly consistent:\n they will\
+            \ never throw ConcurrentModificationException and they may\n or may not\
+            \ show the effects of any modifications to the map that occur while\n\
+            \ the iteration is in progress.\n\n Null keys are not permitted.  Attempts\
+            \ to insert a null key will\n throw NullPointerException.  Attempts to\
+            \ test for the\n presence of a null key or to remove one will, however,\
+            \ function properly.\n Null values are permitted.\n\n Like most collection\
+            \ implementations EnumMap is not\n synchronized. If multiple threads access\
+            \ an enum map concurrently, and at\n least one of the threads modifies\
+            \ the map, it should be synchronized\n externally.  This is typically\
+            \ accomplished by synchronizing on some\n object that naturally encapsulates\
+            \ the enum map.  If no such object exists,\n the map should be \"wrapped\"\
+            \ using the Collections.synchronizedMap(java.util.Map<K, V>)\n method.\
+            \  This is best done at creation time, to prevent accidental\n unsynchronized\
+            \ access:\n\n \n     Map<EnumKey, V> m\n         = Collections.synchronizedMap(new\
+            \ EnumMap<EnumKey, V>(...));\n \n\n Implementation note: All basic operations\
+            \ execute in constant time.\n They are likely (though not guaranteed)\
+            \ to be faster than their\n HashMap counterparts.\n\n This class is a\
+            \ member of the\n \n Java Collections Framework."
+          fields:
+            entrySet:
+              name: entrySet
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.util.Map$Entry<K, V>>
+            keyType:
+              name: keyType
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<K>
+            keyUniverse:
+              name: keyUniverse
+              modifiers:
+              - private
+              type:
+                basic: K
+                full: K[]
+            size:
+              name: size
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            vals:
+              name: vals
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object[]
+          staticFields:
+            'NULL':
+              name: 'NULL'
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyType
               type:
-                basic: Class<K>
+                basic: Class
                 full: java.lang.Class<K>
+              notes: the class object of the key type for this enum map
+            notes: Creates an empty enum map with the specified key type.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
-                basic: EnumMap<K, ? extends V>
+                basic: EnumMap
                 full: java.util.EnumMap<K, ? extends V>
+              notes: the enum map from which to initialize this enum map
+            notes: "Creates an enum map with the same key type as the specified enum\n\
+              \ map, initially containing the same mappings (if any)."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
-                basic: Map<K, ? extends V>
+                basic: Map
                 full: java.util.Map<K, ? extends V>
+              notes: the map from which to initialize this enum map
+            notes: "Creates an enum map initialized from the specified map.  If the\n\
+              \ specified map is an EnumMap instance, this constructor behaves\n identically\
+              \ to EnumMap(EnumMap).  Otherwise, the specified map\n must contain\
+              \ at least one mapping (in order to determine the new\n enum map's key\
+              \ type)."
           methods:
           - name: clear
             modifiers:
@@ -34,13 +128,17 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Removes all mappings from this map.
           - name: clone
             modifiers:
             - public
             return:
               type:
-                basic: Object
-                full: java.lang.Object
+                basic: EnumMap
+                full: java.util.EnumMap<K, V>
+              notes: a shallow copy of this enum map
+            notes: "Returns a shallow copy of this enum map. The values themselves\n\
+              \ are not cloned."
           - name: clone
             modifiers:
             - public
@@ -52,7 +150,28 @@ languages:
             modifiers:
             - public
             parameters:
+            - name: key
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the key whose presence in this map is to be tested
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this map contains a mapping for the specified\n    \
+                \        key"
+            notes: "Returns true if this map contains a mapping for the specified\n\
+              \ key."
+          - name: containsMapping
+            modifiers:
+            - private
+            parameters:
             - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
               type:
                 basic: Object
                 full: java.lang.Object
@@ -64,29 +183,62 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the value whose presence in this map is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this map maps one or more keys to this value
+            notes: "Returns true if this map maps one or more keys to the\n specified\
+              \ value."
+          - name: entryHashCode
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<K, V>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<K, V>>
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to be compared for equality with this map
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the specified object is equal to this map
+            notes: "Compares the specified object with this map for equality.  Returns\n\
+              \ true if the given object is also a map and the two maps\n represent\
+              \ the same mappings, as specified in the Map.equals(Object) contract."
+          - name: equals
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: EnumMap
+                full: java.util.EnumMap<?, ?>
             return:
               type:
                 basic: boolean
@@ -95,14 +247,26 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the key whose associated value is to be returned
             return:
               type:
                 basic: V
                 full: V
+              notes: "the value to which the specified key is mapped, or\n       \
+                \  null if this map contains no mapping for the key"
+            notes: "Returns the value to which the specified key is mapped,\n or null\
+              \ if this map contains no mapping for the key.\n\n More formally, if\
+              \ this map contains a mapping from a key\n k to a value v such that\
+              \ (key == k),\n then this method returns v; otherwise it returns\n null.\
+              \  (There can be at most one such mapping.)\n\n A return value of null\
+              \ does not necessarily\n indicate that the map contains no mapping for\
+              \ the key; it's also\n possible that the map explicitly maps the key\
+              \ to null.\n The containsKey operation may be used to\n distinguish\
+              \ these two cases."
           - name: hashCode
             modifiers:
             - public
@@ -110,29 +274,71 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the hash code value for this map
+            notes: "Returns the hash code value for this map.  The hash code of a\
+              \ map is\n defined to be the sum of the hash codes of each entry in\
+              \ the map."
+          - name: isValidKey
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: keySet
             modifiers:
             - public
             return:
               type:
-                basic: Set<K>
+                basic: Set
                 full: java.util.Set<K>
+              notes: a set view of the keys contained in this enum map
+            notes: "Returns a Set view of the keys contained in this map.\n The returned\
+              \ set obeys the general contract outlined in\n Map.keySet().  The set's\
+              \ iterator will return the keys\n in their natural order (the order\
+              \ in which the enum constants\n are declared)."
+          - name: maskNull
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: put
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: the key with which the specified value is to be associated
+            - name: value
               type:
                 basic: V
                 full: V
+              notes: the value to be associated with the specified key
             return:
               type:
                 basic: V
                 full: V
+              notes: "the previous value associated with specified key, or\n     null\
+                \ if there was no mapping for key.  (A null\n     return can also\
+                \ indicate that the map previously associated\n     null with the\
+                \ specified key.)"
+            notes: "Associates the specified value with the specified key in this\
+              \ map.\n If the map previously contained a mapping for this key, the\
+              \ old\n value is replaced."
           - name: put
             modifiers:
             - public
@@ -153,10 +359,26 @@ languages:
             modifiers:
             - public
             parameters:
+            - name: m
+              type:
+                basic: Map
+                full: java.util.Map<? extends K, ? extends V>
+              notes: the mappings to be stored in this map
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Copies all of the mappings from the specified map to this map.\n\
+              \ These mappings will replace any mappings that this map had for\n any\
+              \ of the keys currently in the specified map."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -164,6 +386,61 @@ languages:
           - name: remove
             modifiers:
             - public
+            parameters:
+            - name: key
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the key whose mapping is to be removed from the map
+            return:
+              type:
+                basic: V
+                full: V
+              notes: "the previous value associated with specified key, or\n     null\
+                \ if there was no entry for key.  (A null\n     return can also indicate\
+                \ that the map previously associated\n     null with the specified\
+                \ key.)"
+            notes: Removes the mapping for this key from this map if present.
+          - name: removeMapping
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: size
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of key-value mappings in this map
+            notes: Returns the number of key-value mappings in this map.
+          - name: typeCheck
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: K
+                full: K
+            return:
+              type:
+                basic: void
+                full: void
+          - name: unmaskNull
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -173,19 +450,42 @@ languages:
               type:
                 basic: V
                 full: V
-          - name: size
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
           - name: values
             modifiers:
             - public
             return:
               type:
-                basic: Collection<V>
+                basic: Collection
                 full: java.util.Collection<V>
-          javaType: class
-          extends: AbstractMap<K, V>
+              notes: a collection view of the values contained in this map
+            notes: "Returns a Collection view of the values contained in this map.\n\
+              \ The returned collection obeys the general contract outlined in\n Map.values().\
+              \  The collection's iterator will return the\n values in the order their\
+              \ corresponding keys appear in map,\n which is their natural order (the\
+              \ order in which the enum constants\n are declared)."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: getKeyUniverse
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<K>
+            return:
+              type:
+                basic: K
+                full: K[]

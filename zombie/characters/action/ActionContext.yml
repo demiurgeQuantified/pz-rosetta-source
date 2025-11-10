@@ -4,17 +4,95 @@ languages:
     packages:
       zombie.characters.action:
         ActionContext:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
           fields:
+            evaluateCurrentStateTransitions:
+              name: evaluateCurrentStateTransitions
+              modifiers:
+              - private
+              type:
+                basic: PerformanceProfileProbe
+                full: zombie.core.profiling.PerformanceProfileProbe
+            evaluateSubStateTransitions:
+              name: evaluateSubStateTransitions
+              modifiers:
+              - private
+              type:
+                basic: PerformanceProfileProbe
+                full: zombie.core.profiling.PerformanceProfileProbe
+            m_actionGroup:
+              name: m_actionGroup
+              modifiers:
+              - private
+              type:
+                basic: ActionGroup
+                full: zombie.characters.action.ActionGroup
+            m_childStates:
+              name: m_childStates
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.action.ActionState>
+            m_currentState:
+              name: m_currentState
+              modifiers:
+              - private
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            m_occurredAnimEvents:
+              name: m_occurredAnimEvents
+              modifiers:
+              - private
+              type:
+                basic: ActionContextEvents
+                full: zombie.characters.action.ActionContextEvents
+            m_owner:
+              name: m_owner
+              modifiers:
+              - private
+              type:
+                basic: IAnimatable
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimatable
+            m_previousStateName:
+              name: m_previousStateName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            m_statesChanged:
+              name: m_statesChanged
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
             onStateChanged:
               name: onStateChanged
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.action.IActionStateChanged>
+            postUpdateInternal:
+              name: postUpdateInternal
+              modifiers:
+              - private
+              type:
+                basic: PerformanceProfileProbe
+                full: zombie.core.profiling.PerformanceProfileProbe
+            updateInternal:
+              name: updateInternal
+              modifiers:
+              - private
+              type:
+                basic: PerformanceProfileProbe
+                full: zombie.core.profiling.PerformanceProfileProbe
           constructors:
           - modifiers:
             - public
@@ -22,7 +100,36 @@ languages:
             - name: owner
               type:
                 basic: IAnimatable
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimatable
           methods:
+          - name: canTransitionToState
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: canTransitionToState
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: childStateCount
             modifiers:
             - public
@@ -30,6 +137,14 @@ languages:
             return:
               type:
                 basic: int
+                full: int
+          - name: clearActionContextEvents
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: clearEvent
             modifiers:
             - public
@@ -37,9 +152,37 @@ languages:
             - name: eventName
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
+          - name: currentStateSupportsChildState
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: evaluateCurrentStateTransitions
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: evaluateSubStateTransitions
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: foreachChildState
             modifiers:
             - public
@@ -48,10 +191,11 @@ languages:
             - name: consumer
               type:
                 basic: Consumer
-                full: Consumer<ActionState>
+                full: java.util.function.Consumer<zombie.characters.action.ActionState>
             return:
               type:
                 basic: void
+                full: void
           - name: getChildStateAt
             modifiers:
             - public
@@ -60,57 +204,108 @@ languages:
             - name: idx
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: ActionState
+                full: zombie.characters.action.ActionState
           - name: getChildStates
             modifiers:
             - public
             return:
               type:
                 basic: List
+                full: java.util.List<zombie.characters.action.ActionState>
           - name: getCurrentState
             modifiers:
             - public
             return:
               type:
                 basic: ActionState
+                full: zombie.characters.action.ActionState
           - name: getCurrentStateName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
+          - name: getEvents
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.String, java.lang.String>
+            return:
+              type:
+                basic: void
+                full: void
           - name: getGroup
             modifiers:
             - public
             return:
               type:
                 basic: ActionGroup
-          - name: getNextState
-            modifiers:
-            - public
-            return:
-              type:
-                basic: ActionState
+                full: zombie.characters.action.ActionGroup
           - name: getOwner
             modifiers:
             - public
             return:
               type:
                 basic: IAnimatable
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimatable
           - name: getPlaybackStateSnapshot
             modifiers:
             - public
             return:
               type:
                 basic: ActionStateSnapshot
+                full: zombie.characters.action.ActionStateSnapshot
           - name: getPreviousStateName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
+          - name: getTransitionTo
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionTransition
+                full: zombie.characters.action.ActionTransition
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getVariable
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationVariableHandle
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationVariableHandle
+            return:
+              type:
+                basic: IAnimationVariableSlot
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimationVariableSlot
+          - name: hasChildState
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: hasChildStates
             modifiers:
             - public
@@ -118,6 +313,7 @@ languages:
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: hasEventOccurred
             modifiers:
             - public
@@ -125,24 +321,35 @@ languages:
             - name: eventName
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: boolean
+                full: boolean
             notes: Returns TRUE if an event has occurred on any layer.
           - name: hasEventOccurred
             modifiers:
             - public
             parameters:
-            - name: eventName
+            - name: arg0
               type:
                 basic: String
-            - name: layerIdx
+                full: java.lang.String
+            - name: arg1
               type:
-                basic: int
+                basic: String
+                full: java.lang.String
             return:
               type:
                 basic: boolean
-            notes: Returns TRUE if an event has occurred on the specified layer.
+                full: boolean
+          - name: hasStateVariables
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: indexOfChildState
             modifiers:
             - public
@@ -151,39 +358,98 @@ languages:
             - name: predicate
               type:
                 basic: Predicate
-                full: Predicate<ActionState>
+                full: java.util.function.Predicate<zombie.characters.action.ActionState>
             return:
               type:
                 basic: int
+                full: int
+          - name: invokeAnyStateChangedEvents
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: logCurrentState
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: reportEvent
+                full: void
+          - name: onStatesChanged
             modifiers:
-            - public
-            parameters:
-            - name: event
-              type:
-                basic: String
+            - private
             return:
               type:
                 basic: void
-          - name: reportEvent
+                full: void
+          - name: peekNextState
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+          - name: postUpdateInternal
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeChildStateAt
             modifiers:
             - public
             parameters:
-            - name: animLayer
+            - name: arg0
               type:
                 basic: int
-            - name: event
-              type:
-                basic: String
+                full: int
             return:
               type:
                 basic: void
+                full: void
+          - name: reportEvent
+            modifiers:
+            - public
+            parameters:
+            - name: event
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: reportEvent
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setCurrentState
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: setGroup
             modifiers:
             - public
@@ -191,9 +457,11 @@ languages:
             - name: group
               type:
                 basic: ActionGroup
+                full: zombie.characters.action.ActionGroup
             return:
               type:
                 basic: void
+                full: void
           - name: setPlaybackStateSnapshot
             modifiers:
             - public
@@ -201,14 +469,64 @@ languages:
             - name: snapshot
               type:
                 basic: ActionStateSnapshot
+                full: zombie.characters.action.ActionStateSnapshot
             return:
               type:
                 basic: void
+                full: void
+          - name: tryAddChildState
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: tryInsertChildState
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
+                full: void
+          - name: updateInternal
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: lambda$hasChildState$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            - name: arg1
+              type:
+                basic: ActionState
+                full: zombie.characters.action.ActionState
+            return:
+              type:
+                basic: boolean
+                full: boolean

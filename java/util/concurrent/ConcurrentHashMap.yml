@@ -4,57 +4,524 @@ languages:
     packages:
       java.util.concurrent:
         ConcurrentHashMap:
+          extends: java.util.AbstractMap<K, V>
+          modifiers:
+          - public
+          notes: "A hash table supporting full concurrency of retrievals and\n high\
+            \ expected concurrency for updates. This class obeys the\n same functional\
+            \ specification as Hashtable, and\n includes versions of methods corresponding\
+            \ to each method of\n Hashtable. However, even though all operations are\n\
+            \ thread-safe, retrieval operations do not entail locking,\n and there\
+            \ is not any support for locking the entire table\n in a way that prevents\
+            \ all access.  This class is fully\n interoperable with Hashtable in programs\
+            \ that rely on its\n thread safety but not on its synchronization details.\n\
+            \n Retrieval operations (including get) generally do not\n block, so may\
+            \ overlap with update operations (including put\n and remove). Retrievals\
+            \ reflect the results of the most\n recently completed update operations\
+            \ holding upon their\n onset. (More formally, an update operation for\
+            \ a given key bears a\n happens-before relation with any (non-null) retrieval\
+            \ for\n that key reporting the updated value.)  For aggregate operations\n\
+            \ such as putAll and clear, concurrent retrievals may\n reflect insertion\
+            \ or removal of only some entries.  Similarly,\n Iterators, Spliterators\
+            \ and Enumerations return elements reflecting the\n state of the hash\
+            \ table at some point at or since the creation of the\n iterator/enumeration.\
+            \  They do not throw ConcurrentModificationException.\n However, iterators\
+            \ are designed to be used by only one thread at a time.\n Bear in mind\
+            \ that the results of aggregate status methods including\n size, isEmpty,\
+            \ and containsValue are typically\n useful only when a map is not undergoing\
+            \ concurrent updates in other threads.\n Otherwise the results of these\
+            \ methods reflect transient states\n that may be adequate for monitoring\
+            \ or estimation purposes, but not\n for program control.\n\n The table\
+            \ is dynamically expanded when there are too many\n collisions (i.e.,\
+            \ keys that have distinct hash codes but fall into\n the same slot modulo\
+            \ the table size), with the expected average\n effect of maintaining roughly\
+            \ two bins per mapping (corresponding\n to a 0.75 load factor threshold\
+            \ for resizing). There may be much\n variance around this average as mappings\
+            \ are added and removed, but\n overall, this maintains a commonly accepted\
+            \ time/space tradeoff for\n hash tables.  However, resizing this or any\
+            \ other kind of hash\n table may be a relatively slow operation. When\
+            \ possible, it is a\n good idea to provide a size estimate as an optional\
+            \ \n initialCapacity constructor argument. An additional optional\n loadFactor\
+            \ constructor argument provides a further means of\n customizing initial\
+            \ table capacity by specifying the table density\n to be used in calculating\
+            \ the amount of space to allocate for the\n given number of elements.\
+            \  Also, for compatibility with previous\n versions of this class, constructors\
+            \ may optionally specify an\n expected concurrencyLevel as an additional\
+            \ hint for\n internal sizing.  Note that using many keys with exactly\
+            \ the same\n hashCode() is a sure way to slow down performance of any\n\
+            \ hash table. To ameliorate impact, when keys are Comparable,\n this class\
+            \ may use comparison order among keys to help break ties.\n\n A Set projection\
+            \ of a ConcurrentHashMap may be created\n (using newKeySet() or newKeySet(int)),\
+            \ or viewed\n (using keySet(Object) when only keys are of interest, and\
+            \ the\n mapped values are (perhaps transiently) not used or all take the\n\
+            \ same mapping value.\n\n A ConcurrentHashMap can be used as a scalable\
+            \ frequency map (a\n form of histogram or multiset) by using LongAdder\
+            \ values and initializing via\n computeIfAbsent. For example, to add a\
+            \ count\n to a ConcurrentHashMap<String,LongAdder> freqs, you can use\n\
+            \ freqs.computeIfAbsent(key, k -> new LongAdder()).increment();\n\n This\
+            \ class and its views and iterators implement all of the\n optional methods\
+            \ of the Map and Iterator\n interfaces.\n\n Like Hashtable but unlike\
+            \ HashMap, this class\n does not allow null to be used as a key or value.\n\
+            \n ConcurrentHashMaps support a set of sequential and parallel bulk\n\
+            \ operations that, unlike most Stream methods, are designed\n to be safely,\
+            \ and often sensibly, applied even with maps that are\n being concurrently\
+            \ updated by other threads; for example, when\n computing a snapshot summary\
+            \ of the values in a shared registry.\n There are three kinds of operation,\
+            \ each with four forms, accepting\n functions with keys, values, entries,\
+            \ and (key, value) pairs as\n arguments and/or return values. Because\
+            \ the elements of a\n ConcurrentHashMap are not ordered in any particular\
+            \ way, and may be\n processed in different orders in different parallel\
+            \ executions, the\n correctness of supplied functions should not depend\
+            \ on any\n ordering, or on any other objects or values that may transiently\n\
+            \ change while computation is in progress; and except for forEach\n actions,\
+            \ should ideally be side-effect-free. Bulk operations on\n Map.Entry objects\
+            \ do not support method setValue.\n\n \n forEach: Performs a given action\
+            \ on each element.\n A variant form applies a given transformation on\
+            \ each element\n before performing the action.\n\n search: Returns the\
+            \ first available non-null result of\n applying a given function on each\
+            \ element; skipping further\n search when a result is found.\n\n reduce:\
+            \ Accumulates each element.  The supplied reduction\n function cannot\
+            \ rely on ordering (more formally, it should be\n both associative and\
+            \ commutative).  There are five variants:\n\n \n\n Plain reductions. (There\
+            \ is not a form of this method for\n (key, value) function arguments since\
+            \ there is no corresponding\n return type.)\n\n Mapped reductions that\
+            \ accumulate the results of a given\n function applied to each element.\n\
+            \n Reductions to scalar doubles, longs, and ints, using a\n given basis\
+            \ value.\n\n \n \n\n These bulk operations accept a parallelismThreshold\n\
+            \ argument. Methods proceed sequentially if the current map size is\n\
+            \ estimated to be less than the given threshold. Using a value of\n Long.MAX_VALUE\
+            \ suppresses all parallelism.  Using a value\n of 1 results in maximal\
+            \ parallelism by partitioning into\n enough subtasks to fully utilize\
+            \ the ForkJoinPool.commonPool() that is used for all parallel\n computations.\
+            \ Normally, you would initially choose one of these\n extreme values,\
+            \ and then measure performance of using in-between\n values that trade\
+            \ off overhead versus throughput.\n\n The concurrency properties of bulk\
+            \ operations follow\n from those of ConcurrentHashMap: Any non-null result\
+            \ returned\n from get(key) and related access methods bears a\n happens-before\
+            \ relation with the associated insertion or\n update.  The result of any\
+            \ bulk operation reflects the\n composition of these per-element relations\
+            \ (but is not\n necessarily atomic with respect to the map as a whole\
+            \ unless it\n is somehow known to be quiescent).  Conversely, because\
+            \ keys\n and values in the map are never null, null serves as a reliable\n\
+            \ atomic indicator of the current lack of any result.  To\n maintain this\
+            \ property, null serves as an implicit basis for\n all non-scalar reduction\
+            \ operations. For the double, long, and\n int versions, the basis should\
+            \ be one that, when combined with\n any other value, returns that other\
+            \ value (more formally, it\n should be the identity element for the reduction).\
+            \ Most common\n reductions have these properties; for example, computing\
+            \ a sum\n with basis 0 or a minimum with basis MAX_VALUE.\n\n Search and\
+            \ transformation functions provided as arguments\n should similarly return\
+            \ null to indicate the lack of any result\n (in which case it is not used).\
+            \ In the case of mapped\n reductions, this also enables transformations\
+            \ to serve as\n filters, returning null (or, in the case of primitive\n\
+            \ specializations, the identity basis) if the element should not\n be\
+            \ combined. You can create compound transformations and\n filterings by\
+            \ composing them yourself under this \"null means\n there is nothing there\
+            \ now\" rule before using them in search or\n reduce operations.\n\n Methods\
+            \ accepting and/or returning Entry arguments maintain\n key-value associations.\
+            \ They may be useful for example when\n finding the key for the greatest\
+            \ value. Note that \"plain\" Entry\n arguments can be supplied using new\n\
+            \ AbstractMap.SimpleEntry(k,v).\n\n Bulk operations may complete abruptly,\
+            \ throwing an\n exception encountered in the application of a supplied\n\
+            \ function. Bear in mind when handling such exceptions that other\n concurrently\
+            \ executing functions could also have thrown\n exceptions, or would have\
+            \ done so if the first exception had\n not occurred.\n\n Speedups for\
+            \ parallel compared to sequential forms are common\n but not guaranteed.\
+            \  Parallel operations involving brief functions\n on small maps may execute\
+            \ more slowly than sequential forms if the\n underlying work to parallelize\
+            \ the computation is more expensive\n than the computation itself.  Similarly,\
+            \ parallelization may not\n lead to much actual parallelism if all processors\
+            \ are busy\n performing unrelated tasks.\n\n All arguments to all task\
+            \ methods must be non-null.\n\n This class is a member of the\n \n Java\
+            \ Collections Framework."
+          fields:
+            baseCount:
+              name: baseCount
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            cellsBusy:
+              name: cellsBusy
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            counterCells:
+              name: counterCells
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentHashMap.CounterCell
+                full: java.util.concurrent.ConcurrentHashMap$CounterCell[]
+            entrySet:
+              name: entrySet
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentHashMap.EntrySetView
+                full: java.util.concurrent.ConcurrentHashMap$EntrySetView<K, V>
+            keySet:
+              name: keySet
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentHashMap.KeySetView
+                full: java.util.concurrent.ConcurrentHashMap$KeySetView<K, V>
+            nextTable:
+              name: nextTable
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            sizeCtl:
+              name: sizeCtl
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            table:
+              name: table
+              modifiers:
+              - package
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            transferIndex:
+              name: transferIndex
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            values:
+              name: values
+              modifiers:
+              - private
+              type:
+                basic: ConcurrentHashMap.ValuesView
+                full: java.util.concurrent.ConcurrentHashMap$ValuesView<K, V>
+          staticFields:
+            ABASE:
+              name: ABASE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ASHIFT:
+              name: ASHIFT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            BASECOUNT:
+              name: BASECOUNT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            CELLSBUSY:
+              name: CELLSBUSY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            CELLVALUE:
+              name: CELLVALUE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            DEFAULT_CAPACITY:
+              name: DEFAULT_CAPACITY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            DEFAULT_CONCURRENCY_LEVEL:
+              name: DEFAULT_CONCURRENCY_LEVEL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            HASH_BITS:
+              name: HASH_BITS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            LOAD_FACTOR:
+              name: LOAD_FACTOR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: float
+                full: float
+            MAXIMUM_CAPACITY:
+              name: MAXIMUM_CAPACITY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_ARRAY_SIZE:
+              name: MAX_ARRAY_SIZE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_RESIZERS:
+              name: MAX_RESIZERS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MIN_TRANSFER_STRIDE:
+              name: MIN_TRANSFER_STRIDE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MIN_TREEIFY_CAPACITY:
+              name: MIN_TREEIFY_CAPACITY
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            MOVED:
+              name: MOVED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            NCPU:
+              name: NCPU
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            RESERVED:
+              name: RESERVED
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            RESIZE_STAMP_BITS:
+              name: RESIZE_STAMP_BITS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            RESIZE_STAMP_SHIFT:
+              name: RESIZE_STAMP_SHIFT
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SIZECTL:
+              name: SIZECTL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            TRANSFERINDEX:
+              name: TRANSFERINDEX
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            TREEBIN:
+              name: TREEBIN
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            TREEIFY_THRESHOLD:
+              name: TREEIFY_THRESHOLD
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            U:
+              name: U
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            UNTREEIFY_THRESHOLD:
+              name: UNTREEIFY_THRESHOLD
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: Creates a new, empty map with the default initial table size (16).
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
+              notes: "The implementation performs internal\n sizing to accommodate\
+                \ this many elements."
+            notes: "Creates a new, empty map with an initial table size\n accommodating\
+              \ the specified number of elements without the need\n to dynamically\
+              \ resize."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
-                basic: Map<? extends K, ? extends V>
+                basic: Map
                 full: java.util.Map<? extends K, ? extends V>
+              notes: the map
+            notes: Creates a new map with the same mappings as the given map.
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the initial capacity. The implementation\n performs internal\
+                \ sizing to accommodate this many elements,\n given the specified\
+                \ load factor."
+            - name: loadFactor
               type:
                 basic: float
                 full: float
+              notes: "the load factor (table density) for\n establishing the initial\
+                \ table size"
+            notes: "Creates a new, empty map with an initial table size based on\n\
+              \ the given number of elements (initialCapacity) and\n initial table\
+              \ density (loadFactor)."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: initialCapacity
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the initial capacity. The implementation\n performs internal\
+                \ sizing to accommodate this many elements,\n given the specified\
+                \ load factor."
+            - name: loadFactor
               type:
                 basic: float
                 full: float
-            - name: arg2
+              notes: "the load factor (table density) for\n establishing the initial\
+                \ table size"
+            - name: concurrencyLevel
               type:
                 basic: int
                 full: int
+              notes: "the estimated number of concurrently\n updating threads. The\
+                \ implementation may use this value as\n a sizing hint."
+            notes: "Creates a new, empty map with an initial table size based on\n\
+              \ the given number of elements (initialCapacity), initial\n table density\
+              \ (loadFactor), and number of concurrently\n updating threads (concurrencyLevel)."
           methods:
-          - name: __toString__
+          - name: addCount
             modifiers:
-            - public
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: void
+                full: void
+          - name: batchFor
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int
           - name: clear
             modifiers:
             - public
@@ -62,175 +529,189 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Removes all of the mappings from this map.
           - name: compute
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: remappingFunction
               type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   V>
+              notes: the function to compute a value
             return:
               type:
                 basic: V
                 full: V
-          - name: compute
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
+              notes: the new value associated with the specified key, or null if none
+            notes: "Attempts to compute a mapping for the specified key and its\n\
+              \ current mapped value (or null if there is no current\n mapping). The\
+              \ entire method invocation is performed atomically.\n The supplied function\
+              \ is invoked exactly once per invocation of\n this method.  Some attempted\
+              \ update operations on this map by\n other threads may be blocked while\
+              \ computation is in progress,\n so the computation should be short and\
+              \ simple.\n\n The remapping function must not modify this map during\
+              \ computation."
           - name: computeIfAbsent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: mappingFunction
               type:
-                basic: Function<? super K, ? extends V>
+                basic: Function
                 full: java.util.function.Function<? super K, ? extends V>
+              notes: the function to compute a value
             return:
               type:
                 basic: V
                 full: V
-          - name: computeIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: Function<? super K, ? extends V>
-                full: java.util.function.Function<? super K, ? extends V>
-            return:
-              type:
-                basic: V
-                full: V
+              notes: "the current (existing or computed) value associated with\n \
+                \        the specified key, or null if the computed value is null"
+            notes: "If the specified key is not already associated with a value,\n\
+              \ attempts to compute its value using the given mapping function\n and\
+              \ enters it into this map unless null.  The entire\n method invocation\
+              \ is performed atomically.  The supplied\n function is invoked exactly\
+              \ once per invocation of this method\n if the key is absent, else not\
+              \ at all.  Some attempted update\n operations on this map by other threads\
+              \ may be blocked while\n computation is in progress, so the computation\
+              \ should be short\n and simple.\n\n The mapping function must not modify\
+              \ this map during computation."
           - name: computeIfPresent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which a value may be associated
+            - name: remappingFunction
               type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   V>
+              notes: the function to compute a value
             return:
               type:
                 basic: V
                 full: V
-          - name: computeIfPresent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
+              notes: the new value associated with the specified key, or null if none
+            notes: "If the value for the specified key is present, attempts to\n compute\
+              \ a new mapping given the key and its current mapped\n value.  The entire\
+              \ method invocation is performed atomically.\n The supplied function\
+              \ is invoked exactly once per invocation of\n this method if the key\
+              \ is present, else not at all.  Some\n attempted update operations on\
+              \ this map by other threads may be\n blocked while computation is in\
+              \ progress, so the computation\n should be short and simple.\n\n The\
+              \ remapping function must not modify this map during computation."
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a value to search for
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if and only if some key maps to the\n         value argument\
+                \ in this table as\n         determined by the equals method;\n  \
+                \       false otherwise"
+            notes: "Tests if some key maps into the specified value in this table.\n\
+              \n Note that this method is identical in functionality to\n containsValue(Object),\
+              \ and exists solely to ensure\n full compatibility with class Hashtable,\n\
+              \ which supported this method prior to introduction of the\n Java Collections\
+              \ Framework."
           - name: containsKey
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: possible key
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if and only if the specified object\n         is a key\
+                \ in this table, as determined by the\n         equals method; false\
+                \ otherwise"
+            notes: Tests if the specified object is a key in this table.
           - name: containsValue
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value whose presence in this map is to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this map maps one or more keys to the\n         specified\
+                \ value"
+            notes: "Returns true if this map maps one or more keys to the\n specified\
+              \ value. Note: This method may require a full traversal\n of the map,\
+              \ and is much slower than method containsKey."
           - name: elements
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<V>
+                basic: Enumeration
                 full: java.util.Enumeration<V>
+              notes: an enumeration of the values in this table
+            notes: Returns an enumeration of the values in this table.
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<K, V>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<K, V>>
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: object to be compared for equality with this map
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the specified object is equal to this map
+            notes: "Compares the specified object with this map for equality.\n Returns\
+              \ true if the given object is a map with the same\n mappings as this\
+              \ map.  This operation may return misleading\n results if either map\
+              \ is concurrently modified during execution\n of this method."
           - name: forEach
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: BiConsumer<? super K, ? super V>
+                basic: BiConsumer
                 full: java.util.function.BiConsumer<? super K, ? super V>
             return:
               type:
@@ -240,51 +721,51 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer<? super K, ? super V>
-                full: java.util.function.BiConsumer<? super K, ? super V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: forEach
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: action
               type:
-                basic: BiConsumer<? super K, ? super V>
+                basic: BiConsumer
                 full: java.util.function.BiConsumer<? super K, ? super V>
+              notes: the action
             return:
               type:
                 basic: void
                 full: void
+            notes: Performs the given action for each (key, value).
           - name: forEach
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: BiFunction<? super K, ? super V, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   U>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element, or\
+                \ null if there is no transformation (in\n which case the action is\
+                \ not applied)"
+            - name: action
               type:
-                basic: Consumer<? super U>
+                basic: Consumer
                 full: java.util.function.Consumer<? super U>
+              notes: the action
             return:
               type:
                 basic: void
                 full: void
+            notes: "Performs the given action for each non-null transformation\n of\
+              \ each (key, value)."
           - name: forEachEntry
             modifiers:
             - public
@@ -295,7 +776,7 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>>
+                basic: Consumer
                 full: java.util.function.Consumer<? super java.util.Map$Entry<K, V>>
             return:
               type:
@@ -311,12 +792,12 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>, ? extends U>
+                basic: Function
                 full: java.util.function.Function<java.util.Map$Entry<K, V>, ? extends
                   U>
             - name: arg2
               type:
-                basic: Consumer<? super U>
+                basic: Consumer
                 full: java.util.function.Consumer<? super U>
             return:
               type:
@@ -326,57 +807,102 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: action
               type:
-                basic: Consumer<? super K>
+                basic: Consumer
                 full: java.util.function.Consumer<? super K>
+              notes: the action
             return:
               type:
                 basic: void
                 full: void
+            notes: Performs the given action for each key.
           - name: forEachKey
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: Function<? super K, ? extends U>
+                basic: Function
                 full: java.util.function.Function<? super K, ? extends U>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element, or\
+                \ null if there is no transformation (in\n which case the action is\
+                \ not applied)"
+            - name: action
               type:
-                basic: Consumer<? super U>
+                basic: Consumer
                 full: java.util.function.Consumer<? super U>
+              notes: the action
             return:
               type:
                 basic: void
                 full: void
+            notes: "Performs the given action for each non-null transformation\n of\
+              \ each key."
           - name: forEachValue
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: action
               type:
-                basic: Consumer<? super V>
+                basic: Consumer
                 full: java.util.function.Consumer<? super V>
+              notes: the action
             return:
               type:
                 basic: void
                 full: void
+            notes: Performs the given action for each value.
           - name: forEachValue
             modifiers:
             - public
+            parameters:
+            - name: parallelismThreshold
+              type:
+                basic: long
+                full: long
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
+              type:
+                basic: Function
+                full: java.util.function.Function<? super V, ? extends U>
+              notes: "a function returning the transformation\n for an element, or\
+                \ null if there is no transformation (in\n which case the action is\
+                \ not applied)"
+            - name: action
+              type:
+                basic: Consumer
+                full: java.util.function.Consumer<? super U>
+              notes: the action
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Performs the given action for each non-null transformation\n of\
+              \ each value."
+          - name: fullAddCount
+            modifiers:
+            - private
+            - final
             parameters:
             - name: arg0
               type:
@@ -384,12 +910,8 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Function<? super V, ? extends U>
-                full: java.util.function.Function<? super V, ? extends U>
-            - name: arg2
-              type:
-                basic: Consumer<? super U>
-                full: java.util.function.Consumer<? super U>
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
@@ -398,46 +920,44 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the key whose associated value is to be returned
             return:
               type:
                 basic: V
                 full: V
+              notes: "the value to which the specified key is mapped, or\n       \
+                \  null if this map contains no mapping for the key"
+            notes: "Returns the value to which the specified key is mapped,\n or null\
+              \ if this map contains no mapping for the key.\n\n More formally, if\
+              \ this map contains a mapping from a key\n k to a value v such that\
+              \ key.equals(k),\n then this method returns v; otherwise it returns\n\
+              \ null.  (There can be at most one such mapping.)"
           - name: getOrDefault
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the key whose associated value is to be returned
+            - name: defaultValue
               type:
                 basic: V
                 full: V
+              notes: "the value to return if this map contains\n no mapping for the\
+                \ given key"
             return:
               type:
                 basic: V
                 full: V
-          - name: getOrDefault
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
+              notes: the mapping for the key, if present; else the default value
+            notes: "Returns the value to which the specified key is mapped, or the\n\
+              \ given default value if this map contains no mapping for the\n key."
           - name: hashCode
             modifiers:
             - public
@@ -445,6 +965,34 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the hash code value for this map
+            notes: "Returns the hash code value for this Map, i.e.,\n the sum of,\
+              \ for each key-value pair in the map,\n key.hashCode() ^ value.hashCode()."
+          - name: helpTransfer
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            - name: arg1
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>
+            return:
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+          - name: initTable
+            modifiers:
+            - private
+            - final
+            return:
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
           - name: isEmpty
             modifiers:
             - public
@@ -452,19 +1000,14 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this map contains no key-value mappings
+            notes: Returns true if this map contains no key-value mappings.
           - name: keySet
             modifiers:
             - public
             return:
               type:
-                basic: KeySetView<K, V>
-                full: java.util.concurrent.ConcurrentHashMap$KeySetView<K, V>
-          - name: keySet
-            modifiers:
-            - public
-            return:
-              type:
-                basic: KeySetView<K, V>
+                basic: ConcurrentHashMap.KeySetView
                 full: java.util.concurrent.ConcurrentHashMap$KeySetView<K, V>
           - name: keySet
             modifiers:
@@ -476,15 +1019,24 @@ languages:
                 full: V
             return:
               type:
-                basic: KeySetView<K, V>
+                basic: ConcurrentHashMap.KeySetView
                 full: java.util.concurrent.ConcurrentHashMap$KeySetView<K, V>
+          - name: keySet
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Set
+                full: java.util.Set
           - name: keys
             modifiers:
             - public
             return:
               type:
-                basic: Enumeration<K>
+                basic: Enumeration
                 full: java.util.Enumeration<K>
+              notes: an enumeration of the keys in this table
+            notes: Returns an enumeration of the keys in this table.
           - name: mappingCount
             modifiers:
             - public
@@ -492,79 +1044,114 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the number of mappings
+            notes: "Returns the number of mappings. This method should be used\n instead\
+              \ of size() because a ConcurrentHashMap may\n contain more mappings\
+              \ than can be represented as an int. The\n value returned is an estimate;\
+              \ the actual count may differ if\n there are concurrent insertions or\
+              \ removals."
           - name: merge
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: value
               type:
                 basic: V
                 full: V
-            - name: arg2
+              notes: the value to use if absent
+            - name: remappingFunction
               type:
-                basic: BiFunction<? super V, ? super V, ? extends V>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super V, ? super V, ? extends
                   V>
+              notes: the function to recompute a value if present
             return:
               type:
                 basic: V
                 full: V
-          - name: merge
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: BiFunction<? super V, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super V, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
+              notes: the new value associated with the specified key, or null if none
+            notes: "If the specified key is not already associated with a\n (non-null)\
+              \ value, associates it with the given value.\n Otherwise, replaces the\
+              \ value with the results of the given\n remapping function, or removes\
+              \ if null. The entire\n method invocation is performed atomically. \
+              \ Some attempted\n update operations on this map by other threads may\
+              \ be blocked\n while computation is in progress, so the computation\
+              \ should be\n short and simple, and must not attempt to update any other\n\
+              \ mappings of this Map."
           - name: put
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which the specified value is to be associated
+            - name: value
               type:
                 basic: V
                 full: V
+              notes: value to be associated with the specified key
             return:
               type:
                 basic: V
                 full: V
+              notes: "the previous value associated with key, or\n         null if\
+                \ there was no mapping for key"
+            notes: "Maps the specified key to the specified value in this table.\n\
+              \ Neither the key nor the value can be null.\n\n The value can be retrieved\
+              \ by calling the get method\n with a key that is equal to the original\
+              \ key."
           - name: putAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
-                basic: Map<? extends K, ? extends V>
+                basic: Map
                 full: java.util.Map<? extends K, ? extends V>
+              notes: mappings to be stored in this map
             return:
               type:
                 basic: void
                 full: void
+            notes: "Copies all of the mappings from the specified map to this one.\n\
+              \ These mappings replace any mappings that this map had for any of the\n\
+              \ keys currently in the specified map."
           - name: putIfAbsent
             modifiers:
             - public
+            parameters:
+            - name: key
+              type:
+                basic: K
+                full: K
+              notes: key with which the specified value is to be associated
+            - name: value
+              type:
+                basic: V
+                full: V
+              notes: value to be associated with the specified key
+            return:
+              type:
+                basic: V
+                full: V
+              notes: "the previous value associated with the specified key,\n    \
+                \     or null if there was no mapping for the key"
+            notes: "If the specified key is not already associated\n with a value,\
+              \ associates it with the given value.\n This is equivalent to, for this\
+              \ map:\n  <code>\n if (!map.containsKey(key))\n   return map.put(key,\
+              \ value);\n else\n   return map.get(key);</code>\n\n except that the\
+              \ action is performed atomically."
+          - name: putVal
+            modifiers:
+            - package
+            - final
             parameters:
             - name: arg0
               type:
@@ -574,48 +1161,58 @@ languages:
               type:
                 basic: V
                 full: V
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: V
                 full: V
-          - name: putIfAbsent
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
-                basic: V
-                full: V
+                basic: void
+                full: void
           - name: reduce
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: BiFunction<? super K, ? super V, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   U>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element, or\
+                \ null if there is no transformation (in\n which case it is not combined)"
+            - name: reducer
               type:
-                basic: BiFunction<? super U, ? super U, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super U, ? super U, ? extends
                   U>
+              notes: a commutative associative combining function
             return:
               type:
                 basic: U
                 full: U
+              notes: "the result of accumulating the given transformation\n of all\
+                \ (key, value) pairs"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all (key, value) pairs using the given reducer to\n combine values,\
+              \ or null if none."
           - name: reduceEntries
             modifiers:
             - public
@@ -626,12 +1223,12 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>>
+                basic: BiFunction
                 full: java.util.function.BiFunction<java.util.Map$Entry<K, V>, java.util.Map$Entry<K,
                   V>, ? extends java.util.Map$Entry<K, V>>
             return:
               type:
-                basic: Entry<K, V>
+                basic: Map.Entry
                 full: java.util.Map$Entry<K, V>
           - name: reduceEntries
             modifiers:
@@ -643,12 +1240,12 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>, ? extends U>
+                basic: Function
                 full: java.util.function.Function<java.util.Map$Entry<K, V>, ? extends
                   U>
             - name: arg2
               type:
-                basic: BiFunction<? super U, ? super U, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super U, ? super U, ? extends
                   U>
             return:
@@ -665,7 +1262,7 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>>
+                basic: ToDoubleFunction
                 full: java.util.function.ToDoubleFunction<java.util.Map$Entry<K, V>>
             - name: arg2
               type:
@@ -689,7 +1286,7 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>>
+                basic: ToIntFunction
                 full: java.util.function.ToIntFunction<java.util.Map$Entry<K, V>>
             - name: arg2
               type:
@@ -713,7 +1310,7 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>>
+                basic: ToLongFunction
                 full: java.util.function.ToLongFunction<java.util.Map$Entry<K, V>>
             - name: arg2
               type:
@@ -731,386 +1328,479 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: reducer
               type:
-                basic: BiFunction<? super K, ? super K, ? extends K>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super K, ? extends
                   K>
+              notes: a commutative associative combining function
             return:
               type:
                 basic: K
                 full: K
+              notes: "the result of accumulating all keys using the given\n reducer\
+                \ to combine values, or null if none"
+            notes: "Returns the result of accumulating all keys using the given\n\
+              \ reducer to combine values, or null if none."
           - name: reduceKeys
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: Function<? super K, ? extends U>
+                basic: Function
                 full: java.util.function.Function<? super K, ? extends U>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element, or\
+                \ null if there is no transformation (in\n which case it is not combined)"
+            - name: reducer
               type:
-                basic: BiFunction<? super U, ? super U, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super U, ? super U, ? extends
                   U>
+              notes: a commutative associative combining function
             return:
               type:
                 basic: U
                 full: U
+              notes: "the result of accumulating the given transformation\n of all\
+                \ keys"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all keys using the given reducer to combine values, or\n null if\
+              \ none."
           - name: reduceKeysToDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToDoubleFunction<? super K>
+                basic: ToDoubleFunction
                 full: java.util.function.ToDoubleFunction<? super K>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: DoubleBinaryOperator
                 full: java.util.function.DoubleBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: double
                 full: double
+              notes: "the result of accumulating the given transformation\n of all\
+                \ keys"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all keys using the given reducer to combine values, and\n the given\
+              \ basis as an identity value."
           - name: reduceKeysToInt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToIntFunction<? super K>
+                basic: ToIntFunction
                 full: java.util.function.ToIntFunction<? super K>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: IntBinaryOperator
                 full: java.util.function.IntBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: int
                 full: int
+              notes: "the result of accumulating the given transformation\n of all\
+                \ keys"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all keys using the given reducer to combine values, and\n the given\
+              \ basis as an identity value."
           - name: reduceKeysToLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToLongFunction<? super K>
+                basic: ToLongFunction
                 full: java.util.function.ToLongFunction<? super K>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: long
                 full: long
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: LongBinaryOperator
                 full: java.util.function.LongBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: long
                 full: long
+              notes: "the result of accumulating the given transformation\n of all\
+                \ keys"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all keys using the given reducer to combine values, and\n the given\
+              \ basis as an identity value."
           - name: reduceToDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToDoubleBiFunction<? super K, ? super V>
+                basic: ToDoubleBiFunction
                 full: java.util.function.ToDoubleBiFunction<? super K, ? super V>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: DoubleBinaryOperator
                 full: java.util.function.DoubleBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: double
                 full: double
+              notes: "the result of accumulating the given transformation\n of all\
+                \ (key, value) pairs"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all (key, value) pairs using the given reducer to\n combine values,\
+              \ and the given basis as an identity value."
           - name: reduceToInt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToIntBiFunction<? super K, ? super V>
+                basic: ToIntBiFunction
                 full: java.util.function.ToIntBiFunction<? super K, ? super V>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: IntBinaryOperator
                 full: java.util.function.IntBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: int
                 full: int
+              notes: "the result of accumulating the given transformation\n of all\
+                \ (key, value) pairs"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all (key, value) pairs using the given reducer to\n combine values,\
+              \ and the given basis as an identity value."
           - name: reduceToLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToLongBiFunction<? super K, ? super V>
+                basic: ToLongBiFunction
                 full: java.util.function.ToLongBiFunction<? super K, ? super V>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: long
                 full: long
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: LongBinaryOperator
                 full: java.util.function.LongBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: long
                 full: long
+              notes: "the result of accumulating the given transformation\n of all\
+                \ (key, value) pairs"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all (key, value) pairs using the given reducer to\n combine values,\
+              \ and the given basis as an identity value."
           - name: reduceValues
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: reducer
               type:
-                basic: BiFunction<? super V, ? super V, ? extends V>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super V, ? super V, ? extends
                   V>
+              notes: a commutative associative combining function
             return:
               type:
                 basic: V
                 full: V
+              notes: the result of accumulating all values
+            notes: "Returns the result of accumulating all values using the\n given\
+              \ reducer to combine values, or null if none."
           - name: reduceValues
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: Function<? super V, ? extends U>
+                basic: Function
                 full: java.util.function.Function<? super V, ? extends U>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element, or\
+                \ null if there is no transformation (in\n which case it is not combined)"
+            - name: reducer
               type:
-                basic: BiFunction<? super U, ? super U, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super U, ? super U, ? extends
                   U>
+              notes: a commutative associative combining function
             return:
               type:
                 basic: U
                 full: U
+              notes: "the result of accumulating the given transformation\n of all\
+                \ values"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all values using the given reducer to combine values, or\n null\
+              \ if none."
           - name: reduceValuesToDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToDoubleFunction<? super V>
+                basic: ToDoubleFunction
                 full: java.util.function.ToDoubleFunction<? super V>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: DoubleBinaryOperator
                 full: java.util.function.DoubleBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: double
                 full: double
+              notes: "the result of accumulating the given transformation\n of all\
+                \ values"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all values using the given reducer to combine values,\n and the\
+              \ given basis as an identity value."
           - name: reduceValuesToInt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToIntFunction<? super V>
+                basic: ToIntFunction
                 full: java.util.function.ToIntFunction<? super V>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: IntBinaryOperator
                 full: java.util.function.IntBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: int
                 full: int
+              notes: "the result of accumulating the given transformation\n of all\
+                \ values"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all values using the given reducer to combine values,\n and the\
+              \ given basis as an identity value."
           - name: reduceValuesToLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: transformer
               type:
-                basic: ToLongFunction<? super V>
+                basic: ToLongFunction
                 full: java.util.function.ToLongFunction<? super V>
-            - name: arg2
+              notes: "a function returning the transformation\n for an element"
+            - name: basis
               type:
                 basic: long
                 full: long
-            - name: arg3
+              notes: the identity (initial default value) for the reduction
+            - name: reducer
               type:
                 basic: LongBinaryOperator
                 full: java.util.function.LongBinaryOperator
+              notes: a commutative associative combining function
             return:
               type:
                 basic: long
                 full: long
+              notes: "the result of accumulating the given transformation\n of all\
+                \ values"
+            notes: "Returns the result of accumulating the given transformation\n\
+              \ of all values using the given reducer to combine values,\n and the\
+              \ given basis as an identity value."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the key that needs to be removed
             return:
               type:
                 basic: V
                 full: V
+              notes: "the previous value associated with key, or\n         null if\
+                \ there was no mapping for key"
+            notes: "Removes the key (and its corresponding value) from this map.\n\
+              \ This method does nothing if the key is not in the map."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: key with which the specified value is associated
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: value expected to be associated with the specified key
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: remove
+              notes: true if the value was removed
+            notes: "Removes the entry for a key only if currently mapped to a given\
+              \ value.\n This is equivalent to, for this map:\n  <code>\n if (map.containsKey(key)\n\
+              \     && Objects.equals(map.get(key), value)) {\n   map.remove(key);\n\
+              \   return true;\n } else {\n   return false;\n }</code>\n\n except\
+              \ that the action is performed atomically."
+          - name: removeEntryIf
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
+                basic: Predicate
+                full: java.util.function.Predicate<? super java.util.Map$Entry<K,
+                  V>>
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: replace
+          - name: removeValueIf
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: V
-                full: V
+                basic: Predicate
+                full: java.util.function.Predicate<? super V>
             return:
               type:
                 basic: boolean
@@ -1119,65 +1809,115 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: key with which the specified value is associated
+            - name: oldValue
               type:
                 basic: V
                 full: V
-            - name: arg2
+              notes: value expected to be associated with the specified key
+            - name: newValue
               type:
                 basic: V
                 full: V
+              notes: value to be associated with the specified key
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the value was replaced
+            notes: "Replaces the entry for a key only if currently mapped to a given\
+              \ value.\n This is equivalent to, for this map:\n  <code>\n if (map.containsKey(key)\n\
+              \     && Objects.equals(map.get(key), oldValue)) {\n   map.put(key,\
+              \ newValue);\n   return true;\n } else {\n   return false;\n }</code>\n\
+              \n except that the action is performed atomically."
+          - name: replace
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: K
+                full: K
+              notes: key with which the specified value is associated
+            - name: value
+              type:
+                basic: V
+                full: V
+              notes: value to be associated with the specified key
+            return:
+              type:
+                basic: V
+                full: V
+              notes: "the previous value associated with the specified key,\n    \
+                \     or null if there was no mapping for the key"
+            notes: "Replaces the entry for a key only if currently mapped to some\
+              \ value.\n This is equivalent to, for this map:\n  <code>\n if (map.containsKey(key))\n\
+              \   return map.put(key, value);\n else\n   return null;</code>\n\n except\
+              \ that the action is performed atomically."
           - name: replaceAll
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   V>
             return:
               type:
                 basic: void
                 full: void
-          - name: replaceAll
+          - name: replaceNode
             modifiers:
-            - public
+            - package
+            - final
             parameters:
             - name: arg0
               type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: V
+                full: V
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
-                basic: void
-                full: void
+                basic: V
+                full: V
           - name: search
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: searchFunction
               type:
-                basic: BiFunction<? super K, ? super V, ? extends U>
+                basic: BiFunction
                 full: java.util.function.BiFunction<? super K, ? super V, ? extends
                   U>
+              notes: "a function returning a non-null\n result on success, else null"
             return:
               type:
                 basic: U
                 full: U
+              notes: "a non-null result from applying the given search\n function\
+                \ on each (key, value), or null if none"
+            notes: "Returns a non-null result from applying the given search\n function\
+              \ on each (key, value), or null if none.  Upon\n success, further element\
+              \ processing is suppressed and the\n results of any other parallel invocations\
+              \ of the search\n function are ignored."
           - name: searchEntries
             modifiers:
             - public
@@ -1188,7 +1928,7 @@ languages:
                 full: long
             - name: arg1
               type:
-                basic: Entry<K, V>, ? extends U>
+                basic: Function
                 full: java.util.function.Function<java.util.Map$Entry<K, V>, ? extends
                   U>
             return:
@@ -1199,34 +1939,52 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: searchFunction
               type:
-                basic: Function<? super K, ? extends U>
+                basic: Function
                 full: java.util.function.Function<? super K, ? extends U>
+              notes: "a function returning a non-null\n result on success, else null"
             return:
               type:
                 basic: U
                 full: U
+              notes: "a non-null result from applying the given search\n function\
+                \ on each key, or null if none"
+            notes: "Returns a non-null result from applying the given search\n function\
+              \ on each key, or null if none. Upon success,\n further element processing\
+              \ is suppressed and the results of\n any other parallel invocations\
+              \ of the search function are\n ignored."
           - name: searchValues
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parallelismThreshold
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "the (estimated) number of elements\n needed for this operation\
+                \ to be executed in parallel"
+            - name: searchFunction
               type:
-                basic: Function<? super V, ? extends U>
+                basic: Function
                 full: java.util.function.Function<? super V, ? extends U>
+              notes: "a function returning a non-null\n result on success, else null"
             return:
               type:
                 basic: U
                 full: U
+              notes: "a non-null result from applying the given search\n function\
+                \ on each value, or null if none"
+            notes: "Returns a non-null result from applying the given search\n function\
+              \ on each value, or null if none.  Upon success,\n further element processing\
+              \ is suppressed and the results of\n any other parallel invocations\
+              \ of the search function are\n ignored."
           - name: size
             modifiers:
             - public
@@ -1234,21 +1992,167 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of key-value mappings in this map
+            notes: "Returns the number of key-value mappings in this map.  If the\n\
+              \ map contains more than Integer.MAX_VALUE elements, returns\n Integer.MAX_VALUE."
+          - name: sumCount
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: long
+                full: long
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: transfer
+            modifiers:
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            - name: arg1
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: treeifyBin
+            modifiers:
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: tryPresize
+            modifiers:
+            - private
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: values
             modifiers:
             - public
             return:
               type:
-                basic: Collection<V>
+                basic: Collection
                 full: java.util.Collection<V>
+              notes: the collection view
+            notes: "Returns a Collection view of the values contained in this map.\n\
+              \ The collection is backed by the map, so changes to the map are\n reflected\
+              \ in the collection, and vice-versa.  The collection\n supports element\
+              \ removal, which removes the corresponding\n mapping from this map,\
+              \ via the Iterator.remove,\n Collection.remove, removeAll,\n retainAll,\
+              \ and clear operations.  It does not\n support the add or addAll operations.\n\
+              \n The view's iterators and spliterators are\n weakly consistent.\n\n\
+              \ The view's spliterator reports Spliterator.CONCURRENT\n and Spliterator.NONNULL."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
+          - name: casTabAt
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>
+            - name: arg3
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: comparableClassFor
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+          - name: compareComparables
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int
           - name: newKeySet
             modifiers:
             - public
             - static
             return:
               type:
-                basic: KeySetView<K, Boolean>
+                basic: ConcurrentHashMap.KeySetView
                 full: java.util.concurrent.ConcurrentHashMap$KeySetView<K, java.lang.Boolean>
           - name: newKeySet
             modifiers:
@@ -1261,7 +2165,100 @@ languages:
                 full: int
             return:
               type:
-                basic: KeySetView<K, Boolean>
+                basic: ConcurrentHashMap.KeySetView
                 full: java.util.concurrent.ConcurrentHashMap$KeySetView<K, java.lang.Boolean>
-          javaType: class
-          extends: AbstractMap<K, V>
+          - name: resizeStamp
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: setTabAt
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: spread
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: tabAt
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>
+          - name: tableSizeFor
+            modifiers:
+            - private
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: untreeify
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>
+            return:
+              type:
+                basic: ConcurrentHashMap.Node
+                full: java.util.concurrent.ConcurrentHashMap$Node<K, V>

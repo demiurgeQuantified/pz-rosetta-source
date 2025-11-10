@@ -1,0 +1,959 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.lang:
+        SecurityManager:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The security manager is a class that allows\n applications to implement\
+            \ a security policy. It allows an\n application to determine, before performing\
+            \ a possibly unsafe or\n sensitive operation, what the operation is and\
+            \ whether\n it is being attempted in a security context that allows the\n\
+            \ operation to be performed. The\n application can allow or disallow the\
+            \ operation.\n \n The SecurityManager class contains many methods with\n\
+            \ names that begin with the word check. These methods\n are called by\
+            \ various methods in the Java libraries before those\n methods perform\
+            \ certain potentially sensitive operations. The\n invocation of such a\
+            \ check method typically looks like this:\n \n     SecurityManager security\
+            \ = System.getSecurityManager();\n     if (security != null) {\n     \
+            \    security.check<i>XXX</i>(argument,  . . . );\n     }\n \n \n The\
+            \ security manager is thereby given an opportunity to prevent\n completion\
+            \ of the operation by throwing an exception. A security\n manager routine\
+            \ simply returns if the operation is permitted, but\n throws a SecurityException\
+            \ if the operation is not\n permitted.\n \n Environments using a security\
+            \ manager will typically set the security\n manager at startup. In the\
+            \ JDK implementation, this is done by setting the\n system property java.security.manager\
+            \ on the command line\n to the class name of the security manager. It\
+            \ can also be set to the empty\n String (\"\") or the special token \"\
+            default\" to use the\n default java.lang.SecurityManager. If a class name\
+            \ is specified,\n it must be java.lang.SecurityManager or a public subclass\
+            \ and have\n a public no-arg constructor. The class is loaded by the\n\
+            \ built-in system class loader\n if it is not java.lang.SecurityManager.\
+            \ If the\n java.security.manager system property is not set, the default\
+            \ value\n is null, which means a security manager will not be set at startup.\n\
+            \ \n The Java run-time may also allow, but is not required to allow, the\
+            \ security\n manager to be set dynamically by invoking the\n setSecurityManager\
+            \ method.\n In the JDK implementation, if the Java virtual machine is\
+            \ started with\n the java.security.manager system property set to the\
+            \ special token\n \"disallow\" then a security manager will not be set\
+            \ at startup and\n cannot be set dynamically (the\n setSecurityManager\n\
+            \ method will throw an UnsupportedOperationException). If the\n java.security.manager\
+            \ system property is not set or is set to the\n special token \"allow\"\
+            , then a security manager will not be set at\n startup but can be set\
+            \ dynamically. Finally, if the\n java.security.manager system property\
+            \ is set to the class name of\n the security manager, or to the empty\
+            \ String (\"\") or the special token\n \"default\", then a security manager\
+            \ is set at startup (as described\n previously) and can also be subsequently\
+            \ replaced (or disabled) dynamically\n (subject to the policy of the currently\
+            \ installed security manager). The\n following table illustrates the behavior\
+            \ of the JDK implementation for the\n different settings of the java.security.manager\
+            \ system property:\n \n property value,\n  the SecurityManager set at\
+            \ startup,\n  can dynamically set a SecurityManager\n \n \n \n Property\
+            \ Value\n The SecurityManager set at startup\n System.setSecurityManager\
+            \ run-time behavior\n \n \n \n\n \n   null\n   None\n   Success or throws\
+            \ SecurityException if not permitted by\n the currently installed security\
+            \ manager\n \n\n \n   empty String (\"\")\n   java.lang.SecurityManager\n\
+            \   Success or throws SecurityException if not permitted by\n the currently\
+            \ installed security manager\n \n\n \n   \"default\"\n   java.lang.SecurityManager\n\
+            \   Success or throws SecurityException if not permitted by\n the currently\
+            \ installed security manager\n \n\n \n   \"disallow\"\n   None\n   Always\
+            \ throws UnsupportedOperationException\n \n\n \n   \"allow\"\n   None\n\
+            \   Success or throws SecurityException if not permitted by\n the currently\
+            \ installed security manager\n \n\n \n   a class name\n   the named class\n\
+            \   Success or throws SecurityException if not permitted by\n the currently\
+            \ installed security manager\n \n\n \n \n  A future release of the JDK\
+            \ may change the default value of the\n java.security.manager system property\
+            \ to \"disallow\".\n \n The current security manager is returned by the\n\
+            \ getSecurityManager method.\n \n The special method\n checkPermission(java.security.Permission)\n\
+            \ determines whether an access request indicated by a specified\n permission\
+            \ should be granted or denied. The\n default implementation calls\n\n\
+            \ \n   AccessController.checkPermission(perm);\n \n\n \n If a requested\
+            \ access is allowed,\n checkPermission returns quietly. If denied, a\n\
+            \ SecurityException is thrown.\n \n The default implementation of each\
+            \ of the other\n check methods in SecurityManager is to\n call the SecurityManager\
+            \ checkPermission method\n to determine if the calling thread has permission\
+            \ to perform the requested\n operation.\n \n Note that the checkPermission\
+            \ method with\n just a single permission argument always performs security\
+            \ checks\n within the context of the currently executing thread.\n Sometimes\
+            \ a security check that should be made within a given context\n will actually\
+            \ need to be done from within a\n different context (for example, from\
+            \ within a worker thread).\n The getSecurityContext method\n and the checkPermission\n\
+            \ method that includes a context argument are provided\n for this situation.\
+            \ The\n getSecurityContext method returns a \"snapshot\"\n of the current\
+            \ calling context. (The default implementation\n returns an AccessControlContext\
+            \ object.) A sample call is\n the following:\n\n \n   Object context =\
+            \ null;\n   SecurityManager sm = System.getSecurityManager();\n   if (sm\
+            \ != null) context = sm.getSecurityContext();\n \n\n \n The checkPermission\
+            \ method\n that takes a context object in addition to a permission\n makes\
+            \ access decisions based on that context,\n rather than on that of the\
+            \ current execution thread.\n Code within a different context can thus\
+            \ call that method,\n passing the permission and the\n previously-saved\
+            \ context object. A sample call, using the\n SecurityManager sm obtained\
+            \ as in the previous example,\n is the following:\n\n \n   if (sm != null)\
+            \ sm.checkPermission(permission, context);\n \n\n Permissions fall into\
+            \ these categories: File, Socket, Net,\n Security, Runtime, Property,\
+            \ AWT, Reflect, and Serializable.\n The classes managing these various\n\
+            \ permission categories are java.io.FilePermission,\n java.net.SocketPermission,\n\
+            \ java.net.NetPermission,\n java.security.SecurityPermission,\n java.lang.RuntimePermission,\n\
+            \ java.util.PropertyPermission,\n java.awt.AWTPermission,\n java.lang.reflect.ReflectPermission,\
+            \ and\n java.io.SerializablePermission.\n\n All but the first two (FilePermission\
+            \ and SocketPermission) are\n subclasses of java.security.BasicPermission,\
+            \ which itself\n is an abstract subclass of the\n top-level class for\
+            \ permissions, which is\n java.security.Permission. BasicPermission defines\
+            \ the\n functionality needed for all permissions that contain a name\n\
+            \ that follows the hierarchical property naming convention\n (for example,\
+            \ \"exitVM\", \"setFactory\", \"queuePrintJob\", etc).\n An asterisk\n\
+            \ may appear at the end of the name, following a \".\", or by itself,\
+            \ to\n signify a wildcard match. For example: \"a.*\" or \"*\" is valid,\n\
+            \ \"*a\" or \"a*b\" is not valid.\n\n FilePermission and SocketPermission\
+            \ are subclasses of the\n top-level class for permissions\n (java.security.Permission).\
+            \ Classes like these\n that have a more complicated name syntax than that\
+            \ used by\n BasicPermission subclass directly from Permission rather than\
+            \ from\n BasicPermission. For example,\n for a java.io.FilePermission\
+            \ object, the permission name is\n the path name of a file (or directory).\n\
+            \n Some of the permission classes have an \"actions\" list that tells\n\
+            \ the actions that are permitted for the object.  For example,\n for a\
+            \ java.io.FilePermission object, the actions list\n (such as \"read, write\"\
+            ) specifies which actions are granted for the\n specified file (or for\
+            \ files in the specified directory).\n\n Other permission classes are\
+            \ for \"named\" permissions -\n ones that contain a name but no actions\
+            \ list; you either have the\n named permission or you don't.\n\n Note:\
+            \ There is also a java.security.AllPermission\n permission that implies\
+            \ all permissions. It exists to simplify the work\n of system administrators\
+            \ who might need to perform multiple\n tasks that require all (or numerous)\
+            \ permissions.\n \n See Permissions in the Java Development Kit (JDK)\n\
+            \ for permission-related information.\n This document includes a table\
+            \ listing the various SecurityManager\n check methods and the permission(s)\
+            \ the default\n implementation of each such method requires.\n It also\
+            \ contains a table of the methods\n that require permissions, and for\
+            \ each such method tells\n which permission it requires."
+          deprecated: true
+          fields:
+            initialized:
+              name: initialized
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            nonExportedPkgs:
+              name: nonExportedPkgs
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.lang.Boolean>
+            packageAccess:
+              name: packageAccess
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
+            packageAccessLock:
+              name: packageAccessLock
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+            packageAccessValid:
+              name: packageAccessValid
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            packageDefinition:
+              name: packageDefinition
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String[]
+            packageDefinitionLock:
+              name: packageDefinitionLock
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object
+            packageDefinitionValid:
+              name: packageDefinitionValid
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            rootGroup:
+              name: rootGroup
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+          constructors:
+          - modifiers:
+            - public
+            notes: "Constructs a new SecurityManager.\n\n  If there is a security\
+              \ manager already installed, this method first\n calls the security\
+              \ manager's checkPermission method\n with the RuntimePermission(\"createSecurityManager\"\
+              )\n permission to ensure the calling thread has permission to create\
+              \ a new\n security manager.\n This may result in throwing a SecurityException."
+          methods:
+          - name: checkAccept
+            modifiers:
+            - public
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the host name of the socket connection.
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: the port number of the socket connection.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not permitted\
+              \ to accept a socket connection from\n the specified host and port number.\n\
+              \ \n This method is invoked for the current security manager by the\n\
+              \ accept method of class ServerSocket.\n \n This method calls checkPermission\
+              \ with the\n SocketPermission(host+\":\"+port,\"accept\") permission.\n\
+              \ \n If you override this method, then you should make a call to\n super.checkAccept\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkAccess
+            modifiers:
+            - public
+            parameters:
+            - name: t
+              type:
+                basic: Thread
+                full: java.lang.Thread
+              notes: the thread to be checked.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to modify the thread argument.\n \n This method is invoked for the\
+              \ current security manager by the\n stop, suspend, resume,\n setPriority,\
+              \ setName, and\n setDaemon methods of class Thread.\n \n If the thread\
+              \ argument is a system thread (belongs to\n the thread group with a\
+              \ null parent) then\n this method calls checkPermission with the\n RuntimePermission(\"\
+              modifyThread\") permission.\n If the thread argument is not a system\
+              \ thread,\n this method just returns silently.\n \n Applications that\
+              \ want a stricter policy should override this\n method. If this method\
+              \ is overridden, the method that overrides\n it should additionally\
+              \ check to see if the calling thread has the\n RuntimePermission(\"\
+              modifyThread\") permission, and\n if so, return silently. This is to\
+              \ ensure that code granted\n that permission (such as the JDK itself)\
+              \ is allowed to\n manipulate any thread.\n \n If this method is overridden,\
+              \ then\n super.checkAccess should\n be called by the first statement\
+              \ in the overridden method, or the\n equivalent security check should\
+              \ be placed in the overridden method."
+          - name: checkAccess
+            modifiers:
+            - public
+            parameters:
+            - name: g
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+              notes: the thread group to be checked.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to modify the thread group argument.\n \n This method is invoked for\
+              \ the current security manager when a\n new child thread or child thread\
+              \ group is created, and by the\n setDaemon, setMaxPriority,\n stop,\
+              \ suspend, resume, and\n destroy methods of class ThreadGroup.\n \n\
+              \ If the thread group argument is the system thread group (\n has a\
+              \ null parent) then\n this method calls checkPermission with the\n RuntimePermission(\"\
+              modifyThreadGroup\") permission.\n If the thread group argument is not\
+              \ the system thread group,\n this method just returns silently.\n \n\
+              \ Applications that want a stricter policy should override this\n method.\
+              \ If this method is overridden, the method that overrides\n it should\
+              \ additionally check to see if the calling thread has the\n RuntimePermission(\"\
+              modifyThreadGroup\") permission, and\n if so, return silently. This\
+              \ is to ensure that code granted\n that permission (such as the JDK\
+              \ itself) is allowed to\n manipulate any thread.\n \n If this method\
+              \ is overridden, then\n super.checkAccess should\n be called by the\
+              \ first statement in the overridden method, or the\n equivalent security\
+              \ check should be placed in the overridden method."
+          - name: checkConnect
+            modifiers:
+            - public
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the host name port to connect to.
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: the protocol port to connect to.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to open a socket connection to the\n specified host and port number.\n\
+              \ \n A port number of -1 indicates that the calling\n method is attempting\
+              \ to determine the IP address of the specified\n host name.\n \n This\
+              \ method calls checkPermission with the\n SocketPermission(host+\":\"\
+              +port,\"connect\") permission if\n the port is not equal to -1. If the\
+              \ port is equal to -1, then\n it calls checkPermission with the\n SocketPermission(host,\"\
+              resolve\") permission.\n \n If you override this method, then you should\
+              \ make a call to\n super.checkConnect\n at the point the overridden\
+              \ method would normally throw an\n exception."
+          - name: checkConnect
+            modifiers:
+            - public
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the host name port to connect to.
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: the protocol port to connect to.
+            - name: context
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a system-dependent security context.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n specified security context\
+              \ is not allowed to open a socket\n connection to the specified host\
+              \ and port number.\n \n A port number of -1 indicates that the calling\n\
+              \ method is attempting to determine the IP address of the specified\n\
+              \ host name.\n  If context is not an instance of\n AccessControlContext\
+              \ then a\n SecurityException is thrown.\n \n Otherwise, the port number\
+              \ is checked. If it is not equal\n to -1, the context's checkPermission\n\
+              \ method is called with a\n SocketPermission(host+\":\"+port,\"connect\"\
+              ) permission.\n If the port is equal to -1, then\n the context's checkPermission\
+              \ method\n is called with a\n SocketPermission(host,\"resolve\") permission.\n\
+              \ \n If you override this method, then you should make a call to\n super.checkConnect\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkCreateClassLoader
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to create a new class loader.\n \n This method calls checkPermission\
+              \ with the\n RuntimePermission(\"createClassLoader\")\n permission.\n\
+              \ \n If you override this method, then you should make a call to\n super.checkCreateClassLoader\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkDelete
+            modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the system-dependent filename.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to delete the specified file.\n \n This method is invoked for the\
+              \ current security manager by the\n delete method of class File.\n \n\
+              \ This method calls checkPermission with the\n FilePermission(file,\"\
+              delete\") permission.\n \n If you override this method, then you should\
+              \ make a call to\n super.checkDelete\n at the point the overridden method\
+              \ would normally throw an\n exception."
+          - name: checkExec
+            modifiers:
+            - public
+            parameters:
+            - name: cmd
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the specified system command.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to create a subprocess.\n \n This method is invoked for the current\
+              \ security manager by the\n exec methods of class Runtime.\n \n This\
+              \ method calls checkPermission with the\n FilePermission(cmd,\"execute\"\
+              ) permission\n if cmd is an absolute path, otherwise it calls\n checkPermission\
+              \ with\n FilePermission(\"<<ALL FILES>>\",\"execute\").\n \n If you\
+              \ override this method, then you should make a call to\n super.checkExec\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkExit
+            modifiers:
+            - public
+            parameters:
+            - name: status
+              type:
+                basic: int
+                full: int
+              notes: the exit status.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to cause the Java Virtual Machine to\n halt with the specified status\
+              \ code.\n \n This method is invoked for the current security manager\
+              \ by the\n exit method of class Runtime. A status\n of 0 indicates success;\
+              \ other values indicate various\n errors.\n \n This method calls checkPermission\
+              \ with the\n RuntimePermission(\"exitVM.\"+status) permission.\n \n\
+              \ If you override this method, then you should make a call to\n super.checkExit\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkLink
+            modifiers:
+            - public
+            parameters:
+            - name: lib
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the library.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to dynamic link the library code\n specified by the string argument\
+              \ file. The argument is either a\n simple library name or a complete\
+              \ filename.\n \n This method is invoked for the current security manager\
+              \ by\n methods load and loadLibrary of class\n Runtime.\n \n This method\
+              \ calls checkPermission with the\n RuntimePermission(\"loadLibrary.\"\
+              +lib) permission.\n \n If you override this method, then you should\
+              \ make a call to\n super.checkLink\n at the point the overridden method\
+              \ would normally throw an\n exception."
+          - name: checkListen
+            modifiers:
+            - public
+            parameters:
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: the local port.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to wait for a connection request on\n the specified local port number.\n\
+              \ \n This method calls checkPermission with the\n SocketPermission(\"\
+              localhost:\"+port,\"listen\").\n \n If you override this method, then\
+              \ you should make a call to\n super.checkListen\n at the point the overridden\
+              \ method would normally throw an\n exception."
+          - name: checkMulticast
+            modifiers:
+            - public
+            parameters:
+            - name: maddr
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: Internet group address to be used.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to use\n (join/leave/send/receive) IP multicast.\n \n This method\
+              \ calls checkPermission with the\n java.net.SocketPermission(maddr.getHostAddress(),\n\
+              \ \"accept,connect\") permission.\n \n If you override this method,\
+              \ then you should make a call to\n super.checkMulticast\n at the point\
+              \ the overridden method would normally throw an\n exception."
+          - name: checkMulticast
+            modifiers:
+            - public
+            parameters:
+            - name: maddr
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: Internet group address to be used.
+            - name: ttl
+              type:
+                basic: byte
+                full: byte
+              notes: "value in use, if it is multicast send.\n Note: this particular\
+                \ implementation does not use the ttl\n parameter."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to use\n (join/leave/send/receive) IP multicast.\n \n This method\
+              \ calls checkPermission with the\n java.net.SocketPermission(maddr.getHostAddress(),\n\
+              \ \"accept,connect\") permission.\n \n If you override this method,\
+              \ then you should make a call to\n super.checkMulticast\n at the point\
+              \ the overridden method would normally throw an\n exception."
+          - name: checkPackageAccess
+            modifiers:
+            - public
+            parameters:
+            - name: pkg
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the package name.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the calling thread is not allowed\n\
+              \ to access the specified package.\n \n During class loading, this method\
+              \ may be called by the loadClass\n method of class loaders and by the\
+              \ Java Virtual Machine to ensure that\n the caller is allowed to access\
+              \ the package of the class that is\n being loaded.\n \n This method\
+              \ checks if the specified package starts with or equals\n any of the\
+              \ packages in the package.access Security Property.\n An implementation\
+              \ may also check the package against an additional\n list of restricted\
+              \ packages as noted below. If the package is restricted,\n checkPermission(Permission)\
+              \ is called with a\n RuntimePermission(\"accessClassInPackage.\"+pkg)\
+              \ permission.\n \n If this method is overridden, then super.checkPackageAccess\n\
+              \ should be called as the first line in the overridden method."
+          - name: checkPackageDefinition
+            modifiers:
+            - public
+            parameters:
+            - name: pkg
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the package name.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the calling thread is not\n allowed\
+              \ to define classes in the specified package.\n \n This method is called\
+              \ by the loadClass method of some\n class loaders.\n \n This method\
+              \ checks if the specified package starts with or equals\n any of the\
+              \ packages in the package.definition Security\n Property. An implementation\
+              \ may also check the package against an\n additional list of restricted\
+              \ packages as noted below. If the package\n is restricted, checkPermission(Permission)\
+              \ is called with a\n RuntimePermission(\"defineClassInPackage.\"+pkg)\
+              \ permission.\n \n If this method is overridden, then super.checkPackageDefinition\n\
+              \ should be called as the first line in the overridden method."
+          - name: checkPermission
+            modifiers:
+            - public
+            parameters:
+            - name: perm
+              type:
+                basic: Permission
+                full: java.security.Permission
+              notes: the requested permission.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the requested\n access, specified\
+              \ by the given permission, is not permitted based\n on the security\
+              \ policy currently in effect.\n \n This method calls AccessController.checkPermission\n\
+              \ with the given permission."
+          - name: checkPermission
+            modifiers:
+            - public
+            parameters:
+            - name: perm
+              type:
+                basic: Permission
+                full: java.security.Permission
+              notes: the specified permission
+            - name: context
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a system-dependent security context.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n specified security context\
+              \ is denied access to the resource\n specified by the given permission.\n\
+              \ The context must be a security\n context returned by a previous call\
+              \ to\n getSecurityContext and the access control\n decision is based\
+              \ upon the configured security policy for\n that security context.\n\
+              \ \n If context is an instance of\n AccessControlContext then the\n\
+              \ AccessControlContext.checkPermission method is\n invoked with the\
+              \ specified permission.\n \n If context is not an instance of\n AccessControlContext\
+              \ then a\n SecurityException is thrown."
+          - name: checkPrintJobAccess
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to initiate a print job request.\n \n This method calls\n checkPermission\
+              \ with the\n RuntimePermission(\"queuePrintJob\") permission.\n \n If\
+              \ you override this method, then you should make a call to\n super.checkPrintJobAccess\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkPropertiesAccess
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to access or modify the system\n properties.\n \n This method is used\
+              \ by the getProperties and\n setProperties methods of class System.\n\
+              \ \n This method calls checkPermission with the\n PropertyPermission(\"\
+              *\", \"read,write\") permission.\n \n If you override this method, then\
+              \ you should make a call to\n super.checkPropertiesAccess\n at the point\
+              \ the overridden method would normally throw an\n exception."
+          - name: checkPropertyAccess
+            modifiers:
+            - public
+            parameters:
+            - name: key
+              type:
+                basic: String
+                full: java.lang.String
+              notes: a system property key.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to access the system property with\n the specified key name.\n \n\
+              \ This method is used by the getProperty method of\n class System.\n\
+              \ \n This method calls checkPermission with the\n PropertyPermission(key,\
+              \ \"read\") permission.\n \n If you override this method, then you should\
+              \ make a call to\n super.checkPropertyAccess\n at the point the overridden\
+              \ method would normally throw an\n exception."
+          - name: checkRead
+            modifiers:
+            - public
+            parameters:
+            - name: fd
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+              notes: the system-dependent file descriptor.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to read from the specified file\n descriptor.\n \n This method calls\
+              \ checkPermission with the\n RuntimePermission(\"readFileDescriptor\"\
+              )\n permission.\n \n If you override this method, then you should make\
+              \ a call to\n super.checkRead\n at the point the overridden method would\
+              \ normally throw an\n exception."
+          - name: checkRead
+            modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the system-dependent file name.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to read the file specified by the\n string argument.\n \n This method\
+              \ calls checkPermission with the\n FilePermission(file,\"read\") permission.\n\
+              \ \n If you override this method, then you should make a call to\n super.checkRead\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkRead
+            modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the system-dependent filename.
+            - name: context
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a system-dependent security context.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n specified security context\
+              \ is not allowed to read the file\n specified by the string argument.\
+              \ The context must be a security\n context returned by a previous call\
+              \ to\n getSecurityContext.\n  If context is an instance of\n AccessControlContext\
+              \ then the\n AccessControlContext.checkPermission method will\n be invoked\
+              \ with the FilePermission(file,\"read\") permission.\n  If context is\
+              \ not an instance of\n AccessControlContext then a\n SecurityException\
+              \ is thrown.\n \n If you override this method, then you should make\
+              \ a call to\n super.checkRead\n at the point the overridden method would\
+              \ normally throw an\n exception."
+          - name: checkSecurityAccess
+            modifiers:
+            - public
+            parameters:
+            - name: target
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the target name of the SecurityPermission.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Determines whether the permission with the specified permission\
+              \ target\n name should be granted or denied.\n\n  If the requested permission\
+              \ is allowed, this method returns\n quietly. If denied, a SecurityException\
+              \ is raised.\n\n  This method creates a SecurityPermission object for\n\
+              \ the given permission target name and calls checkPermission\n with\
+              \ it.\n\n  See the documentation for\n SecurityPermission for\n a list\
+              \ of possible permission target names.\n\n  If you override this method,\
+              \ then you should make a call to\n super.checkSecurityAccess\n at the\
+              \ point the overridden method would normally throw an\n exception."
+          - name: checkSetFactory
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to set the socket factory used by\n ServerSocket or Socket, or the\
+              \ stream\n handler factory used by URL.\n \n This method calls checkPermission\
+              \ with the\n RuntimePermission(\"setFactory\") permission.\n \n If you\
+              \ override this method, then you should make a call to\n super.checkSetFactory\n\
+              \ at the point the overridden method would normally throw an\n exception."
+          - name: checkWrite
+            modifiers:
+            - public
+            parameters:
+            - name: fd
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+              notes: the system-dependent file descriptor.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to write to the specified file\n descriptor.\n \n This method calls\
+              \ checkPermission with the\n RuntimePermission(\"writeFileDescriptor\"\
+              )\n permission.\n \n If you override this method, then you should make\
+              \ a call to\n super.checkWrite\n at the point the overridden method\
+              \ would normally throw an\n exception."
+          - name: checkWrite
+            modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the system-dependent filename.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Throws a SecurityException if the\n calling thread is not allowed\
+              \ to write to the file specified by\n the string argument.\n \n This\
+              \ method calls checkPermission with the\n FilePermission(file,\"write\"\
+              ) permission.\n \n If you override this method, then you should make\
+              \ a call to\n super.checkWrite\n at the point the overridden method\
+              \ would normally throw an\n exception."
+          - name: getClassContext
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+              notes: the execution stack.
+            notes: "Returns the current execution stack as an array of classes.\n\
+              \ \n The length of the array is the number of methods on the execution\n\
+              \ stack. The element at index 0 is the class of the\n currently executing\
+              \ method, the element at index 1 is\n the class of that method's caller,\
+              \ and so on."
+          - name: getSecurityContext
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "an implementation-dependent object that encapsulates\n     \
+                \     sufficient information about the current execution environment\n\
+                \          to perform some security checks later."
+            notes: "Creates an object that encapsulates the current execution\n environment.\
+              \ The result of this method is used, for example, by the\n three-argument\
+              \ checkConnect method and by the\n two-argument checkRead method.\n\
+              \ These methods are needed because a trusted method may be called\n\
+              \ on to read a file or open a socket on behalf of another method.\n\
+              \ The trusted method needs to determine if the other (possibly\n untrusted)\
+              \ method would be allowed to perform the operation on its\n own.\n \
+              \ The default implementation of this method is to return\n an AccessControlContext\
+              \ object."
+          - name: getThreadGroup
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+              notes: ThreadGroup that new threads are instantiated into
+            notes: "Returns the thread group into which to instantiate any new\n thread\
+              \ being created at the time this is being called.\n By default, it returns\
+              \ the thread group of the current\n thread. This should be overridden\
+              \ by a specific security\n manager to return the appropriate thread\
+              \ group."
+          staticMethods:
+          - name: addNonExportedPackages
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleLayer
+                full: java.lang.ModuleLayer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getPackages
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: String
+                full: java.lang.String[]
+          - name: getRootGroup
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: ThreadGroup
+                full: java.lang.ThreadGroup
+          - name: invalidatePackageAccessCache
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$addNonExportedPackages$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Set
+                full: java.util.Set
+            - name: arg1
+              type:
+                basic: Set
+                full: java.util.Set
+            - name: arg2
+              type:
+                basic: ModuleDescriptor
+                full: java.lang.module.ModuleDescriptor
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$addNonExportedPackages$1
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: lambda$nonExportedPkgs$2
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleDescriptor.Exports
+                full: java.lang.module.ModuleDescriptor$Exports
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$nonExportedPkgs$3
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleDescriptor.Opens
+                full: java.lang.module.ModuleDescriptor$Opens
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: nonExportedPkgs
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ModuleDescriptor
+                full: java.lang.module.ModuleDescriptor
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.String>

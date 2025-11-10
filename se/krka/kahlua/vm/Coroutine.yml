@@ -4,7 +4,25 @@ languages:
     packages:
       se.krka.kahlua.vm:
         Coroutine:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
           fields:
+            callFrameStack:
+              name: callFrameStack
+              modifiers:
+              - private
+              type:
+                basic: LuaCallFrame
+                full: se.krka.kahlua.vm.LuaCallFrame[]
+            callFrameTop:
+              name: callFrameTop
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
             environment:
               name: environment
               modifiers:
@@ -12,15 +30,34 @@ languages:
               type:
                 basic: KahluaTable
                 full: se.krka.kahlua.vm.KahluaTable
-                nullable: true
+            liveUpvalues:
+              name: liveUpvalues
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<se.krka.kahlua.vm.UpValue>
             objectStack:
               name: objectStack
               modifiers:
               - public
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
-                nullable: true
+            parent:
+              name: parent
+              modifiers:
+              - private
+              type:
+                basic: Coroutine
+                full: se.krka.kahlua.vm.Coroutine
+            platform:
+              name: platform
+              modifiers:
+              - private
+              type:
+                basic: Platform
+                full: se.krka.kahlua.vm.Platform
             stackTrace:
               name: stackTrace
               modifiers:
@@ -28,21 +65,56 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-                nullable: true
+            thread:
+              name: thread
+              modifiers:
+              - private
+              type:
+                basic: KahluaThread
+                full: se.krka.kahlua.vm.KahluaThread
+            top:
+              name: top
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            INITIAL_CALL_FRAME_STACK_SIZE:
+              name: INITIAL_CALL_FRAME_STACK_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            INITIAL_STACK_SIZE:
+              name: INITIAL_STACK_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_CALL_FRAME_STACK_SIZE:
+              name: MAX_CALL_FRAME_STACK_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            MAX_STACK_SIZE:
+              name: MAX_STACK_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Platform
-                full: se.krka.kahlua.vm.Platform
-            - name: arg1
-              type:
-                basic: KahluaTable
-                full: se.krka.kahlua.vm.KahluaTable
           - modifiers:
             - public
             parameters:
@@ -58,6 +130,17 @@ languages:
               type:
                 basic: KahluaThread
                 full: se.krka.kahlua.vm.KahluaThread
+          - modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Platform
+                full: se.krka.kahlua.vm.Platform
+            - name: arg1
+              type:
+                basic: KahluaTable
+                full: se.krka.kahlua.vm.KahluaTable
           methods:
           - name: addStackTrace
             modifiers:
@@ -78,6 +161,22 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: callFrameStackClear
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: cleanCallFrames
             modifiers:
             - public
@@ -116,6 +215,30 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: ensureCallFrameStackSize
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: ensureStacksize
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: findUpvalue
             modifiers:
             - public
@@ -145,7 +268,7 @@ languages:
             - public
             return:
               type:
-                basic: LuaCallFrame[]
+                basic: LuaCallFrame
                 full: se.krka.kahlua.vm.LuaCallFrame[]
           - name: getCallframeTop
             modifiers:
@@ -198,8 +321,8 @@ languages:
             - public
             return:
               type:
-                basic: LuaCallFrame
-                full: se.krka.kahlua.vm.LuaCallFrame
+                basic: Coroutine
+                full: se.krka.kahlua.vm.Coroutine
           - name: getParent
             modifiers:
             - public
@@ -238,6 +361,18 @@ languages:
               type:
                 basic: Platform
                 full: se.krka.kahlua.vm.Platform
+          - name: getStackTrace
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: LuaCallFrame
+                full: se.krka.kahlua.vm.LuaCallFrame
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getStatus
             modifiers:
             - public
@@ -403,5 +538,3 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object

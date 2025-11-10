@@ -4,29 +4,159 @@ languages:
     packages:
       java.io:
         BufferedReader:
+          extends: java.io.Reader
+          modifiers:
+          - public
+          notes: "Reads text from a character-input stream, buffering characters so\
+            \ as to\n provide for the efficient reading of characters, arrays, and\
+            \ lines.\n\n  The buffer size may be specified, or the default size may\
+            \ be used.  The\n default is large enough for most purposes.\n\n  In general,\
+            \ each read request made of a Reader causes a corresponding\n read request\
+            \ to be made of the underlying character or byte stream.  It is\n therefore\
+            \ advisable to wrap a BufferedReader around any Reader whose read()\n\
+            \ operations may be costly, such as FileReaders and InputStreamReaders.\
+            \  For\n example,\n\n \n BufferedReader in\n   = new BufferedReader(new\
+            \ FileReader(\"foo.in\"));\n \n\n will buffer the input from the specified\
+            \ file.  Without buffering, each\n invocation of read() or readLine()\
+            \ could cause bytes to be read from the\n file, converted into characters,\
+            \ and then returned, which can be very\n inefficient.\n\n  Programs that\
+            \ use DataInputStreams for textual input can be localized by\n replacing\
+            \ each DataInputStream with an appropriate BufferedReader."
+          fields:
+            cb:
+              name: cb
+              modifiers:
+              - private
+              type:
+                basic: char
+                full: char[]
+            in:
+              name: in
+              modifiers:
+              - private
+              type:
+                basic: Reader
+                full: java.io.Reader
+            markedChar:
+              name: markedChar
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            markedSkipLF:
+              name: markedSkipLF
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            nChars:
+              name: nChars
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            nextChar:
+              name: nextChar
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            readAheadLimit:
+              name: readAheadLimit
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            skipLF:
+              name: skipLF
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            INVALIDATED:
+              name: INVALIDATED
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            UNMARKED:
+              name: UNMARKED
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            defaultCharBufferSize:
+              name: defaultCharBufferSize
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            defaultExpectedLineLength:
+              name: defaultExpectedLineLength
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: Reader
                 full: java.io.Reader
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Reader
-                full: java.io.Reader
-            - name: arg1
+              notes: A Reader
+            - name: sz
               type:
                 basic: int
                 full: int
+              notes: Input-buffer size
+            notes: "Creates a buffering character-input stream that uses an input\
+              \ buffer of\n the specified size."
+          - modifiers:
+            - public
+            parameters:
+            - name: in
+              type:
+                basic: Reader
+                full: java.io.Reader
+              notes: A Reader
+            notes: "Creates a buffering character-input stream that uses a default-sized\n\
+              \ input buffer."
           methods:
           - name: close
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: 'Description copied from class: Reader'
+          - name: ensureOpen
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: fill
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -36,20 +166,47 @@ languages:
             - public
             return:
               type:
-                basic: Stream<String>
+                basic: Stream
                 full: java.util.stream.Stream<java.lang.String>
+              notes: "a Stream<String> providing the lines of text\n         described\
+                \ by this BufferedReader"
+            notes: "Returns a Stream, the elements of which are lines read from\n\
+              \ this BufferedReader.  The Stream is lazily populated,\n i.e., read\
+              \ only occurs during the\n terminal\n stream operation.\n\n  The reader\
+              \ must not be operated on during the execution of the\n terminal stream\
+              \ operation. Otherwise, the result of the terminal stream\n operation\
+              \ is undefined.\n\n  After execution of the terminal stream operation\
+              \ there are no\n guarantees that the reader will be at a specific position\
+              \ from which to\n read the next character or line.\n\n  If an IOException\
+              \ is thrown when accessing the underlying\n BufferedReader, it is wrapped\
+              \ in an UncheckedIOException which will be thrown from the Stream\n\
+              \ method that caused the read to take place. This method will return\
+              \ a\n Stream if invoked on a BufferedReader that is closed. Any operation\
+              \ on\n that stream that requires reading from the BufferedReader after\
+              \ it is\n closed, will cause an UncheckedIOException to be thrown."
           - name: mark
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: readAheadLimit
               type:
                 basic: int
                 full: int
+              notes: "Limit on the number of characters that may be\n            \
+                \             read while still preserving the mark. An attempt\n \
+                \                        to reset the stream after reading characters\n\
+                \                         up to this limit or beyond may fail.\n \
+                \                        A limit value larger than the size of the\
+                \ input\n                         buffer will cause a new buffer to\
+                \ be allocated\n                         whose size is no smaller\
+                \ than limit.\n                         Therefore large values should\
+                \ be used with care."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Marks the present position in the stream.  Subsequent calls to\
+              \ reset()\n will attempt to reposition the stream to this point."
           - name: markSupported
             modifiers:
             - public
@@ -57,6 +214,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if and only if this stream supports the mark operation.
+            notes: Tells whether this stream supports the mark() operation, which
+              it does.
           - name: read
             modifiers:
             - public
@@ -64,13 +224,63 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The character read, as an integer in the range\n         0 to\
+                \ 65535 (0x00-0xffff), or -1 if the\n         end of the stream has\
+                \ been reached"
+            notes: Reads a single character.
           - name: read
             modifiers:
             - public
             parameters:
+            - name: cbuf
+              type:
+                basic: char
+                full: char[]
+              notes: Destination buffer
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: Offset at which to start storing characters
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: Maximum number of characters to read
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "The number of characters read, or -1 if the end of the\n   \
+                \          stream has been reached"
+            notes: "Reads characters into a portion of an array.\n\n  This method\
+              \ implements the general contract of the corresponding\n read method\
+              \ of the\n Reader class.  As an additional convenience, it\n attempts\
+              \ to read as many characters as possible by repeatedly invoking\n the\
+              \ read method of the underlying stream.  This iterated\n read continues\
+              \ until one of the following conditions becomes\n true:\n \n\n    The\
+              \ specified number of characters have been read,\n\n    The read method\
+              \ of the underlying stream returns\n   -1, indicating end-of-file, or\n\
+              \n    The ready method of the underlying stream\n   returns false, indicating\
+              \ that further input requests\n   would block.\n\n \n If the first read\
+              \ on the underlying stream returns\n -1 to indicate end-of-file then\
+              \ this method returns\n -1.  Otherwise this method returns the number\
+              \ of characters\n actually read.\n\n  Subclasses of this class are encouraged,\
+              \ but not required, to\n attempt to read as many characters as possible\
+              \ in the same fashion.\n\n  Ordinarily this method takes characters\
+              \ from this stream's character\n buffer, filling it from the underlying\
+              \ stream as necessary.  If,\n however, the buffer is empty, the mark\
+              \ is not valid, and the requested\n length is at least as large as the\
+              \ buffer, then this method will read\n characters directly from the\
+              \ underlying stream into the given array.\n Thus redundant BufferedReaders\
+              \ will not copy data\n unnecessarily."
+          - name: read1
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: char[]
+                basic: char
                 full: char[]
             - name: arg1
               type:
@@ -86,11 +296,35 @@ languages:
                 full: int
           - name: readLine
             modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean[]
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: readLine
+            modifiers:
             - public
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "A String containing the contents of the line, not including\n\
+                \             any line-termination characters, or null if the end\
+                \ of the\n             stream has been reached without reading any\
+                \ characters"
+            notes: "Reads a line of text.  A line is considered to be terminated by\
+              \ any one\n of a line feed ('\\n'), a carriage return ('\\r'), a carriage\
+              \ return\n followed immediately by a line feed, or by reaching the end-of-file\n\
+              \ (EOF)."
           - name: ready
             modifiers:
             - public
@@ -98,6 +332,12 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "True if the next read() is guaranteed not to block for input,\n\
+                \ false otherwise.  Note that returning false does not guarantee that\
+                \ the\n next read will block."
+            notes: "Tells whether this stream is ready to be read.  A buffered character\n\
+              \ stream is ready if the buffer is not empty, or if the underlying\n\
+              \ character stream is ready."
           - name: reset
             modifiers:
             - public
@@ -105,6 +345,7 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Resets the stream to the most recent mark.
           - name: skip
             modifiers:
             - public
@@ -117,5 +358,3 @@ languages:
               type:
                 basic: long
                 full: long
-          javaType: class
-          extends: Reader

@@ -1,0 +1,169 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.security:
+        MessageDigestSpi:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class defines the Service Provider Interface (SPI)\n for the\
+            \ MessageDigest class, which provides the functionality\n of a message\
+            \ digest algorithm, such as MD5 or SHA. Message digests are\n secure one-way\
+            \ hash functions that take arbitrary-sized data and output a\n fixed-length\
+            \ hash value.\n\n  All the abstract methods in this class must be implemented\
+            \ by a\n cryptographic service provider who wishes to supply the implementation\n\
+            \ of a particular message digest algorithm.\n\n  Implementations are free\
+            \ to implement the Cloneable interface."
+          fields:
+            tempArray:
+              name: tempArray
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+          constructors:
+          - modifiers:
+            - public
+            notes: Constructor for subclasses to call.
+          methods:
+          - name: clone
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a clone if the implementation is cloneable.
+            notes: Returns a clone if the implementation is cloneable.
+          - name: engineDigest
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of bytes for the resulting hash value.
+            notes: "Completes the hash computation by performing final\n operations\
+              \ such as padding. Once engineDigest has\n been called, the engine should\
+              \ be reset (see\n engineReset).\n Resetting is the responsibility of\
+              \ the\n engine implementor."
+          - name: engineDigest
+            modifiers:
+            - protected
+            parameters:
+            - name: buf
+              type:
+                basic: byte
+                full: byte[]
+              notes: the output buffer in which to store the digest
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: offset to start from in the output buffer
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: "number of bytes within buf allotted for the digest.\n Both this\
+                \ default implementation and the SUN provider do not\n return partial\
+                \ digests.  The presence of this parameter is solely\n for consistency\
+                \ in our API's.  If the value of this parameter is less\n than the\
+                \ actual digest length, the method will throw a DigestException.\n\
+                \ This parameter is ignored if its value is greater than or equal\
+                \ to\n the actual digest length."
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the length of the digest stored in the output buffer.
+            notes: "Completes the hash computation by performing final\n operations\
+              \ such as padding. Once engineDigest has\n been called, the engine should\
+              \ be reset (see\n engineReset).\n Resetting is the responsibility of\
+              \ the\n engine implementor.\n\n This method should be abstract, but\
+              \ we leave it concrete for\n binary compatibility.  Knowledgeable providers\
+              \ should override this\n method."
+          - name: engineGetDigestLength
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the digest length in bytes.
+            notes: "Returns the digest length in bytes.\n\n This concrete method has\
+              \ been added to this previously-defined\n abstract class. (For backwards\
+              \ compatibility, it cannot be abstract.)\n\n The default behavior is\
+              \ to return 0.\n\n This method may be overridden by a provider to return\
+              \ the digest\n length."
+          - name: engineReset
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Resets the digest for further use.
+          - name: engineUpdate
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: input
+              type:
+                basic: byte
+                full: byte
+              notes: the byte to use for the update.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Updates the digest using the specified byte.
+          - name: engineUpdate
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: input
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of bytes to use for the update.
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset to start from in the array of bytes.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: "the number of bytes to use, starting at\n offset."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Updates the digest using the specified array of bytes,\n starting\
+              \ at the specified offset."
+          - name: engineUpdate
+            modifiers:
+            - protected
+            parameters:
+            - name: input
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+              notes: the ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Update the digest using the specified ByteBuffer. The digest is\n\
+              \ updated using the input.remaining() bytes starting\n at input.position().\n\
+              \ Upon return, the buffer's position will be equal to its limit;\n its\
+              \ limit will not have changed."

@@ -4,33 +4,99 @@ languages:
     packages:
       java.io:
         Reader:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract class for reading character streams.  The only methods\
+            \ that a\n subclass must implement are read(char[], int, int) and close().\
+            \  Most\n subclasses, however, will override some of the methods defined\
+            \ here in order\n to provide higher efficiency, additional functionality,\
+            \ or both."
+          fields:
+            lock:
+              name: lock
+              modifiers:
+              - protected
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The object used to synchronize operations on this stream.  For\n\
+                \ efficiency, a character-stream object may use an object other than\n\
+                \ itself to protect critical sections.  A subclass should therefore\
+                \ use\n the object in this field rather than this or a synchronized\n\
+                \ method."
+            skipBuffer:
+              name: skipBuffer
+              modifiers:
+              - private
+              type:
+                basic: char
+                full: char[]
+          staticFields:
+            TRANSFER_BUFFER_SIZE:
+              name: TRANSFER_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            maxSkipBufferSize:
+              name: maxSkipBufferSize
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Creates a new character-stream reader whose critical sections\
+              \ will\n synchronize on the reader itself."
+          - modifiers:
+            - protected
+            parameters:
+            - name: lock
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The Object to synchronize on.
+            notes: "Creates a new character-stream reader whose critical sections\
+              \ will\n synchronize on the given object."
           methods:
           - name: close
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Closes the stream and releases any system resources associated\
+              \ with\n it.  Once the stream has been closed, further read(), ready(),\n\
+              \ mark(), reset(), or skip() invocations will throw an IOException.\n\
+              \ Closing a previously closed stream has no effect."
           - name: mark
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: readAheadLimit
               type:
                 basic: int
                 full: int
+              notes: "Limit on the number of characters that may be\n            \
+                \             read while still preserving the mark.  After\n     \
+                \                    reading this many characters, attempting to\n\
+                \                         reset the stream may fail."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Marks the present position in the stream.  Subsequent calls to\
+              \ reset()\n will attempt to reposition the stream to this point.  Not\
+              \ all\n character-input streams support the mark() operation."
           - name: markSupported
             modifiers:
             - public
@@ -38,69 +104,98 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: read
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: read
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char[]
-                full: char[]
-            return:
-              type:
-                basic: int
-                full: int
+              notes: true if and only if this stream supports the mark operation.
+            notes: "Tells whether this stream supports the mark() operation. The default\n\
+              \ implementation always returns false. Subclasses should override this\n\
+              \ method."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: target
               type:
                 basic: CharBuffer
                 full: java.nio.CharBuffer
+              notes: the buffer to read characters into
             return:
               type:
                 basic: int
                 full: int
+              notes: "The number of characters added to the buffer, or\n         -1\
+                \ if this source of characters is at its end"
+            notes: "Attempts to read characters into the specified character buffer.\n\
+              \ The buffer is used as a repository of characters as-is: the only\n\
+              \ changes made are the results of a put operation. No flipping or\n\
+              \ rewinding of the buffer is performed."
           - name: read
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharBuffer
-                full: java.nio.CharBuffer
             return:
               type:
                 basic: int
                 full: int
+              notes: "The character read, as an integer in the range 0 to 65535\n\
+                \             (0x00-0xffff), or -1 if the end of the stream has\n\
+                \             been reached"
+            notes: "Reads a single character.  This method will block until a character\
+              \ is\n available, an I/O error occurs, or the end of the stream is reached.\n\
+              \n  Subclasses that intend to support efficient single-character input\n\
+              \ should override this method."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cbuf
               type:
-                basic: char[]
+                basic: char
                 full: char[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+              notes: Destination buffer
             return:
               type:
                 basic: int
                 full: int
+              notes: "The number of characters read, or -1\n              if the end\
+                \ of the stream\n              has been reached"
+            notes: "Reads characters into an array.  This method will block until\
+              \ some input\n is available, an I/O error occurs, or the end of the\
+              \ stream is reached.\n\n  If the length of cbuf is zero, then no characters\
+              \ are read\n and 0 is returned; otherwise, there is an attempt to read\
+              \ at\n least one character.  If no character is available because the\
+              \ stream is\n at its end, the value -1 is returned; otherwise, at least\
+              \ one\n character is read and stored into cbuf."
+          - name: read
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: cbuf
+              type:
+                basic: char
+                full: char[]
+              notes: Destination buffer
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: Offset at which to start storing characters
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: Maximum number of characters to read
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "The number of characters read, or -1 if the end of the\n   \
+                \          stream has been reached"
+            notes: "Reads characters into a portion of an array.  This method will\
+              \ block\n until some input is available, an I/O error occurs, or the\
+              \ end of the\n stream is reached.\n\n  If len is zero, then no characters\
+              \ are read and 0 is\n returned; otherwise, there is an attempt to read\
+              \ at least one character.\n If no character is available because the\
+              \ stream is at its end, the value\n -1 is returned; otherwise, at least\
+              \ one character is read and\n stored into cbuf."
           - name: ready
             modifiers:
             - public
@@ -108,6 +203,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "True if the next read() is guaranteed not to block for input,\n\
+                \ false otherwise.  Note that returning false does not guarantee that\
+                \ the\n next read will block."
+            notes: Tells whether this stream is ready to be read.
           - name: reset
             modifiers:
             - public
@@ -115,30 +214,57 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Resets the stream.  If the stream has been marked, then attempt\
+              \ to\n reposition it at the mark.  If the stream has not been marked,\
+              \ then\n attempt to reset it in some way appropriate to the particular\
+              \ stream,\n for example by repositioning it to its starting point. \
+              \ Not all\n character-input streams support the reset() operation, and\
+              \ some support\n reset() without supporting mark()."
           - name: skip
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: long
                 full: long
+              notes: The number of characters to skip
             return:
               type:
                 basic: long
                 full: long
+              notes: The number of characters actually skipped
+            notes: "Skips characters.  This method will block until some characters\
+              \ are\n available, an I/O error occurs, or the end of the stream is\
+              \ reached.\n If the stream is already at its end before this method\
+              \ is invoked,\n then no characters are skipped and zero is returned."
           - name: transferTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: Writer
                 full: java.io.Writer
+              notes: the writer, non-null
             return:
               type:
                 basic: long
                 full: long
+              notes: the number of characters transferred
+            notes: "Reads all characters from this reader and writes the characters\
+              \ to the\n given writer in the order that they are read. On return,\
+              \ this reader\n will be at end of the stream. This method does not close\
+              \ either reader\n or writer.\n \n This method may block indefinitely\
+              \ reading from the reader, or\n writing to the writer. The behavior\
+              \ for the case where the reader\n and/or writer is asynchronously closed,\
+              \ or the thread\n interrupted during the transfer, is highly reader\
+              \ and writer\n specific, and therefore not specified.\n \n If an I/O\
+              \ error occurs reading from the reader or writing to the\n writer, then\
+              \ it may do so after some characters have been read or\n written. Consequently\
+              \ the reader may not be at end of the stream and\n one, or both, streams\
+              \ may be in an inconsistent state. It is strongly\n recommended that\
+              \ both streams be promptly closed if an I/O error occurs."
           staticMethods:
           - name: nullReader
             modifiers:
@@ -148,5 +274,14 @@ languages:
               type:
                 basic: Reader
                 full: java.io.Reader
-          javaType: class
-          extends: Object
+              notes: a Reader which reads no characters
+            notes: "Returns a new Reader that reads no characters. The returned\n\
+              \ stream is initially open.  The stream is closed by calling the\n close()\
+              \ method.  Subsequent calls to close() have no\n effect.\n\n  While\
+              \ the stream is open, the read(), read(char[]),\n read(char[], int,\
+              \ int), read(CharBuffer), \n ready(), skip(long), and transferTo() methods\
+              \ all\n behave as if end of stream has been reached. After the stream\
+              \ has been\n closed, these methods all throw IOException.\n\n  The markSupported()\
+              \ method returns false.  The\n mark() and reset() methods throw an IOException.\n\
+              \n  The object used to synchronize operations on the\n returned Reader\
+              \ is not specified."

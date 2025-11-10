@@ -4,39 +4,188 @@ languages:
     packages:
       javax.security.auth:
         Subject:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A Subject represents a grouping of related information\n for a single\
+            \ entity, such as a person.\n Such information includes the Subject's\
+            \ identities as well as\n its security-related attributes\n (passwords\
+            \ and cryptographic keys, for example).\n\n  Subjects may potentially\
+            \ have multiple identities.\n Each identity is represented as a Principal\n\
+            \ within the Subject.  Principals simply bind names to a\n Subject.  For\
+            \ example, a Subject that happens\n to be a person, Alice, might have\
+            \ two Principals:\n one which binds \"Alice Bar\", the name on her driver\
+            \ license,\n to the Subject, and another which binds,\n \"999-99-9999\"\
+            , the number on her student identification card,\n to the Subject.  Both\
+            \ Principals refer to the same\n Subject even though each has a different\
+            \ name.\n\n  A Subject may also own security-related attributes,\n which\
+            \ are referred to as credentials.\n Sensitive credentials that require\
+            \ special protection, such as\n private cryptographic keys, are stored\
+            \ within a private credential\n Set.  Credentials intended to be shared,\
+            \ such as\n public key certificates or Kerberos server tickets are stored\n\
+            \ within a public credential Set.  Different permissions\n are required\
+            \ to access and modify the different credential Sets.\n\n  To retrieve\
+            \ all the Principals associated with a Subject,\n invoke the getPrincipals\
+            \ method.  To retrieve\n all the public or private credentials belonging\
+            \ to a Subject,\n invoke the getPublicCredentials method or\n getPrivateCredentials\
+            \ method, respectively.\n To modify the returned Set of Principals and\
+            \ credentials,\n use the methods defined in the Set class.\n For example:\n\
+            \ \n      Subject subject;\n      Principal principal;\n      Object credential;\n\
+            \n      // add a Principal and credential to the Subject\n      subject.getPrincipals().add(principal);\n\
+            \      subject.getPublicCredentials().add(credential);\n \n\n  This Subject\
+            \ class implements Serializable.\n While the Principals associated with\
+            \ the Subject are serialized,\n the credentials associated with the Subject\
+            \ are not.\n Note that the java.security.Principal class\n does not implement\
+            \ Serializable.  Therefore all concrete\n Principal implementations associated\
+            \ with Subjects\n must implement Serializable."
+          fields:
+            principals:
+              name: principals
+              modifiers:
+              - package
+              type:
+                basic: Set
+                full: java.util.Set<java.security.Principal>
+            privCredentials:
+              name: privCredentials
+              modifiers:
+              - package
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Object>
+            pubCredentials:
+              name: pubCredentials
+              modifiers:
+              - package
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Object>
+            readOnly:
+              name: readOnly
+              modifiers:
+              - private
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+          staticFields:
+            NULL_PD_ARRAY:
+              name: NULL_PD_ARRAY
+              modifiers:
+              - private
+              - static
               type:
-                basic: Set<? extends Principal>
-                full: java.util.Set<? extends java.security.Principal>
-            - name: arg2
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            PRINCIPAL_SET:
+              name: PRINCIPAL_SET
+              modifiers:
+              - private
+              - static
               type:
-                basic: Set<?>
-                full: java.util.Set<?>
-            - name: arg3
+                basic: int
+                full: int
+            PRIV_CREDENTIAL_SET:
+              name: PRIV_CREDENTIAL_SET
+              modifiers:
+              - private
+              - static
               type:
-                basic: Set<?>
-                full: java.util.Set<?>
-          methods:
-          - name: __toString__
-            modifiers:
+                basic: int
+                full: int
+            PUB_CREDENTIAL_SET:
+              name: PUB_CREDENTIAL_SET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
             - public
-            return:
+            notes: "Create an instance of a Subject\n with an empty Set of Principals\
+              \ and empty\n Sets of public and private credentials.\n\n  The newly\
+              \ constructed Sets check whether this Subject\n has been set read-only\
+              \ before permitting subsequent modifications.\n The newly created Sets\
+              \ also prevent illegal modifications\n by ensuring that callers have\
+              \ sufficient permissions.  These Sets\n also prohibit null elements,\
+              \ and attempts to add or query a null\n element will result in a NullPointerException.\n\
+              \n  To modify the Principals Set, the caller must have\n AuthPermission(\"\
+              modifyPrincipals\").\n To modify the public credential Set, the caller\
+              \ must have\n AuthPermission(\"modifyPublicCredentials\").\n To modify\
+              \ the private credential Set, the caller must have\n AuthPermission(\"\
+              modifyPrivateCredentials\")."
+          - modifiers:
+            - public
+            parameters:
+            - name: readOnly
               type:
-                basic: String
-                full: java.lang.String
+                basic: boolean
+                full: boolean
+              notes: "true if the Subject is to be read-only,\n          and false\
+                \ otherwise."
+            - name: principals
+              type:
+                basic: Set
+                full: java.util.Set<? extends java.security.Principal>
+              notes: "the Set of Principals\n          to be associated with this\
+                \ Subject."
+            - name: pubCredentials
+              type:
+                basic: Set
+                full: java.util.Set<?>
+              notes: "the Set of public credentials\n          to be associated with\
+                \ this Subject."
+            - name: privCredentials
+              type:
+                basic: Set
+                full: java.util.Set<?>
+              notes: "the Set of private credentials\n          to be associated with\
+                \ this Subject."
+            notes: "Create an instance of a Subject with\n Principals and credentials.\n\
+              \n  The Principals and credentials from the specified Sets\n are copied\
+              \ into newly constructed Sets.\n These newly created Sets check whether\
+              \ this Subject\n has been set read-only before permitting subsequent\
+              \ modifications.\n The newly created Sets also prevent illegal modifications\n\
+              \ by ensuring that callers have sufficient permissions.  These Sets\n\
+              \ also prohibit null elements, and attempts to add or query a null\n\
+              \ element will result in a NullPointerException.\n\n  To modify the\
+              \ Principals Set, the caller must have\n AuthPermission(\"modifyPrincipals\"\
+              ).\n To modify the public credential Set, the caller must have\n AuthPermission(\"\
+              modifyPublicCredentials\").\n To modify the private credential Set,\
+              \ the caller must have\n AuthPermission(\"modifyPrivateCredentials\"\
+              )."
+          methods:
           - name: equals
             modifiers:
             - public
+            parameters:
+            - name: o
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "Object to be compared for equality with this\n          Subject."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the specified Object is equal to this\n          Subject."
+            notes: "Compares the specified Object with this Subject\n for equality.\
+              \  Returns true if the given object is also a Subject\n and the two\
+              \ Subject instances are equivalent.\n More formally, two Subject instances\
+              \ are\n equal if their Principal and Credential\n Sets are equal."
+          - name: getCredHashCode
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -44,65 +193,124 @@ languages:
                 full: java.lang.Object
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: int
+                full: int
           - name: getPrincipals
             modifiers:
             - public
             return:
               type:
-                basic: Set<Principal>
+                basic: Set
                 full: java.util.Set<java.security.Principal>
+              notes: "the Set of Principals associated with this\n          Subject."
+            notes: "Return the Set of Principals associated with this\n Subject. \
+              \ Each Principal represents\n an identity for this Subject.\n\n  The\
+              \ returned Set is backed by this Subject's\n internal Principal Set.\
+              \  Any modification\n to the returned Set affects the internal\n Principal\
+              \ Set as well.\n\n  If a security manager is installed, the caller must\
+              \ have a\n AuthPermission(\"modifyPrincipals\") permission to modify\n\
+              \ the returned set, or a SecurityException will be thrown."
           - name: getPrincipals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the returned Set of Principals will all be\n          instances\
+                \ of this class."
             return:
               type:
-                basic: Set<T>
+                basic: Set
                 full: java.util.Set<T>
+              notes: "a Set of Principals that are instances of the\n          specified\
+                \ Class."
+            notes: "Return a Set of Principals associated with this\n Subject that\
+              \ are instances or subclasses of the specified\n Class.\n\n  The returned\
+              \ Set is not backed by this Subject's\n internal Principal Set.  A new\n\
+              \ Set is created and returned for each method invocation.\n Modifications\
+              \ to the returned Set\n will not affect the internal Principal Set."
           - name: getPrivateCredentials
             modifiers:
             - public
             return:
               type:
-                basic: Set<T>
-                full: java.util.Set<T>
-          - name: getPrivateCredentials
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: Set<T>
-                full: java.util.Set<T>
-          - name: getPublicCredentials
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Set<Object>
+                basic: Set
                 full: java.util.Set<java.lang.Object>
+              notes: "a Set of private credentials held by this\n          Subject."
+            notes: "Return the Set of private credentials held by this\n Subject.\n\
+              \n  The returned Set is backed by this Subject's\n internal private\
+              \ Credential Set.  Any modification\n to the returned Set affects the\
+              \ internal private\n Credential Set as well.\n\n  If a security manager\
+              \ is installed, the caller must have a\n AuthPermission(\"modifyPrivateCredentials\"\
+              ) permission to modify\n the returned set, or a SecurityException will\
+              \ be thrown.\n\n  While iterating through the Set,\n a SecurityException\
+              \ is thrown if a security manager is installed\n and the caller does\
+              \ not have a PrivateCredentialPermission\n to access a particular Credential.\
+              \  The Iterator\n is nevertheless advanced to the next element in the\
+              \ Set."
+          - name: getPrivateCredentials
+            modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: Class
+                full: java.lang.Class<T>
+              notes: "the returned Set of private credentials will all be\n      \
+                \    instances of this class."
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<T>
+              notes: "a Set of private credentials that are instances\n          of\
+                \ the  specified Class."
+            notes: "Return a Set of private credentials associated with this\n Subject\
+              \ that are instances or subclasses of the specified\n Class.\n\n  If\
+              \ a security manager is installed, the caller must have a\n PrivateCredentialPermission\
+              \ to access all of the requested\n Credentials, or a SecurityException\
+              \ will be thrown.\n\n  The returned Set is not backed by this Subject's\n\
+              \ internal private Credential Set.  A new\n Set is created and returned\
+              \ for each method invocation.\n Modifications to the returned Set\n\
+              \ will not affect the internal private Credential Set."
+          - name: getPublicCredentials
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Object>
+              notes: "a Set of public credentials held by this\n          Subject."
+            notes: "Return the Set of public credentials held by this\n Subject.\n\
+              \n  The returned Set is backed by this Subject's\n internal public Credential\
+              \ Set.  Any modification\n to the returned Set affects the internal\
+              \ public\n Credential Set as well.\n\n  If a security manager is installed,\
+              \ the caller must have a\n AuthPermission(\"modifyPublicCredentials\"\
+              ) permission to modify\n the returned set, or a SecurityException will\
+              \ be thrown."
           - name: getPublicCredentials
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: c
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the returned Set of public credentials will all be\n       \
+                \   instances of this class."
             return:
               type:
-                basic: Set<T>
+                basic: Set
                 full: java.util.Set<T>
+              notes: "a Set of public credentials that are instances\n          of\
+                \ the  specified Class."
+            notes: "Return a Set of public credentials associated with this\n Subject\
+              \ that are instances or subclasses of the specified\n Class.\n\n  The\
+              \ returned Set is not backed by this Subject's\n internal public Credential\
+              \ Set.  A new\n Set is created and returned for each method invocation.\n\
+              \ Modifications to the returned Set\n will not affect the internal public\
+              \ Credential Set."
           - name: hashCode
             modifiers:
             - public
@@ -110,6 +318,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hashcode for this Subject.
+            notes: Returns a hashcode for this Subject.
           - name: isReadOnly
             modifiers:
             - public
@@ -117,6 +327,20 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this Subject is read-only, false otherwise.
+            notes: Query whether this Subject is read-only.
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: setReadOnly
             modifiers:
             - public
@@ -124,27 +348,61 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Set this Subject to be read-only.\n\n  Modifications (additions\
+              \ and removals) to this Subject's\n Principal Set and\n credential Sets\
+              \ will be disallowed.\n The destroy operation on this Subject's credentials\
+              \ will\n still be permitted.\n\n  Subsequent attempts to modify the\
+              \ Subject's Principal\n and credential Sets will result in an\n IllegalStateException\
+              \ being thrown.\n Also, once a Subject is read-only,\n it can not be\
+              \ reset to being writable again."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: toString
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
-          - name: doAs
+          - name: collectionNullClean
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: Subject
-                full: javax.security.auth.Subject
-            - name: arg1
-              type:
-                basic: PrivilegedAction<T>
-                full: java.security.PrivilegedAction<T>
+                basic: Collection
+                full: java.util.Collection<? extends E>
             return:
               type:
-                basic: T
-                full: T
-          - name: doAs
+                basic: LinkedList
+                full: java.util.LinkedList<E>
+          - name: createContext
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
@@ -152,70 +410,158 @@ languages:
                 basic: Subject
                 full: javax.security.auth.Subject
             - name: arg1
-              type:
-                basic: PrivilegedExceptionAction<T>
-                full: java.security.PrivilegedExceptionAction<T>
-            return:
-              type:
-                basic: T
-                full: T
-          - name: doAsPrivileged
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Subject
-                full: javax.security.auth.Subject
-            - name: arg1
-              type:
-                basic: PrivilegedAction<T>
-                full: java.security.PrivilegedAction<T>
-            - name: arg2
               type:
                 basic: AccessControlContext
                 full: java.security.AccessControlContext
             return:
               type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+          - name: doAs
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: subject
+              type:
+                basic: Subject
+                full: javax.security.auth.Subject
+              notes: "the Subject that the specified\n                  action will\
+                \ run as.  This parameter\n                  may be null."
+            - name: action
+              type:
+                basic: PrivilegedAction
+                full: java.security.PrivilegedAction<T>
+              notes: "the code to be run as the specified\n                  Subject."
+            return:
+              type:
                 basic: T
                 full: T
-            deprecated: true
+              notes: "the value returned by the PrivilegedAction's\n             \
+                \     run method."
+            notes: "Perform work as a particular Subject.\n\n  This method first retrieves\
+              \ the current Thread's\n AccessControlContext via\n AccessController.getContext,\n\
+              \ and then instantiates a new AccessControlContext\n using the retrieved\
+              \ context along with a new\n SubjectDomainCombiner (constructed using\n\
+              \ the provided Subject).\n Finally, this method invokes AccessController.doPrivileged,\n\
+              \ passing it the provided PrivilegedAction,\n as well as the newly constructed\
+              \ AccessControlContext."
+          - name: doAs
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: subject
+              type:
+                basic: Subject
+                full: javax.security.auth.Subject
+              notes: "the Subject that the specified\n                  action will\
+                \ run as.  This parameter\n                  may be null."
+            - name: action
+              type:
+                basic: PrivilegedExceptionAction
+                full: java.security.PrivilegedExceptionAction<T>
+              notes: "the code to be run as the specified\n                  Subject."
+            return:
+              type:
+                basic: T
+                full: T
+              notes: "the value returned by the\n                  PrivilegedExceptionAction's\
+                \ run method."
+            notes: "Perform work as a particular Subject.\n\n  This method first retrieves\
+              \ the current Thread's\n AccessControlContext via\n AccessController.getContext,\n\
+              \ and then instantiates a new AccessControlContext\n using the retrieved\
+              \ context along with a new\n SubjectDomainCombiner (constructed using\n\
+              \ the provided Subject).\n Finally, this method invokes AccessController.doPrivileged,\n\
+              \ passing it the provided PrivilegedExceptionAction,\n as well as the\
+              \ newly constructed AccessControlContext."
           - name: doAsPrivileged
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: subject
               type:
                 basic: Subject
                 full: javax.security.auth.Subject
-            - name: arg1
+              notes: "the Subject that the specified\n                  action will\
+                \ run as.  This parameter\n                  may be null."
+            - name: action
               type:
-                basic: PrivilegedExceptionAction<T>
-                full: java.security.PrivilegedExceptionAction<T>
-            - name: arg2
+                basic: PrivilegedAction
+                full: java.security.PrivilegedAction<T>
+              notes: "the code to be run as the specified\n                  Subject."
+            - name: acc
               type:
                 basic: AccessControlContext
                 full: java.security.AccessControlContext
+              notes: "the AccessControlContext to be tied to the\n               \
+                \   specified subject and action."
             return:
               type:
                 basic: T
                 full: T
-            deprecated: true
+              notes: "the value returned by the PrivilegedAction's\n             \
+                \     run method."
+            notes: "Perform privileged work as a particular Subject.\n\n  This method\
+              \ behaves exactly as Subject.doAs,\n except that instead of retrieving\
+              \ the current Thread's\n AccessControlContext, it uses the provided\n\
+              \ AccessControlContext.  If the provided\n AccessControlContext is null,\n\
+              \ this method instantiates a new AccessControlContext\n with an empty\
+              \ collection of ProtectionDomains."
+          - name: doAsPrivileged
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: subject
+              type:
+                basic: Subject
+                full: javax.security.auth.Subject
+              notes: "the Subject that the specified\n                  action will\
+                \ run as.  This parameter\n                  may be null."
+            - name: action
+              type:
+                basic: PrivilegedExceptionAction
+                full: java.security.PrivilegedExceptionAction<T>
+              notes: "the code to be run as the specified\n                  Subject."
+            - name: acc
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+              notes: "the AccessControlContext to be tied to the\n               \
+                \   specified subject and action."
+            return:
+              type:
+                basic: T
+                full: T
+              notes: "the value returned by the\n                  PrivilegedExceptionAction's\
+                \ run method."
+            notes: "Perform privileged work as a particular Subject.\n\n  This method\
+              \ behaves exactly as Subject.doAs,\n except that instead of retrieving\
+              \ the current Thread's\n AccessControlContext, it uses the provided\n\
+              \ AccessControlContext.  If the provided\n AccessControlContext is null,\n\
+              \ this method instantiates a new AccessControlContext\n with an empty\
+              \ collection of ProtectionDomains."
           - name: getSubject
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: acc
               type:
                 basic: AccessControlContext
                 full: java.security.AccessControlContext
+              notes: "the AccessControlContext from which to retrieve\n          the\
+                \ Subject."
             return:
               type:
                 basic: Subject
                 full: javax.security.auth.Subject
-            deprecated: true
-          javaType: class
-          extends: Object
+              notes: "the Subject associated with the provided\n          AccessControlContext,\
+                \ or null\n          if no Subject is associated\n          with the\
+                \ provided AccessControlContext."
+            notes: "Get the Subject associated with the provided\n AccessControlContext.\n\
+              \n  The AccessControlContext may contain many\n Subjects (from nested\
+              \ doAs calls).\n In this situation, the most recent Subject associated\n\
+              \ with the AccessControlContext is returned."

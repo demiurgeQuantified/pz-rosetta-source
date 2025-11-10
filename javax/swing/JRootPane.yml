@@ -1,0 +1,689 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      javax.swing:
+        JRootPane:
+          extends: javax.swing.JComponent
+          modifiers:
+          - public
+          notes: "A lightweight container used behind the scenes by\n JFrame, JDialog,\
+            \ JWindow,\n JApplet, and JInternalFrame.\n For task-oriented information\
+            \ on functionality provided by root panes\n see How to Use Root Panes,\n\
+            \ a section in The Java Tutorial.\n\n \n The following image shows the\
+            \ relationships between\n the classes that use root panes.\n \n The &quot;heavyweight&quot;\
+            \ components (those that delegate to a peer, or native\n component on\
+            \ the host system) are shown with a darker, heavier box. The four\n heavyweight\
+            \ JFC/Swing containers (JFrame, JDialog,\n JWindow, and JApplet) are\n\
+            \ shown in relation to the AWT classes they extend.\n These four components\
+            \ are the\n only heavyweight containers in the Swing library. The lightweight\
+            \ container\n JInternalFrame is also shown.\n All five of these JFC/Swing\
+            \ containers implement the\n RootPaneContainer interface,\n and they all\
+            \ delegate their operations to a\n JRootPane (shown with a little \"handle\"\
+            \ on top).\n \n Note: The JComponent method getRootPane\n can be used\
+            \ to obtain the JRootPane that contains\n a given component.\n \n\n \n\
+            \   Example:\n   \n \n The diagram at right shows the structure of a JRootPane.\n\
+            \ A JRootpane is made up of a glassPane,\n an optional menuBar, and a\
+            \ contentPane.\n (The JLayeredPane manages the menuBar\n and the contentPane.)\n\
+            \ The glassPane sits over the top of everything,\n where it is in a position\
+            \ to intercept mouse movements.\n Since the glassPane (like the contentPane)\n\
+            \ can be an arbitrary component, it is also possible to set up the\n glassPane\
+            \ for drawing. Lines and images on the\n glassPane can then range\n over\
+            \ the frames underneath without being limited by their boundaries.\n \n\
+            \ Although the menuBar component is optional,\n the layeredPane, contentPane,\n\
+            \ and glassPane always exist.\n Attempting to set them to null generates\
+            \ an exception.\n \n To add components to the JRootPane (other than the\n\
+            \ optional menu bar), you add the object to the contentPane\n of the JRootPane,\
+            \ like this:\n \n       rootPane.getContentPane().add(child);\n \n The\
+            \ same principle holds true for setting layout managers, removing\n components,\
+            \ listing children, etc. All these methods are invoked on\n the contentPane\
+            \ instead of on the JRootPane.\n \n Note: The default layout manager for\
+            \ the contentPane is\n  a BorderLayout manager. However, the JRootPane\n\
+            \  uses a custom LayoutManager.\n  So, when you want to change the layout\
+            \ manager for the components you added\n  to a JRootPane, be sure to use\
+            \ code like this:\n \n    rootPane.getContentPane().setLayout(new BoxLayout());\n\
+            \ \n If a JMenuBar component is set on the JRootPane,\n it is positioned\
+            \ along the upper edge of the frame.\n The contentPane is adjusted in\
+            \ location and size to\n fill the remaining area.\n (The JMenuBar and\
+            \ the contentPane are added to the\n layeredPane component at the\n JLayeredPane.FRAME_CONTENT_LAYER\
+            \ layer.)\n \n The layeredPane is the parent of all children in the\n\
+            \ JRootPane -- both as the direct parent of the menu and\n the grandparent\
+            \ of all components added to the contentPane.\n It is an instance of JLayeredPane,\n\
+            \ which provides the ability to add components at several layers.\n This\
+            \ capability is very useful when working with menu popups,\n dialog boxes,\
+            \ and dragging -- situations in which you need to place\n a component\
+            \ on top of all other components in the pane.\n \n The glassPane sits\
+            \ on top of all other components in the\n JRootPane.\n That provides a\
+            \ convenient place to draw above all other components,\n and makes it\
+            \ possible to intercept mouse events,\n which is useful both for dragging\
+            \ and for drawing.\n Developers can use setVisible on the glassPane\n\
+            \ to control when the glassPane displays over the other children.\n By\
+            \ default the glassPane is not visible.\n \n The custom LayoutManager\
+            \ used by JRootPane\n ensures that:\n \n The glassPane fills the entire\
+            \ viewable\n     area of the JRootPane (bounds - insets).\n The layeredPane\
+            \ fills the entire viewable area of the\n     JRootPane. (bounds - insets)\n\
+            \ The menuBar is positioned at the upper edge of the\n     layeredPane.\n\
+            \ The contentPane fills the entire viewable area,\n     minus the menuBar,\
+            \ if present.\n \n Any other views in the JRootPane view hierarchy are\
+            \ ignored.\n \n If you replace the LayoutManager of the JRootPane,\n you\
+            \ are responsible for managing all of these views.\n So ordinarily you\
+            \ will want to be sure that you\n change the layout manager for the contentPane\
+            \ rather than\n for the JRootPane itself!\n \n The painting architecture\
+            \ of Swing requires an opaque\n JComponent\n to exist in the containment\
+            \ hierarchy above all other components. This is\n typically provided by\
+            \ way of the content pane. If you replace the content\n pane, it is recommended\
+            \ that you make the content pane opaque\n by way of setOpaque(true). Additionally,\
+            \ if the content pane\n overrides paintComponent, it\n will need to completely\
+            \ fill in the background in an opaque color in\n paintComponent.\n \n\
+            \ Warning: Swing is not thread safe. For more\n information see Swing's\
+            \ Threading\n Policy.\n \n Warning:\n Serialized objects of this class\
+            \ will not be compatible with\n future Swing releases. The current serialization\
+            \ support is\n appropriate for short term storage or RMI between applications\
+            \ running\n the same version of Swing.  As of 1.4, support for long term\
+            \ storage\n of all JavaBeans\n has been added to the java.beans package.\n\
+            \ Please see XMLEncoder."
+          fields:
+            contentPane:
+              name: contentPane
+              modifiers:
+              - protected
+              type:
+                basic: Container
+                full: java.awt.Container
+              notes: The content pane.
+            defaultButton:
+              name: defaultButton
+              modifiers:
+              - protected
+              type:
+                basic: JButton
+                full: javax.swing.JButton
+              notes: "The button that gets activated when the pane has the focus and\n\
+                \ a UI-specific action like pressing the Enter key occurs."
+            glassPane:
+              name: glassPane
+              modifiers:
+              - protected
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: "The glass pane that overlays the menu bar and content pane,\n\
+                \  so it can intercept mouse movements and such."
+            layeredPane:
+              name: layeredPane
+              modifiers:
+              - protected
+              type:
+                basic: JLayeredPane
+                full: javax.swing.JLayeredPane
+              notes: The layered pane that manages the menu bar and content pane.
+            menuBar:
+              name: menuBar
+              modifiers:
+              - protected
+              type:
+                basic: JMenuBar
+                full: javax.swing.JMenuBar
+              notes: The menu bar.
+            useTrueDoubleBuffering:
+              name: useTrueDoubleBuffering
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            windowDecorationStyle:
+              name: windowDecorationStyle
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            COLOR_CHOOSER_DIALOG:
+              name: COLOR_CHOOSER_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog used to display a JColorChooser."
+            ERROR_DIALOG:
+              name: ERROR_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog used to display an error message."
+            FILE_CHOOSER_DIALOG:
+              name: FILE_CHOOSER_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog used to display a JFileChooser."
+            FRAME:
+              name: FRAME
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Frame."
+            IGNORE_DISABLE_TRUE_DOUBLE_BUFFERING:
+              name: IGNORE_DISABLE_TRUE_DOUBLE_BUFFERING
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            INFORMATION_DIALOG:
+              name: INFORMATION_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog used to display an informational message."
+            LOG_DISABLE_TRUE_DOUBLE_BUFFERING:
+              name: LOG_DISABLE_TRUE_DOUBLE_BUFFERING
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            NONE:
+              name: NONE
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should not provide any sort of\n Window decorations."
+            PLAIN_DIALOG:
+              name: PLAIN_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog."
+            QUESTION_DIALOG:
+              name: QUESTION_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog used to present a question to the user."
+            WARNING_DIALOG:
+              name: WARNING_DIALOG
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Constant used for the windowDecorationStyle property. Indicates\
+                \ that\n the JRootPane should provide decorations appropriate for\n\
+                \ a Dialog used to display a warning message."
+            uiClassID:
+              name: uiClassID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+          constructors:
+          - modifiers:
+            - public
+            notes: "Creates a JRootPane, setting up its\n glassPane, layeredPane,\n\
+              \ and contentPane."
+          methods:
+          - name: addImpl
+            modifiers:
+            - protected
+            parameters:
+            - name: comp
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: the component to be enhanced
+            - name: constraints
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the constraints to be respected
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: the index
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Overridden to enforce the position of the glass component as\n\
+              \ the zero child."
+          - name: addNotify
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: createContentPane
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Container
+                full: java.awt.Container
+              notes: the default contentPane
+            notes: "Called by the constructor methods to create the default\n contentPane.\n\
+              \ By default this method creates a new JComponent add sets a\n BorderLayout\
+              \ as its LayoutManager."
+          - name: createGlassPane
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: the default glassPane
+            notes: "Called by the constructor methods to create the default\n glassPane.\n\
+              \ By default this method creates a new JComponent\n with visibility\
+              \ set to false."
+          - name: createLayeredPane
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: JLayeredPane
+                full: javax.swing.JLayeredPane
+              notes: the default layeredPane
+            notes: "Called by the constructor methods to create the default\n layeredPane.\n\
+              \ Bt default it creates a new JLayeredPane."
+          - name: createRootLayout
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: LayoutManager
+                full: java.awt.LayoutManager
+              notes: the default layoutManager.
+            notes: "Called by the constructor methods to create the default\n layoutManager."
+          - name: disableTrueDoubleBuffering
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getAccessibleContext
+            modifiers:
+            - public
+            return:
+              type:
+                basic: AccessibleContext
+                full: javax.accessibility.AccessibleContext
+              notes: "an AccessibleJRootPane that serves as the\n         AccessibleContext\
+                \ of this JRootPane"
+            notes: "Gets the AccessibleContext associated with this\n JRootPane. For\
+              \ root panes, the\n AccessibleContext takes the form of an\n AccessibleJRootPane.\n\
+              \ A new AccessibleJRootPane instance is created if necessary."
+          - name: getContentPane
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Container
+                full: java.awt.Container
+              notes: the Container that holds the component-contents
+            notes: "Returns the content pane -- the container that holds the components\n\
+              \ parented by the root pane."
+          - name: getDefaultButton
+            modifiers:
+            - public
+            return:
+              type:
+                basic: JButton
+                full: javax.swing.JButton
+              notes: the JButton which is currently the default button
+            notes: Returns the value of the defaultButton property.
+          - name: getGlassPane
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: the current glass pane
+            notes: Returns the current glass pane for this JRootPane.
+          - name: getJMenuBar
+            modifiers:
+            - public
+            return:
+              type:
+                basic: JMenuBar
+                full: javax.swing.JMenuBar
+              notes: the JMenuBar used in the pane
+            notes: Returns the menu bar from the layered pane.
+          - name: getLayeredPane
+            modifiers:
+            - public
+            return:
+              type:
+                basic: JLayeredPane
+                full: javax.swing.JLayeredPane
+              notes: the JLayeredPane currently in use
+            notes: "Gets the layered pane used by the root pane. The layered pane\n\
+              \ typically holds a content pane and an optional JMenuBar."
+          - name: getMenuBar
+            modifiers:
+            - public
+            return:
+              type:
+                basic: JMenuBar
+                full: javax.swing.JMenuBar
+              notes: the JMenuBar used in the pane
+            notes: Returns the menu bar value.
+          - name: getUI
+            modifiers:
+            - public
+            return:
+              type:
+                basic: RootPaneUI
+                full: javax.swing.plaf.RootPaneUI
+              notes: LabelUI object
+            notes: Returns the L&F object that renders this component.
+          - name: getUI
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ComponentUI
+                full: javax.swing.plaf.ComponentUI
+          - name: getUIClassID
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the string "RootPaneUI"
+            notes: "Returns a string that specifies the name of the L&F class\n that\
+              \ renders this component."
+          - name: getUseTrueDoubleBuffering
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: getWindowDecorationStyle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "One of NONE, FRAME,\n        PLAIN_DIALOG, INFORMATION_DIALOG,\n\
+                \        ERROR_DIALOG, COLOR_CHOOSER_DIALOG,\n        FILE_CHOOSER_DIALOG,\
+                \ QUESTION_DIALOG or\n        WARNING_DIALOG."
+            notes: "Returns a constant identifying the type of Window decorations\
+              \ the\n JRootPane is providing."
+          - name: isOptimizedDrawingEnabled
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this component's children don't overlap
+            notes: "The glassPane and contentPane\n have the same bounds, which means\
+              \ JRootPane\n does not tiles its children and this should return false.\n\
+              \ On the other hand, the glassPane\n is normally not visible, and so\
+              \ this can return true if the\n glassPane isn't visible. Therefore,\
+              \ the\n return value here depends upon the visibility of the\n glassPane."
+          - name: isValidateRoot
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: 'true'
+            notes: "If a descendant of this JRootPane calls\n revalidate, validate\
+              \ from here on down.\n\n Deferred requests to layout a component and\
+              \ its descendents again.\n For example, calls to revalidate, are pushed\
+              \ upwards to\n either a JRootPane or a JScrollPane\n because both classes\
+              \ override isValidateRoot to return true."
+          - name: paramString
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: a string representation of this JRootPane.
+            notes: "Returns a string representation of this JRootPane.\n This method\
+              \ is intended to be used only for debugging purposes,\n and the content\
+              \ and format of the returned string may vary between\n implementations.\
+              \ The returned string may be empty but may not\n be null."
+          - name: removeNotify
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setContentPane
+            modifiers:
+            - public
+            parameters:
+            - name: content
+              type:
+                basic: Container
+                full: java.awt.Container
+              notes: the Container to use for component-contents
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the content pane -- the container that holds the components\n\
+              \ parented by the root pane.\n \n Swing's painting architecture requires\
+              \ an opaque JComponent\n in the containment hierarchy. This is typically\
+              \ provided by the\n content pane. If you replace the content pane it\
+              \ is recommended you\n replace it with an opaque JComponent."
+          - name: setDefaultButton
+            modifiers:
+            - public
+            parameters:
+            - name: defaultButton
+              type:
+                basic: JButton
+                full: javax.swing.JButton
+              notes: the JButton which is to be the default button
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the defaultButton property,\n which determines the current\
+              \ default button for this JRootPane.\n The default button is the button\
+              \ which will be activated\n when a UI-defined activation event (typically\
+              \ the Enter key)\n occurs in the root pane regardless of whether or\
+              \ not the button\n has keyboard focus (unless there is another component\
+              \ within\n the root pane which consumes the activation event,\n such\
+              \ as a JTextPane).\n For default activation to work, the button must\
+              \ be an enabled\n descendent of the root pane when activation occurs.\n\
+              \ To remove a default button from this root pane, set this\n property\
+              \ to null."
+          - name: setDoubleBuffered
+            modifiers:
+            - public
+            parameters:
+            - name: aFlag
+              type:
+                basic: boolean
+                full: boolean
+              notes: if true, set this component to be double buffered
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets whether this component should use a buffer to paint.\n  If\
+              \ set to true, all the drawing from this component will be done\n  in\
+              \ an offscreen painting buffer. The offscreen painting buffer will\n\
+              \  the be copied onto the screen.\n  If a Component is buffered and\
+              \ one of its ancestor\n  is also buffered, the ancestor buffer will\
+              \ be used."
+          - name: setGlassPane
+            modifiers:
+            - public
+            parameters:
+            - name: glass
+              type:
+                basic: Component
+                full: java.awt.Component
+              notes: "the Component to use as the glass pane\n              for this\
+                \ JRootPane"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets a specified Component to be the glass pane for this\n root\
+              \ pane.  The glass pane should normally be a lightweight,\n transparent\
+              \ component, because it will be made visible when\n ever the root pane\
+              \ needs to grab input events.\n \n The new glass pane's visibility is\
+              \ changed to match that of\n the current glass pane.  An implication\
+              \ of this is that care\n must be taken when you want to replace the\
+              \ glass pane and\n make it visible.  Either of the following will work:\n\
+              \ \n   root.setGlassPane(newGlassPane);\n   newGlassPane.setVisible(true);\n\
+              \ \n or:\n \n   root.getGlassPane().setVisible(true);\n   root.setGlassPane(newGlassPane);"
+          - name: setJMenuBar
+            modifiers:
+            - public
+            parameters:
+            - name: menu
+              type:
+                basic: JMenuBar
+                full: javax.swing.JMenuBar
+              notes: the JMenuBar to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Adds or changes the menu bar used in the layered pane.
+          - name: setLayeredPane
+            modifiers:
+            - public
+            parameters:
+            - name: layered
+              type:
+                basic: JLayeredPane
+                full: javax.swing.JLayeredPane
+              notes: the JLayeredPane to use
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the layered pane for the root pane. The layered pane\n typically\
+              \ holds a content pane and an optional JMenuBar."
+          - name: setMenuBar
+            modifiers:
+            - public
+            parameters:
+            - name: menu
+              type:
+                basic: JMenuBar
+                full: javax.swing.JMenuBar
+              notes: the JMenuBar to add.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Specifies the menu bar value.
+          - name: setUI
+            modifiers:
+            - public
+            parameters:
+            - name: ui
+              type:
+                basic: RootPaneUI
+                full: javax.swing.plaf.RootPaneUI
+              notes: the LabelUI L&F object
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Sets the L&F object that renders this component.
+          - name: setUseTrueDoubleBuffering
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setWindowDecorationStyle
+            modifiers:
+            - public
+            parameters:
+            - name: windowDecorationStyle
+              type:
+                basic: int
+                full: int
+              notes: "Constant identifying Window decorations\n        to provide."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the type of Window decorations (such as borders, widgets\
+              \ for\n closing a Window, title ...) the JRootPane should\n provide.\
+              \ The default is to provide no Window decorations\n (NONE).\n \n This\
+              \ is only a hint, and some look and feels may not support\n this.\n\
+              \ This is a bound property."
+          - name: updateUI
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Resets the UI property to a value from the current look and feel.

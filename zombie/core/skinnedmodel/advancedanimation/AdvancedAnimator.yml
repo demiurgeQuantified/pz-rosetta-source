@@ -4,24 +4,93 @@ languages:
     packages:
       zombie.core.skinnedmodel.advancedanimation:
         AdvancedAnimator:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          notes: Created by LEMMYMAIN on 26/01/2015.
           fields:
             animCallbackHandlers:
               name: animCallbackHandlers
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.core.skinnedmodel.advancedanimation.events.IAnimEventCallback>
             animSet:
               name: animSet
               modifiers:
               - public
               type:
                 basic: AnimationSet
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationSet
+            character:
+              name: character
+              modifiers:
+              - private
+              type:
+                basic: IAnimatable
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimatable
+            m_recorder:
+              name: m_recorder
+              modifiers:
+              - private
+              type:
+                basic: AnimationPlayerRecorder
+                full: zombie.core.skinnedmodel.animation.debug.AnimationPlayerRecorder
+            m_rootLayer:
+              name: m_rootLayer
+              modifiers:
+              - private
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            m_setFlagCounters:
+              name: m_setFlagCounters
+              modifiers:
+              - private
+              type:
+                basic: AnimationVariableWhileAliveFlagsContainer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationVariableWhileAliveFlagsContainer
+            m_subLayers:
+              name: m_subLayers
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<zombie.core.skinnedmodel.advancedanimation.SubLayerSlot>
+            m_transitionNodeProxy:
+              name: m_transitionNodeProxy
+              modifiers:
+              - private
+              type:
+                basic: TransitionNodeProxy
+                full: zombie.core.utils.TransitionNodeProxy
           staticFields:
+            actionGroupModificationTime:
+              name: actionGroupModificationTime
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            animSetModificationTime:
+              name: animSetModificationTime
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            debugMonitor:
+              name: debugMonitor
+              modifiers:
+              - private
+              - static
+              type:
+                basic: AnimatorDebugMonitor
+                full: zombie.core.skinnedmodel.advancedanimation.debug.AnimatorDebugMonitor
             s_MotionScale:
               name: s_MotionScale
               modifiers:
@@ -29,6 +98,7 @@ languages:
               - static
               type:
                 basic: float
+                full: float
             s_RotationScale:
               name: s_RotationScale
               modifiers:
@@ -36,16 +106,37 @@ languages:
               - static
               type:
                 basic: float
+                full: float
           constructors:
           - modifiers:
             - public
           methods:
+          - name: FindTransitionsFromProxy
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: TransitionNodeProxy
+                full: zombie.core.utils.TransitionNodeProxy
+            return:
+              type:
+                basic: void
+                full: void
+          - name: GenerateTransitionData
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: GetDebug
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: OnAnimDataChanged
             modifiers:
             - public
@@ -53,70 +144,61 @@ languages:
             - name: reload
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: OnAnimEvent
             modifiers:
             - public
             parameters:
-            - name: sender
+            - name: arg0
               type:
                 basic: AnimLayer
-            - name: event
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            - name: arg1
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg2
               type:
                 basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
             return:
               type:
                 basic: void
+                full: void
+          - name: ProcessTransitions
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: TransitionNodeProxy
+                full: zombie.core.utils.TransitionNodeProxy
+            return:
+              type:
+                basic: void
+                full: void
           - name: Reload
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: SetAnimSet
-            modifiers:
-            - public
-            parameters:
-            - name: aset
-              type:
-                basic: AnimationSet
-            return:
-              type:
-                basic: void
-          - name: SetState
-            modifiers:
-            - public
-            parameters:
-            - name: stateName
-              type:
-                basic: String
-            return:
-              type:
-                basic: void
-          - name: SetState
-            modifiers:
-            - public
-            parameters:
-            - name: stateName
-              type:
-                basic: String
-            - name: subStateNames
-              type:
-                basic: List
-                full: List<String>
-            return:
-              type:
-                basic: void
+                full: void
           - name: containsAnyIdleNodes
             modifiers:
             - public
             return:
               type:
                 basic: boolean
-            notes: Returns TRUE if any Actuve Live nodes are an Idle animation.  This
-              is useful when determining if the character is currently Idle.
+                full: boolean
+            notes: "Returns TRUE if any Actuve Live nodes are an Idle animation.\n\
+              \ This is useful when determining if the character is currently Idle.\n\
+              \ \n eg. For adding variations to standing around, like fidgeting, sneezing,\
+              \ etc."
           - name: containsState
             modifiers:
             - public
@@ -124,45 +206,101 @@ languages:
             - name: stateName
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: debugGetVariables
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<java.lang.String>
+          - name: decrementWhileAliveFlag
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationVariableReference
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationVariableReference
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: findLayerWithState
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimState
+                full: zombie.core.skinnedmodel.advancedanimation.AnimState
+            return:
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
           - name: getActiveSubLayerCount
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getCharacter
             modifiers:
             - public
             return:
               type:
                 basic: IAnimatable
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimatable
           - name: getCurrentStateName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getDebugMonitor
             modifiers:
             - public
             return:
               type:
                 basic: AnimatorDebugMonitor
+                full: zombie.core.skinnedmodel.advancedanimation.debug.AnimatorDebugMonitor
+          - name: getOrCreateSlot
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<zombie.core.skinnedmodel.advancedanimation.SubLayerSlot>
+            - name: arg1
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: int
+                full: int
           - name: getRootLayer
             modifiers:
             - public
             return:
               type:
                 basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
           - name: getSubLayerAt
             modifiers:
             - public
@@ -170,15 +308,34 @@ languages:
             - name: idx
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
           - name: getSubLayerCount
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
+          - name: incrementWhileAliveFlag
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationVariableReference
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationVariableReference
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
           - name: init
             modifiers:
             - public
@@ -186,15 +343,62 @@ languages:
             - name: character
               type:
                 basic: IAnimatable
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimatable
             return:
               type:
                 basic: void
+                full: void
+          - name: invokeAnimEvent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            - name: arg1
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg2
+              type:
+                basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
+            return:
+              type:
+                basic: void
+                full: void
+          - name: invokeGlobalAnimEvent
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
+            return:
+              type:
+                basic: void
+                full: void
           - name: isRecording
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: logGlobalAnimEvent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimEvent
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent
+            return:
+              type:
+                basic: void
+                full: void
           - name: printDebugCharacterActions
             modifiers:
             - public
@@ -202,15 +406,37 @@ languages:
             - name: target
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
           - name: render
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: reset
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setAnimSet
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationSet
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationSet
+            return:
+              type:
+                basic: void
+                full: void
           - name: setDebugMonitor
             modifiers:
             - public
@@ -218,9 +444,11 @@ languages:
             - name: monitor
               type:
                 basic: AnimatorDebugMonitor
+                full: zombie.core.skinnedmodel.advancedanimation.debug.AnimatorDebugMonitor
             return:
               type:
                 basic: void
+                full: void
           - name: setRecorder
             modifiers:
             - public
@@ -228,15 +456,64 @@ languages:
             - name: recorder
               type:
                 basic: AnimationPlayerRecorder
+                full: zombie.core.skinnedmodel.animation.debug.AnimationPlayerRecorder
             return:
               type:
                 basic: void
+                full: void
+          - name: setState
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setState
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: List
+                full: java.util.List<java.lang.String>
+            return:
+              type:
+                basic: void
+                full: void
           - name: update
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
+          - name: updateInternal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: updateSpeedScale
             modifiers:
             - public
@@ -244,13 +521,24 @@ languages:
             - name: variable
               type:
                 basic: String
+                full: java.lang.String
             - name: newSpeed
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           staticMethods:
+          - name: LoadDefaults
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
           - name: checkModifiedFiles
             modifiers:
             - public
@@ -258,6 +546,72 @@ languages:
             return:
               type:
                 basic: void
+                full: void
+          - name: isActionGroupFilePath
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isAnimSetFilePath
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: lambda$setState$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: SubLayerSlot
+                full: zombie.core.skinnedmodel.advancedanimation.SubLayerSlot
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onActionGroupsRefreshTriggered
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onAnimSetsRefreshTriggered
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
           - name: systemInit
             modifiers:
             - public
@@ -265,6 +619,4 @@ languages:
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
-          notes: Created by LEMMYMAIN on 26/01/2015.
+                full: void

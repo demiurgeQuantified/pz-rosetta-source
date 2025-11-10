@@ -4,127 +4,883 @@ languages:
     packages:
       zombie.iso:
         IsoCell:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
           notes:
             Loaded area 'reality bubble' around the player(s).
             Don't confuse this with map cells - the name is a relic from when it did actually represent these.
             Only one instance should ever exist. Instantiating this class during gameplay will likely immediately crash.
-          modifiers:
-          - public
-          - final
           fields:
             BuildingList:
               name: BuildingList
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoBuilding>
+            BuildingScores:
+              name: BuildingScores
+              modifiers:
+              - private
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.Integer, zombie.iso.areas.BuildingScore>
             ChunkMap:
               name: ChunkMap
               modifiers:
               - public
-              - final
               type:
                 basic: IsoChunkMap
+                full: zombie.iso.IsoChunkMap[]
             DangerScore:
               name: DangerScore
               modifiers:
               - public
               type:
                 basic: IntGrid
+                full: zombie.core.utils.IntGrid
             DeferredCharacterTick:
               name: DeferredCharacterTick
               modifiers:
               - public
               type:
                 basic: int
+                full: int
+            LamppostPositions:
+              name: LamppostPositions
+              modifiers:
+              - private
+              type:
+                basic: Stack
+                full: java.util.Stack<zombie.iso.IsoLightSource>
+            LightInfoUpdate:
+              name: LightInfoUpdate
+              modifiers:
+              - private
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            ObjectList:
+              name: ObjectList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoMovingObject>
+            ProcessIsoObject:
+              name: ProcessIsoObject
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoObject>
+            ProcessIsoObjectRemove:
+              name: ProcessIsoObjectRemove
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoObject>
+            ProcessItems:
+              name: ProcessItems
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
+            ProcessItemsRemove:
+              name: ProcessItemsRemove
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
+            ProcessWorldItems:
+              name: ProcessWorldItems
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.objects.IsoWorldInventoryObject>
             ProcessWorldItemsRemove:
               name: ProcessWorldItemsRemove
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.objects.IsoWorldInventoryObject>
+            PushableObjectList:
+              name: PushableObjectList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoPushableObject>
+            RemoteSurvivorList:
+              name: RemoteSurvivorList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.IsoGameCharacter>
+            RoomList:
+              name: RoomList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoRoom>
+            SpottedRooms:
+              name: SpottedRooms
+              modifiers:
+              - private
+              type:
+                basic: Stack
+                full: java.util.Stack<zombie.iso.areas.IsoRoom>
+            StaticUpdaterObjectList:
+              name: StaticUpdaterObjectList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoObject>
             StencilX1:
               name: StencilX1
               modifiers:
               - public
               type:
                 basic: int
+                full: int
             StencilX2:
               name: StencilX2
               modifiers:
               - public
               type:
                 basic: int
+                full: int
             StencilY1:
               name: StencilY1
               modifiers:
               - public
               type:
                 basic: int
+                full: int
             StencilY2:
               name: StencilY2
               modifiers:
               - public
               type:
                 basic: int
+                full: int
+            SurvivorList:
+              name: SurvivorList
+              modifiers:
+              - package
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.IsoSurvivor>
             Trees:
               name: Trees
               modifiers:
               - public
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            WindowList:
+              name: WindowList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.objects.IsoWindow>
+            ZombieList:
+              name: ZombieList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.IsoZombie>
+            addList:
+              name: addList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoMovingObject>
             addVehicles:
               name: addVehicles
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.vehicles.BaseVehicle>
+            bHideFloors:
+              name: bHideFloors
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean[]
+            bOccludedByOrphanStructureFlag:
+              name: bOccludedByOrphanStructureFlag
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean
             bRendering:
               name: bRendering
               modifiers:
               - public
               type:
                 basic: boolean
+                full: boolean
+            buildingRectTemp:
+              name: buildingRectTemp
+              modifiers:
+              - package
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
+            currentLX:
+              name: currentLX
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            currentLY:
+              name: currentLY
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            currentLZ:
+              name: currentLZ
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            dangerUpdate:
+              name: dangerUpdate
+              modifiers:
+              - private
+              type:
+                basic: OnceEvery
+                full: zombie.core.utils.OnceEvery
+            diamondMatrixIterator:
+              name: diamondMatrixIterator
+              modifiers:
+              - private
+              type:
+                basic: DiamondMatrixIterator
+                full: zombie.iso.DiamondMatrixIterator
+            diamondMatrixPos:
+              name: diamondMatrixPos
+              modifiers:
+              - private
+              type:
+                basic: Vector2i
+                full: org.joml.Vector2i
+            drag:
+              name: drag
+              modifiers:
+              - package
+              type:
+                basic: KahluaTable
+                full: se.krka.kahlua.vm.KahluaTable[]
+            fakeZombieForHit:
+              name: fakeZombieForHit
+              modifiers:
+              - private
+              type:
+                basic: IsoZombie
+                full: zombie.characters.IsoZombie
+            gridSquares:
+              name: gridSquares
+              modifiers:
+              - private
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare[][]
+            gridSquaresTempLeft:
+              name: gridSquaresTempLeft
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            gridSquaresTempRight:
+              name: gridSquaresTempRight
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            hasSetupSnowGrid:
+              name: hasSetupSnowGrid
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            heatSources:
+              name: heatSources
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoHeatSource>
+            height:
+              name: height
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            hidesOrphanStructuresAbove:
+              name: hidesOrphanStructuresAbove
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            lastMinX:
+              name: lastMinX
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            lastMinY:
+              name: lastMinY
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            lastPlayerAngle:
+              name: lastPlayerAngle
+              modifiers:
+              - public
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2[]
+            lastPlayerDir:
+              name: lastPlayerDir
+              modifiers:
+              - public
+              type:
+                basic: IsoDirections
+                full: zombie.iso.IsoDirections[]
+            lastPlayerSquare:
+              name: lastPlayerSquare
+              modifiers:
+              - public
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare[]
+            lastPlayerSquareHalf:
+              name: lastPlayerSquareHalf
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean[]
+            lastServerItemsUpdate:
+              name: lastServerItemsUpdate
+              modifiers:
+              - package
+              type:
+                basic: long
+                full: long
+            lastZombieSquare:
+              name: lastZombieSquare
+              modifiers:
+              - public
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare[]
+            lastZombieSquareHalf:
+              name: lastZombieSquareHalf
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean[]
+            lightUpdateCount:
+              name: lightUpdateCount
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            m_snowFirstNonSquare:
+              name: m_snowFirstNonSquare
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            m_stencilTexture:
+              name: m_stencilTexture
+              modifiers:
+              - private
+              type:
+                basic: Texture
+                full: zombie.core.textures.Texture
+            maxX:
+              name: maxX
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            maxY:
+              name: maxY
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            maxZ:
+              name: maxZ
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            minHeight:
+              name: minHeight
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            minX:
+              name: minX
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            minY:
+              name: minY
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            minZ:
+              name: minZ
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            mustSeeSquaresGridSize:
+              name: mustSeeSquaresGridSize
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            mustSeeSquaresRadius:
+              name: mustSeeSquaresRadius
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            nearestVisibleZombie:
+              name: nearestVisibleZombie
+              modifiers:
+              - public
+              type:
+                basic: IsoZombie
+                full: zombie.characters.IsoZombie[]
+            nearestVisibleZombieDistSqr:
+              name: nearestVisibleZombieDistSqr
+              modifiers:
+              - public
+              type:
+                basic: float
+                full: float[]
+            otherOccluderBuildings:
+              name: otherOccluderBuildings
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.ArrayList<zombie.iso.areas.IsoBuilding>>
+            otherOccluderBuildingsArr:
+              name: otherOccluderBuildingsArr
+              modifiers:
+              - public
+              type:
+                basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding[][]
+            playerCutawaysDirty:
+              name: playerCutawaysDirty
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean[]
+            playerHidesOrphanStructures:
+              name: playerHidesOrphanStructures
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean[]
+            playerOccluderBuildings:
+              name: playerOccluderBuildings
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.ArrayList<zombie.iso.areas.IsoBuilding>>
+            playerOccluderBuildingsArr:
+              name: playerOccluderBuildingsArr
+              modifiers:
+              - public
+              type:
+                basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding[][]
+            playerPeekedRoomId:
+              name: playerPeekedRoomId
+              modifiers:
+              - public
+              type:
+                basic: long
+                full: long
+            playerWindowPeekingRoomId:
+              name: playerWindowPeekingRoomId
+              modifiers:
+              - public
+              type:
+                basic: long
+                full: long[]
+            rainAlpha:
+              name: rainAlpha
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float[]
+            rainAlphaMax:
+              name: rainAlphaMax
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            rainFileTime:
+              name: rainFileTime
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long[]
+            rainIntensity:
+              name: rainIntensity
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            rainScroll:
+              name: rainScroll
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            rainSpeed:
+              name: rainSpeed
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+            rainTextures:
+              name: rainTextures
+              modifiers:
+              - private
+              type:
+                basic: Texture
+                full: zombie.core.textures.Texture[]
+            rainX:
+              name: rainX
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            rainY:
+              name: rainY
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            raport:
+              name: raport
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
             recalcFloors:
               name: recalcFloors
               modifiers:
               - public
               type:
                 basic: boolean
+                full: boolean
+            recalcShading:
+              name: recalcShading
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            removeList:
+              name: removeList
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoMovingObject>
             roomLights:
               name: roomLights
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoRoomLight>
+            safeToAdd:
+              name: safeToAdd
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            snowFadeTime:
+              name: snowFadeTime
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            snowFracTarget:
+              name: snowFracTarget
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            snowGridCur:
+              name: snowGridCur
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGrid
+                full: zombie.iso.IsoCell$SnowGrid
+            snowGridPrev:
+              name: snowGridPrev
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGrid
+                full: zombie.iso.IsoCell$SnowGrid
+            snowGridTiles_Cove:
+              name: snowGridTiles_Cove
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGridTiles
+                full: zombie.iso.IsoCell$SnowGridTiles[]
+            snowGridTiles_Edge:
+              name: snowGridTiles_Edge
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGridTiles
+                full: zombie.iso.IsoCell$SnowGridTiles[]
+            snowGridTiles_Enclosed:
+              name: snowGridTiles_Enclosed
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGridTiles
+                full: zombie.iso.IsoCell$SnowGridTiles
+            snowGridTiles_Square:
+              name: snowGridTiles_Square
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGridTiles
+                full: zombie.iso.IsoCell$SnowGridTiles
+            snowGridTiles_Strip:
+              name: snowGridTiles_Strip
+              modifiers:
+              - private
+              type:
+                basic: IsoCell.SnowGridTiles
+                full: zombie.iso.IsoCell$SnowGridTiles[]
+            snowNoise2D:
+              name: snowNoise2D
+              modifiers:
+              - private
+              type:
+                basic: Noise2D
+                full: zombie.erosion.utils.Noise2D
+            snowTransitionTime:
+              name: snowTransitionTime
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            tempCutawaySqrVector:
+              name: tempCutawaySqrVector
+              modifiers:
+              - package
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
+            tempPlayerCutawayRoomIDs:
+              name: tempPlayerCutawayRoomIDs
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.ArrayList<java.lang.Long>>
+            tempPrevPlayerCutawayRoomIDs:
+              name: tempPrevPlayerCutawayRoomIDs
+              modifiers:
+              - package
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.ArrayList<java.lang.Long>>
+            unhideFloorsCounter:
+              name: unhideFloorsCounter
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int[]
             vehicles:
               name: vehicles
               modifiers:
               - public
-              - final
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.vehicles.BaseVehicle>
+            weatherFX:
+              name: weatherFX
+              modifiers:
+              - private
+              type:
+                basic: IsoWeatherFX
+                full: zombie.iso.weather.fx.IsoWeatherFX
+            width:
+              name: width
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            worldX:
+              name: worldX
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            worldY:
+              name: worldY
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            zombieOccluderBuildings:
+              name: zombieOccluderBuildings
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.ArrayList<zombie.iso.areas.IsoBuilding>>
+            zombieOccluderBuildingsArr:
+              name: zombieOccluderBuildingsArr
+              modifiers:
+              - public
+              type:
+                basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding[][]
+            zombieScanCursor:
+              name: zombieScanCursor
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
           staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            CellSizeInChunks:
+              name: CellSizeInChunks
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+            CellSizeInSquares:
+              name: CellSizeInSquares
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
             ENABLE_SQUARE_CACHE:
               name: ENABLE_SQUARE_CACHE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: boolean
+                full: boolean
+            GridStack:
+              name: GridStack
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
             ISOANGLEFACTOR:
               name: ISOANGLEFACTOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
             MaxHeight:
               name: MaxHeight
               modifiers:
@@ -132,54 +888,215 @@ languages:
               - static
               type:
                 basic: int
+                full: int
+            MinusFloorCharacters:
+              name: MinusFloorCharacters
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            NEARESTZOMBIEDISTSQRMAX:
+              name: NEARESTZOMBIEDISTSQRMAX
+              modifiers:
+              - public
+              - static
+              type:
+                basic: float
+                full: float
             RTF_MinusFloorCharacters:
               name: RTF_MinusFloorCharacters
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
             RTF_ShadedFloor:
               name: RTF_ShadedFloor
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
             RTF_Shadows:
               name: RTF_Shadows
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
             RTF_SolidFloor:
               name: RTF_SolidFloor
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
             RTF_VegetationCorpses:
               name: RTF_VegetationCorpses
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
+                full: int
+            SNOWSHORE_E:
+              name: SNOWSHORE_E
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SNOWSHORE_N:
+              name: SNOWSHORE_N
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SNOWSHORE_NONE:
+              name: SNOWSHORE_NONE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SNOWSHORE_S:
+              name: SNOWSHORE_S
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SNOWSHORE_W:
+              name: SNOWSHORE_W
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            ShadedFloor:
+              name: ShadedFloor
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            ShadowSquares:
+              name: ShadowSquares
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            SolidFloor:
+              name: SolidFloor
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            VegetationCorpses:
+              name: VegetationCorpses
+              modifiers:
+              - public
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            ZOMBIESCANBUDGET:
+              name: ZOMBIESCANBUDGET
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+            buildingscores:
+              name: buildingscores
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Stack
+                full: java.util.Stack<zombie.iso.areas.BuildingScore>
+            instance:
+              name: instance
+              modifiers:
+              - private
+              - static
+              type:
+                basic: IsoCell
+                full: zombie.iso.IsoCell
+            m_floorRenderShader:
+              name: m_floorRenderShader
+              modifiers:
+              - public
+              - static
+              type:
+                basic: Shader
+                full: zombie.core.opengl.Shader
+            m_wallRenderShader:
+              name: m_wallRenderShader
+              modifiers:
+              - public
+              - static
+              type:
+                basic: Shader
+                full: zombie.core.opengl.Shader
             perPlayerRender:
               name: perPlayerRender
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: PerPlayerRender
+                basic: IsoCell.PerPlayerRender
+                full: zombie.iso.IsoCell$PerPlayerRender[]
+            stchoices:
+              name: stchoices
+              modifiers:
+              - package
+              - static
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            texWhite:
+              name: texWhite
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Texture
+                full: zombie.core.textures.Texture
+            wx:
+              name: wx
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            wy:
+              name: wy
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
@@ -187,10 +1104,60 @@ languages:
             - name: width
               type:
                 basic: int
+                full: int
             - name: height
               type:
                 basic: int
+                full: int
           methods:
+          - name: AddUniqueToBuildingList
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoBuilding>
+            - name: arg1
+              type:
+                basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding
+            return:
+              type:
+                basic: void
+                full: void
+          - name: CalculateColor
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg3
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
           - name: CalculateVertColoursForTile
             modifiers:
             - public
@@ -198,21 +1165,27 @@ languages:
             - name: sqThis
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: zz
               type:
                 basic: int
+                full: int
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: CanBuildingSquareOccludePlayer
             modifiers:
             - public
@@ -220,12 +1193,35 @@ languages:
             - name: square
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: ConnectNewSquare
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: ConnectNewSquare
             modifiers:
             - public
@@ -233,24 +1229,49 @@ languages:
             - name: newSquare
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: bDoSurrounds
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+          - name: CullFullyOccludedSquares
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridStack
+                full: zombie.iso.IsoGridStack
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean[][][]
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean[][]
+            return:
+              type:
+                basic: void
+                full: void
           - name: DeleteAllMovingObjects
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: Dispose
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: DistanceFromSupport
             modifiers:
             - public
@@ -258,15 +1279,19 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: float
+                full: float
           - name: DoBuilding
             modifiers:
             - public
@@ -274,12 +1299,15 @@ languages:
             - name: player
               type:
                 basic: int
+                full: int
             - name: bRender
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: DoGridNav
             modifiers:
             - public
@@ -287,18 +1315,46 @@ languages:
             - name: newSquare
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: getter
               type:
-                basic: GetSquare
+                basic: IsoGridSquare.GetSquare
+                full: zombie.iso.IsoGridSquare$GetSquare
             return:
               type:
                 basic: void
+                full: void
+          - name: DoesSquareHaveValidCutaways
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: DrawStencilMask
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: EnsureSurroundNotNull
             modifiers:
             - public
@@ -306,21 +1362,210 @@ languages:
             - name: xx
               type:
                 basic: int
+                full: int
             - name: yy
               type:
                 basic: int
+                full: int
             - name: zz
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
+          - name: GetBuildingHeightAt
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: GetBuildingsInFrontOfCharacter
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoBuilding>
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: GetBuildingsInFrontOfCharacterSquare
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoBuilding>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: GetBuildingsInFrontOfMustSeeSquare
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: IsoGridOcclusionData.OcclusionFilter
+                full: zombie.iso.IsoGridOcclusionData$OcclusionFilter
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoBuilding>
           - name: GetEffectivePlayerRoomId
             modifiers:
             - public
             return:
               type:
+                basic: long
+                full: long
+          - name: GetPeekedInBuilding
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: IsoDirections
+                full: zombie.iso.IsoDirections
+            return:
+              type:
+                basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding
+          - name: GetSquaresAroundPlayerSquare
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            - name: arg3
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoGridSquare>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: IsBehindStuff
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: IsCollapsibleBuildingSquare
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: IsCutawaySquare
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: IsDissolvedSquare
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
                 basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: IsPlayerWindowPeeking
             modifiers:
             - public
@@ -328,9 +1573,11 @@ languages:
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: LoadPlayer
             modifiers:
             - public
@@ -338,9 +1585,18 @@ languages:
             - name: WorldVersion
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: ObjectDeletionAddition
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: PlaceLot
             modifiers:
             - public
@@ -348,21 +1604,27 @@ languages:
             - name: filename
               type:
                 basic: String
+                full: java.lang.String
             - name: sx
               type:
                 basic: int
+                full: int
             - name: sy
               type:
                 basic: int
+                full: int
             - name: sz
               type:
                 basic: int
+                full: int
             - name: bClearExisting
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: PlaceLot
             modifiers:
             - public
@@ -370,55 +1632,124 @@ languages:
             - name: lot
               type:
                 basic: IsoLot
+                full: zombie.iso.IsoLot
             - name: sx
               type:
                 basic: int
+                full: int
             - name: sy
               type:
                 basic: int
+                full: int
             - name: sz
               type:
                 basic: int
+                full: int
             - name: bClearExisting
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: PlaceLot
             modifiers:
             - public
             parameters:
-            - name: lot
+            - name: arg0
               type:
                 basic: IsoLot
-            - name: sx
+                full: zombie.iso.IsoLot
+            - name: arg1
               type:
                 basic: int
-            - name: sy
+                full: int
+            - name: arg2
               type:
                 basic: int
-            - name: sz
+                full: int
+            - name: arg3
               type:
                 basic: int
-            - name: ch
+                full: int
+            - name: arg4
               type:
                 basic: IsoChunk
-            - name: WX
+                full: zombie.iso.IsoChunk
+            - name: arg5
               type:
                 basic: int
-            - name: WY
+                full: int
+            - name: arg6
               type:
                 basic: int
+                full: int
+            - name: arg7
+              type:
+                basic: boolean
+                full: boolean[]
+            return:
+              type:
+                basic: int
+                full: int
+          - name: ProcessIsoObject
+            modifiers:
+            - private
             return:
               type:
                 basic: void
+                full: void
+          - name: ProcessItems
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Iterator
+                full: java.util.Iterator<zombie.inventory.InventoryItem>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: ProcessObjects
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Iterator
+                full: java.util.Iterator<zombie.iso.IsoMovingObject>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: ProcessRemoveItems
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Iterator
+                full: java.util.Iterator<zombie.inventory.InventoryItem>
+            return:
+              type:
+                basic: void
+                full: void
           - name: ProcessSpottedRooms
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: ProcessStaticUpdaters
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: Remove
             modifiers:
             - public
@@ -426,9 +1757,11 @@ languages:
             - name: obj
               type:
                 basic: IsoMovingObject
+                full: zombie.iso.IsoMovingObject
             return:
               type:
                 basic: void
+                full: void
           - name: RenderFloorShading
             modifiers:
             - public
@@ -436,9 +1769,23 @@ languages:
             - name: zza
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
+          - name: RenderSnow
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: RenderTiles
             modifiers:
             - public
@@ -446,9 +1793,18 @@ languages:
             - name: MaxHeight
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
+          - name: SetCutawayRoomsForPlayer
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: addHeatSource
             modifiers:
             - public
@@ -456,9 +1812,11 @@ languages:
             - name: heatSource
               type:
                 basic: IsoHeatSource
+                full: zombie.iso.IsoHeatSource
             return:
               type:
                 basic: void
+                full: void
           - name: addLamppost
             modifiers:
             - public
@@ -466,9 +1824,11 @@ languages:
             - name: light
               type:
                 basic: IsoLightSource
+                full: zombie.iso.IsoLightSource
             return:
               type:
                 basic: void
+                full: void
           - name: addLamppost
             modifiers:
             - public
@@ -476,27 +1836,35 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: r
               type:
                 basic: float
+                full: float
             - name: g
               type:
                 basic: float
+                full: float
             - name: b
               type:
                 basic: float
+                full: float
             - name: rad
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoLightSource
+                full: zombie.iso.IsoLightSource
           - name: addMovingObject
             modifiers:
             - public
@@ -504,9 +1872,27 @@ languages:
             - name: o
               type:
                 basic: IsoMovingObject
+                full: zombie.iso.IsoMovingObject
             return:
               type:
                 basic: void
+                full: void
+          - name: addTileObject
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: IsoObject
+                full: zombie.iso.IsoObject
           - name: addToProcessIsoObject
             modifiers:
             - public
@@ -514,9 +1900,11 @@ languages:
             - name: object
               type:
                 basic: IsoObject
+                full: zombie.iso.IsoObject
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessIsoObjectRemove
             modifiers:
             - public
@@ -524,9 +1912,11 @@ languages:
             - name: object
               type:
                 basic: IsoObject
+                full: zombie.iso.IsoObject
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessItems
             modifiers:
             - public
@@ -534,9 +1924,11 @@ languages:
             - name: item
               type:
                 basic: InventoryItem
+                full: zombie.inventory.InventoryItem
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessItems
             modifiers:
             - public
@@ -544,10 +1936,11 @@ languages:
             - name: items
               type:
                 basic: ArrayList
-                full: ArrayList<InventoryItem>
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessItemsRemove
             modifiers:
             - public
@@ -555,9 +1948,11 @@ languages:
             - name: item
               type:
                 basic: InventoryItem
+                full: zombie.inventory.InventoryItem
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessItemsRemove
             modifiers:
             - public
@@ -565,10 +1960,11 @@ languages:
             - name: items
               type:
                 basic: ArrayList
-                full: ArrayList<InventoryItem>
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessWorldItems
             modifiers:
             - public
@@ -576,9 +1972,11 @@ languages:
             - name: worldItem
               type:
                 basic: IsoWorldInventoryObject
+                full: zombie.iso.objects.IsoWorldInventoryObject
             return:
               type:
                 basic: void
+                full: void
           - name: addToProcessWorldItemsRemove
             modifiers:
             - public
@@ -586,9 +1984,11 @@ languages:
             - name: worldItem
               type:
                 basic: IsoWorldInventoryObject
+                full: zombie.iso.objects.IsoWorldInventoryObject
             return:
               type:
                 basic: void
+                full: void
           - name: addToStaticUpdaterObjectList
             modifiers:
             - public
@@ -596,9 +1996,11 @@ languages:
             - name: object
               type:
                 basic: IsoObject
+                full: zombie.iso.IsoObject
             return:
               type:
                 basic: void
+                full: void
           - name: addToWindowList
             modifiers:
             - public
@@ -606,9 +2008,11 @@ languages:
             - name: window
               type:
                 basic: IsoWindow
+                full: zombie.iso.objects.IsoWindow
             return:
               type:
                 basic: void
+                full: void
           - name: blocked
             modifiers:
             - public
@@ -616,27 +2020,35 @@ languages:
             - name: mover
               type:
                 basic: Mover
+                full: zombie.ai.astar.Mover
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: lx
               type:
                 basic: int
+                full: int
             - name: ly
               type:
                 basic: int
+                full: int
             - name: lz
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: checkHaveRoof
             modifiers:
             - public
@@ -644,12 +2056,15 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: clearCacheGridSquare
             modifiers:
             - public
@@ -657,9 +2072,31 @@ languages:
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
+          - name: collapsibleBuildingSquareAlgorithm
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: BuildingDef
+                full: zombie.iso.BuildingDef
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg2
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: createNewGridSquare
             modifiers:
             - public
@@ -667,38 +2104,79 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: recalcAll
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+          - name: doBuildingInternal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: flattenAnyFoliage
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell.PerPlayerRender
+                full: zombie.iso.IsoCell$PerPlayerRender
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           - name: getAddList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoMovingObject>
               notes: the addList
           - name: getBestBuildings
             modifiers:
             - public
             parameters:
-            - name: criteria
+            - name: arg0
               type:
-                basic: BuildingSearchCriteria
-            - name: count
+                basic: IsoCell.BuildingSearchCriteria
+                full: zombie.iso.IsoCell$BuildingSearchCriteria
+            - name: arg1
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: Stack
+                full: java.util.Stack<zombie.iso.areas.BuildingScore>
           - name: getBuildingList
             deprecated: true
             modifiers:
@@ -706,6 +2184,7 @@ languages:
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoBuilding>
               notes: the BuildingList
           - name: getBuildingScores
             modifiers:
@@ -713,6 +2192,7 @@ languages:
             return:
               type:
                 basic: HashMap
+                full: java.util.HashMap<java.lang.Integer, zombie.iso.areas.BuildingScore>
               notes: the BuildingScores
           - name: getChunk
             modifiers:
@@ -721,12 +2201,15 @@ languages:
             - name: wx
               type:
                 basic: int
+                full: int
             - name: wy
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoChunk
+                full: zombie.iso.IsoChunk
           - name: getChunkForGridSquare
             modifiers:
             - public
@@ -734,15 +2217,19 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoChunk
+                full: zombie.iso.IsoChunk
           - name: getChunkMap
             modifiers:
             - public
@@ -750,9 +2237,11 @@ languages:
             - name: pl
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoChunkMap
+                full: zombie.iso.IsoChunkMap
           - name: getClosestBuildingExcept
             modifiers:
             - public
@@ -760,18 +2249,22 @@ languages:
             - name: chr
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             - name: except
               type:
                 basic: IsoRoom
+                full: zombie.iso.areas.IsoRoom
             return:
               type:
                 basic: IsoBuilding
+                full: zombie.iso.areas.IsoBuilding
           - name: getCurrentLightX
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
               notes: the currentLX
           - name: getCurrentLightY
             modifiers:
@@ -779,6 +2272,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the currentLY
           - name: getCurrentLightZ
             modifiers:
@@ -786,6 +2280,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the currentLZ
           - name: getCurrentLotHeader
             modifiers:
@@ -793,6 +2288,7 @@ languages:
             return:
               type:
                 basic: LotHeader
+                full: zombie.iso.LotHeader
           - name: getDangerScore
             modifiers:
             - public
@@ -800,35 +2296,42 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
+                full: int
           - name: getDangerUpdate
             modifiers:
             - public
             return:
               type:
                 basic: OnceEvery
+                full: zombie.core.utils.OnceEvery
               notes: the dangerUpdate
           - name: getDrag
             modifiers:
             - public
             parameters:
-            - name: player
+            - name: arg0
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: KahluaTable
+                full: se.krka.kahlua.vm.KahluaTable
           - name: getFakeZombieForHit
             modifiers:
             - public
             return:
               type:
                 basic: IsoZombie
+                full: zombie.characters.IsoZombie
           - name: getFreeTile
             modifiers:
             - public
@@ -836,9 +2339,11 @@ languages:
             - name: def
               type:
                 basic: RoomDef
+                full: zombie.iso.RoomDef
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getGridSquare
             modifiers:
             - public
@@ -846,15 +2351,19 @@ languages:
             - name: x
               type:
                 basic: double
+                full: double
             - name: y
               type:
                 basic: double
+                full: double
             - name: z
               type:
                 basic: double
+                full: double
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getGridSquare
             modifiers:
             - public
@@ -862,15 +2371,19 @@ languages:
             - name: x
               type:
                 basic: Double
+                full: java.lang.Double
             - name: y
               type:
                 basic: Double
+                full: java.lang.Double
             - name: z
               type:
                 basic: Double
+                full: java.lang.Double
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getGridSquare
             modifiers:
             - public
@@ -878,15 +2391,19 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getGridSquareDirect
             modifiers:
             - public
@@ -894,18 +2411,23 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getHeatSourceHighestTemperature
             modifiers:
             - public
@@ -913,18 +2435,23 @@ languages:
             - name: surroundingAirTemperature
               type:
                 basic: float
+                full: float
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: float
+                full: float
           - name: getHeatSourceTemperature
             modifiers:
             - public
@@ -932,21 +2459,26 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
+                full: int
           - name: getHeight
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
               notes: the height
           - name: getHeightInTiles
             modifiers:
@@ -954,12 +2486,14 @@ languages:
             return:
               type:
                 basic: int
+                full: int
           - name: getLamppostPositions
             modifiers:
             - public
             return:
               type:
                 basic: Stack
+                full: java.util.Stack<zombie.iso.IsoLightSource>
               notes: the LamppostPositions
           - name: getLightInfoUpdate
             modifiers:
@@ -967,6 +2501,7 @@ languages:
             return:
               type:
                 basic: Thread
+                full: java.lang.Thread
               notes: the LightInfoUpdate
           - name: getLightSourceAt
             modifiers:
@@ -975,33 +2510,40 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoLightSource
+                full: zombie.iso.IsoLightSource
           - name: getLuaObjectList
             modifiers:
             - public
             return:
               type:
                 basic: KahluaTable
+                full: se.krka.kahlua.vm.KahluaTable
           - name: getMaxFloors
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getMaxX
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
               notes: the maxX
           - name: getMaxY
             modifiers:
@@ -1009,6 +2551,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the maxY
           - name: getMaxZ
             modifiers:
@@ -1016,6 +2559,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the maxZ
           - name: getMinX
             modifiers:
@@ -1023,6 +2567,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the minX
           - name: getMinY
             modifiers:
@@ -1030,6 +2575,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the minY
           - name: getMinZ
             modifiers:
@@ -1037,6 +2583,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the minZ
           - name: getNearestVisibleZombie
             modifiers:
@@ -1045,9 +2592,11 @@ languages:
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoZombie
+                full: zombie.characters.IsoZombie
           - name: getNetworkPlayer
             modifiers:
             - public
@@ -1055,15 +2604,18 @@ languages:
             - name: RemoteID
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoSurvivor
+                full: zombie.characters.IsoSurvivor
           - name: getObjectList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoMovingObject>
               notes: the ObjectList
           - name: getOrCreateGridSquare
             modifiers:
@@ -1072,33 +2624,52 @@ languages:
             - name: x
               type:
                 basic: double
+                full: double
             - name: y
               type:
                 basic: double
+                full: double
             - name: z
               type:
                 basic: double
+                full: double
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+          - name: getPerPlayerRenderAt
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: IsoCell.PerPlayerRender
+                full: zombie.iso.IsoCell$PerPlayerRender
           - name: getProcessIsoObjectRemove
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoObject>
           - name: getProcessIsoObjects
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoObject>
           - name: getProcessItems
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
               notes: the ProcessItems
           - name: getProcessItemsRemove
             modifiers:
@@ -1106,6 +2677,7 @@ languages:
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
               notes: the ProcessItemsRemove
           - name: getProcessWorldItems
             modifiers:
@@ -1113,25 +2685,50 @@ languages:
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.objects.IsoWorldInventoryObject>
           - name: getPushableObjectList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoPushableObject>
               notes: the PushableObjectList
+          - name: getRainIntensity
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getRandomFreeTile
+            modifiers:
+            - package
+            return:
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getRandomFreeTileInRoom
             modifiers:
             - public
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+          - name: getRandomOutdoorFreeTile
+            modifiers:
+            - package
+            return:
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getRandomOutdoorTile
             modifiers:
             - public
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getRelativeGridSquare
             modifiers:
             - public
@@ -1139,15 +2736,19 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
           - name: getRemoteSurvivorList
             deprecated: true
             modifiers:
@@ -1155,6 +2756,7 @@ languages:
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.IsoGameCharacter>
               notes: the RemoteSurvivorList
           - name: getRemoveList
             modifiers:
@@ -1162,6 +2764,7 @@ languages:
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoMovingObject>
               notes: the removeList
           - name: getRoom
             modifiers:
@@ -1170,85 +2773,76 @@ languages:
             - name: ID
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: IsoRoom
+                full: zombie.iso.areas.IsoRoom
           - name: getRoomList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.areas.IsoRoom>
               notes: the RoomList
+          - name: getSnowTarget
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
           - name: getSpriteManager
             modifiers:
             - public
             return:
               type:
                 basic: IsoSpriteManager
+                full: zombie.iso.sprite.IsoSpriteManager
           - name: getStaticUpdaterObjectList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.IsoObject>
               notes: the StaticUpdaterObjectList
-          - name: getStencilValue
+          - name: getStencilTexture
             modifiers:
-            - public
-            parameters:
-            - name: x
-              type:
-                basic: int
-            - name: y
-              type:
-                basic: int
-            - name: z
-              type:
-                basic: int
+            - private
             return:
               type:
-                basic: short
-          - name: getStencilValue2z
-            modifiers:
-            - public
-            parameters:
-            - name: x
-              type:
-                basic: int
-            - name: y
-              type:
-                basic: int
-            - name: z
-              type:
-                basic: int
-            return:
-              type:
-                basic: short
+                basic: Texture
+                full: zombie.core.textures.Texture
           - name: getSurvivorList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.characters.IsoSurvivor>
           - name: getVehicles
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.vehicles.BaseVehicle>
           - name: getWeatherFX
             modifiers:
             - public
             return:
               type:
                 basic: IsoWeatherFX
+                full: zombie.iso.weather.fx.IsoWeatherFX
           - name: getWidth
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
               notes: the width
           - name: getWidthInTiles
             modifiers:
@@ -1256,18 +2850,21 @@ languages:
             return:
               type:
                 basic: int
+                full: int
           - name: getWindowList
             modifiers:
             - public
             return:
               type:
                 basic: ArrayList
+                full: java.util.ArrayList<zombie.iso.objects.IsoWindow>
           - name: getWorldX
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
               notes: the worldX
           - name: getWorldY
             modifiers:
@@ -1275,6 +2872,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the worldY
           - name: getZombieList
             notes: List of every zombie currently in the world.
@@ -1283,7 +2881,8 @@ languages:
             return:
               type:
                 basic: ArrayList
-              notes: List of every zombie currently in the world.
+                full: java.util.ArrayList<zombie.characters.IsoZombie>
+              notes: the ZombieList
           - name: gridSquareIsSnow
             modifiers:
             - public
@@ -1291,15 +2890,33 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: initTileShaders
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: initWeatherFx
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: invalidatePeekedRoom
             modifiers:
             - public
@@ -1307,9 +2924,27 @@ languages:
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
+          - name: isBlocked
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isInChunkMap
             modifiers:
             - public
@@ -1317,12 +2952,15 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isNull
             modifiers:
             - public
@@ -1330,22 +2968,51 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isSafeToAdd
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
               notes: the safeToAdd
+          - name: performRenderTiles
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell.PerPlayerRender
+                full: zombie.iso.IsoCell$PerPlayerRender
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
           - name: putInVehicle
             modifiers:
             - public
@@ -1353,15 +3020,42 @@ languages:
             - name: chr
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             return:
               type:
                 basic: void
+                full: void
+          - name: recalculateAnyGridStacks
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell.PerPlayerRender
+                full: zombie.iso.IsoCell$PerPlayerRender
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
           - name: reloadRainTextures
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: removeFromWindowList
             modifiers:
             - public
@@ -1369,9 +3063,11 @@ languages:
             - name: window
               type:
                 basic: IsoWindow
+                full: zombie.iso.objects.IsoWindow
             return:
               type:
                 basic: void
+                full: void
           - name: removeHeatSource
             modifiers:
             - public
@@ -1379,9 +3075,11 @@ languages:
             - name: heatSource
               type:
                 basic: IsoHeatSource
+                full: zombie.iso.IsoHeatSource
             return:
               type:
                 basic: void
+                full: void
           - name: removeLamppost
             modifiers:
             - public
@@ -1389,15 +3087,19 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: removeLamppost
             modifiers:
             - public
@@ -1405,15 +3107,213 @@ languages:
             - name: light
               type:
                 basic: IsoLightSource
+                full: zombie.iso.IsoLightSource
             return:
               type:
                 basic: void
+                full: void
           - name: render
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: renderDebugLighting
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell.PerPlayerRender
+                full: zombie.iso.IsoCell$PerPlayerRender
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderDebugPhysics
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderInternal
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderLast
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderRain
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderShadows
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderSnowTile
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell.SnowGrid
+                full: zombie.iso.IsoCell$SnowGrid
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: Texture
+                full: zombie.core.textures.Texture
+            - name: arg7
+              type:
+                basic: int
+                full: int
+            - name: arg8
+              type:
+                basic: int
+                full: int
+            - name: arg9
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderSnowTileBase
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Texture
+                full: zombie.core.textures.Texture
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: float
+                full: float
+            - name: arg4
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderSnowTileGeneral
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoCell.SnowGrid
+                full: zombie.iso.IsoCell$SnowGrid
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: int
+                full: int
+            - name: arg5
+              type:
+                basic: int
+                full: int
+            - name: arg6
+              type:
+                basic: int
+                full: int
+            - name: arg7
+              type:
+                basic: int
+                full: int
+            - name: arg8
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderTilesInternal
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: renderWeatherFx
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: resumeVehicleSounds
             modifiers:
             - public
@@ -1421,9 +3321,11 @@ languages:
             - name: chr
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
             return:
               type:
                 basic: void
+                full: void
           - name: roomSpotted
             modifiers:
             - public
@@ -1431,9 +3333,11 @@ languages:
             - name: room
               type:
                 basic: IsoRoom
+                full: zombie.iso.areas.IsoRoom
             return:
               type:
                 basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -1441,18 +3345,15 @@ languages:
             - name: output
               type:
                 basic: DataOutputStream
+                full: java.io.DataOutputStream
             - name: bDoChars
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
-          - name: savePlayer
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
+                full: void
           - name: setCacheChunk
             modifiers:
             - public
@@ -1460,9 +3361,11 @@ languages:
             - name: chunk
               type:
                 basic: IsoChunk
+                full: zombie.iso.IsoChunk
             return:
               type:
                 basic: void
+                full: void
           - name: setCacheChunk
             modifiers:
             - public
@@ -1470,12 +3373,15 @@ languages:
             - name: chunk
               type:
                 basic: IsoChunk
+                full: zombie.iso.IsoChunk
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setCacheGridSquare
             modifiers:
             - public
@@ -1483,18 +3389,23 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: square
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             return:
               type:
                 basic: void
+                full: void
           - name: setCacheGridSquareLocal
             modifiers:
             - public
@@ -1502,21 +3413,27 @@ languages:
             - name: x
               type:
                 basic: int
+                full: int
             - name: y
               type:
                 basic: int
+                full: int
             - name: z
               type:
                 basic: int
+                full: int
             - name: square
               type:
                 basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
             - name: playerIndex
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setCurrentLightX
             modifiers:
             - public
@@ -1524,10 +3441,12 @@ languages:
             - name: currentLX
               type:
                 basic: int
+                full: int
               notes: the currentLX to set
             return:
               type:
                 basic: void
+                full: void
           - name: setCurrentLightY
             modifiers:
             - public
@@ -1535,10 +3454,12 @@ languages:
             - name: currentLY
               type:
                 basic: int
+                full: int
               notes: the currentLY to set
             return:
               type:
                 basic: void
+                full: void
           - name: setCurrentLightZ
             modifiers:
             - public
@@ -1546,10 +3467,12 @@ languages:
             - name: currentLZ
               type:
                 basic: int
+                full: int
               notes: the currentLZ to set
             return:
               type:
                 basic: void
+                full: void
           - name: setDangerUpdate
             modifiers:
             - public
@@ -1557,23 +3480,28 @@ languages:
             - name: dangerUpdate
               type:
                 basic: OnceEvery
+                full: zombie.core.utils.OnceEvery
               notes: the dangerUpdate to set
             return:
               type:
                 basic: void
+                full: void
           - name: setDrag
             modifiers:
             - public
             parameters:
-            - name: item
+            - name: arg0
               type:
                 basic: KahluaTable
-            - name: player
+                full: se.krka.kahlua.vm.KahluaTable
+            - name: arg1
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setHeight
             modifiers:
             - public
@@ -1581,10 +3509,12 @@ languages:
             - name: height
               type:
                 basic: int
+                full: int
               notes: the height to set
             return:
               type:
                 basic: void
+                full: void
           - name: setLightInfoUpdate
             modifiers:
             - public
@@ -1592,10 +3522,12 @@ languages:
             - name: LightInfoUpdate
               type:
                 basic: Thread
+                full: java.lang.Thread
               notes: the LightInfoUpdate to set
             return:
               type:
                 basic: void
+                full: void
           - name: setMaxX
             modifiers:
             - public
@@ -1603,10 +3535,12 @@ languages:
             - name: maxX
               type:
                 basic: int
+                full: int
               notes: the maxX to set
             return:
               type:
                 basic: void
+                full: void
           - name: setMaxY
             modifiers:
             - public
@@ -1614,10 +3548,12 @@ languages:
             - name: maxY
               type:
                 basic: int
+                full: int
               notes: the maxY to set
             return:
               type:
                 basic: void
+                full: void
           - name: setMaxZ
             modifiers:
             - public
@@ -1625,10 +3561,12 @@ languages:
             - name: maxZ
               type:
                 basic: int
+                full: int
               notes: the maxZ to set
             return:
               type:
                 basic: void
+                full: void
           - name: setMinX
             modifiers:
             - public
@@ -1636,10 +3574,12 @@ languages:
             - name: minX
               type:
                 basic: int
+                full: int
               notes: the minX to set
             return:
               type:
                 basic: void
+                full: void
           - name: setMinY
             modifiers:
             - public
@@ -1647,10 +3587,12 @@ languages:
             - name: minY
               type:
                 basic: int
+                full: int
               notes: the minY to set
             return:
               type:
                 basic: void
+                full: void
           - name: setMinZ
             modifiers:
             - public
@@ -1658,10 +3600,12 @@ languages:
             - name: minZ
               type:
                 basic: int
+                full: int
               notes: the minZ to set
             return:
               type:
                 basic: void
+                full: void
           - name: setRainAlpha
             modifiers:
             - public
@@ -1669,9 +3613,11 @@ languages:
             - name: alpha
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setRainIntensity
             modifiers:
             - public
@@ -1679,9 +3625,11 @@ languages:
             - name: intensity
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setRainSpeed
             modifiers:
             - public
@@ -1689,9 +3637,11 @@ languages:
             - name: speed
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
+                full: void
           - name: setSafeToAdd
             modifiers:
             - public
@@ -1699,10 +3649,12 @@ languages:
             - name: safeToAdd
               type:
                 basic: boolean
+                full: boolean
               notes: the safeToAdd to set
             return:
               type:
                 basic: void
+                full: void
           - name: setSnowTarget
             modifiers:
             - public
@@ -1710,47 +3662,11 @@ languages:
             - name: target
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: void
-          - name: setStencilValue
-            modifiers:
-            - public
-            parameters:
-            - name: x
-              type:
-                basic: int
-            - name: y
-              type:
-                basic: int
-            - name: z
-              type:
-                basic: int
-            - name: stencil
-              type:
-                basic: int
-            return:
-              type:
-                basic: void
-          - name: setStencilValue2z
-            modifiers:
-            - public
-            parameters:
-            - name: x
-              type:
-                basic: int
-            - name: y
-              type:
-                basic: int
-            - name: z
-              type:
-                basic: int
-            - name: stencil
-              type:
-                basic: int
-            return:
-              type:
-                basic: void
+                full: void
           - name: setWidth
             modifiers:
             - public
@@ -1758,10 +3674,12 @@ languages:
             - name: width
               type:
                 basic: int
+                full: int
               notes: the width to set
             return:
               type:
                 basic: void
+                full: void
           - name: setWorldX
             modifiers:
             - public
@@ -1769,10 +3687,12 @@ languages:
             - name: worldX
               type:
                 basic: int
+                full: int
               notes: the worldX to set
             return:
               type:
                 basic: void
+                full: void
           - name: setWorldY
             modifiers:
             - public
@@ -1780,22 +3700,75 @@ languages:
             - name: worldY
               type:
                 basic: int
+                full: int
               notes: the worldY to set
             return:
               type:
                 basic: void
+                full: void
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: updateHeatSources
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: updateInternal
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateSnow
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateWeatherFx
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateZombieVocals
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateZombiesForRender
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
           staticMethods:
           - name: FromMouseTile
             modifiers:
@@ -1804,6 +3777,49 @@ languages:
             return:
               type:
                 basic: IsoDirections
+                full: zombie.iso.IsoDirections
+          - name: InsertAt
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: BuildingScore
+                full: zombie.iso.areas.BuildingScore
+            - name: arg2
+              type:
+                basic: BuildingScore
+                full: zombie.iso.areas.BuildingScore[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: Place
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: BuildingScore
+                full: zombie.iso.areas.BuildingScore
+            - name: arg1
+              type:
+                basic: BuildingScore
+                full: zombie.iso.areas.BuildingScore[]
+            - name: arg2
+              type:
+                basic: IsoCell.BuildingSearchCriteria
+                full: zombie.iso.IsoCell$BuildingSearchCriteria
+            return:
+              type:
+                basic: void
+                full: void
           - name: getBComponent
             modifiers:
             - public
@@ -1812,9 +3828,11 @@ languages:
             - name: col
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
+                full: int
           - name: getBuildings
             modifiers:
             - public
@@ -1822,7 +3840,24 @@ languages:
             return:
               type:
                 basic: Stack
+                full: java.util.Stack<zombie.iso.areas.BuildingScore>
               notes: the getBuildings
+          - name: getCellSizeInChunks
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getCellSizeInSquares
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: int
+                full: int
           - name: getGComponent
             modifiers:
             - public
@@ -1831,9 +3866,11 @@ languages:
             - name: col
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
+                full: int
           - name: getInstance
             modifiers:
             - public
@@ -1841,6 +3878,7 @@ languages:
             return:
               type:
                 basic: IsoCell
+                full: zombie.iso.IsoCell
           - name: getMaxHeight
             modifiers:
             - public
@@ -1848,6 +3886,7 @@ languages:
             return:
               type:
                 basic: int
+                full: int
               notes: the MaxHeight
           - name: getRComponent
             modifiers:
@@ -1857,9 +3896,45 @@ languages:
             - name: col
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: int
+                full: int
+          - name: getShoreInt
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: int
+                full: int
+          - name: isSnowShore
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: setBuildings
             modifiers:
             - public
@@ -1868,10 +3943,11 @@ languages:
             - name: scores
               type:
                 basic: Stack
-                full: Stack<BuildingScore>
+                full: java.util.Stack<zombie.iso.areas.BuildingScore>
             return:
               type:
                 basic: void
+                full: void
           - name: toIntColor
             modifiers:
             - public
@@ -1880,17 +3956,20 @@ languages:
             - name: r
               type:
                 basic: float
+                full: float
             - name: g
               type:
                 basic: float
+                full: float
             - name: b
               type:
                 basic: float
+                full: float
             - name: a
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: int
-          javaType: class
-          extends: Object
+                full: int

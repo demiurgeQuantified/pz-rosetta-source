@@ -4,163 +4,464 @@ languages:
     packages:
       java.awt.image:
         IndexColorModel:
+          extends: java.awt.image.ColorModel
+          modifiers:
+          - public
+          notes: "The IndexColorModel class is a ColorModel\n class that works with\
+            \ pixel values consisting of a\n single sample that is an index into a\
+            \ fixed colormap in the default\n sRGB color space.  The colormap specifies\
+            \ red, green, blue, and\n optional alpha components corresponding to each\
+            \ index.  All components\n are represented in the colormap as 8-bit unsigned\
+            \ integral values.\n Some constructors allow the caller to specify \"\
+            holes\" in the colormap\n by indicating which colormap entries are valid\
+            \ and which represent\n unusable colors via the bits set in a BigInteger\
+            \ object.\n This color model is similar to an X11 PseudoColor visual.\n\
+            \ \n Some constructors provide a means to specify an alpha component\n\
+            \ for each pixel in the colormap, while others either provide no\n such\
+            \ means or, in some cases, a flag to indicate whether the\n colormap data\
+            \ contains alpha values.  If no alpha is supplied to\n the constructor,\
+            \ an opaque alpha component (alpha = 1.0) is\n assumed for each entry.\n\
+            \ An optional transparent pixel value can be supplied that indicates a\n\
+            \ pixel to be made completely transparent, regardless of any alpha\n component\
+            \ supplied or assumed for that pixel value.\n Note that the color components\
+            \ in the colormap of an\n IndexColorModel objects are never pre-multiplied\
+            \ with\n the alpha components.\n \n \n The transparency of an IndexColorModel\
+            \ object is\n determined by examining the alpha components of the colors\
+            \ in the\n colormap and choosing the most specific value after considering\n\
+            \ the optional alpha values and any transparent index specified.\n The\
+            \ transparency value is Transparency.OPAQUE\n only if all valid colors\
+            \ in\n the colormap are opaque and there is no valid transparent pixel.\n\
+            \ If all valid colors\n in the colormap are either completely opaque (alpha\
+            \ = 1.0) or\n completely transparent (alpha = 0.0), which typically occurs\
+            \ when\n a valid transparent pixel is specified,\n the value is Transparency.BITMASK.\n\
+            \ Otherwise, the value is Transparency.TRANSLUCENT, indicating\n that\
+            \ some valid color has an alpha component that is\n neither completely\
+            \ transparent nor completely opaque\n (0.0 < alpha < 1.0).\n \n\n \n If\
+            \ an IndexColorModel object has\n a transparency value of Transparency.OPAQUE,\n\
+            \ then the hasAlpha\n and getNumComponents methods\n (both inherited from\
+            \ ColorModel)\n return false and 3, respectively.\n For any other transparency\
+            \ value,\n hasAlpha returns true\n and getNumComponents returns 4.\n\n\
+            \ \n \n The values used to index into the colormap are taken from the\
+            \ least\n significant n bits of pixel representations where\n n is based\
+            \ on the pixel size specified in the constructor.\n For pixel sizes smaller\
+            \ than 8 bits, n is rounded up to a\n power of two (3 becomes 4 and 5,6,7\
+            \ become 8).\n For pixel sizes between 8 and 16 bits, n is equal to the\n\
+            \ pixel size.\n Pixel sizes larger than 16 bits are not supported by this\
+            \ class.\n Higher order bits beyond n are ignored in pixel representations.\n\
+            \ Index values greater than or equal to the map size, but less than\n\
+            \ 2n, are undefined and return 0 for all color and\n alpha components.\n\
+            \ \n \n For those methods that use a primitive array pixel representation\
+            \ of\n type transferType, the array length is always one.\n The transfer\
+            \ types supported are DataBuffer.TYPE_BYTE and\n DataBuffer.TYPE_USHORT.\
+            \  A single int pixel\n representation is valid for all objects of this\
+            \ class, since it is\n always possible to represent pixel values used\
+            \ with this class in a\n single int.  Therefore, methods that use this\
+            \ representation do\n not throw an IllegalArgumentException due to an\
+            \ invalid\n pixel value.\n \n Many of the methods in this class are final.\
+            \  The reason for\n this is that the underlying native graphics code makes\
+            \ assumptions\n about the layout and operation of this class and those\
+            \ assumptions\n are reflected in the implementations of the methods here\
+            \ that are\n marked final.  You can subclass this class for other reasons,\
+            \ but\n you cannot override or modify the behaviour of those methods."
+          fields:
+            allgrayopaque:
+              name: allgrayopaque
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            colorData:
+              name: colorData
+              modifiers:
+              - private
+              type:
+                basic: BufImgSurfaceData.ICMColorData
+                full: sun.awt.image.BufImgSurfaceData$ICMColorData
+            hashCode:
+              name: hashCode
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            lookupcache:
+              name: lookupcache
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            map_size:
+              name: map_size
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            pixel_mask:
+              name: pixel_mask
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            rgb:
+              name: rgb
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int[]
+            transparent_index:
+              name: transparent_index
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            validBits:
+              name: validBits
+              modifiers:
+              - private
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
+          staticFields:
+            CACHESIZE:
+              name: CACHESIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            alphaBits:
+              name: alphaBits
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
+            opaqueBits:
+              name: opaqueBits
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int[]
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bits
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of bits each pixel occupies
+            - name: size
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the size of the color component arrays
+            - name: r
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg3
+              notes: the array of red color components
+            - name: g
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg4
+              notes: the array of green color components
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the array of blue color components
+            notes: "Constructs an IndexColorModel from the specified\n arrays of red,\
+              \ green, and blue components.  Pixels described\n by this color model\
+              \ all have alpha components of 255\n unnormalized (1.0 normalized),\
+              \ which means they\n are fully opaque.  All of the arrays specifying\
+              \ the color\n components must have at least the specified number of\
+              \ entries.\n The ColorSpace is the default sRGB space.\n Since there\
+              \ is no alpha information in any of the arguments\n to this constructor,\
+              \ the transparency value is always\n Transparency.OPAQUE.\n The transfer\
+              \ type is the smallest of DataBuffer.TYPE_BYTE\n or DataBuffer.TYPE_USHORT\
+              \ that can hold a single pixel."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bits
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of bits each pixel occupies
+            - name: size
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the size of the color component arrays
+            - name: r
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg3
+              notes: the array of red color components
+            - name: g
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of green color components
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of blue color components
+            - name: trans
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the index of the transparent pixel
+            notes: "Constructs an IndexColorModel from the given arrays\n of red,\
+              \ green, and blue components.  Pixels described by this color\n model\
+              \ all have alpha components of 255 unnormalized\n (1.0 normalized),\
+              \ which means they are fully opaque, except\n for the indicated pixel\
+              \ to be made transparent.  All of the arrays\n specifying the color\
+              \ components must have at least the specified\n number of entries.\n\
+              \ The ColorSpace is the default sRGB space.\n The transparency value\
+              \ may be Transparency.OPAQUE or\n Transparency.BITMASK depending on\
+              \ the arguments, as\n specified in the class description above.\n The\
+              \ transfer type is the smallest of DataBuffer.TYPE_BYTE\n or DataBuffer.TYPE_USHORT\
+              \ that can hold a\n single pixel."
+          - modifiers:
+            - public
+            parameters:
+            - name: bits
+              type:
+                basic: int
+                full: int
+              notes: the number of bits each pixel occupies
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the color component arrays
+            - name: r
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of red color components
+            - name: g
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of green color components
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of blue color components
+            - name: a
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of alpha value components
+            notes: "Constructs an IndexColorModel from the given\n arrays of red,\
+              \ green, blue and alpha components.  All of the\n arrays specifying\
+              \ the components must have at least the specified\n number of entries.\n\
+              \ The ColorSpace is the default sRGB space.\n The transparency value\
+              \ may be any of Transparency.OPAQUE,\n Transparency.BITMASK,\n or Transparency.TRANSLUCENT\n\
+              \ depending on the arguments, as specified\n in the class description\
+              \ above.\n The transfer type is the smallest of DataBuffer.TYPE_BYTE\n\
+              \ or DataBuffer.TYPE_USHORT that can hold a single pixel."
+          - modifiers:
+            - public
+            parameters:
+            - name: bits
+              type:
+                basic: int
+                full: int
+              notes: the number of bits each pixel occupies
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the color component arrays
+            - name: cmap
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of color components
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: the starting offset of the first color component
+            - name: hasalpha
               type:
                 basic: boolean
                 full: boolean
+              notes: "indicates whether alpha values are contained in\n          \
+                \        the cmap array"
+            notes: "Constructs an IndexColorModel from a single\n array of interleaved\
+              \ red, green, blue and optional alpha\n components.  The array must\
+              \ have enough values in it to\n fill all of the needed component arrays\
+              \ of the specified\n size.  The ColorSpace is the default sRGB space.\n\
+              \ The transparency value may be any of Transparency.OPAQUE,\n Transparency.BITMASK,\n\
+              \ or Transparency.TRANSLUCENT\n depending on the arguments, as specified\n\
+              \ in the class description above.\n The transfer type is the smallest\
+              \ of\n DataBuffer.TYPE_BYTE or DataBuffer.TYPE_USHORT\n that can hold\
+              \ a single pixel."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bits
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of bits each pixel occupies
+            - name: size
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the size of the color component arrays
+            - name: cmap
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg3
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg4
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg5
-              type:
-                basic: byte[]
-                full: byte[]
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: the array of color components
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg3
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg4
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg5
-              type:
-                basic: int
-                full: int
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
+              notes: the starting offset of the first color component
+            - name: hasalpha
               type:
                 basic: boolean
                 full: boolean
-            - name: arg5
+              notes: "indicates whether alpha values are contained in\n          \
+                \        the cmap array"
+            - name: trans
               type:
                 basic: int
                 full: int
+              notes: the index of the fully transparent pixel
+            notes: "Constructs an IndexColorModel from a single array of\n interleaved\
+              \ red, green, blue and optional alpha components.  The\n specified transparent\
+              \ index represents a pixel that is made\n entirely transparent regardless\
+              \ of any alpha value specified\n for it.  The array must have enough\
+              \ values in it to fill all\n of the needed component arrays of the specified\
+              \ size.\n The ColorSpace is the default sRGB space.\n The transparency\
+              \ value may be any of Transparency.OPAQUE,\n Transparency.BITMASK,\n\
+              \ or Transparency.TRANSLUCENT\n depending on the arguments, as specified\n\
+              \ in the class description above.\n The transfer type is the smallest\
+              \ of\n DataBuffer.TYPE_BYTE or DataBuffer.TYPE_USHORT\n that can hold\
+              \ a single pixel."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bits
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the number of bits each pixel occupies
+            - name: size
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the size of the color component arrays
+            - name: cmap
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg3
+              notes: the array of color components
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the starting offset of the first color component
+            - name: hasalpha
+              type:
+                basic: boolean
+                full: boolean
+              notes: "indicates whether alpha values are contained in\n          \
+                \        the cmap array"
+            - name: trans
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: the index of the fully transparent pixel
+            - name: transferType
+              type:
+                basic: int
+                full: int
+              notes: "the data type of the array used to represent\n           pixel\
+                \ values.  The data type must be either\n           DataBuffer.TYPE_BYTE\
+                \ or\n           DataBuffer.TYPE_USHORT."
+            notes: "Constructs an IndexColorModel from an array of\n ints where each\
+              \ int is comprised of red, green, blue, and\n optional alpha components\
+              \ in the default RGB color model format.\n The specified transparent\
+              \ index represents a pixel that is made\n entirely transparent regardless\
+              \ of any alpha value specified\n for it.  The array must have enough\
+              \ values in it to fill all\n of the needed component arrays of the specified\
+              \ size.\n The ColorSpace is the default sRGB space.\n The transparency\
+              \ value may be any of Transparency.OPAQUE,\n Transparency.BITMASK,\n\
+              \ or Transparency.TRANSLUCENT\n depending on the arguments, as specified\n\
+              \ in the class description above."
+          - modifiers:
+            - public
+            parameters:
+            - name: bits
+              type:
+                basic: int
+                full: int
+              notes: the number of bits each pixel occupies
+            - name: size
+              type:
+                basic: int
+                full: int
+              notes: the size of the color component array
+            - name: cmap
+              type:
+                basic: int
+                full: int[]
+              notes: the array of color components
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: the starting offset of the first color component
+            - name: transferType
+              type:
+                basic: int
+                full: int
+              notes: the specified data type
+            - name: validBits
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
-          - modifiers:
-            - public
+              notes: "a BigInteger object.  If a bit is\n    set in the BigInteger,\
+                \ the pixel at that index is valid.\n    If a bit is not set, the\
+                \ pixel at that index\n    is considered invalid.  If null, all pixels\
+                \ are valid.\n    Only bits from 0 to the map size are considered."
+            notes: "Constructs an IndexColorModel from an\n int array where each int\
+              \ is\n comprised of red, green, blue, and alpha\n components in the\
+              \ default RGB color model format.\n The array must have enough values\
+              \ in it to fill all\n of the needed component arrays of the specified\
+              \ size.\n The ColorSpace is the default sRGB space.\n The transparency\
+              \ value may be any of Transparency.OPAQUE,\n Transparency.BITMASK,\n\
+              \ or Transparency.TRANSLUCENT\n depending on the arguments, as specified\n\
+              \ in the class description above.\n The transfer type must be one of\
+              \ DataBuffer.TYPE_BYTE\n DataBuffer.TYPE_USHORT.\n The BigInteger object\
+              \ specifies the valid/invalid pixels\n in the cmap array.  A pixel is\
+              \ valid if the\n BigInteger value at that index is set, and is invalid\n\
+              \ if the BigInteger bit  at that index is not set."
+          methods:
+          - name: calcRealMapSize
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -170,94 +471,109 @@ languages:
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: int[]
-                full: int[]
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: boolean
-                full: boolean
-            - name: arg5
-              type:
-                basic: int
-                full: int
-            - name: arg6
-              type:
-                basic: int
-                full: int
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: int
+                full: int
+          - name: calculatePixelMask
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: convertToIntDiscrete
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: raster
               type:
                 basic: Raster
                 full: java.awt.image.Raster
-            - name: arg1
+              notes: the specified Raster
+            - name: forceARGB
               type:
                 basic: boolean
                 full: boolean
+              notes: "if true, the returned\n     BufferedImage is TYPE_INT_ARGB;\
+                \ otherwise it is\n     TYPE_INT_RGB"
             return:
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
+              notes: "a BufferedImage created with the specified\n     Raster"
+            notes: "Returns a new BufferedImage of TYPE_INT_ARGB or\n TYPE_INT_RGB\
+              \ that has a Raster with pixel data\n computed by expanding the indices\
+              \ in the source Raster\n using the color/alpha component arrays of this\
+              \ ColorModel.\n Only the lower n bits of each index value in the source\n\
+              \ Raster, as specified in the\n class description above, are used to\n\
+              \ compute the color/alpha values in the returned image.\n If forceARGB\
+              \ is true, a TYPE_INT_ARGB image is\n returned regardless of whether\
+              \ or not this ColorModel\n has an alpha component array or a transparent\
+              \ pixel."
           - name: createCompatibleSampleModel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the width to apply to the new SampleModel
+            - name: h
               type:
                 basic: int
                 full: int
+              notes: the height to apply to the new SampleModel
             return:
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
+              notes: "a SampleModel object with the specified\n width and height."
+            notes: "Creates a SampleModel with the specified\n width and height that\
+              \ has a data layout compatible with\n this ColorModel."
           - name: createCompatibleWritableRaster
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the width to apply to the new WritableRaster
+            - name: h
               type:
                 basic: int
                 full: int
+              notes: the height to apply to the new WritableRaster
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster object with the specified\n width and height."
+            notes: "Creates a WritableRaster with the specified width\n and height\
+              \ that has a data layout (SampleModel)\n compatible with this ColorModel.\
+              \  This method\n only works for color models with 16 or fewer bits per\
+              \ pixel.\n \n Since IndexColorModel can be subclassed, any\n subclass\
+              \ that supports greater than 16 bits per pixel must\n override this\
+              \ method."
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the Object to test for equality
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified Object\n equals this IndexColorModel;\
+                \ false otherwise."
+            notes: "Tests if the specified Object is an\n instance of IndexColorModel\n\
+              \ and if it equals this IndexColorModel"
           - name: finalize
             modifiers:
             - public
@@ -265,184 +581,319 @@ languages:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: "Disposes of system resources associated with this\n ColorModel\
+              \ once this ColorModel is no\n longer referenced."
+          - name: getAllValid
+            modifiers:
+            - private
+            return:
+              type:
+                basic: BigInteger
+                full: java.math.BigInteger
           - name: getAlpha
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: int
                 full: int
+              notes: the specified pixel
             return:
               type:
                 basic: int
                 full: int
+              notes: the value of the alpha component for the specified pixel
+            notes: "Returns the alpha component for the specified pixel, scaled\n\
+              \ from 0 to 255.  The pixel value is specified as an int.\n Only the\
+              \ lower n bits of the pixel value, as specified in the\n class description\
+              \ above, are used to\n calculate the returned value."
           - name: getAlphas
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: a
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "the specified array into which the elements of the\n      array\
+                \ of alpha components are copied"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Copies the array of alpha transparency components into the\n specified\
+              \ array.  Only the initial entries of the array as specified\n by getMapSize\
+              \ are written."
           - name: getBlue
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: int
                 full: int
+              notes: the specified pixel
             return:
               type:
                 basic: int
                 full: int
+              notes: the value of the blue color component for the specified pixel
+            notes: "Returns the blue color component for the specified pixel, scaled\n\
+              \ from 0 to 255 in the default RGB ColorSpace, sRGB.  The pixel value\n\
+              \ is specified as an int.\n Only the lower n bits of the pixel value,\
+              \ as specified in the\n class description above, are used to\n calculate\
+              \ the returned value.\n The returned value is a non pre-multiplied value."
           - name: getBlues
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "the specified array into which the elements of the\n      array\
+                \ of blue color components are copied"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Copies the array of blue color components into the specified array.\n\
+              \ Only the initial entries of the array as specified by\n getMapSize\
+              \ are written."
           - name: getComponentSize
             modifiers:
             - public
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "an array containing the number of bits of each color\n     \
+                \    and alpha component of this IndexColorModel"
+            notes: "Returns an array of the number of bits for each color/alpha component.\n\
+              \ The array contains the color components in the order red, green,\n\
+              \ blue, followed by the alpha component, if present."
           - name: getComponents
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified pixel
+            - name: components
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg2
+              notes: "the array to receive the color and alpha\n components of the\
+                \ specified pixel"
+            - name: offset
               type:
                 basic: int
                 full: int
+              notes: "the offset into the components array at\n which to start storing\
+                \ the color and alpha components"
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "an array containing the color and alpha components of the\n\
+                \ specified pixel starting at the specified offset."
+            notes: "Returns an array of unnormalized color/alpha components for a\n\
+              \ specified pixel in this ColorModel.  The pixel value\n is specified\
+              \ as an int.  If the components array is null,\n a new array is allocated\
+              \ that contains\n offset + getNumComponents() elements.\n The components\
+              \ array is returned,\n with the alpha component included\n only if hasAlpha\
+              \ returns true.\n Color/alpha components are stored in the components\
+              \ array starting\n at offset even if the array is allocated by this\
+              \ method.\n An ArrayIndexOutOfBoundsException\n is thrown if  the components\
+              \ array is not null and is\n not large enough to hold all the color\
+              \ and alpha components\n starting at offset."
           - name: getComponents
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the specified pixel
+            - name: components
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg2
+              notes: "an array that receives the color and alpha\n components of the\
+                \ specified pixel"
+            - name: offset
               type:
                 basic: int
                 full: int
+              notes: "the index into the components array at\n which to begin storing\
+                \ the color and alpha components of the\n specified pixel"
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "an array containing the color and alpha components of the\n\
+                \ specified pixel starting at the specified offset."
+            notes: "Returns an array of unnormalized color/alpha components for\n\
+              \ a specified pixel in this ColorModel.  The pixel\n value is specified\
+              \ by an array of data elements of type\n transferType passed in as an\
+              \ object reference.\n If pixel is not a primitive array of type\n transferType,\
+              \ a ClassCastException\n is thrown.  An ArrayIndexOutOfBoundsException\n\
+              \ is thrown if pixel is not large enough to hold\n a pixel value for\
+              \ this ColorModel.  If the\n components array is null, a new array\n\
+              \ is allocated that contains\n offset + getNumComponents() elements.\n\
+              \ The components array is returned,\n with the alpha component included\n\
+              \ only if hasAlpha returns true.\n Color/alpha components are stored\
+              \ in the components\n array starting at offset even if the array is\n\
+              \ allocated by this method.  An\n ArrayIndexOutOfBoundsException is\
+              \ also\n thrown if  the components array is not\n null and is not large\
+              \ enough to hold all the color\n and alpha components starting at offset.\n\
+              \ \n Since IndexColorModel can be subclassed, subclasses\n inherit the\
+              \ implementation of this method and if they don't\n override it then\
+              \ they throw an exception if they use an\n unsupported transferType."
           - name: getDataElement
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: components
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg1
+              notes: "an array of unnormalized color and alpha\n components"
+            - name: offset
               type:
                 basic: int
                 full: int
+              notes: "the index into components at which to\n begin retrieving the\
+                \ color and alpha components"
             return:
               type:
                 basic: int
                 full: int
+              notes: "an int pixel value in this\n ColorModel corresponding to the\
+                \ specified components."
+            notes: "Returns a pixel value represented as an int in this\n ColorModel\
+              \ given an array of unnormalized\n color/alpha components.  An\n ArrayIndexOutOfBoundsException\n\
+              \ is thrown if the components array is not large\n enough to hold all\
+              \ of the color and alpha components starting\n at offset.  Since\n ColorModel\
+              \ can be subclassed, subclasses inherit the\n implementation of this\
+              \ method and if they don't override it then\n they throw an exception\
+              \ if they use an unsupported transferType."
           - name: getDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: rgb
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the integer pixel representation in the default RGB\n color\
+                \ model"
+            - name: pixel
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the specified pixel
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "an array representation of the specified pixel in this\n  IndexColorModel."
+            notes: "Returns a data element array representation of a pixel in this\n\
+              \ ColorModel, given an integer pixel representation in the\n default\
+              \ RGB color model.  This array can then be passed to the\n setDataElements\n\
+              \ method of a WritableRaster object.  If the pixel variable is\n null,\
+              \ a new array is allocated.  If pixel\n is not null, it must be\n a\
+              \ primitive array of type transferType; otherwise, a\n ClassCastException\
+              \ is thrown.  An\n ArrayIndexOutOfBoundsException is\n thrown if pixel\
+              \ is not large enough to hold a pixel\n value for this ColorModel. \
+              \ The pixel array is returned.\n \n Since IndexColorModel can be subclassed,\
+              \ subclasses\n inherit the implementation of this method and if they\
+              \ don't\n override it then they throw an exception if they use an\n\
+              \ unsupported transferType."
           - name: getDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: components
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-            - name: arg1
+              notes: "an array of unnormalized color and alpha\n components"
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the index into components at which to\n begin retrieving color\
+                \ and alpha components"
+            - name: pixel
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the Object representing an array of color\n and alpha components"
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "an Object representing an array of color and\n alpha components."
+            notes: "Returns a data element array representation of a pixel in this\n\
+              \ ColorModel given an array of unnormalized color/alpha\n components.\
+              \  This array can then be passed to the\n setDataElements method of\
+              \ a WritableRaster\n object.  An ArrayIndexOutOfBoundsException is\n\
+              \ thrown if the\n components array is not large enough to hold all of\
+              \ the\n color and alpha components starting at offset.\n If the pixel\
+              \ variable is null, a new array\n is allocated.  If pixel is not null,\n\
+              \ it must be a primitive array of type transferType;\n otherwise, a\
+              \ ClassCastException is thrown.\n An ArrayIndexOutOfBoundsException\
+              \ is thrown if pixel\n is not large enough to hold a pixel value for\
+              \ this\n ColorModel.\n \n Since IndexColorModel can be subclassed, subclasses\n\
+              \ inherit the implementation of this method and if they don't\n override\
+              \ it then they throw an exception if they use an\n unsupported transferType"
           - name: getGreen
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: int
                 full: int
+              notes: the specified pixel
             return:
               type:
                 basic: int
                 full: int
+              notes: the value of the green color component for the specified pixel
+            notes: "Returns the green color component for the specified pixel, scaled\n\
+              \ from 0 to 255 in the default RGB ColorSpace, sRGB.  The pixel value\n\
+              \ is specified as an int.\n Only the lower n bits of the pixel value,\
+              \ as specified in the\n class description above, are used to\n calculate\
+              \ the returned value.\n The returned value is a non pre-multiplied value."
           - name: getGreens
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: g
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "the specified array into which the elements of the\n      array\
+                \ of green color components are copied"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Copies the array of green color components into the specified\
+              \ array.\n Only the initial entries of the array as specified by\n getMapSize\
+              \ are written."
           - name: getMapSize
             modifiers:
             - public
@@ -451,58 +902,87 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the size of the color and alpha component arrays.
+            notes: "Returns the size of the color/alpha component arrays in this\n\
+              \ IndexColorModel."
           - name: getRGB
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: int
                 full: int
+              notes: the specified pixel
             return:
               type:
                 basic: int
                 full: int
+              notes: the color and alpha components of the specified pixel
+            notes: "Returns the color/alpha components of the pixel in the default\n\
+              \ RGB color model format.  The pixel value is specified as an int.\n\
+              \ Only the lower n bits of the pixel value, as specified in the\n class\
+              \ description above, are used to\n calculate the returned value.\n The\
+              \ returned value is in a non pre-multiplied format."
           - name: getRGBs
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: rgb
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "the specified array into which the converted ARGB\n        values\
+                \ from this array of color and alpha components\n        are copied."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Converts data for each index from the color and alpha component\n\
+              \ arrays to an int in the default RGB ColorModel format and copies\n\
+              \ the resulting 32-bit ARGB values into the specified array.  Only\n\
+              \ the initial entries of the array as specified by\n getMapSize are\n\
+              \ written."
           - name: getRed
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: pixel
               type:
                 basic: int
                 full: int
+              notes: the specified pixel
             return:
               type:
                 basic: int
                 full: int
+              notes: the value of the red color component for the specified pixel
+            notes: "Returns the red color component for the specified pixel, scaled\n\
+              \ from 0 to 255 in the default RGB ColorSpace, sRGB.  The pixel value\n\
+              \ is specified as an int.\n Only the lower n bits of the pixel value,\
+              \ as specified in the\n class description above, are used to\n calculate\
+              \ the returned value.\n The returned value is a non pre-multiplied value."
           - name: getReds
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: r
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: "the specified array into which the elements of the\n      array\
+                \ of red color components are copied"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Copies the array of red color components into the specified array.\n\
+              \ Only the initial entries of the array as specified by\n getMapSize\
+              \ are written."
           - name: getTransparency
             modifiers:
             - public
@@ -510,6 +990,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the transparency of this IndexColorModel
+            notes: "Returns the transparency.  Returns either OPAQUE, BITMASK,\n or\
+              \ TRANSLUCENT"
           - name: getTransparentPixel
             modifiers:
             - public
@@ -518,6 +1001,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the index of a transparent pixel in this\n         IndexColorModel\
+                \ object, or -1 if there\n         is no such pixel"
+            notes: "Returns the index of a transparent pixel in this\n IndexColorModel\
+              \ or -1 if there is no pixel\n with an alpha value of 0.  If a transparent\
+              \ pixel was\n explicitly specified in one of the constructors by its\n\
+              \ index, then that index will be preferred, otherwise,\n the index of\
+              \ any pixel which happens to be fully transparent\n may be returned."
           - name: getValidPixels
             modifiers:
             - public
@@ -525,6 +1015,12 @@ languages:
               type:
                 basic: BigInteger
                 full: java.math.BigInteger
+              notes: a BigInteger indicating the valid/invalid pixels.
+            notes: "Returns a BigInteger that indicates the valid/invalid\n pixels\
+              \ in the colormap.  A bit is valid if the\n BigInteger value at that\
+              \ index is set, and is invalid\n if the BigInteger value at that index\
+              \ is not set.\n The only valid ranges to query in the BigInteger are\n\
+              \ between 0 and the map size."
           - name: hashCode
             modifiers:
             - public
@@ -532,30 +1028,72 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code for IndexColorModel
+            notes: Returns the hash code for IndexColorModel.
+          - name: installpixel
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: isCompatibleRaster
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: raster
               type:
                 basic: Raster
                 full: java.awt.image.Raster
+              notes: the Raster object to test for compatibility
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if raster is compatible\n with this ColorModel; false otherwise."
+            notes: "Returns true if raster is compatible\n with this ColorModel or\
+              \ false if it\n is not compatible with this ColorModel."
           - name: isCompatibleSampleModel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: sm
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
+              notes: "the specified SampleModel,\n           or null"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified SampleModel\n is compatible with this\
+                \ ColorModel; false\n otherwise."
+            notes: "Checks if the specified SampleModel is compatible\n with this\
+              \ ColorModel.  If sm is\n null, this method returns false."
+          - name: isValid
+            modifiers:
+            - public
+            parameters:
+            - name: pixel
+              type:
+                basic: int
+                full: int
+              notes: the specified pixel value
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if pixel\n is valid; false otherwise."
+            notes: Returns whether or not the pixel is valid.
           - name: isValid
             modifiers:
             - public
@@ -563,9 +1101,63 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isValid
+              notes: "true if all pixels are valid;\n false otherwise."
+            notes: Returns whether or not all of the pixels are valid.
+          - name: setRGBs
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg2
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg3
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg4
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setRGBs
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setTransparency
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -573,7 +1165,33 @@ languages:
                 full: int
             return:
               type:
-                basic: boolean
-                full: boolean
-          javaType: class
-          extends: ColorModel
+                basic: void
+                full: void
+          - name: setTransparentPixel
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

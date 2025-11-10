@@ -4,24 +4,75 @@ languages:
     packages:
       java.io:
         SerializablePermission:
+          extends: java.security.BasicPermission
+          modifiers:
+          - public
+          - final
+          notes: "This class is for Serializable permissions. A SerializablePermission\n\
+            \ contains a name (also referred to as a \"target name\") but\n no actions\
+            \ list; you either have the named permission\n or you don't.\n\n \n The\
+            \ target name is the name of the Serializable permission (see below).\n\
+            \n \n The following table lists the standard SerializablePermission target\
+            \ names,\n and for each provides a description of what the permission\
+            \ allows\n and a discussion of the risks of granting code the permission.\n\
+            \n \n Permission target name, what the permission allows, and associated\
+            \ risks\n \n \n Permission Target Name\n What the Permission Allows\n\
+            \ Risks of Allowing this Permission\n \n \n \n\n \n   enableSubclassImplementation\n\
+            \   Subclass implementation of ObjectOutputStream or ObjectInputStream\n\
+            \ to override the default serialization or deserialization, respectively,\n\
+            \ of objects\n   Code can use this to serialize or\n deserialize classes\
+            \ in a purposefully malfeasant manner. For example,\n during serialization,\
+            \ malicious code can use this to\n purposefully store confidential private\
+            \ field data in a way easily accessible\n to attackers. Or, during deserialization\
+            \ it could, for example, deserialize\n a class with all its private fields\
+            \ zeroed out.\n \n\n \n   enableSubstitution\n   Substitution of one object\
+            \ for another during\n serialization or deserialization\n   This is dangerous\
+            \ because malicious code\n can replace the actual object with one which\
+            \ has incorrect or\n malignant data.\n \n\n \n   serialFilter\n   Setting\
+            \ a filter for ObjectInputStreams.\n   Code could remove a configured\
+            \ filter and remove protections\n       already established."
+          fields:
+            actions:
+              name: actions
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the SerializablePermission.
+            notes: "Creates a new SerializablePermission with the specified name.\n\
+              \ The name is the symbolic name of the SerializablePermission, such\
+              \ as\n \"enableSubstitution\", etc."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the name of the SerializablePermission.
+            - name: actions
               type:
                 basic: String
                 full: java.lang.String
-          javaType: class
-          extends: BasicPermission
+              notes: currently unused and must be set to null
+            notes: "Creates a new SerializablePermission object with the specified\
+              \ name.\n The name is the symbolic name of the SerializablePermission,\
+              \ and the\n actions String is currently unused and should be null."

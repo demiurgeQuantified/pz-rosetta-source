@@ -4,6 +4,39 @@ languages:
     packages:
       zombie.entity.components.build:
         BuildLogic:
+          extends: zombie.entity.components.crafting.BaseCraftingLogic
+          modifiers:
+          - public
+          fields:
+            craftActionInProgress:
+              name: craftActionInProgress
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            recipeComponentScriptLookup:
+              name: recipeComponentScriptLookup
+              modifiers:
+              - private
+              type:
+                basic: Dictionary
+                full: java.util.Dictionary<zombie.scripting.entity.components.crafting.CraftRecipe,
+                  zombie.scripting.entity.components.crafting.CraftRecipeComponentScript>
+            recipeDataInProgress:
+              name: recipeDataInProgress
+              modifiers:
+              - private
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            selectedRecipe:
+              name: selectedRecipe
+              modifiers:
+              - private
+              type:
+                basic: CraftRecipe
+                full: zombie.scripting.entity.components.crafting.CraftRecipe
           constructors:
           - modifiers:
             - public
@@ -21,7 +54,7 @@ languages:
                 basic: IsoObject
                 full: zombie.iso.IsoObject
           methods:
-          - name: canPerformCurrentRecipe
+          - name: areAllInputItemsSatisfied
             modifiers:
             - public
             return:
@@ -33,15 +66,29 @@ languages:
             - public
             return:
               type:
-                basic: ArrayList<CraftRecipe>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.scripting.entity.components.crafting.CraftRecipe>
           - name: getAllConsumedItems
             modifiers:
             - public
             return:
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
+          - name: getLastManualInputMode
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: getLastSelectedRecipe
+            modifiers:
+            - public
+            return:
+              type:
+                basic: CraftRecipe
+                full: zombie.scripting.entity.components.crafting.CraftRecipe
           - name: getRecipe
             modifiers:
             - public
@@ -56,13 +103,27 @@ languages:
               type:
                 basic: CraftRecipeData
                 full: zombie.entity.components.crafting.recipe.CraftRecipeData
+          - name: getRecipeDataInProgress
+            modifiers:
+            - public
+            return:
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
           - name: getRecipeList
             modifiers:
             - public
             return:
               type:
-                basic: ArrayList<CraftRecipe>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.scripting.entity.components.crafting.CraftRecipe>
+          - name: getRecipeSortMode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getSatisfiedInputItems
             modifiers:
             - public
@@ -73,23 +134,23 @@ languages:
                 full: zombie.scripting.entity.components.crafting.InputScript
             return:
               type:
-                basic: List<Item>
+                basic: List
                 full: java.util.List<zombie.scripting.objects.Item>
           - name: getSelectedBuildObject
             modifiers:
             - public
             return:
               type:
-                basic: ObjectInfo
+                basic: SpriteConfigManager.ObjectInfo
                 full: zombie.entity.components.spriteconfig.SpriteConfigManager$ObjectInfo
-          - name: isCraftActionInProgress
+          - name: getSelectedRecipeStyle
             modifiers:
             - public
             return:
               type:
-                basic: boolean
-                full: boolean
-          - name: isCraftCheat
+                basic: String
+                full: java.lang.String
+          - name: isCraftActionInProgress
             modifiers:
             - public
             return:
@@ -108,13 +169,6 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isManualSelectInputs
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
           - name: performCurrentRecipe
             modifiers:
             - public
@@ -122,21 +176,26 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: refresh
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setContainers
+          - name: setLastManualInputMode
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: ArrayList<ItemContainer>
-                full: java.util.ArrayList<zombie.inventory.ItemContainer>
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setLastSelectedRecipe
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CraftRecipe
+                full: zombie.scripting.entity.components.crafting.CraftRecipe
             return:
               type:
                 basic: void
@@ -153,13 +212,30 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: shouldShowManualSelectInputs
+          - name: setRecipeSortMode
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: void
+                full: void
+          - name: setSelectedRecipeStyle
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
           - name: startCraftAction
             modifiers:
             - public
@@ -179,5 +255,10 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: BaseCraftingLogic
+          - name: updateFloorContainer
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void

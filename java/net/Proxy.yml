@@ -4,37 +4,60 @@ languages:
     packages:
       java.net:
         Proxy:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class represents a proxy setting, typically a type (http, socks)\
+            \ and\n a socket address.\n A Proxy is an immutable object."
+          fields:
+            sa:
+              name: sa
+              modifiers:
+              - private
+              type:
+                basic: SocketAddress
+                full: java.net.SocketAddress
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: Proxy.Type
+                full: java.net.Proxy$Type
           staticFields:
             NO_PROXY:
               name: NO_PROXY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Proxy
                 full: java.net.Proxy
-                nullable: true
+              notes: "A proxy setting that represents a DIRECT connection,\n basically\
+                \ telling the protocol handler not to use any proxying.\n Used, for\
+                \ instance, to create sockets bypassing any other global\n proxy settings\
+                \ (like SOCKS):\n \n Socket s = new Socket(Proxy.NO_PROXY);"
           constructors:
+          - modifiers:
+            - private
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: type
               type:
-                basic: Type
+                basic: Proxy.Type
                 full: java.net.Proxy$Type
-            - name: arg1
+              notes: the Type of the proxy
+            - name: sa
               type:
                 basic: SocketAddress
                 full: java.net.SocketAddress
+              notes: the SocketAddress for that proxy
+            notes: "Creates an entry representing a PROXY connection.\n Certain combinations\
+              \ are illegal. For instance, for types Http, and\n Socks, a SocketAddress\
+              \ must be provided.\n \n Use the Proxy.NO_PROXY constant\n for representing\
+              \ a direct connection."
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: address
             modifiers:
             - public
@@ -42,19 +65,29 @@ languages:
               type:
                 basic: SocketAddress
                 full: java.net.SocketAddress
+              notes: "a SocketAddress representing the socket end\n         point\
+                \ of the proxy"
+            notes: "Returns the socket address of the proxy, or\n null if its a direct\
+              \ connection."
           - name: equals
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare against.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the objects are the same;\n          false otherwise."
+            notes: "Compares this object against the specified object.\n The result\
+              \ is true if and only if the argument is\n not null and it represents\
+              \ the same proxy as\n this object.\n \n Two instances of Proxy represent\
+              \ the same\n address if both the SocketAddresses and type are equal."
           - name: hashCode
             modifiers:
             - public
@@ -63,12 +96,21 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this Proxy.
+            notes: Returns a hashcode for this Proxy.
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: type
             modifiers:
             - public
             return:
               type:
-                basic: Type
+                basic: Proxy.Type
                 full: java.net.Proxy$Type
-          javaType: class
-          extends: Object
+              notes: a Type representing the proxy type
+            notes: Returns the proxy type.

@@ -4,65 +4,161 @@ languages:
     packages:
       java.security:
         CodeSource:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class extends the concept of a codebase to\n encapsulate not\
+            \ only the location (URL) but also the certificate chains\n that were\
+            \ used to verify signed code originating from that location."
+          fields:
+            certs:
+              name: certs
+              modifiers:
+              - private
+              type:
+                basic: Certificate
+                full: java.security.cert.Certificate[]
+            factory:
+              name: factory
+              modifiers:
+              - private
+              type:
+                basic: CertificateFactory
+                full: java.security.cert.CertificateFactory
+            location:
+              name: location
+              modifiers:
+              - private
+              type:
+                basic: URL
+                full: java.net.URL
+            locationNoFragString:
+              name: locationNoFragString
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            signers:
+              name: signers
+              modifiers:
+              - private
+              type:
+                basic: CodeSigner
+                full: java.security.CodeSigner[]
+            sp:
+              name: sp
+              modifiers:
+              - private
+              type:
+                basic: SocketPermission
+                full: java.net.SocketPermission
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: url
               type:
                 basic: URL
                 full: java.net.URL
-            - name: arg1
+              notes: the location (URL).  It may be null.
+            - name: certs
               type:
-                basic: CodeSigner[]
-                full: java.security.CodeSigner[]
+                basic: Certificate
+                full: java.security.cert.Certificate[]
+              notes: "the certificate(s). It may be null. The contents\n of the array\
+                \ are copied to protect against subsequent modification."
+            notes: "Constructs a CodeSource and associates it with the specified\n\
+              \ location and set of certificates."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: url
               type:
                 basic: URL
                 full: java.net.URL
-            - name: arg1
+              notes: the location (URL).  It may be null.
+            - name: signers
               type:
-                basic: Certificate[]
-                full: java.security.cert.Certificate[]
+                basic: CodeSigner
+                full: java.security.CodeSigner[]
+              notes: "the code signers. It may be null. The contents\n of the array\
+                \ are copied to protect against subsequent modification."
+            notes: "Constructs a CodeSource and associates it with the specified\n\
+              \ location and set of code signers."
           methods:
-          - name: __toString__
+          - name: convertCertArrayToSignerArray
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Certificate
+                full: java.security.cert.Certificate[]
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: CodeSigner
+                full: java.security.CodeSigner[]
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to test for equality with this object.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the objects are considered equal, false otherwise.
+            notes: "Tests for equality between the specified object and this\n object.\
+              \ Two CodeSource objects are considered equal if their\n locations are\
+              \ of identical value and if their signer certificate\n chains are of\
+              \ identical value. It is not required that\n the certificate chains\
+              \ be in the same order."
           - name: getCertificates
             modifiers:
             - public
             - final
             return:
               type:
-                basic: Certificate[]
+                basic: Certificate
                 full: java.security.cert.Certificate[]
+              notes: "a copy of the certificate array, or null if there\n is none."
+            notes: "Returns the certificates associated with this CodeSource.\n \n\
+              \ If this CodeSource object was created using the\n CodeSource(URL url,\
+              \ CodeSigner[] signers)\n constructor then its certificate chains are\
+              \ extracted and used to\n create an array of Certificate objects. Each\
+              \ signer certificate is\n followed by its supporting certificate chain\
+              \ (which may be empty).\n Each signer certificate and its supporting\
+              \ certificate chain is ordered\n bottom-to-top (i.e., with the signer\
+              \ certificate first and the (root)\n certificate authority last)."
           - name: getCodeSigners
             modifiers:
             - public
             - final
             return:
               type:
-                basic: CodeSigner[]
+                basic: CodeSigner
                 full: java.security.CodeSigner[]
+              notes: "a copy of the code signer array, or null if there\n is none."
+            notes: "Returns the code signers associated with this CodeSource.\n \n\
+              \ If this CodeSource object was created using the\n CodeSource(URL url,\
+              \ java.security.cert.Certificate[] certs)\n constructor then its certificate\
+              \ chains are extracted and used to\n create an array of CodeSigner objects.\
+              \ Note that only X.509 certificates\n are examined - all other certificate\
+              \ types are ignored."
           - name: getLocation
             modifiers:
             - public
@@ -71,6 +167,16 @@ languages:
               type:
                 basic: URL
                 full: java.net.URL
+              notes: "the location (URL), or null if no URL was supplied\n during\
+                \ construction."
+            notes: Returns the location associated with this CodeSource.
+          - name: getLocationNoFragString
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: hashCode
             modifiers:
             - public
@@ -78,9 +184,78 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object.
+            notes: Returns the hash code value for this object.
           - name: implies
             modifiers:
             - public
+            parameters:
+            - name: codesource
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+              notes: CodeSource to compare against.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the specified codesource is implied by this codesource,\n\
+                \ false if not."
+            notes: "Returns true if this CodeSource object \"implies\" the specified\
+              \ CodeSource.\n \n More specifically, this method makes the following\
+              \ checks.\n If any fail, it returns false. If they all succeed, it returns\
+              \ true.\n \n  codesource must not be null.\n  If this object's certificates\
+              \ are not null, then all\n of this object's certificates must be present\
+              \ in codesource's\n certificates.\n  If this object's location (getLocation())\
+              \ is not null, then the\n following checks are made against this object's\
+              \ location and\n codesource's:\n   \n       codesource's location must\
+              \ not be null.\n\n       If this object's location\n           equals\
+              \ codesource's location, then return true.\n\n       This object's protocol\
+              \ (getLocation().getProtocol()) must be\n           equal to codesource's\
+              \ protocol, ignoring case.\n\n       If this object's host (getLocation().getHost())\
+              \ is not null,\n           then the SocketPermission\n           constructed\
+              \ with this object's host must imply the\n           SocketPermission\
+              \ constructed with codesource's host.\n\n       If this object's port\
+              \ (getLocation().getPort()) is not\n           equal to -1 (that is,\
+              \ if a port is specified), it must equal\n           codesource's port\
+              \ or default port\n           (codesource.getLocation().getDefaultPort()).\n\
+              \n       If this object's file (getLocation().getFile()) doesn't equal\n\
+              \           codesource's file, then the following checks are made:\n\
+              \           If this object's file ends with \"/-\",\n           then\
+              \ codesource's file must start with this object's\n           file (exclusive\
+              \ the trailing \"-\").\n           If this object's file ends with a\
+              \ \"/*\",\n           then codesource's file must start with this object's\n\
+              \           file and must not have any further \"/\" separators.\n \
+              \          If this object's file doesn't end with a \"/\",\n       \
+              \    then codesource's file must match this object's\n           file\
+              \ with a '/' appended.\n\n       If this object's reference (getLocation().getRef())\
+              \ is\n           not null, it must equal codesource's reference.\n\n\
+              \   \n \n \n For example, the codesource objects with the following\
+              \ locations\n and null certificates all imply\n the codesource with\
+              \ the location \"http://www.example.com/classes/foo.jar\"\n and null\
+              \ certificates:\n \n     http:\n     http://*.example.com/classes/*\n\
+              \     http://www.example.com/classes/-\n     http://www.example.com/classes/foo.jar\n\
+              \ \n\n Note that if this CodeSource has a null location and a null\n\
+              \ certificate chain, then it implies every other CodeSource."
+          - name: matchCerts
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: matchLocation
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -90,5 +265,34 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void

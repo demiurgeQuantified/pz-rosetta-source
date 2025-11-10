@@ -1,0 +1,225 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent.locks:
+        ReentrantReadWriteLock.WriteLock:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: The lock returned by method ReentrantReadWriteLock.writeLock().
+          fields:
+            sync:
+              name: sync
+              modifiers:
+              - private
+              type:
+                basic: ReentrantReadWriteLock.Sync
+                full: java.util.concurrent.locks.ReentrantReadWriteLock$Sync
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: lock
+              type:
+                basic: ReentrantReadWriteLock
+                full: java.util.concurrent.locks.ReentrantReadWriteLock
+              notes: the outer lock object
+            notes: Constructor for use by subclasses.
+          methods:
+          - name: getHoldCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the number of holds on this lock by the current thread,\n  \
+                \       or zero if this lock is not held by the current thread"
+            notes: "Queries the number of holds on this write lock by the current\n\
+              \ thread.  A thread has a hold on a lock for each lock action\n that\
+              \ is not matched by an unlock action.  Identical in effect\n to ReentrantReadWriteLock.getWriteHoldCount()."
+          - name: isHeldByCurrentThread
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the current thread holds this lock and\n         false\
+                \ otherwise"
+            notes: "Queries if this write lock is held by the current thread.\n Identical\
+              \ in effect to ReentrantReadWriteLock.isWriteLockedByCurrentThread()."
+          - name: lock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Acquires the write lock.\n\n Acquires the write lock if neither\
+              \ the read nor write lock\n are held by another thread\n and returns\
+              \ immediately, setting the write lock hold count to\n one.\n\n If the\
+              \ current thread already holds the write lock then the\n hold count\
+              \ is incremented by one and the method returns\n immediately.\n\n If\
+              \ the lock is held by another thread then the current\n thread becomes\
+              \ disabled for thread scheduling purposes and\n lies dormant until the\
+              \ write lock has been acquired, at which\n time the write lock hold\
+              \ count is set to one."
+          - name: lockInterruptibly
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Acquires the write lock unless the current thread is\n interrupted.\n\
+              \n Acquires the write lock if neither the read nor write lock\n are\
+              \ held by another thread\n and returns immediately, setting the write\
+              \ lock hold count to\n one.\n\n If the current thread already holds\
+              \ this lock then the\n hold count is incremented by one and the method\
+              \ returns\n immediately.\n\n If the lock is held by another thread then\
+              \ the current\n thread becomes disabled for thread scheduling purposes\
+              \ and\n lies dormant until one of two things happens:\n\n \n\n The write\
+              \ lock is acquired by the current thread; or\n\n Some other thread interrupts\n\
+              \ the current thread.\n\n \n\n If the write lock is acquired by the\
+              \ current thread then the\n lock hold count is set to one.\n\n If the\
+              \ current thread:\n\n \n\n has its interrupted status set on entry to\
+              \ this method;\n or\n\n is interrupted while\n acquiring the write lock,\n\
+              \n \n\n then InterruptedException is thrown and the current\n thread's\
+              \ interrupted status is cleared.\n\n In this implementation, as this\
+              \ method is an explicit\n interruption point, preference is given to\
+              \ responding to\n the interrupt over normal or reentrant acquisition\
+              \ of the\n lock."
+          - name: newCondition
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+              notes: the Condition object
+            notes: "Returns a Condition instance for use with this\n Lock instance.\n\
+              \ The returned Condition instance supports the same\n usages as do the\
+              \ Object monitor methods (wait, notify, and notifyAll) when used with\
+              \ the built-in\n monitor lock.\n\n \n\n If this write lock is not held\
+              \ when any Condition method is called then an IllegalMonitorStateException\
+              \ is thrown.  (Read locks are\n held independently of write locks, so\
+              \ are not checked or\n affected. However it is essentially always an\
+              \ error to\n invoke a condition waiting method when the current thread\n\
+              \ has also acquired read locks, since other threads that\n could unblock\
+              \ it will not be able to acquire the write\n lock.)\n\n When the condition\
+              \ waiting\n methods are called the write lock is released and, before\n\
+              \ they return, the write lock is reacquired and the lock hold\n count\
+              \ restored to what it was when the method was called.\n\n If a thread\
+              \ is interrupted while\n waiting then the wait will terminate, an InterruptedException\
+              \ will be thrown, and the thread's\n interrupted status will be cleared.\n\
+              \n Waiting threads are signalled in FIFO order.\n\n The ordering of\
+              \ lock reacquisition for threads returning\n from waiting methods is\
+              \ the same as for threads initially\n acquiring the lock, which is in\
+              \ the default case not specified,\n but for fair locks favors those\
+              \ threads that have been\n waiting the longest."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: tryLock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the lock was free and was acquired\n by the current\
+                \ thread, or the write lock was already held\n by the current thread;\
+                \ and false otherwise."
+            notes: "Acquires the write lock only if it is not held by another thread\n\
+              \ at the time of invocation.\n\n Acquires the write lock if neither\
+              \ the read nor write lock\n are held by another thread\n and returns\
+              \ immediately with the value true,\n setting the write lock hold count\
+              \ to one. Even when this lock has\n been set to use a fair ordering\
+              \ policy, a call to\n tryLock() will immediately acquire the\n lock\
+              \ if it is available, whether or not other threads are\n currently waiting\
+              \ for the write lock.  This &quot;barging&quot;\n behavior can be useful\
+              \ in certain circumstances, even\n though it breaks fairness. If you\
+              \ want to honor the\n fairness setting for this lock, then use tryLock(0,\
+              \ TimeUnit.SECONDS)\n which is almost equivalent (it also detects interruption).\n\
+              \n If the current thread already holds this lock then the\n hold count\
+              \ is incremented by one and the method returns\n true.\n\n If the lock\
+              \ is held by another thread then this method\n will return immediately\
+              \ with the value false."
+          - name: tryLock
+            modifiers:
+            - public
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the time to wait for the write lock
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the lock was free and was acquired\n by the current\
+                \ thread, or the write lock was already held by the\n current thread;\
+                \ and false if the waiting time\n elapsed before the lock could be\
+                \ acquired."
+            notes: "Acquires the write lock if it is not held by another thread\n\
+              \ within the given waiting time and the current thread has\n not been\
+              \ interrupted.\n\n Acquires the write lock if neither the read nor write\
+              \ lock\n are held by another thread\n and returns immediately with the\
+              \ value true,\n setting the write lock hold count to one. If this lock\
+              \ has been\n set to use a fair ordering policy then an available lock\n\
+              \ will not be acquired if any other threads are\n waiting for the write\
+              \ lock. This is in contrast to the tryLock() method. If you want a timed\
+              \ tryLock\n that does permit barging on a fair lock then combine the\n\
+              \ timed and un-timed forms together:\n\n  <code>\n if (lock.tryLock()\
+              \ ||\n     lock.tryLock(timeout, unit)) {\n   ...\n }</code>\n\n If\
+              \ the current thread already holds this lock then the\n hold count is\
+              \ incremented by one and the method returns\n true.\n\n If the lock\
+              \ is held by another thread then the current\n thread becomes disabled\
+              \ for thread scheduling purposes and\n lies dormant until one of three\
+              \ things happens:\n\n \n\n The write lock is acquired by the current\
+              \ thread; or\n\n Some other thread interrupts\n the current thread;\
+              \ or\n\n The specified waiting time elapses\n\n \n\n If the write lock\
+              \ is acquired then the value true is\n returned and the write lock hold\
+              \ count is set to one.\n\n If the current thread:\n\n \n\n has its interrupted\
+              \ status set on entry to this method;\n or\n\n is interrupted while\n\
+              \ acquiring the write lock,\n\n \n\n then InterruptedException is thrown\
+              \ and the current\n thread's interrupted status is cleared.\n\n If the\
+              \ specified waiting time elapses then the value\n false is returned.\
+              \  If the time is less than or\n equal to zero, the method will not\
+              \ wait at all.\n\n In this implementation, as this method is an explicit\n\
+              \ interruption point, preference is given to responding to\n the interrupt\
+              \ over normal or reentrant acquisition of the\n lock, and over reporting\
+              \ the elapse of the waiting time."
+          - name: unlock
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Attempts to release this lock.\n\n If the current thread is the\
+              \ holder of this lock then\n the hold count is decremented. If the hold\
+              \ count is now\n zero then the lock is released.  If the current thread\
+              \ is\n not the holder of this lock then IllegalMonitorStateException\
+              \ is thrown."

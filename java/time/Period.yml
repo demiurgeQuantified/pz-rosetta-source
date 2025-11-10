@@ -4,104 +4,175 @@ languages:
     packages:
       java.time:
         Period:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A date-based amount of time in the ISO-8601 calendar system,\n such\
+            \ as '2 years, 3 months and 4 days'.\n \n This class models a quantity\
+            \ or amount of time in terms of years, months and days.\n See Duration\
+            \ for the time-based equivalent to this class.\n \n Durations and periods\
+            \ differ in their treatment of daylight savings time\n when added to ZonedDateTime.\
+            \ A Duration will add an exact\n number of seconds, thus a duration of\
+            \ one day is always exactly 24 hours.\n By contrast, a Period will add\
+            \ a conceptual day, trying to maintain\n the local time.\n \n For example,\
+            \ consider adding a period of one day and a duration of one day to\n 18:00\
+            \ on the evening before a daylight savings gap. The Period will add\n\
+            \ the conceptual day and result in a ZonedDateTime at 18:00 the following\
+            \ day.\n By contrast, the Duration will add exactly 24 hours, resulting\
+            \ in a\n ZonedDateTime at 19:00 the following day (assuming a one hour\
+            \ DST gap).\n \n The supported units of a period are YEARS,\n MONTHS and\
+            \ DAYS.\n All three fields are always present, but may be set to zero.\n\
+            \ \n The ISO-8601 calendar system is the modern civil calendar system\
+            \ used today\n in most of the world. It is equivalent to the proleptic\
+            \ Gregorian calendar\n system, in which today's rules for leap years are\
+            \ applied for all time.\n \n The period is modeled as a directed amount\
+            \ of time, meaning that individual parts of the\n period may be negative.\n\
+            \ \n This is a value-based\n class; programmers should treat instances\
+            \ that are\n equal as interchangeable and should not\n use instances for\
+            \ synchronization, or unpredictable behavior may\n occur. For example,\
+            \ in a future release, synchronization may fail.\n The equals method should\
+            \ be used for comparisons."
+          fields:
+            days:
+              name: days
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            months:
+              name: months
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            years:
+              name: years
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
           staticFields:
+            PATTERN:
+              name: PATTERN
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Pattern
+                full: java.util.regex.Pattern
+            SUPPORTED_UNITS:
+              name: SUPPORTED_UNITS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: List
+                full: java.util.List<java.time.temporal.TemporalUnit>
             ZERO:
               name: ZERO
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Period
                 full: java.time.Period
-                nullable: true
+              notes: A constant for a period of zero.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: addTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the temporal object to adjust, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: addTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-            return:
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+              notes: an object of the same type with the adjustment made, not null
+            notes: "Adds this period to the specified temporal object.\n \n This returns\
+              \ a temporal object of the same observable type as the input\n with\
+              \ this period added.\n If the temporal has a chronology, it must be\
+              \ the ISO chronology.\n \n In most cases, it is clearer to reverse the\
+              \ calling pattern by using\n Temporal.plus(TemporalAmount).\n \n   //\
+              \ these two lines are equivalent, but the second approach is recommended\n\
+              \   dateTime = thisPeriod.addTo(dateTime);\n   dateTime = dateTime.plus(thisPeriod);\n\
+              \ \n \n The calculation operates as follows.\n First, the chronology\
+              \ of the temporal is checked to ensure it is ISO chronology or null.\n\
+              \ Second, if the months are zero, the years are added if non-zero, otherwise\n\
+              \ the combination of years and months is added if non-zero.\n Finally,\
+              \ any days are added.\n \n This approach ensures that a partial period\
+              \ can be added to a partial date.\n For example, a period of years and/or\
+              \ months can be added to a YearMonth,\n but a period including days\
+              \ cannot.\n The approach also adds years and months together when necessary,\
+              \ which ensures\n correct behaviour at the end of the month.\n \n This\
+              \ instance is immutable and unaffected by this method call."
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if this is equal to the other period
+            notes: "Checks if this period is equal to another period.\n \n The comparison\
+              \ is based on the type Period and each of the three amounts.\n To be\
+              \ equal, the years, months and days units must be individually equal.\n\
+              \ Note that this means that a period of \"15 Months\" is not equal to\
+              \ a period\n of \"1 Year and 3 Months\"."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the TemporalUnit for which to return the value
             return:
               type:
                 basic: long
                 full: long
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: long
-                full: long
+              notes: the long value of the unit
+            notes: "Gets the value of the requested unit.\n \n This returns a value\
+              \ for each of the three supported units,\n YEARS, MONTHS and\n DAYS.\n\
+              \ All other units throw an exception."
           - name: getChronology
             modifiers:
             - public
@@ -109,20 +180,20 @@ languages:
               type:
                 basic: IsoChronology
                 full: java.time.chrono.IsoChronology
+              notes: the ISO chronology, not null
+            notes: "Gets the chronology of this period, which is the ISO calendar\
+              \ system.\n \n The Chronology represents the calendar system in use.\n\
+              \ The ISO-8601 calendar system is the modern civil calendar system used\
+              \ today\n in most of the world. It is equivalent to the proleptic Gregorian\
+              \ calendar\n system, in which today's rules for leap years are applied\
+              \ for all time."
           - name: getChronology
             modifiers:
             - public
             return:
               type:
-                basic: IsoChronology
-                full: java.time.chrono.IsoChronology
-          - name: getChronology
-            modifiers:
-            - public
-            return:
-              type:
-                basic: IsoChronology
-                full: java.time.chrono.IsoChronology
+                basic: Chronology
+                full: java.time.chrono.Chronology
           - name: getDays
             modifiers:
             - public
@@ -130,6 +201,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the amount of days of this period, may be negative
+            notes: "Gets the amount of days of this period.\n \n This returns the\
+              \ days unit."
           - name: getMonths
             modifiers:
             - public
@@ -137,20 +211,23 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the amount of months of this period, may be negative
+            notes: "Gets the amount of months of this period.\n \n This returns the\
+              \ months unit.\n \n The months unit is not automatically normalized\
+              \ with the years unit.\n This means that a period of \"15 months\" is\
+              \ different to a period\n of \"1 year and 3 months\"."
           - name: getUnits
             modifiers:
             - public
             return:
               type:
-                basic: List<TemporalUnit>
+                basic: List
                 full: java.util.List<java.time.temporal.TemporalUnit>
-          - name: getUnits
-            modifiers:
-            - public
-            return:
-              type:
-                basic: List<TemporalUnit>
-                full: java.util.List<java.time.temporal.TemporalUnit>
+              notes: a list containing the years, months and days units, not null
+            notes: "Gets the set of units supported by this period.\n \n The supported\
+              \ units are YEARS,\n MONTHS and DAYS.\n They are returned in the order\
+              \ years, months, days.\n \n This set can be used in conjunction with\
+              \ get(TemporalUnit)\n to access the entire state of the period."
           - name: getYears
             modifiers:
             - public
@@ -158,6 +235,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the amount of years of this period, may be negative
+            notes: "Gets the amount of years of this period.\n \n This returns the\
+              \ years unit.\n \n The months unit is not automatically normalized with\
+              \ the years unit.\n This means that a period of \"15 months\" is different\
+              \ to a period\n of \"1 year and 3 months\"."
           - name: hashCode
             modifiers:
             - public
@@ -165,13 +247,8 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: hashCode
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: a suitable hash code
+            notes: A hash code for this period.
           - name: isNegative
             modifiers:
             - public
@@ -179,13 +256,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isNegative
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: true if any unit of this period is negative
+            notes: "Checks if any of the three units of this period are negative.\n\
+              \ \n This checks whether the years, months or days units are less than\
+              \ zero."
           - name: isZero
             modifiers:
             - public
@@ -193,13 +267,31 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isZero
+              notes: true if this period is zero-length
+            notes: "Checks if all three units of this period are zero.\n \n A zero\
+              \ period has the value zero for the years, months and days units."
+          - name: minus
             modifiers:
             - public
+            parameters:
+            - name: amountToSubtract
+              type:
+                basic: TemporalAmount
+                full: java.time.temporal.TemporalAmount
+              notes: the amount to subtract, not null
             return:
               type:
-                basic: boolean
-                full: boolean
+                basic: Period
+                full: java.time.Period
+              notes: a Period based on this period with the requested period subtracted,
+                not null
+            notes: "Returns a copy of this period with the specified period subtracted.\n\
+              \ \n This operates separately on the years, months and days.\n No normalization\
+              \ is performed.\n \n For example, \"1 year, 6 months and 3 days\" minus\
+              \ \"2 years, 2 months and 2 days\"\n returns \"-1 years, 4 months and\
+              \ 1 day\".\n \n The specified amount is typically an instance of Period.\n\
+              \ Other types are interpreted using from(TemporalAmount).\n \n This\
+              \ instance is immutable and unaffected by this method call."
           - name: minus
             modifiers:
             - public
@@ -210,92 +302,91 @@ languages:
                 full: java.time.temporal.TemporalAmount
             return:
               type:
-                basic: Period
-                full: java.time.Period
-          - name: minus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: Period
-                full: java.time.Period
-          - name: minus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: Period
-                full: java.time.Period
+                basic: ChronoPeriod
+                full: java.time.chrono.ChronoPeriod
           - name: minusDays
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: daysToSubtract
               type:
                 basic: long
                 full: long
+              notes: the months to subtract, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the specified days subtracted,
+                not null
+            notes: "Returns a copy of this period with the specified days subtracted.\n\
+              \ \n This subtracts the amount from the days unit in a copy of this\
+              \ period.\n The years and months units are unaffected.\n For example,\
+              \ \"1 year, 6 months and 3 days\" minus 2 days returns \"1 year, 6 months\
+              \ and 1 day\".\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: minusMonths
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: monthsToSubtract
               type:
                 basic: long
                 full: long
+              notes: the years to subtract, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the specified months subtracted,
+                not null
+            notes: "Returns a copy of this period with the specified months subtracted.\n\
+              \ \n This subtracts the amount from the months unit in a copy of this\
+              \ period.\n The years and days units are unaffected.\n For example,\
+              \ \"1 year, 6 months and 3 days\" minus 2 months returns \"1 year, 4\
+              \ months and 3 days\".\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: minusYears
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: yearsToSubtract
               type:
                 basic: long
                 full: long
+              notes: the years to subtract, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the specified years subtracted,
+                not null
+            notes: "Returns a copy of this period with the specified years subtracted.\n\
+              \ \n This subtracts the amount from the years unit in a copy of this\
+              \ period.\n The months and days units are unaffected.\n For example,\
+              \ \"1 year, 6 months and 3 days\" minus 2 years returns \"-1 years,\
+              \ 6 months and 3 days\".\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: multipliedBy
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: scalar
               type:
                 basic: int
                 full: int
+              notes: the scalar to multiply by, not null
             return:
               type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
-          - name: multipliedBy
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
+                basic: Period
+                full: java.time.Period
+              notes: a Period based on this period with the amounts multiplied by
+                the scalar, not null
+            notes: "Returns a new instance with each element in this period multiplied\n\
+              \ by the specified scalar.\n \n This returns a period with each of the\
+              \ years, months and days units\n individually multiplied.\n For example,\
+              \ a period of \"2 years, -3 months and 4 days\" multiplied by\n 3 will\
+              \ return \"6 years, -9 months and 12 days\".\n No normalization is performed."
           - name: multipliedBy
             modifiers:
             - public
@@ -315,34 +406,38 @@ languages:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the amounts negated, not null
+            notes: "Returns a new instance with each amount in this period negated.\n\
+              \ \n This returns a period with each of the years, months and days units\n\
+              \ individually negated.\n For example, a period of \"2 years, -3 months\
+              \ and 4 days\" will be\n negated to \"-2 years, 3 months and -4 days\"\
+              .\n No normalization is performed."
           - name: negated
             modifiers:
             - public
             return:
               type:
-                basic: Period
-                full: java.time.Period
-          - name: negated
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Period
-                full: java.time.Period
+                basic: ChronoPeriod
+                full: java.time.chrono.ChronoPeriod
           - name: normalized
             modifiers:
             - public
             return:
               type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
-          - name: normalized
-            modifiers:
-            - public
-            return:
-              type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
+                basic: Period
+                full: java.time.Period
+              notes: a Period based on this period with excess months normalized to
+                years, not null
+            notes: "Returns a copy of this period with the years and months normalized.\n\
+              \ \n This normalizes the years and months units, leaving the days unit\
+              \ unchanged.\n The months unit is adjusted to have an absolute value\
+              \ less than 12,\n with the years unit being adjusted to compensate.\
+              \ For example, a period of\n \"1 Year and 15 months\" will be normalized\
+              \ to \"2 years and 3 months\".\n \n The sign of the years and months\
+              \ units will be the same after normalization.\n For example, a period\
+              \ of \"1 year and -25 months\" will be normalized to\n \"-1 year and\
+              \ -1 month\".\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: normalized
             modifiers:
             - public
@@ -354,26 +449,24 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: amountToAdd
               type:
                 basic: TemporalAmount
                 full: java.time.temporal.TemporalAmount
+              notes: the amount to add, not null
             return:
               type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
-          - name: plus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
+                basic: Period
+                full: java.time.Period
+              notes: a Period based on this period with the requested period added,
+                not null
+            notes: "Returns a copy of this period with the specified period added.\n\
+              \ \n This operates separately on the years, months and days.\n No normalization\
+              \ is performed.\n \n For example, \"1 year, 6 months and 3 days\" plus\
+              \ \"2 years, 2 months and 2 days\"\n returns \"3 years, 8 months and\
+              \ 5 days\".\n \n The specified amount is typically an instance of Period.\n\
+              \ Other types are interpreted using from(TemporalAmount).\n \n This\
+              \ instance is immutable and unaffected by this method call."
           - name: plus
             modifiers:
             - public
@@ -390,62 +483,117 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: daysToAdd
               type:
                 basic: long
                 full: long
+              notes: the days to add, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the specified days added,
+                not null
+            notes: "Returns a copy of this period with the specified days added.\n\
+              \ \n This adds the amount to the days unit in a copy of this period.\n\
+              \ The years and months units are unaffected.\n For example, \"1 year,\
+              \ 6 months and 3 days\" plus 2 days returns \"1 year, 6 months and 5\
+              \ days\".\n \n This instance is immutable and unaffected by this method\
+              \ call."
           - name: plusMonths
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: monthsToAdd
               type:
                 basic: long
                 full: long
+              notes: the months to add, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the specified months added,
+                not null
+            notes: "Returns a copy of this period with the specified months added.\n\
+              \ \n This adds the amount to the months unit in a copy of this period.\n\
+              \ The years and days units are unaffected.\n For example, \"1 year,\
+              \ 6 months and 3 days\" plus 2 months returns \"1 year, 8 months and\
+              \ 3 days\".\n \n This instance is immutable and unaffected by this method\
+              \ call."
           - name: plusYears
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: yearsToAdd
               type:
                 basic: long
                 full: long
+              notes: the years to add, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the specified years added,
+                not null
+            notes: "Returns a copy of this period with the specified years added.\n\
+              \ \n This adds the amount to the years unit in a copy of this period.\n\
+              \ The months and days units are unaffected.\n For example, \"1 year,\
+              \ 6 months and 3 days\" plus 2 years returns \"3 years, 6 months and\
+              \ 3 days\".\n \n This instance is immutable and unaffected by this method\
+              \ call."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: subtractFrom
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the temporal object to adjust, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: subtractFrom
+              notes: an object of the same type with the adjustment made, not null
+            notes: "Subtracts this period from the specified temporal object.\n \n\
+              \ This returns a temporal object of the same observable type as the\
+              \ input\n with this period subtracted.\n If the temporal has a chronology,\
+              \ it must be the ISO chronology.\n \n In most cases, it is clearer to\
+              \ reverse the calling pattern by using\n Temporal.minus(TemporalAmount).\n\
+              \ \n   // these two lines are equivalent, but the second approach is\
+              \ recommended\n   dateTime = thisPeriod.subtractFrom(dateTime);\n  \
+              \ dateTime = dateTime.minus(thisPeriod);\n \n \n The calculation operates\
+              \ as follows.\n First, the chronology of the temporal is checked to\
+              \ ensure it is ISO chronology or null.\n Second, if the months are zero,\
+              \ the years are subtracted if non-zero, otherwise\n the combination\
+              \ of years and months is subtracted if non-zero.\n Finally, any days\
+              \ are subtracted.\n \n This approach ensures that a partial period can\
+              \ be subtracted from a partial date.\n For example, a period of years\
+              \ and/or months can be subtracted from a YearMonth,\n but a period including\
+              \ days cannot.\n The approach also subtracts years and months together\
+              \ when necessary, which ensures\n correct behaviour at the end of the\
+              \ month.\n \n This instance is immutable and unaffected by this method\
+              \ call."
+          - name: toString
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
             return:
               type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+                basic: String
+                full: java.lang.String
           - name: toTotalMonths
             modifiers:
             - public
@@ -453,93 +601,163 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the total number of months in the period, may be negative
+            notes: "Gets the total number of months in this period.\n \n This returns\
+              \ the total number of months in the period by multiplying the\n number\
+              \ of years by 12 and adding the number of months.\n \n This instance\
+              \ is immutable and unaffected by this method call."
+          - name: validateChrono
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: TemporalAccessor
+                full: java.time.temporal.TemporalAccessor
+            return:
+              type:
+                basic: void
+                full: void
           - name: withDays
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: days
               type:
                 basic: int
                 full: int
+              notes: the days to represent, may be negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the requested days, not null
+            notes: "Returns a copy of this period with the specified amount of days.\n\
+              \ \n This sets the amount of the days unit in a copy of this period.\n\
+              \ The years and months units are unaffected.\n \n This instance is immutable\
+              \ and unaffected by this method call."
           - name: withMonths
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: months
               type:
                 basic: int
                 full: int
+              notes: the months to represent, may be negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the requested months, not
+                null
+            notes: "Returns a copy of this period with the specified amount of months.\n\
+              \ \n This sets the amount of the months unit in a copy of this period.\n\
+              \ The years and days units are unaffected.\n \n The months unit is not\
+              \ automatically normalized with the years unit.\n This means that a\
+              \ period of \"15 months\" is different to a period\n of \"1 year and\
+              \ 3 months\".\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: withYears
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: years
               type:
                 basic: int
                 full: int
+              notes: the years to represent, may be negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: a Period based on this period with the requested years, not null
+            notes: "Returns a copy of this period with the specified amount of years.\n\
+              \ \n This sets the amount of the years unit in a copy of this period.\n\
+              \ The months and days units are unaffected.\n \n The months unit is\
+              \ not automatically normalized with the years unit.\n This means that\
+              \ a period of \"15 months\" is different to a period\n of \"1 year and\
+              \ 3 months\".\n \n This instance is immutable and unaffected by this\
+              \ method call."
+          - name: writeExternal
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           staticMethods:
           - name: between
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: startDateInclusive
               type:
                 basic: LocalDate
                 full: java.time.LocalDate
-            - name: arg1
+              notes: the start date, inclusive, not null
+            - name: endDateExclusive
               type:
                 basic: LocalDate
                 full: java.time.LocalDate
+              notes: the end date, exclusive, not null
             return:
               type:
                 basic: Period
                 full: java.time.Period
-          - name: between
+              notes: the period between this date and the end date, not null
+            notes: "Obtains a Period consisting of the number of years, months,\n\
+              \ and days between two dates.\n \n The start date is included, but the\
+              \ end date is not.\n The period is calculated by removing complete months,\
+              \ then calculating\n the remaining number of days, adjusting to ensure\
+              \ that both have the same sign.\n The number of months is then split\
+              \ into years and months based on a 12 month year.\n A month is considered\
+              \ if the end day-of-month is greater than or equal to the start day-of-month.\n\
+              \ For example, from 2010-01-15 to 2011-03-18 is one year, two months\
+              \ and three days.\n \n The result of this method can be a negative period\
+              \ if the end is before the start.\n The negative sign will be the same\
+              \ in each of year, month and day."
+          - name: charMatch
             modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
               type:
-                basic: ChronoLocalDate
-                full: java.time.chrono.ChronoLocalDate
+                basic: CharSequence
+                full: java.lang.CharSequence
             - name: arg1
               type:
-                basic: ChronoLocalDate
-                full: java.time.chrono.ChronoLocalDate
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: char
+                full: char
             return:
               type:
-                basic: ChronoPeriod
-                full: java.time.chrono.ChronoPeriod
-          - name: from
+                basic: boolean
+                full: boolean
+          - name: create
             modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: Period
-                full: java.time.Period
-          - name: of
-            modifiers:
-            - public
+            - private
             - static
             parameters:
             - name: arg0
@@ -558,70 +776,201 @@ languages:
               type:
                 basic: Period
                 full: java.time.Period
+          - name: from
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: amount
+              type:
+                basic: TemporalAmount
+                full: java.time.temporal.TemporalAmount
+              notes: the temporal amount to convert, not null
+            return:
+              type:
+                basic: Period
+                full: java.time.Period
+              notes: the equivalent period, not null
+            notes: "Obtains an instance of Period from a temporal amount.\n \n This\
+              \ obtains a period based on the specified amount.\n A TemporalAmount\
+              \ represents an  amount of time, which may be\n date-based or time-based,\
+              \ which this factory extracts to a Period.\n \n The conversion loops\
+              \ around the set of units from the amount and uses\n the YEARS, MONTHS\n\
+              \ and DAYS units to create a period.\n If any other units are found\
+              \ then an exception is thrown.\n \n If the amount is a ChronoPeriod\
+              \ then it must use the ISO chronology."
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: years
+              type:
+                basic: int
+                full: int
+              notes: the amount of years, may be negative
+            - name: months
+              type:
+                basic: int
+                full: int
+              notes: the amount of months, may be negative
+            - name: days
+              type:
+                basic: int
+                full: int
+              notes: the amount of days, may be negative
+            return:
+              type:
+                basic: Period
+                full: java.time.Period
+              notes: the period of years, months and days, not null
+            notes: "Obtains a Period representing a number of years, months and days.\n\
+              \ \n This creates an instance based on years, months and days."
           - name: ofDays
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: days
               type:
                 basic: int
                 full: int
+              notes: the number of days, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: the period of days, not null
+            notes: "Obtains a Period representing a number of days.\n \n The resulting\
+              \ period will have the specified days.\n The years and months units\
+              \ will be zero."
           - name: ofMonths
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: months
               type:
                 basic: int
                 full: int
+              notes: the number of months, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: the period of months, not null
+            notes: "Obtains a Period representing a number of months.\n \n The resulting\
+              \ period will have the specified months.\n The years and days units\
+              \ will be zero."
           - name: ofWeeks
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: weeks
               type:
                 basic: int
                 full: int
+              notes: the number of weeks, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: the period, with the input weeks converted to days, not null
+            notes: "Obtains a Period representing a number of weeks.\n \n The resulting\
+              \ period will be day-based, with the amount of days\n equal to the number\
+              \ of weeks multiplied by 7.\n The years and months units will be zero."
           - name: ofYears
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: years
               type:
                 basic: int
                 full: int
+              notes: the number of years, positive or negative
             return:
               type:
                 basic: Period
                 full: java.time.Period
+              notes: the period of years, not null
+            notes: "Obtains a Period representing a number of years.\n \n The resulting\
+              \ period will have the specified years.\n The months and days units\
+              \ will be zero."
           - name: parse
             modifiers:
             - public
+            - static
+            parameters:
+            - name: text
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the text to parse, not null
+            return:
+              type:
+                basic: Period
+                full: java.time.Period
+              notes: the parsed period, not null
+            notes: "Obtains a Period from a text string such as PnYnMnD.\n \n This\
+              \ will parse the string produced by toString() which is\n based on the\
+              \ ISO-8601 period formats PnYnMnD and PnW.\n \n The string starts with\
+              \ an optional sign, denoted by the ASCII negative\n or positive symbol.\
+              \ If negative, the whole period is negated.\n The ASCII letter \"P\"\
+              \ is next in upper or lower case.\n There are then four sections, each\
+              \ consisting of a number and a suffix.\n At least one of the four sections\
+              \ must be present.\n The sections have suffixes in ASCII of \"Y\", \"\
+              M\", \"W\" and \"D\" for\n years, months, weeks and days, accepted in\
+              \ upper or lower case.\n The suffixes must occur in order.\n The number\
+              \ part of each section must consist of ASCII digits.\n The number may\
+              \ be prefixed by the ASCII negative or positive symbol.\n The number\
+              \ must parse to an int.\n \n The leading plus/minus sign, and negative\
+              \ values for other units are\n not part of the ISO-8601 standard. In\
+              \ addition, ISO-8601 does not\n permit mixing between the PnYnMnD and\
+              \ PnW formats.\n Any week-based input is multiplied by 7 and treated\
+              \ as a number of days.\n \n For example, the following are valid inputs:\n\
+              \ \n   \"P2Y\"             -- Period.ofYears(2)\n   \"P3M\"        \
+              \     -- Period.ofMonths(3)\n   \"P4W\"             -- Period.ofWeeks(4)\n\
+              \   \"P5D\"             -- Period.ofDays(5)\n   \"P1Y2M3D\"        \
+              \ -- Period.of(1, 2, 3)\n   \"P1Y2M3W4D\"       -- Period.of(1, 2, 25)\n\
+              \   \"P-1Y2M\"          -- Period.of(-1, 2, 0)\n   \"-P1Y2M\"      \
+              \    -- Period.of(-1, -2, 0)"
+          - name: parseNumber
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
             return:
               type:
                 basic: Period
                 full: java.time.Period
-          javaType: class
-          extends: Object

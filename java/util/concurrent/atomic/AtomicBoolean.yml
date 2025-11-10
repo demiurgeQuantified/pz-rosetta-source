@@ -4,92 +4,147 @@ languages:
     packages:
       java.util.concurrent.atomic:
         AtomicBoolean:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A boolean value that may be updated atomically. See the\n VarHandle\
+            \ specification for descriptions of the properties\n of atomic accesses.\
+            \ An AtomicBoolean is used in\n applications such as atomically updated\
+            \ flags, and cannot be used\n as a replacement for a Boolean."
+          fields:
+            value:
+              name: value
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            VALUE:
+              name: VALUE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
-          - modifiers:
-            - public
             parameters:
-            - name: arg0
+            - name: initialValue
               type:
                 basic: boolean
                 full: boolean
-          methods:
-          - name: __toString__
-            modifiers:
+              notes: the initial value
+            notes: Creates a new AtomicBoolean with the given initial value.
+          - modifiers:
             - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+            notes: Creates a new AtomicBoolean with initial value false.
+          methods:
           - name: compareAndExchange
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "the witness value, which will be the same as the\n expected\
+                \ value if successful"
+            notes: "Atomically sets the value to newValue if the current value,\n\
+              \ referred to as the witness value, == expectedValue,\n with memory\
+              \ effects as specified by\n VarHandle.compareAndExchange(java.lang.Object...)."
           - name: compareAndExchangeAcquire
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "the witness value, which will be the same as the\n expected\
+                \ value if successful"
+            notes: "Atomically sets the value to newValue if the current value,\n\
+              \ referred to as the witness value, == expectedValue,\n with memory\
+              \ effects as specified by\n VarHandle.compareAndExchangeAcquire(java.lang.Object...)."
           - name: compareAndExchangeRelease
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "the witness value, which will be the same as the\n expected\
+                \ value if successful"
+            notes: "Atomically sets the value to newValue if the current value,\n\
+              \ referred to as the witness value, == expectedValue,\n with memory\
+              \ effects as specified by\n VarHandle.compareAndExchangeRelease(java.lang.Object...)."
           - name: compareAndSet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if successful. False return indicates that\n the actual\
+                \ value was not equal to the expected value."
+            notes: "Atomically sets the value to newValue\n if the current value ==\
+              \ expectedValue,\n with memory effects as specified by VarHandle.compareAndSet(java.lang.Object...)."
           - name: get
             modifiers:
             - public
@@ -98,6 +153,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: the current value
+            notes: "Returns the current value,\n with memory effects as specified\
+              \ by VarHandle.getVolatile(java.lang.Object...)."
           - name: getAcquire
             modifiers:
             - public
@@ -106,19 +164,26 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: the value
+            notes: "Returns the current value,\n with memory effects as specified\
+              \ by VarHandle.getAcquire(java.lang.Object...)."
           - name: getAndSet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: the previous value
+            notes: "Atomically sets the value to newValue and returns the old value,\n\
+              \ with memory effects as specified by VarHandle.getAndSet(java.lang.Object...)."
           - name: getOpaque
             modifiers:
             - public
@@ -127,6 +192,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: the value
+            notes: "Returns the current value,\n with memory effects as specified\
+              \ by VarHandle.getOpaque(java.lang.Object...)."
           - name: getPlain
             modifiers:
             - public
@@ -135,154 +203,201 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: the value
+            notes: "Returns the current value, with memory semantics of reading as\n\
+              \ if the variable was declared non-volatile."
           - name: lazySet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setRelease(java.lang.Object...)."
           - name: set
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setVolatile(java.lang.Object...)."
           - name: setOpaque
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setOpaque(java.lang.Object...)."
           - name: setPlain
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue, with memory semantics\n of setting\
+              \ as if the variable was declared non-volatile\n and non-final."
           - name: setRelease
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setRelease(java.lang.Object...)."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: weakCompareAndSet
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by VarHandle.weakCompareAndSetPlain(java.lang.Object...)."
           - name: weakCompareAndSetAcquire
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue if the current\n\
+              \ value == expectedValue,\n with memory effects as specified by\n VarHandle.weakCompareAndSetAcquire(java.lang.Object...)."
           - name: weakCompareAndSetPlain
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by VarHandle.weakCompareAndSetPlain(java.lang.Object...)."
           - name: weakCompareAndSetRelease
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue if the current\n\
+              \ value == expectedValue,\n with memory effects as specified by\n VarHandle.weakCompareAndSetRelease(java.lang.Object...)."
           - name: weakCompareAndSetVolatile
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: boolean
                 full: boolean
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: boolean
                 full: boolean
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue if the current\n\
+              \ value == expectedValue,\n with memory effects as specified by\n VarHandle.weakCompareAndSet(java.lang.Object...)."

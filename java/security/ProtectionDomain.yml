@@ -4,45 +4,134 @@ languages:
     packages:
       java.security:
         ProtectionDomain:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The ProtectionDomain class encapsulates the characteristics of a\
+            \ domain,\n which encloses a set of classes whose instances are granted\
+            \ a set\n of permissions when being executed on behalf of a given set\
+            \ of Principals.\n \n A static set of permissions can be bound to a ProtectionDomain\
+            \ when it is\n constructed; such permissions are granted to the domain\
+            \ regardless of the\n Policy in force. However, to support dynamic security\
+            \ policies, a\n ProtectionDomain can also be constructed such that it\
+            \ is dynamically\n mapped to a set of permissions by the current Policy\
+            \ whenever a permission\n is checked."
+          fields:
+            classloader:
+              name: classloader
+              modifiers:
+              - private
+              type:
+                basic: ClassLoader
+                full: java.lang.ClassLoader
+            codesource:
+              name: codesource
+              modifiers:
+              - private
+              type:
+                basic: CodeSource
+                full: java.security.CodeSource
+            hasAllPerm:
+              name: hasAllPerm
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            key:
+              name: key
+              modifiers:
+              - package
+              type:
+                basic: ProtectionDomain.Key
+                full: java.security.ProtectionDomain$Key
+            permissions:
+              name: permissions
+              modifiers:
+              - private
+              type:
+                basic: PermissionCollection
+                full: java.security.PermissionCollection
+            principals:
+              name: principals
+              modifiers:
+              - private
+              type:
+                basic: Principal
+                full: java.security.Principal[]
+            staticPermissions:
+              name: staticPermissions
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            filePermCompatInPD:
+              name: filePermCompatInPD
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: codesource
               type:
                 basic: CodeSource
                 full: java.security.CodeSource
-            - name: arg1
+              notes: the codesource associated with this domain
+            - name: permissions
               type:
                 basic: PermissionCollection
                 full: java.security.PermissionCollection
+              notes: the permissions granted to this domain
+            notes: "Creates a new ProtectionDomain with the given CodeSource and\n\
+              \ Permissions. If the permissions object is not null, then\n  setReadOnly()\
+              \ will be called on the passed in\n Permissions object.\n \n The permissions\
+              \ granted to this domain are static, i.e.\n invoking the staticPermissionsOnly()\
+              \ method returns true.\n They contain only the ones passed to this constructor\
+              \ and\n the current Policy will not be consulted."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: codesource
               type:
                 basic: CodeSource
                 full: java.security.CodeSource
-            - name: arg1
+              notes: the CodeSource associated with this domain
+            - name: permissions
               type:
                 basic: PermissionCollection
                 full: java.security.PermissionCollection
-            - name: arg2
+              notes: the permissions granted to this domain
+            - name: classloader
               type:
                 basic: ClassLoader
                 full: java.lang.ClassLoader
-            - name: arg3
+              notes: the ClassLoader associated with this domain
+            - name: principals
               type:
-                basic: Principal[]
+                basic: Principal
                 full: java.security.Principal[]
+              notes: "the array of Principals associated with this\n domain. The contents\
+                \ of the array are copied to protect against\n subsequent modification."
+            notes: "Creates a new ProtectionDomain qualified by the given CodeSource,\n\
+              \ Permissions, ClassLoader and array of Principals. If the\n permissions\
+              \ object is not null, then setReadOnly()\n will be called on the passed\
+              \ in Permissions object.\n \n The permissions granted to this domain\
+              \ are dynamic, i.e.\n invoking the staticPermissionsOnly() method returns\
+              \ false.\n They include both the static permissions passed to this constructor,\n\
+              \ and any permissions granted to this domain by the current Policy at\
+              \ the\n time a permission is checked.\n \n This constructor is typically\
+              \ used by\n ClassLoaders\n and DomainCombiners which delegate to\n Policy\
+              \ to actively associate the permissions granted to\n this domain. This\
+              \ constructor affords the\n Policy provider the opportunity to augment\
+              \ the supplied\n PermissionCollection to reflect policy changes."
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: getClassLoader
             modifiers:
             - public
@@ -51,6 +140,8 @@ languages:
               type:
                 basic: ClassLoader
                 full: java.lang.ClassLoader
+              notes: the ClassLoader of this domain which may be null.
+            notes: Returns the ClassLoader of this domain.
           - name: getCodeSource
             modifiers:
             - public
@@ -59,6 +150,8 @@ languages:
               type:
                 basic: CodeSource
                 full: java.security.CodeSource
+              notes: the CodeSource of this domain which may be null.
+            notes: Returns the CodeSource of this domain.
           - name: getPermissions
             modifiers:
             - public
@@ -67,17 +160,45 @@ languages:
               type:
                 basic: PermissionCollection
                 full: java.security.PermissionCollection
+              notes: the static set of permissions for this domain which may be null.
+            notes: Returns the static permissions granted to this domain.
           - name: getPrincipals
             modifiers:
             - public
             - final
             return:
               type:
-                basic: Principal[]
+                basic: Principal
                 full: java.security.Principal[]
+              notes: "a non-null array of principals for this domain.\n Returns a\
+                \ new array each time this method is called."
+            notes: Returns an array of principals for this domain.
           - name: implies
             modifiers:
             - public
+            parameters:
+            - name: perm
+              type:
+                basic: Permission
+                full: java.security.Permission
+              notes: the Permission object to check.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if perm is implied by this ProtectionDomain.
+            notes: "Check and see if this ProtectionDomain implies the permissions\n\
+              \ expressed in the Permission object.\n \n The set of permissions evaluated\
+              \ is a function of whether the\n ProtectionDomain was constructed with\
+              \ a static set of permissions\n or it was bound to a dynamically mapped\
+              \ set of permissions.\n \n If the staticPermissionsOnly() method returns\n\
+              \ true, then the permission will only be checked against the\n PermissionCollection\
+              \ supplied at construction.\n \n Otherwise, the permission will be checked\
+              \ against the combination\n of the PermissionCollection supplied at\
+              \ construction and\n the current Policy binding."
+          - name: impliesWithAltFilePerm
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -87,6 +208,13 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: mergePermissions
+            modifiers:
+            - private
+            return:
+              type:
+                basic: PermissionCollection
+                full: java.security.PermissionCollection
           - name: staticPermissionsOnly
             modifiers:
             - public
@@ -95,5 +223,23 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: true if this domain contains only static permissions.
+            notes: "Returns true if this domain contains only static permissions\n\
+              \ and does not check the current Policy at the time of\n permission\
+              \ checking."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          staticMethods:
+          - name: seeAllp
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean

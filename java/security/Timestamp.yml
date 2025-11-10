@@ -4,38 +4,78 @@ languages:
     packages:
       java.security:
         Timestamp:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "This class encapsulates information about a signed timestamp.\n\
+            \ It is immutable.\n It includes the timestamp's date and time as well\
+            \ as information about the\n Timestamping Authority (TSA) which generated\
+            \ and signed the timestamp."
+          fields:
+            myhash:
+              name: myhash
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            signerCertPath:
+              name: signerCertPath
+              modifiers:
+              - private
+              type:
+                basic: CertPath
+                full: java.security.cert.CertPath
+            timestamp:
+              name: timestamp
+              modifiers:
+              - private
+              type:
+                basic: Date
+                full: java.util.Date
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: timestamp
               type:
                 basic: Date
                 full: java.util.Date
-            - name: arg1
+              notes: is the timestamp's date and time. It must not be null.
+            - name: signerCertPath
               type:
                 basic: CertPath
                 full: java.security.cert.CertPath
+              notes: is the TSA's certificate path. It must not be null.
+            notes: Constructs a Timestamp.
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to test for equality with this timestamp.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the timestamp are considered equal, false otherwise.
+            notes: "Tests for equality between the specified object and this\n timestamp.\
+              \ Two timestamps are considered equal if the date and time of\n their\
+              \ timestamp's and their signer's certificate paths are equal."
           - name: getSignerCertPath
             modifiers:
             - public
@@ -43,6 +83,8 @@ languages:
               type:
                 basic: CertPath
                 full: java.security.cert.CertPath
+              notes: The TSA's certificate path.
+            notes: Returns the certificate path for the Timestamping Authority.
           - name: getTimestamp
             modifiers:
             - public
@@ -50,6 +92,8 @@ languages:
               type:
                 basic: Date
                 full: java.util.Date
+              notes: The timestamp's date and time.
+            notes: Returns the date and time when the timestamp was generated.
           - name: hashCode
             modifiers:
             - public
@@ -57,5 +101,26 @@ languages:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Object
+              notes: a hash code value for this timestamp.
+            notes: "Returns the hash code value for this timestamp.\n The hash code\
+              \ is generated using the date and time of the timestamp\n and the TSA's\
+              \ certificate path."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

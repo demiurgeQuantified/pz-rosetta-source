@@ -4,19 +4,134 @@ languages:
     packages:
       java.io:
         Writer:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract class for writing to character streams.  The only methods\
+            \ that a\n subclass must implement are write(char[], int, int), flush(),\
+            \ and close().\n Most subclasses, however, will override some of the methods\
+            \ defined here in\n order to provide higher efficiency, additional functionality,\
+            \ or both."
+          fields:
+            lock:
+              name: lock
+              modifiers:
+              - protected
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The object used to synchronize operations on this stream.  For\n\
+                \ efficiency, a character-stream object may use an object other than\n\
+                \ itself to protect critical sections.  A subclass should therefore\
+                \ use\n the object in this field rather than this or a synchronized\n\
+                \ method."
+            writeBuffer:
+              name: writeBuffer
+              modifiers:
+              - private
+              type:
+                basic: char
+                full: char[]
+          staticFields:
+            WRITE_BUFFER_SIZE:
+              name: WRITE_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Creates a new character-stream writer whose critical sections\
+              \ will\n synchronize on the writer itself."
+          - modifiers:
+            - protected
+            parameters:
+            - name: lock
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: Object to synchronize on
+            notes: "Creates a new character-stream writer whose critical sections\
+              \ will\n synchronize on the given object."
           methods:
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: csq
               type:
-                basic: char
-                full: char
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: "The character sequence to append.  If csq is\n         null,\
+                \ then the four characters \"null\" are\n         appended to this\
+                \ writer."
             return:
               type:
                 basic: Writer
                 full: java.io.Writer
+              notes: This writer
+            notes: "Appends the specified character sequence to this writer.\n\n \
+              \ An invocation of this method of the form out.append(csq)\n behaves\
+              \ in exactly the same way as the invocation\n\n \n     out.write(csq.toString())\
+              \ \n\n  Depending on the specification of toString for the\n character\
+              \ sequence csq, the entire sequence may not be\n appended. For instance,\
+              \ invoking the toString method of a\n character buffer will return a\
+              \ subsequence whose content depends upon\n the buffer's position and\
+              \ limit."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: csq
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: "The character sequence from which a subsequence will be\n  \
+                \       appended.  If csq is null, then characters\n         will\
+                \ be appended as if csq contained the four\n         characters \"\
+                null\"."
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: The index of the first character in the subsequence
+            - name: end
+              type:
+                basic: int
+                full: int
+              notes: "The index of the character following the last character in the\n\
+                \         subsequence"
+            return:
+              type:
+                basic: Writer
+                full: java.io.Writer
+              notes: This writer
+            notes: "Appends a subsequence of the specified character sequence to this\
+              \ writer.\n Appendable.\n\n  An invocation of this method of the form\n\
+              \ out.append(csq, start, end) when csq\n is not null behaves in exactly\
+              \ the\n same way as the invocation\n\n <code>\n     out.write(csq.subSequence(start,\
+              \ end).toString())\n </code>"
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: char
+                full: char
+              notes: The 16-bit character to append
+            return:
+              type:
+                basic: Writer
+                full: java.io.Writer
+              notes: This writer
+            notes: "Appends the specified character to this writer.\n\n  An invocation\
+              \ of this method of the form out.append(c)\n behaves in exactly the\
+              \ same way as the invocation\n\n \n     out.write(c)"
           - name: append
             modifiers:
             - public
@@ -25,54 +140,6 @@ languages:
               type:
                 basic: char
                 full: char
-            return:
-              type:
-                basic: Writer
-                full: java.io.Writer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char
-                full: char
-            return:
-              type:
-                basic: Writer
-                full: java.io.Writer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: Appendable
-                full: java.lang.Appendable
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
             return:
               type:
                 basic: Appendable
@@ -95,8 +162,8 @@ languages:
                 full: int
             return:
               type:
-                basic: Writer
-                full: java.io.Writer
+                basic: Appendable
+                full: java.lang.Appendable
           - name: append
             modifiers:
             - public
@@ -105,142 +172,134 @@ languages:
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
             return:
               type:
-                basic: Writer
-                full: java.io.Writer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: Writer
-                full: java.io.Writer
+                basic: Appendable
+                full: java.lang.Appendable
           - name: close
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Closes the stream, flushing it first. Once the stream has been\
+              \ closed,\n further write() or flush() invocations will cause an IOException\
+              \ to be\n thrown. Closing a previously closed stream has no effect."
           - name: flush
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
                 full: void
-          - name: flush
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Flushes the stream.  If the stream has saved any characters from\
+              \ the\n various write() methods in a buffer, write them immediately\
+              \ to their\n intended destination.  Then, if that destination is another\
+              \ character or\n byte stream, flush it.  Thus one flush() invocation\
+              \ will flush all the\n buffers in a chain of Writers and OutputStreams.\n\
+              \n  If the intended destination of this stream is an abstraction provided\n\
+              \ by the underlying operating system, for example a file, then flushing\
+              \ the\n stream guarantees only that bytes previously written to the\
+              \ stream are\n passed to the operating system for writing; it does not\
+              \ guarantee that\n they are actually written to a physical device such\
+              \ as a disk drive."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: char[]
-                full: char[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: int
                 full: int
+              notes: int specifying a character to be written
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes a single character.  The character to be written is contained\
+              \ in\n the 16 low-order bits of the given integer value; the 16 high-order\
+              \ bits\n are ignored.\n\n  Subclasses that intend to support efficient\
+              \ single-character output\n should override this method."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cbuf
+              type:
+                basic: char
+                full: char[]
+              notes: Array of characters to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes an array of characters.
+          - name: write
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: cbuf
+              type:
+                basic: char
+                full: char[]
+              notes: Array of characters
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: Offset from which to start writing characters
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: Number of characters to write
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a portion of an array of characters.
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: String to be written
             return:
               type:
                 basic: void
                 full: void
+            notes: Writes a string.
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: char[]
-                full: char[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: A String
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: Offset from which to start writing characters
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: Number of characters to write
             return:
               type:
                 basic: void
                 full: void
+            notes: Writes a portion of a string.
           staticMethods:
           - name: nullWriter
             modifiers:
@@ -250,5 +309,12 @@ languages:
               type:
                 basic: Writer
                 full: java.io.Writer
-          javaType: class
-          extends: Object
+              notes: a Writer which discards all characters
+            notes: "Returns a new Writer which discards all characters.  The\n returned\
+              \ stream is initially open.  The stream is closed by calling\n the close()\
+              \ method.  Subsequent calls to close() have\n no effect.\n\n  While\
+              \ the stream is open, the append(char), \n append(CharSequence), append(CharSequence,\
+              \ int, int),\n flush(), write(int), write(char[]), and\n write(char[],\
+              \ int, int) methods do nothing. After the stream\n has been closed,\
+              \ these methods all throw IOException.\n\n  The object used to synchronize\
+              \ operations on the\n returned Writer is not specified."

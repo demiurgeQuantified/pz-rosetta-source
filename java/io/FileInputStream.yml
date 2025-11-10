@@ -4,32 +4,131 @@ languages:
     packages:
       java.io:
         FileInputStream:
+          extends: java.io.InputStream
+          modifiers:
+          - public
+          notes: "A FileInputStream obtains input bytes\n from a file in a file system.\
+            \ What files\n are  available depends on the host environment.\n\n FileInputStream\
+            \ is meant for reading streams of raw bytes\n such as image data. For\
+            \ reading streams of characters, consider using\n FileReader."
+          fields:
+            channel:
+              name: channel
+              modifiers:
+              - private
+              type:
+                basic: FileChannel
+                full: java.nio.channels.FileChannel
+            closeLock:
+              name: closeLock
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            fd:
+              name: fd
+              modifiers:
+              - private
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+            path:
+              name: path
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            DEFAULT_BUFFER_SIZE:
+              name: DEFAULT_BUFFER_SIZE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: File
-                full: java.io.File
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: FileDescriptor
-                full: java.io.FileDescriptor
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: the system-dependent file name.
+            notes: "Creates a FileInputStream by\n opening a connection to an actual\
+              \ file,\n the file named by the path name name\n in the file system.\
+              \  A new FileDescriptor\n object is created to represent this file\n\
+              \ connection.\n \n First, if there is a security\n manager, its checkRead\
+              \ method\n is called with the name argument\n as its argument.\n \n\
+              \ If the named file does not exist, is a directory rather than a regular\n\
+              \ file, or for some other reason cannot be opened for reading then a\n\
+              \ FileNotFoundException is thrown."
+          - modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: File
+                full: java.io.File
+              notes: the file to be opened for reading.
+            notes: "Creates a FileInputStream by\n opening a connection to an actual\
+              \ file,\n the file named by the File\n object file in the file system.\n\
+              \ A new FileDescriptor object\n is created to represent this file connection.\n\
+              \ \n First, if there is a security manager,\n its checkRead method \
+              \ is called\n with the path represented by the file\n argument as its\
+              \ argument.\n \n If the named file does not exist, is a directory rather\
+              \ than a regular\n file, or for some other reason cannot be opened for\
+              \ reading then a\n FileNotFoundException is thrown."
+          - modifiers:
+            - public
+            parameters:
+            - name: fdObj
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+              notes: the file descriptor to be opened for reading.
+            notes: "Creates a FileInputStream by using the file descriptor\n fdObj,\
+              \ which represents an existing connection to an\n actual file in the\
+              \ file system.\n \n If there is a security manager, its checkRead method\
+              \ is\n called with the file descriptor fdObj as its argument to\n see\
+              \ if it's ok to read the file descriptor. If read access is denied\n\
+              \ to the file descriptor a SecurityException is thrown.\n \n If fdObj\
+              \ is null then a NullPointerException\n is thrown.\n \n This constructor\
+              \ does not throw an exception if fdObj\n is invalid.\n However, if the\
+              \ methods are invoked on the resulting stream to attempt\n I/O on the\
+              \ stream, an IOException is thrown."
           methods:
           - name: available
             modifiers:
             - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "an estimate of the number of remaining bytes that can be read\n\
+                \             (or skipped over) from this input stream without blocking."
+            notes: "Returns an estimate of the number of remaining bytes that can\
+              \ be read (or\n skipped over) from this input stream without blocking\
+              \ by the next\n invocation of a method for this input stream. Returns\
+              \ 0 when the file\n position is beyond EOF. The next invocation might\
+              \ be the same thread\n or another thread. A single read or skip of this\
+              \ many bytes will not\n block, but may read or skip fewer bytes.\n\n\
+              \  In some cases, a non-blocking read (or skip) may appear to be\n blocked\
+              \ when it is merely slow, for example when reading large\n files over\
+              \ slow networks."
+          - name: available0
+            modifiers:
+            - private
             return:
               type:
                 basic: int
@@ -41,6 +140,9 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes this file input stream and releases any system resources\n\
+              \ associated with the stream.\n\n  If this stream has an associated\
+              \ channel then the channel is closed\n as well."
           - name: getChannel
             modifiers:
             - public
@@ -48,6 +150,13 @@ languages:
               type:
                 basic: FileChannel
                 full: java.nio.channels.FileChannel
+              notes: the file channel associated with this file input stream
+            notes: "Returns the unique FileChannel\n object associated with this file\
+              \ input stream.\n\n  The initial position of the returned channel will\
+              \ be equal to the\n number of bytes read from the file so far.  Reading\
+              \ bytes from this\n stream will increment the channel's position.  Changing\
+              \ the channel's\n position, either explicitly or by reading, will change\
+              \ this stream's\n file position."
           - name: getFD
             modifiers:
             - public
@@ -56,6 +165,61 @@ languages:
               type:
                 basic: FileDescriptor
                 full: java.io.FileDescriptor
+              notes: the file descriptor object associated with this stream.
+            notes: "Returns the FileDescriptor\n object  that represents the connection\
+              \ to\n the actual file in the file system being\n used by this FileInputStream."
+          - name: length
+            modifiers:
+            - private
+            return:
+              type:
+                basic: long
+                full: long
+          - name: length0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: long
+                full: long
+          - name: open
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: open0
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: position
+            modifiers:
+            - private
+            return:
+              type:
+                basic: long
+                full: long
+          - name: position0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: long
+                full: long
           - name: read
             modifiers:
             - public
@@ -63,25 +227,78 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the next byte of data, or -1 if the end of the\n           \
+                \  file is reached."
+            notes: "Reads a byte of data from this input stream. This method blocks\n\
+              \ if no input is yet available."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the buffer into which the data is read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the file has been reached."
+            notes: "Reads up to b.length bytes of data from this input\n stream into\
+              \ an array of bytes. This method blocks until some input\n is available."
           - name: read
             modifiers:
             - public
             parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer into which the data is read.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset in the destination array b
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the maximum number of bytes read.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the file has been reached."
+            notes: "Reads up to len bytes of data from this input stream\n into an\
+              \ array of bytes. If len is not zero, the method\n blocks until some\
+              \ input is available; otherwise, no\n bytes are read and 0 is returned."
+          - name: read0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
+          - name: readAllBytes
+            modifiers:
+            - public
+            return:
+              type:
+                basic: byte
+                full: byte[]
+          - name: readBytes
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
             - name: arg1
               type:
@@ -95,13 +312,6 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readAllBytes
-            modifiers:
-            - public
-            return:
-              type:
-                basic: byte[]
-                full: byte[]
           - name: readNBytes
             modifiers:
             - public
@@ -112,11 +322,38 @@ languages:
                 full: int
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
           - name: skip
             modifiers:
             - public
+            parameters:
+            - name: n
+              type:
+                basic: long
+                full: long
+              notes: the number of bytes to be skipped.
+            return:
+              type:
+                basic: long
+                full: long
+              notes: the actual number of bytes skipped.
+            notes: "Skips over and discards n bytes of data from the\n input stream.\n\
+              \n The skip method may, for a variety of\n reasons, end up skipping\
+              \ over some smaller number of bytes,\n possibly 0. If n is negative,\
+              \ the method\n will try to skip backwards. In case the backing file\
+              \ does not support\n backward skip at its current position, an IOException\
+              \ is\n thrown. The actual number of bytes skipped is returned. If it\
+              \ skips\n forwards, it returns a positive value. If it skips backwards,\
+              \ it\n returns a negative value.\n\n This method may skip more bytes\
+              \ than what are remaining in the\n backing file. This produces no exception\
+              \ and the number of bytes skipped\n may include some number of bytes\
+              \ that were beyond the EOF of the\n backing file. Attempting to read\
+              \ from the stream after skipping past\n the end will result in -1 indicating\
+              \ the end of the file."
+          - name: skip0
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -126,5 +363,12 @@ languages:
               type:
                 basic: long
                 full: long
-          javaType: class
-          extends: InputStream
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

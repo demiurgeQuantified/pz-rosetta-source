@@ -4,6 +4,121 @@ languages:
     packages:
       zombie.entity.components.crafting:
         CraftLogic:
+          extends: zombie.entity.Component
+          modifiers:
+          - public
+          fields:
+            craftData:
+              name: craftData
+              modifiers:
+              - protected
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            craftDataInProgress:
+              name: craftDataInProgress
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.entity.components.crafting.recipe.CraftRecipeData>
+            craftTestData:
+              name: craftTestData
+              modifiers:
+              - private
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            doAutomaticCraftCheck:
+              name: doAutomaticCraftCheck
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            inputsGroupName:
+              name: inputsGroupName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            outputsGroupName:
+              name: outputsGroupName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            recipeTagQuery:
+              name: recipeTagQuery
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            recipes:
+              name: recipes
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<zombie.scripting.entity.components.crafting.CraftRecipe>
+            requestingPlayer:
+              name: requestingPlayer
+              modifiers:
+              - private
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+            startMode:
+              name: startMode
+              modifiers:
+              - private
+              type:
+                basic: StartMode
+                full: zombie.entity.components.crafting.StartMode
+            startRequested:
+              name: startRequested
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            stopRequested:
+              name: stopRequested
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            _emptyRecipeList:
+              name: _emptyRecipeList
+              modifiers:
+              - private
+              - static
+              type:
+                basic: List
+                full: java.util.List<zombie.scripting.entity.components.crafting.CraftRecipe>
+            _emptyResourceList:
+              name: _emptyResourceList
+              modifiers:
+              - private
+              - static
+              type:
+                basic: List
+                full: java.util.List<zombie.entity.components.resources.Resource>
+          constructors:
+          - modifiers:
+            - private
+          - modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ComponentType
+                full: zombie.entity.ComponentType
           methods:
           - name: canStart
             modifiers:
@@ -17,6 +132,29 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: canStart
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: StartMode
+                full: zombie.entity.components.crafting.StartMode
+            - name: arg1
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: clearSpriteOverlay
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: debugCanStart
             modifiers:
             - public
@@ -29,6 +167,73 @@ languages:
               type:
                 basic: CraftRecipeMonitor
                 full: zombie.entity.components.crafting.CraftRecipeMonitor
+          - name: doProgressTooltip
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectTooltip.Layout
+                full: zombie.ui.ObjectTooltip$Layout
+            - name: arg1
+              type:
+                basic: Resource
+                full: zombie.entity.components.resources.Resource
+            - name: arg2
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            return:
+              type:
+                basic: void
+                full: void
+          - name: dumpContentsInSquare
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: finaliseRecipe
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            return:
+              type:
+                basic: void
+                full: void
+          - name: forceStopInternal
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getActiveCraftCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getAllInProgressCraftData
+            modifiers:
+            - package
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.entity.components.crafting.recipe.CraftRecipeData>
+          - name: getCraftTestData
+            modifiers:
+            - package
+            return:
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
           - name: getCurrentRecipe
             modifiers:
             - public
@@ -36,7 +241,14 @@ languages:
               type:
                 basic: CraftRecipe
                 full: zombie.scripting.entity.components.crafting.CraftRecipe
-          - name: getElapsedTime
+          - name: getFirstInProgressCraftData
+            modifiers:
+            - package
+            return:
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+          - name: getFreeOutputSlotCount
             modifiers:
             - public
             return:
@@ -48,7 +260,7 @@ languages:
             - public
             return:
               type:
-                basic: List<Resource>
+                basic: List
                 full: java.util.List<zombie.entity.components.resources.Resource>
           - name: getInputsGroupName
             modifiers:
@@ -62,7 +274,7 @@ languages:
             - public
             return:
               type:
-                basic: List<Resource>
+                basic: List
                 full: java.util.List<zombie.entity.components.resources.Resource>
           - name: getOutputsGroupName
             modifiers:
@@ -71,6 +283,13 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+          - name: getPendingCraftData
+            modifiers:
+            - package
+            return:
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
           - name: getPossibleRecipe
             modifiers:
             - public
@@ -81,6 +300,11 @@ languages:
           - name: getProgress
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
             return:
               type:
                 basic: double
@@ -95,22 +319,22 @@ languages:
           - name: getRecipes
             modifiers:
             - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.scripting.entity.components.crafting.CraftRecipe>
             return:
               type:
-                basic: ArrayList<CraftRecipe>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.scripting.entity.components.crafting.CraftRecipe>
           - name: getRecipes
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: ArrayList<CraftRecipe>
-                full: java.util.ArrayList<zombie.scripting.entity.components.crafting.CraftRecipe>
             return:
               type:
-                basic: ArrayList<CraftRecipe>
-                full: java.util.ArrayList<zombie.scripting.entity.components.crafting.CraftRecipe>
+                basic: List
+                full: java.util.List<zombie.scripting.entity.components.crafting.CraftRecipe>
           - name: getRequestingPlayer
             modifiers:
             - public
@@ -125,6 +349,22 @@ languages:
               type:
                 basic: StartMode
                 full: zombie.entity.components.crafting.StartMode
+          - name: getStatusIconsForInputItem
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: InventoryItem
+                full: zombie.inventory.InventoryItem
+            - name: arg1
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.core.textures.Texture>
           - name: isDoAutomaticCraftCheck
             modifiers:
             - public
@@ -132,7 +372,7 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isFinished
+          - name: isNoContainerOrEmpty
             modifiers:
             - public
             return:
@@ -167,6 +407,230 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: load
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadInProgressCraftData
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadSyncData
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onComponentEvent
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ComponentEvent
+                full: zombie.entity.events.ComponentEvent
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onConnectComponents
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onReceivePacket
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            - name: arg1
+              type:
+                basic: EntityPacketType
+                full: zombie.entity.network.EntityPacketType
+            - name: arg2
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: onRemovedFromOwner
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onStart
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onStop
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: onUpdate
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readFromScript
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ComponentScript
+                full: zombie.scripting.entity.ComponentScript
+            return:
+              type:
+                basic: void
+                full: void
+          - name: receiveStartRequest
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            - name: arg1
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            return:
+              type:
+                basic: void
+                full: void
+          - name: receiveStopRequest
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            - name: arg1
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            return:
+              type:
+                basic: void
+                full: void
+          - name: reset
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+          - name: returnConsumedItemsToResourcesOrSquare
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CraftRecipeData
+                full: zombie.entity.components.crafting.recipe.CraftRecipeData
+            return:
+              type:
+                basic: void
+                full: void
+          - name: save
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: saveInProgessCraftData
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: saveSyncData
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            return:
+              type:
+                basic: void
+                full: void
           - name: sendStartRequest
             modifiers:
             - public
@@ -191,6 +655,18 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: setDoAutomaticCraftCheck
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
           - name: setRecipe
             modifiers:
             - public
@@ -211,6 +687,42 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setRequestingPlayer
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setStartRequested
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setStopRequested
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
@@ -255,5 +767,27 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Component
+          - name: updateSpriteOverlay
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: double
+                full: double
+            return:
+              type:
+                basic: void
+                full: void
+          - name: willOutputsAccommodate
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ItemDataList
+                full: zombie.entity.components.crafting.recipe.ItemDataList
+            return:
+              type:
+                basic: boolean
+                full: boolean

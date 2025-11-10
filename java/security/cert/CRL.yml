@@ -4,14 +4,37 @@ languages:
     packages:
       java.security.cert:
         CRL:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class is an abstraction of certificate revocation lists (CRLs)\
+            \ that\n have different formats but important common uses. For example,\
+            \ all CRLs\n share the functionality of listing revoked certificates,\
+            \ and can be queried\n on whether or not they list a given certificate.\n\
+            \ \n Specialized CRL types can be defined by subclassing off of this abstract\n\
+            \ class."
+          fields:
+            type:
+              name: type
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: type
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the standard name of the CRL type.\n See the \n Java Security\
+                \ Standard Algorithm Names document\n for information about standard\
+                \ CRL types."
+            notes: Creates a CRL of the specified type.
+          methods:
           - name: getType
             modifiers:
             - public
@@ -20,17 +43,29 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the type of this CRL.
+            notes: Returns the type of this CRL.
           - name: isRevoked
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: cert
               type:
                 basic: Certificate
                 full: java.security.cert.Certificate
+              notes: the certificate to check for.
             return:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: "true if the given certificate is on this CRL,\n false otherwise."
+            notes: Checks whether the given certificate is on this CRL.
+          - name: toString
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: String
+                full: java.lang.String

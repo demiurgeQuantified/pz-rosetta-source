@@ -4,59 +4,189 @@ languages:
     packages:
       java.awt.image:
         WritableRaster:
+          extends: java.awt.image.Raster
+          modifiers:
+          - public
+          notes: "This class extends Raster to provide pixel writing capabilities.\n\
+            \ Refer to the class comment for Raster for descriptions of how\n a Raster\
+            \ stores pixels.\n\n  The constructors of this class are protected.  To\
+            \ instantiate\n a WritableRaster, use one of the createWritableRaster\
+            \ factory methods\n in the Raster class."
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: sampleModel
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: The SampleModel that specifies the layout.
+            - name: origin
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: The Point that specifies the origin.
+            notes: "Constructs a WritableRaster with the given SampleModel.  The\n\
+              \  WritableRaster's upper left corner is origin and it is the\n  same\
+              \ size as the  SampleModel.  A DataBuffer large enough to\n  describe\
+              \ the WritableRaster is automatically created."
+          - modifiers:
+            - protected
+            parameters:
+            - name: sampleModel
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: The SampleModel that specifies the layout.
+            - name: dataBuffer
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer that contains the image data.
+            - name: origin
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: The Point that specifies the origin.
+            notes: "Constructs a WritableRaster with the given SampleModel and DataBuffer.\n\
+              \  The WritableRaster's upper left corner is origin and it is the same\n\
+              \  size as the SampleModel.  The DataBuffer is not initialized and must\n\
+              \  be compatible with SampleModel."
+          - modifiers:
+            - protected
+            parameters:
+            - name: sampleModel
+              type:
+                basic: SampleModel
+                full: java.awt.image.SampleModel
+              notes: The SampleModel that specifies the layout.
+            - name: dataBuffer
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer that contains the image data.
+            - name: aRegion
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
+              notes: The Rectangle that specifies the image area.
+            - name: sampleModelTranslate
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: "The Point that specifies the translation\n                 \
+                \       from SampleModel to Raster coordinates."
+            - name: parent
+              type:
+                basic: WritableRaster
+                full: java.awt.image.WritableRaster
+              notes: The parent (if any) of this raster.
+            notes: "Constructs a WritableRaster with the given SampleModel, DataBuffer,\n\
+              \ and parent.  aRegion specifies the bounding rectangle of the new\n\
+              \ Raster.  When translated into the base Raster's coordinate\n system,\
+              \ aRegion must be contained by the base Raster.\n (The base Raster is\
+              \ the Raster's ancestor which has no parent.)\n sampleModelTranslate\
+              \ specifies the sampleModelTranslateX and\n sampleModelTranslateY values\
+              \ of the new Raster.\n\n Note that this constructor should generally\
+              \ be called by other\n constructors or create methods, it should not\
+              \ be used directly."
           methods:
           - name: createWritableChild
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: parentX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "X coordinate of the upper left corner in this\n            \
+                \       WritableRaster's coordinates."
+            - name: parentY
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "Y coordinate of the upper left corner in this\n            \
+                \       WritableRaster's coordinates."
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the region starting at (parentX, parentY).
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the region starting at (parentX, parentY).
+            - name: childMinX
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: "X coordinate of the upper left corner of\n                 \
+                \  the returned WritableRaster."
+            - name: childMinY
               type:
                 basic: int
                 full: int
-            - name: arg6
+              notes: "Y coordinate of the upper left corner of\n                 \
+                \  the returned WritableRaster."
+            - name: bandList
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: Array of band indices, or null to use all bands.
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster sharing all or part of the\n         DataBuffer\
+                \ of this WritableRaster."
+            notes: "Returns a new WritableRaster which shares all or part of this\n\
+              \ WritableRaster's DataBuffer.  The new WritableRaster will\n possess\
+              \ a reference to the current WritableRaster, accessible\n through its\
+              \ getParent() and getWritableParent() methods.\n\n  The parentX, parentY,\
+              \ width and height parameters form a\n Rectangle in this WritableRaster's\
+              \ coordinate space, indicating\n the area of pixels to be shared.  An\
+              \ error will be thrown if\n this Rectangle is not contained with the\
+              \ bounds of the current\n WritableRaster.\n\n  The new WritableRaster\
+              \ may additionally be translated to a\n different coordinate system\
+              \ for the plane than that used by the current\n WritableRaster.  The\
+              \ childMinX and childMinY parameters give\n the new (x, y) coordinate\
+              \ of the upper-left pixel of the\n returned WritableRaster; the coordinate\
+              \ (childMinX, childMinY)\n in the new WritableRaster will map to the\
+              \ same pixel as the\n coordinate (parentX, parentY) in the current WritableRaster.\n\
+              \n  The new WritableRaster may be defined to contain only a\n subset\
+              \ of the bands of the current WritableRaster, possibly\n reordered,\
+              \ by means of the bandList parameter.  If bandList is\n null, it is\
+              \ taken to include all of the bands of the current\n WritableRaster\
+              \ in their current order.\n\n  To create a new WritableRaster that contains\
+              \ a subregion of\n the current WritableRaster, but shares its coordinate\
+              \ system\n and bands, this method should be called with childMinX equal\
+              \ to\n parentX, childMinY equal to parentY, and bandList equal to\n\
+              \ null."
           - name: createWritableTranslatedChild
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: childMinX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: X coord of the upper left corner of the new Raster.
+            - name: childMinY
               type:
                 basic: int
                 full: int
+              notes: Y coord of the upper left corner of the new Raster.
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "a WritableRaster the same as this one except\n         for the\
+                \ specified location."
+            notes: "Create a WritableRaster with the same size, SampleModel and DataBuffer\n\
+              \ as this one, but with a different location.  The new WritableRaster\n\
+              \ will possess a reference to the current WritableRaster, accessible\n\
+              \ through its getParent() and getWritableParent() methods."
           - name: getWritableParent
             modifiers:
             - public
@@ -64,417 +194,602 @@ languages:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: "the parent of this WritableRaster, or\n          null."
+            notes: "Returns the parent WritableRaster (if any) of this WritableRaster,\n\
+              \  or else null."
           - name: setDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: Raster
-                full: java.awt.image.Raster
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setDataElements
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: inData
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "An object reference to an array of type defined by\n       \
+                \          getTransferType() and length getNumDataElements()\n   \
+                \              containing the pixel data to place at x,y."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the data for a single pixel from a\n primitive array of type\
+              \ TransferType.  For image data supported by\n the Java 2D(tm) API,\
+              \ this will be one of DataBuffer.TYPE_BYTE,\n DataBuffer.TYPE_USHORT,\
+              \ DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT,\n DataBuffer.TYPE_FLOAT,\
+              \ or DataBuffer.TYPE_DOUBLE.  Data in the array\n may be in a packed\
+              \ format, thus increasing efficiency for data\n transfers.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds, or if inData\
+              \ is not large enough to hold the pixel data.\n However, explicit bounds\
+              \ checking is not guaranteed.\n A ClassCastException will be thrown\
+              \ if the input object is not null\n and references anything other than\
+              \ an array of TransferType."
           - name: setDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: inRaster
+              type:
+                basic: Raster
+                full: java.awt.image.Raster
+              notes: Raster containing data to place at x,y.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the data for a rectangle of pixels from an input Raster.\n\
+              \ The input Raster must be compatible with this WritableRaster\n in\
+              \ that they must have the same number of bands, corresponding bands\n\
+              \ must have the same number of bits per sample, the TransferTypes\n\
+              \ and NumDataElements must be the same, and the packing used by\n the\
+              \ getDataElements/setDataElements must be identical.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
+          - name: setDataElements
+            modifiers:
+            - public
+            parameters:
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle.
+            - name: inData
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "An object reference to an array of type defined by\n       \
+                \          getTransferType() and length w*h*getNumDataElements()\n\
+                \                 containing the pixel data to place between x,y and\n\
+                \                 x+w-1, y+h-1."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the data for a rectangle of pixels from a\n primitive array\
+              \ of type TransferType.  For image data supported by\n the Java 2D API,\
+              \ this will be one of DataBuffer.TYPE_BYTE,\n DataBuffer.TYPE_USHORT,\
+              \ DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT,\n DataBuffer.TYPE_FLOAT,\
+              \ or DataBuffer.TYPE_DOUBLE.  Data in the array\n may be in a packed\
+              \ format, thus increasing efficiency for data\n transfers.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds, or if inData\
+              \ is not large enough to hold the pixel data.\n However, explicit bounds\
+              \ checking is not guaranteed.\n A ClassCastException will be thrown\
+              \ if the input object is not null\n and references anything other than\
+              \ an array of TransferType."
           - name: setPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: double[]
-                full: double[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setPixel
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: The Y coordinate of the pixel location.
+            - name: iArray
               type:
                 basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: float[]
-                full: float[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setPixel
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int[]
                 full: int[]
+              notes: The input samples in a int array.
             return:
               type:
                 basic: void
                 full: void
-          - name: setPixels
+            notes: "Sets a pixel in the DataBuffer using an int array of samples for\
+              \ input.\n An ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds.\n However, explicit bounds checking is not guaranteed."
+          - name: setPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: fArray
               type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: double[]
-                full: double[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setPixels
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: The input samples in a float array.
             return:
               type:
                 basic: void
                 full: void
-          - name: setPixels
+            notes: "Sets a pixel in the DataBuffer using a float array of samples\
+              \ for input.\n An ArrayIndexOutOfBoundsException may be thrown if the\
+              \ coordinates are\n not in bounds.\n However, explicit bounds checking\
+              \ is not guaranteed."
+          - name: setPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int[]
-                full: int[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setRect
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Raster
-                full: java.awt.image.Raster
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setRect
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: Raster
-                full: java.awt.image.Raster
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setSample
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
+              notes: The Y coordinate of the pixel location.
+            - name: dArray
               type:
                 basic: double
-                full: double
+                full: double[]
+              notes: The input samples in a double array.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a pixel in the DataBuffer using a double array of samples\
+              \ for input.\n An ArrayIndexOutOfBoundsException may be thrown if the\
+              \ coordinates are\n not in bounds.\n However, explicit bounds checking\
+              \ is not guaranteed."
+          - name: setPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle.
+            - name: iArray
+              type:
+                basic: int
+                full: int[]
+              notes: The input int pixel array.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets all samples for a rectangle of pixels from an int array containing\n\
+              \ one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
+          - name: setPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle.
+            - name: fArray
+              type:
+                basic: float
+                full: float[]
+              notes: The input float pixel array.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets all samples for a rectangle of pixels from a float array\
+              \ containing\n one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
+          - name: setPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle.
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: The input double pixel array.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets all samples for a rectangle of pixels from a double array\
+              \ containing\n one sample per array element.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
+          - name: setRect
+            modifiers:
+            - public
+            parameters:
+            - name: srcRaster
+              type:
+                basic: Raster
+                full: java.awt.image.Raster
+              notes: The  Raster from which to copy pixels.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Copies pixels from Raster srcRaster to this WritableRaster.  Each\
+              \ pixel\n in srcRaster is copied to the same x,y address in this raster,\
+              \ unless\n the address falls outside the bounds of this raster.  srcRaster\n\
+              \ must have the same number of bands as this WritableRaster.  The\n\
+              \ copy is a simple copy of source samples to the corresponding destination\n\
+              \ samples.\n \n If all samples of both source and destination Rasters\
+              \ are of\n integral type and less than or equal to 32 bits in size,\
+              \ then calling\n this method is equivalent to executing the following\
+              \ code for all\n x,y addresses valid in both Rasters.\n <code>\n   \
+              \    Raster srcRaster;\n       WritableRaster dstRaster;\n       for\
+              \ (int b = 0; b < srcRaster.getNumBands(); b++) {\n           dstRaster.setSample(x,\
+              \ y, b, srcRaster.getSample(x, y, b));\n       }\n </code>\n Thus, when\
+              \ copying an integral type source to an integral type\n destination,\
+              \ if the source sample size is greater than the destination\n sample\
+              \ size for a particular band, the high order bits of the source\n sample\
+              \ are truncated.  If the source sample size is less than the\n destination\
+              \ size for a particular band, the high order bits of the\n destination\
+              \ are zero-extended or sign-extended depending on whether\n srcRaster's\
+              \ SampleModel treats the sample as a signed or unsigned\n quantity.\n\
+              \ \n When copying a float or double source to an integral type destination,\n\
+              \ each source sample is cast to the destination type.  When copying\
+              \ an\n integral type source to a float or double destination, the source\n\
+              \ is first converted to a 32-bit int (if necessary), using the above\n\
+              \ rules for integral types, and then the int is cast to float or\n double."
+          - name: setRect
+            modifiers:
+            - public
+            parameters:
+            - name: dx
+              type:
+                basic: int
+                full: int
+              notes: "The X translation factor from src space to dst space\n     \
+                \             of the copy."
+            - name: dy
+              type:
+                basic: int
+                full: int
+              notes: "The Y translation factor from src space to dst space\n     \
+                \             of the copy."
+            - name: srcRaster
+              type:
+                basic: Raster
+                full: java.awt.image.Raster
+              notes: The Raster from which to copy pixels.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Copies pixels from Raster srcRaster to this WritableRaster.\n\
+              \ For each (x, y) address in srcRaster, the corresponding pixel\n is\
+              \ copied to address (x+dx, y+dy) in this WritableRaster,\n unless (x+dx,\
+              \ y+dy) falls outside the bounds of this raster.\n srcRaster must have\
+              \ the same number of bands as this WritableRaster.\n The copy is a simple\
+              \ copy of source samples to the corresponding\n destination samples.\
+              \  For details, see\n setRect(Raster)."
           - name: setSample
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to set.
+            - name: s
+              type:
+                basic: int
+                full: int
+              notes: The input sample.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets a sample in the specified band for the pixel located at (x,y)\n\
+              \ in the DataBuffer using an int for input.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
+          - name: setSample
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the pixel location.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to set.
+            - name: s
               type:
                 basic: float
                 full: float
+              notes: The input sample as a float.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a sample in the specified band for the pixel located at (x,y)\n\
+              \ in the DataBuffer using a float for input.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
           - name: setSample
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to set.
+            - name: s
               type:
-                basic: int
-                full: int
+                basic: double
+                full: double
+              notes: The input sample as a double.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a sample in the specified band for the pixel located at (x,y)\n\
+              \ in the DataBuffer using a double for input.\n An ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds.\n However, explicit\
+              \ bounds checking is not guaranteed."
           - name: setSamples
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: Width of the pixel rectangle.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: Height of the pixel rectangle.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg5
-              type:
-                basic: double[]
-                full: double[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: The band to set.
+            - name: iArray
               type:
                 basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: float[]
-                full: float[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: int[]
                 full: int[]
+              notes: The input int sample array.
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Raster
+            notes: "Sets the samples in the specified band for the specified rectangle\n\
+              \ of pixels from an int array containing one sample per array element.\n\
+              \ An ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds.\n However, explicit bounds checking is not guaranteed."
+          - name: setSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to set.
+            - name: fArray
+              type:
+                basic: float
+                full: float[]
+              notes: The input float sample array.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the samples in the specified band for the specified rectangle\n\
+              \ of pixels from a float array containing one sample per array element.\n\
+              \ An ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds.\n However, explicit bounds checking is not guaranteed."
+          - name: setSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: Width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: Height of the pixel rectangle.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to set.
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: The input double sample array.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the samples in the specified band for the specified rectangle\n\
+              \ of pixels from a double array containing one sample per array element.\n\
+              \ An ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds.\n However, explicit bounds checking is not guaranteed."

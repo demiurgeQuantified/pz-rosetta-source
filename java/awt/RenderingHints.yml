@@ -4,516 +4,832 @@ languages:
     packages:
       java.awt:
         RenderingHints:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The RenderingHints class defines and manages collections of\n keys\
+            \ and associated values which allow an application to provide input\n\
+            \ into the choice of algorithms used by other classes which perform\n\
+            \ rendering and image manipulation services.\n The Graphics2D class, and\
+            \ classes that implement\n BufferedImageOp and\n RasterOp all provide\
+            \ methods to get and\n possibly to set individual or groups of RenderingHints\n\
+            \ keys and their associated values.\n When those implementations perform\
+            \ any rendering or image manipulation\n operations they should examine\
+            \ the values of any RenderingHints\n that were requested by the caller\
+            \ and tailor the algorithms used\n accordingly and to the best of their\
+            \ ability.\n \n Note that since these keys and values are hints, there\
+            \ is\n no requirement that a given implementation supports all possible\n\
+            \ choices indicated below or that it can respond to requests to\n modify\
+            \ its choice of algorithm.\n The values of the various hint keys may also\
+            \ interact such that\n while all variants of a given key are supported\
+            \ in one situation,\n the implementation may be more restricted when the\
+            \ values associated\n with other keys are modified.\n For example, some\
+            \ implementations may be able to provide several\n types of dithering\
+            \ when the antialiasing hint is turned off, but\n have little control\
+            \ over dithering when antialiasing is on.\n The full set of supported\
+            \ keys and hints may also vary by destination\n since runtimes may use\
+            \ different underlying modules to render to\n the screen, or to BufferedImage\
+            \ objects,\n or while printing.\n \n Implementations are free to ignore\
+            \ the hints completely, but should\n try to use an implementation algorithm\
+            \ that is as close as possible\n to the request.\n If an implementation\
+            \ supports a given algorithm when any value is used\n for an associated\
+            \ hint key, then minimally it must do so when the\n value for that key\
+            \ is the exact value that specifies the algorithm.\n \n The keys used\
+            \ to control the hints are all special values that\n subclass the associated\
+            \ RenderingHints.Key class.\n Many common hints are expressed below as\
+            \ static constants in this\n class, but the list is not meant to be exhaustive.\n\
+            \ Other hints may be created by other packages by defining new objects\n\
+            \ which subclass the Key class and defining the associated values."
+          fields:
+            hintmap:
+              name: hintmap
+              modifiers:
+              - package
+              type:
+                basic: HashMap
+                full: java.util.HashMap<java.lang.Object, java.lang.Object>
           staticFields:
             KEY_ALPHA_INTERPOLATION:
               name: KEY_ALPHA_INTERPOLATION
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Alpha interpolation hint key.\n The ALPHA_INTERPOLATION hint\
+                \ is a general hint that\n provides a high level recommendation as\
+                \ to whether to bias\n alpha blending algorithm choices more for speed\
+                \ or quality\n when evaluating tradeoffs.\n \n This hint could control\
+                \ the choice of alpha blending\n calculations that sacrifice some\
+                \ precision to use fast\n lookup tables or lower precision SIMD instructions.\n\
+                \ This hint could also control whether or not the color\n and alpha\
+                \ values are converted into a linear color space\n during the calculations\
+                \ for a more linear visual effect\n at the expense of additional per-pixel\
+                \ calculations.\n \n The allowable values for this hint are\n \n VALUE_ALPHA_INTERPOLATION_SPEED\n\
+                \ VALUE_ALPHA_INTERPOLATION_QUALITY\n VALUE_ALPHA_INTERPOLATION_DEFAULT"
             KEY_ANTIALIASING:
               name: KEY_ANTIALIASING
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Antialiasing hint key.\n The ANTIALIASING hint controls whether\
+                \ or not the\n geometry rendering methods of a Graphics2D object\n\
+                \ will attempt to reduce aliasing artifacts along the edges\n of shapes.\n\
+                \ \n A typical antialiasing algorithm works by blending the existing\n\
+                \ colors of the pixels along the boundary of a shape with the\n requested\
+                \ fill paint according to the estimated partial pixel\n coverage of\
+                \ the shape.\n \n The allowable values for this hint are\n \n VALUE_ANTIALIAS_ON\n\
+                \ VALUE_ANTIALIAS_OFF\n VALUE_ANTIALIAS_DEFAULT"
             KEY_COLOR_RENDERING:
               name: KEY_COLOR_RENDERING
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Color rendering hint key.\n The COLOR_RENDERING hint controls\
+                \ the accuracy of\n approximation and conversion when storing colors\
+                \ into a\n destination image or surface.\n \n When a rendering or\
+                \ image manipulation operation produces\n a color value that must\
+                \ be stored into a destination, it\n must first convert that color\
+                \ into a form suitable for\n storing into the destination image or\
+                \ surface.\n Minimally, the color components must be converted to\
+                \ bit\n representations and ordered in the correct order or an\n index\
+                \ into a color lookup table must be chosen before\n the data can be\
+                \ stored into the destination memory.\n Without this minimal conversion,\
+                \ the data in the destination\n would likely represent random, incorrect\
+                \ or possibly even\n unsupported values.\n Algorithms to quickly convert\
+                \ the results of rendering\n operations into the color format of most\
+                \ common destinations\n are well known and fairly optimal to execute.\n\
+                \ \n Simply performing the most basic color format conversion to\n\
+                \ store colors into a destination can potentially ignore a\n difference\
+                \ in the calibration of the\n ColorSpace\n of the source and destination\
+                \ or other factors such as the\n linearity of the gamma correction.\n\
+                \ Unless the source and destination ColorSpace are\n identical, to\
+                \ correctly perform a rendering operation with\n the most care taken\
+                \ for the accuracy of the colors being\n represented, the source colors\
+                \ should be converted to a\n device independent ColorSpace and the\
+                \ results then\n converted back to the destination ColorSpace.\n Furthermore,\
+                \ if calculations such as the blending of multiple\n source colors\
+                \ are to be performed during the rendering\n operation, greater visual\
+                \ clarity can be achieved if the\n intermediate device independent\
+                \ ColorSpace is\n chosen to have a linear relationship between the\
+                \ values\n being calculated and the perception of the human eye to\n\
+                \ the response curves of the output device.\n \n The allowable values\
+                \ for this hint are\n \n VALUE_COLOR_RENDER_SPEED\n VALUE_COLOR_RENDER_QUALITY\n\
+                \ VALUE_COLOR_RENDER_DEFAULT"
             KEY_DITHERING:
               name: KEY_DITHERING
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Dithering hint key.\n The DITHERING hint controls how closely\
+                \ to approximate\n a color when storing into a destination with limited\
+                \ color\n resolution.\n \n Some rendering destinations may support\
+                \ a limited number of\n color choices which may not be able to accurately\
+                \ represent\n the full spectrum of colors that can result during rendering\n\
+                \ operations.\n For such a destination the DITHERING hint controls\n\
+                \ whether rendering is done with a flat solid fill of a single\n pixel\
+                \ value which is the closest supported color to what was\n requested,\
+                \ or whether shapes will be filled with a pattern of\n colors which\
+                \ combine to better approximate that color.\n \n The allowable values\
+                \ for this hint are\n \n VALUE_DITHER_DISABLE\n VALUE_DITHER_ENABLE\n\
+                \ VALUE_DITHER_DEFAULT"
             KEY_FRACTIONALMETRICS:
               name: KEY_FRACTIONALMETRICS
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Font fractional metrics hint key.\n The FRACTIONALMETRICS hint\
+                \ controls whether the positioning\n of individual character glyphs\
+                \ takes into account the sub-pixel\n accuracy of the scaled character\
+                \ advances of the font or whether\n such advance vectors are rounded\
+                \ to an integer number of whole\n device pixels.\n This hint only\
+                \ recommends how much accuracy should be used to\n position the glyphs\
+                \ and does not specify or recommend whether or\n not the actual rasterization\
+                \ or pixel bounds of the glyph should\n be modified to match.\n \n\
+                \ Rendering text to a low resolution device like a screen will\n necessarily\
+                \ involve a number of rounding operations as the\n high quality and\
+                \ very precise definition of the shape and\n metrics of the character\
+                \ glyphs must be matched to discrete\n device pixels.\n Ideally the\
+                \ positioning of glyphs during text layout would be\n calculated by\
+                \ scaling the design metrics in the font according\n to the point\
+                \ size, but then the scaled advance width will not\n necessarily be\
+                \ an integer number of pixels.\n If the glyphs are positioned with\
+                \ sub-pixel accuracy according\n to these scaled design metrics then\
+                \ the rasterization would\n ideally need to be adjusted for each possible\
+                \ sub-pixel origin.\n \n Unfortunately, scaling each glyph customized\
+                \ to its exact\n subpixel origin during text layout would be prohibitively\n\
+                \ expensive so a simplified system based on integer device\n positions\
+                \ is typically used to lay out the text.\n The rasterization of the\
+                \ glyph and the scaled advance width\n are both adjusted together\
+                \ to yield text that looks good at\n device resolution and has consistent\
+                \ integer pixel distances\n between glyphs that help the glyphs look\
+                \ uniformly and\n consistently spaced and readable.\n \n This process\
+                \ of rounding advance widths for rasterized glyphs\n to integer distances\
+                \ means that the character density and the\n overall length of a string\
+                \ of text will be different from the\n theoretical design measurements\
+                \ due to the accumulation of\n a series of small differences in the\
+                \ adjusted widths of\n each glyph.\n The specific differences will\
+                \ be different for each glyph,\n some being wider and some being narrower\
+                \ than their theoretical\n design measurements.\n Thus the overall\
+                \ difference in character density and length\n will vary by a number\
+                \ of factors including the font, the\n specific device resolution\
+                \ being targeted, and the glyphs\n chosen to represent the string\
+                \ being rendered.\n As a result, rendering the same string at multiple\
+                \ device\n resolutions can yield widely varying metrics for whole\
+                \ strings.\n \n When FRACTIONALMETRICS are enabled, the true font\
+                \ design\n metrics are scaled by the point size and used for layout\
+                \ with\n sub-pixel accuracy.\n The average density of glyphs and total\
+                \ length of a long\n string of characters will therefore more closely\
+                \ match the\n theoretical design of the font, but readability may\
+                \ be affected\n since individual pairs of characters may not always\
+                \ appear to\n be consistent distances apart depending on how the sub-pixel\n\
+                \ accumulation of the glyph origins meshes with the device pixel\n\
+                \ grid.\n Enabling this hint may be desirable when text layout is\
+                \ being\n performed that must be consistent across a wide variety\
+                \ of\n output resolutions.\n Specifically, this hint may be desirable\
+                \ in situations where\n the layout of text is being previewed on a\
+                \ low resolution\n device like a screen for output that will eventually\
+                \ be\n rendered on a high resolution printer or typesetting device.\n\
+                \ \n When disabled, the scaled design metrics are rounded or adjusted\n\
+                \ to integer distances for layout.\n The distances between any specific\
+                \ pair of glyphs will be more\n uniform on the device, but the density\
+                \ and total length of long\n strings may no longer match the theoretical\
+                \ intentions of the\n font designer.\n Disabling this hint will typically\
+                \ produce more readable results\n on low resolution devices like computer\
+                \ monitors.\n \n The allowable values for this key are\n \n VALUE_FRACTIONALMETRICS_OFF\n\
+                \ VALUE_FRACTIONALMETRICS_ON\n VALUE_FRACTIONALMETRICS_DEFAULT"
             KEY_INTERPOLATION:
               name: KEY_INTERPOLATION
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Interpolation hint key.\n The INTERPOLATION hint controls how\
+                \ image pixels are\n filtered or resampled during an image rendering\
+                \ operation.\n \n Implicitly images are defined to provide color samples\
+                \ at\n integer coordinate locations.\n When images are rendered upright\
+                \ with no scaling onto a\n destination, the choice of which image\
+                \ pixels map to which\n device pixels is obvious and the samples at\
+                \ the integer\n coordinate locations in the image are transferred\
+                \ to the\n pixels at the corresponding integer locations on the device\n\
+                \ pixel grid one for one.\n When images are rendered in a scaled,\
+                \ rotated, or otherwise\n transformed coordinate system, then the\
+                \ mapping of device\n pixel coordinates back to the image can raise\
+                \ the question\n of what color sample to use for the continuous coordinates\n\
+                \ that lie between the integer locations of the provided image\n samples.\n\
+                \ Interpolation algorithms define functions which provide a\n color\
+                \ sample for any continuous coordinate in an image based\n on the\
+                \ color samples at the surrounding integer coordinates.\n \n The allowable\
+                \ values for this hint are\n \n VALUE_INTERPOLATION_NEAREST_NEIGHBOR\n\
+                \ VALUE_INTERPOLATION_BILINEAR\n VALUE_INTERPOLATION_BICUBIC"
             KEY_RENDERING:
               name: KEY_RENDERING
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Rendering hint key.\n The RENDERING hint is a general hint that\
+                \ provides\n a high level recommendation as to whether to bias algorithm\n\
+                \ choices more for speed or quality when evaluating tradeoffs.\n This\
+                \ hint could be consulted for any rendering or image\n manipulation\
+                \ operation, but decisions will usually honor\n other, more specific\
+                \ hints in preference to this hint.\n \n The allowable values for\
+                \ this hint are\n \n VALUE_RENDER_SPEED\n VALUE_RENDER_QUALITY\n VALUE_RENDER_DEFAULT"
             KEY_RESOLUTION_VARIANT:
               name: KEY_RESOLUTION_VARIANT
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Image resolution variant hint key.\n The RESOLUTION_VARIANT\
+                \ hint controls which image resolution\n variant should be chosen\
+                \ for image drawing.\n\n \n VALUE_RESOLUTION_VARIANT_DEFAULT\n VALUE_RESOLUTION_VARIANT_BASE\n\
+                \ VALUE_RESOLUTION_VARIANT_SIZE_FIT\n VALUE_RESOLUTION_VARIANT_DPI_FIT"
             KEY_STROKE_CONTROL:
               name: KEY_STROKE_CONTROL
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Stroke normalization control hint key.\n The STROKE_CONTROL\
+                \ hint controls whether a rendering\n implementation should or is\
+                \ allowed to modify the geometry\n of rendered shapes for various\
+                \ purposes.\n \n Some implementations may be able to use an optimized\
+                \ platform\n rendering library which may be faster than traditional\
+                \ software\n rendering algorithms on a given platform, but which may\
+                \ also\n not support floating point coordinates.\n Some implementations\
+                \ may also have sophisticated algorithms\n which perturb the coordinates\
+                \ of a path so that wide lines\n appear more uniform in width and\
+                \ spacing.\n \n If an implementation performs any type of modification\
+                \ or\n \"normalization\" of a path, it should never move the coordinates\n\
+                \ by more than half a pixel in any direction.\n \n The allowable values\
+                \ for this hint are\n \n VALUE_STROKE_NORMALIZE\n VALUE_STROKE_PURE\n\
+                \ VALUE_STROKE_DEFAULT"
             KEY_TEXT_ANTIALIASING:
               name: KEY_TEXT_ANTIALIASING
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "Text antialiasing hint key.\n The TEXT_ANTIALIASING hint can\
+                \ control the use of\n antialiasing algorithms for text independently\
+                \ of the\n choice used for shape rendering.\n Often an application\
+                \ may want to use antialiasing for text\n only and not for other shapes.\n\
+                \ Additionally, the algorithms for reducing the aliasing\n artifacts\
+                \ for text are often more sophisticated than those\n that have been\
+                \ developed for general rendering so this\n hint key provides additional\
+                \ values which can control\n the choices of some of those text-specific\
+                \ algorithms.\n If left in the DEFAULT state, this hint will\n generally\
+                \ defer to the value of the regular\n KEY_ANTIALIASING hint key.\n\
+                \ \n The allowable values for this hint are\n \n VALUE_TEXT_ANTIALIAS_ON\n\
+                \ VALUE_TEXT_ANTIALIAS_OFF\n VALUE_TEXT_ANTIALIAS_DEFAULT\n VALUE_TEXT_ANTIALIAS_GASP\n\
+                \ VALUE_TEXT_ANTIALIAS_LCD_HRGB\n VALUE_TEXT_ANTIALIAS_LCD_HBGR\n\
+                \ VALUE_TEXT_ANTIALIAS_LCD_VRGB\n VALUE_TEXT_ANTIALIAS_LCD_VBGR"
             KEY_TEXT_LCD_CONTRAST:
               name: KEY_TEXT_LCD_CONTRAST
               modifiers:
               - public
               - static
-              - final
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-                nullable: true
+              notes: "LCD text contrast rendering hint key.\n The value is an Integer\
+                \ object which is used as a text\n contrast adjustment when used in\
+                \ conjunction with an LCD text\n anti-aliasing hint such as\n VALUE_TEXT_ANTIALIAS_LCD_HRGB.\n\
+                \ \n Values should be a positive integer in the range 100 to 250.\n\
+                \ A lower value (eg 100) corresponds to higher contrast text when\n\
+                \ displaying dark text on a light background.\n A higher value (eg\
+                \ 200) corresponds to lower contrast text when\n displaying dark text\
+                \ on a light background.\n A typical useful value is in the narrow\
+                \ range 140-180.\n If no value is specified, a system or implementation\
+                \ default value\n will be applied.\n \n The default value can be expected\
+                \ to be adequate for most purposes,\n so clients should rarely need\
+                \ to specify a value for this hint unless\n they have concrete information\
+                \ as to an appropriate value.\n A higher value does not mean a higher\
+                \ contrast, in fact the opposite\n is true.\n The correction is applied\
+                \ in a similar manner to a gamma adjustment\n for non-linear perceptual\
+                \ luminance response of display systems, but\n does not indicate a\
+                \ full correction for this."
             VALUE_ALPHA_INTERPOLATION_DEFAULT:
               name: VALUE_ALPHA_INTERPOLATION_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Alpha interpolation hint value -- alpha blending algorithms\n\
+                \ are chosen by the implementation for a good tradeoff of\n performance\
+                \ vs. quality."
             VALUE_ALPHA_INTERPOLATION_QUALITY:
               name: VALUE_ALPHA_INTERPOLATION_QUALITY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Alpha interpolation hint value -- alpha blending algorithms\n\
+                \ are chosen with a preference for precision and visual quality."
             VALUE_ALPHA_INTERPOLATION_SPEED:
               name: VALUE_ALPHA_INTERPOLATION_SPEED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Alpha interpolation hint value -- alpha blending algorithms\n\
+                \ are chosen with a preference for calculation speed."
             VALUE_ANTIALIAS_DEFAULT:
               name: VALUE_ANTIALIAS_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Antialiasing hint value -- rendering is done with a default\n\
+                \ antialiasing mode chosen by the implementation."
             VALUE_ANTIALIAS_OFF:
               name: VALUE_ANTIALIAS_OFF
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: Antialiasing hint value -- rendering is done without antialiasing.
             VALUE_ANTIALIAS_ON:
               name: VALUE_ANTIALIAS_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: Antialiasing hint value -- rendering is done with antialiasing.
             VALUE_COLOR_RENDER_DEFAULT:
               name: VALUE_COLOR_RENDER_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Color rendering hint value -- perform color conversion\n calculations\
+                \ as chosen by the implementation to represent\n the best available\
+                \ tradeoff between performance and\n accuracy."
             VALUE_COLOR_RENDER_QUALITY:
               name: VALUE_COLOR_RENDER_QUALITY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Color rendering hint value -- perform the color conversion\n\
+                \ calculations with the highest accuracy and visual quality."
             VALUE_COLOR_RENDER_SPEED:
               name: VALUE_COLOR_RENDER_SPEED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Color rendering hint value -- perform the fastest color\n conversion\
+                \ to the format of the output device."
             VALUE_DITHER_DEFAULT:
               name: VALUE_DITHER_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Dithering hint value -- use a default for dithering chosen by\n\
+                \ the implementation."
             VALUE_DITHER_DISABLE:
               name: VALUE_DITHER_DISABLE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: Dithering hint value -- do not dither when rendering geometry.
             VALUE_DITHER_ENABLE:
               name: VALUE_DITHER_ENABLE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: Dithering hint value -- dither when rendering geometry, if needed.
             VALUE_FRACTIONALMETRICS_DEFAULT:
               name: VALUE_FRACTIONALMETRICS_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Font fractional metrics hint value -- character glyphs are\n\
+                \ positioned with accuracy chosen by the implementation."
             VALUE_FRACTIONALMETRICS_OFF:
               name: VALUE_FRACTIONALMETRICS_OFF
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Font fractional metrics hint value -- character glyphs are\n\
+                \ positioned with advance widths rounded to pixel boundaries."
             VALUE_FRACTIONALMETRICS_ON:
               name: VALUE_FRACTIONALMETRICS_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Font fractional metrics hint value -- character glyphs are\n\
+                \ positioned with sub-pixel accuracy."
             VALUE_INTERPOLATION_BICUBIC:
               name: VALUE_INTERPOLATION_BICUBIC
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Interpolation hint value -- the color samples of 9 nearby\n\
+                \ integer coordinate samples in the image are interpolated using\n\
+                \ a cubic function in both X and Y to produce\n a color sample.\n\
+                \ Conceptually the view of the image is very similar to the view\n\
+                \ used in the BILINEAR\n algorithm except that the ramps of colors\
+                \ that connect between\n the samples are curved and have better continuity\
+                \ of slope\n as they cross over between sample boundaries.\n \n As\
+                \ the image is scaled up, there are no blocky edges and the\n interpolation\
+                \ should appear smoother and with better depictions\n of any edges\
+                \ in the original image than with BILINEAR.\n As the image is scaled\
+                \ down, even more of the original color\n samples from the original\
+                \ image will have their color information\n carried through and represented."
             VALUE_INTERPOLATION_BILINEAR:
               name: VALUE_INTERPOLATION_BILINEAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Interpolation hint value -- the color samples of the 4 nearest\n\
+                \ neighboring integer coordinate samples in the image are\n interpolated\
+                \ linearly to produce a color sample.\n Conceptually the image is\
+                \ viewed as a set of infinitely small\n point color samples which\
+                \ have value only at the centers of\n integer coordinate pixels and\
+                \ the space between those pixel\n centers is filled with linear ramps\
+                \ of colors that connect\n adjacent discrete samples in a straight\
+                \ line.\n \n As the image is scaled up, there are no blocky edges\
+                \ between\n the colors in the image as there are with\n NEAREST_NEIGHBOR,\n\
+                \ but the blending may show some subtle discontinuities along the\n\
+                \ horizontal and vertical edges that line up with the samples\n caused\
+                \ by a sudden change in the slope of the interpolation\n from one\
+                \ side of a sample to the other.\n As the image is scaled down, more\
+                \ image pixels have their\n color samples represented in the resulting\
+                \ output since each\n output pixel receives color information from\
+                \ up to 4 image\n pixels."
             VALUE_INTERPOLATION_NEAREST_NEIGHBOR:
               name: VALUE_INTERPOLATION_NEAREST_NEIGHBOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Interpolation hint value -- the color sample of the nearest\n\
+                \ neighboring integer coordinate sample in the image is used.\n Conceptually\
+                \ the image is viewed as a grid of unit-sized\n square regions of\
+                \ color centered around the center of each\n image pixel.\n \n As\
+                \ the image is scaled up, it will look correspondingly blocky.\n As\
+                \ the image is scaled down, the colors for source pixels will\n be\
+                \ either used unmodified, or skipped entirely in the output\n representation."
             VALUE_RENDER_DEFAULT:
               name: VALUE_RENDER_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Rendering hint value -- rendering algorithms are chosen\n by\
+                \ the implementation for a good tradeoff of performance\n vs. quality."
             VALUE_RENDER_QUALITY:
               name: VALUE_RENDER_QUALITY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Rendering hint value -- rendering algorithms are chosen\n with\
+                \ a preference for output quality."
             VALUE_RENDER_SPEED:
               name: VALUE_RENDER_SPEED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Rendering hint value -- rendering algorithms are chosen\n with\
+                \ a preference for output speed."
             VALUE_RESOLUTION_VARIANT_BASE:
               name: VALUE_RESOLUTION_VARIANT_BASE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Image resolution variant hint value -- the standard resolution\
+                \ of an image\n is always used."
             VALUE_RESOLUTION_VARIANT_DEFAULT:
               name: VALUE_RESOLUTION_VARIANT_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Image resolution variant hint value -- an image resolution variant\
+                \ is\n chosen based on a default heuristic which may depend on the\
+                \ policies\n of the platform"
             VALUE_RESOLUTION_VARIANT_DPI_FIT:
               name: VALUE_RESOLUTION_VARIANT_DPI_FIT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Image resolution variant hint value -- an image resolution variant\
+                \ is\n chosen based only on the DPI of the screen."
             VALUE_RESOLUTION_VARIANT_SIZE_FIT:
               name: VALUE_RESOLUTION_VARIANT_SIZE_FIT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Image resolution variant hint value -- an image resolution variant\
+                \ is\n chosen based on the DPI of the screen and the transform in\
+                \ the Graphics2D\n context."
             VALUE_STROKE_DEFAULT:
               name: VALUE_STROKE_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Stroke normalization control hint value -- geometry may be\n\
+                \ modified or left pure depending on the tradeoffs in a given\n implementation.\n\
+                \ Typically this setting allows an implementation to use a fast\n\
+                \ integer coordinate based platform rendering library, but does\n\
+                \ not specifically request normalization for uniformity or\n aesthetics."
             VALUE_STROKE_NORMALIZE:
               name: VALUE_STROKE_NORMALIZE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Stroke normalization control hint value -- geometry should\n\
+                \ be normalized to improve uniformity or spacing of lines and\n overall\
+                \ aesthetics.\n Note that different normalization algorithms may be\
+                \ more\n successful than others for given input paths."
             VALUE_STROKE_PURE:
               name: VALUE_STROKE_PURE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Stroke normalization control hint value -- geometry should\n\
+                \ be left unmodified and rendered with sub-pixel accuracy."
             VALUE_TEXT_ANTIALIAS_DEFAULT:
               name: VALUE_TEXT_ANTIALIAS_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- text rendering is done according\n\
+                \ to the KEY_ANTIALIASING hint or a default chosen by the\n implementation."
             VALUE_TEXT_ANTIALIAS_GASP:
               name: VALUE_TEXT_ANTIALIAS_GASP
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- text rendering is requested\
+                \ to\n use information in the font resource which specifies for each\
+                \ point\n size whether to apply VALUE_TEXT_ANTIALIAS_ON or\n VALUE_TEXT_ANTIALIAS_OFF.\n\
+                \ \n TrueType fonts typically provide this information in the 'gasp'\
+                \ table.\n In the absence of this information, the behaviour for a\
+                \ particular\n font and size is determined by implementation defaults.\n\
+                \ \n Note:A font designer will typically carefully hint a font for\n\
+                \ the most common user interface point sizes. Consequently the 'gasp'\n\
+                \ table will likely specify to use only hinting at those sizes and\
+                \ not\n \"smoothing\". So in many cases the resulting text display\
+                \ is\n equivalent to VALUE_TEXT_ANTIALIAS_OFF.\n This may be unexpected\
+                \ but is correct.\n \n Logical fonts which are composed of multiple\
+                \ physical fonts will for\n consistency will use the setting most\
+                \ appropriate for the overall\n composite font."
             VALUE_TEXT_ANTIALIAS_LCD_HBGR:
               name: VALUE_TEXT_ANTIALIAS_LCD_HBGR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- request that text be displayed\n\
+                \ optimised for an LCD display with subpixels in order from display\n\
+                \ left to right of B,G,R such that the horizontal subpixel resolution\n\
+                \ is three times that of the full pixel horizontal resolution (HBGR).\n\
+                \ This is a much less common configuration than HRGB.\n Selecting\
+                \ this hint for displays with one of the other LCD subpixel\n configurations\
+                \ will likely result in unfocused text.\n See VALUE_TEXT_ANTIALIAS_LCD_HRGB,\n\
+                \ for more information on when this hint is applied."
             VALUE_TEXT_ANTIALIAS_LCD_HRGB:
               name: VALUE_TEXT_ANTIALIAS_LCD_HRGB
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- request that text be displayed\n\
+                \ optimised for an LCD display with subpixels in order from display\n\
+                \ left to right of R,G,B such that the horizontal subpixel resolution\n\
+                \ is three times that of the full pixel horizontal resolution (HRGB).\n\
+                \ This is the most common configuration.\n Selecting this hint for\
+                \ displays with one of the other LCD subpixel\n configurations will\
+                \ likely result in unfocused text.\n \n Notes:\n An implementation\
+                \ when choosing whether to apply any of the\n LCD text hint values\
+                \ may take into account factors including requiring\n color depth\
+                \ of the destination to be at least 15 bits per pixel\n (ie 5 bits\
+                \ per color component),\n characteristics of a font such as whether\
+                \ embedded bitmaps may\n produce better results, or when displaying\
+                \ to a non-local networked\n display device enabling it only if suitable\
+                \ protocols are available,\n or ignoring the hint if performing very\
+                \ high resolution rendering\n or the target device is not appropriate:\
+                \ eg when printing.\n \n These hints can equally be applied when rendering\
+                \ to software images,\n but these images may not then be suitable\
+                \ for general export, as the\n text will have been rendered appropriately\
+                \ for a specific subpixel\n organisation. Also lossy images are not\
+                \ a good choice, nor image\n formats such as GIF which have limited\
+                \ colors.\n So unless the image is destined solely for rendering on\
+                \ a\n display device with the same configuration, some other text\n\
+                \ anti-aliasing hint such as\n VALUE_TEXT_ANTIALIAS_ON\n may be a\
+                \ better choice.\n Selecting a value which does not match the LCD\
+                \ display in use\n will likely lead to a degradation in text quality.\n\
+                \ On display devices (ie CRTs) which do not have the same characteristics\n\
+                \ as LCD displays, the overall effect may appear similar to standard\
+                \ text\n anti-aliasing, but the quality may be degraded by color distortion.\n\
+                \ Analog connected LCD displays may also show little advantage over\n\
+                \ standard text-antialiasing and be similar to CRTs.\n \n In other\
+                \ words for the best results use an LCD display with a digital\n display\
+                \ connector and specify the appropriate sub-pixel configuration."
             VALUE_TEXT_ANTIALIAS_LCD_VBGR:
               name: VALUE_TEXT_ANTIALIAS_LCD_VBGR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- request that text be displayed\n\
+                \ optimised for an LCD display with subpixel organisation from display\n\
+                \ top to bottom of B,G,R such that the vertical subpixel resolution\
+                \ is\n three times that of the full pixel vertical resolution (VBGR).\n\
+                \ Vertical orientation is very uncommon and probably mainly useful\n\
+                \ for a physically rotated display.\n Selecting this hint for displays\
+                \ with one of the other LCD subpixel\n configurations will likely\
+                \ result in unfocused text.\n See VALUE_TEXT_ANTIALIAS_LCD_HRGB,\n\
+                \ for more information on when this hint is applied."
             VALUE_TEXT_ANTIALIAS_LCD_VRGB:
               name: VALUE_TEXT_ANTIALIAS_LCD_VRGB
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- request that text be displayed\n\
+                \ optimised for an LCD display with subpixel organisation from display\n\
+                \ top to bottom of R,G,B such that the vertical subpixel resolution\
+                \ is\n three times that of the full pixel vertical resolution (VRGB).\n\
+                \ Vertical orientation is very uncommon and probably mainly useful\n\
+                \ for a physically rotated display.\n Selecting this hint for displays\
+                \ with one of the other LCD subpixel\n configurations will likely\
+                \ result in unfocused text.\n See VALUE_TEXT_ANTIALIAS_LCD_HRGB,\n\
+                \ for more information on when this hint is applied."
             VALUE_TEXT_ANTIALIAS_OFF:
               name: VALUE_TEXT_ANTIALIAS_OFF
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- text rendering is done without\n\
+                \ any form of antialiasing."
             VALUE_TEXT_ANTIALIAS_ON:
               name: VALUE_TEXT_ANTIALIAS_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "Text antialiasing hint value -- text rendering is done with\n\
+                \ some form of antialiasing."
           constructors:
           - modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: Key, ?>
+                basic: Map
                 full: java.util.Map<java.awt.RenderingHints$Key, ?>
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
-                basic: Key
+                basic: RenderingHints.Key
                 full: java.awt.RenderingHints$Key
-            - name: arg1
+              notes: the key of the particular hint property
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "the value of the hint property specified with\n key"
+            notes: Constructs a new object with the specified key/value pair.
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: hints
               type:
                 basic: RenderingHints
                 full: java.awt.RenderingHints
+              notes: "the set of key/value pairs to be added to this\n RenderingHints\
+                \ object"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds all of the keys and corresponding values from the specified\n\
+              \ RenderingHints object to this\n RenderingHints object. Keys that are\
+              \ present in\n this RenderingHints object, but not in the specified\n\
+              \ RenderingHints object are not affected."
           - name: clear
             modifiers:
             - public
@@ -521,13 +837,7 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: clear
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Clears this RenderingHints object of all key/value\n pairs."
           - name: clone
             modifiers:
             - public
@@ -535,194 +845,94 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: compute
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: computeIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: Function<? super K, ? extends V>
-                full: java.util.function.Function<? super K, ? extends V>
-            return:
-              type:
-                basic: V
-                full: V
-          - name: computeIfPresent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
+              notes: a clone of this instance.
+            notes: "Creates a clone of this RenderingHints object\n that has the same\
+              \ contents as this RenderingHints\n object."
           - name: containsKey
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "key whose presence in this\n RenderingHints is to be tested."
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: containsKey
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if this RenderingHints\n          contains a mapping for\
+                \ the specified key."
+            notes: "Returns true if this RenderingHints\n  contains a mapping for\
+              \ the specified key."
           - name: containsValue
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "value whose presence in this\n          RenderingHints is to\
+                \ be tested."
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: containsValue
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if this RenderingHints\n           maps one or more keys\
+                \ to the specified value."
+            notes: "Returns true if this RenderingHints maps one or more keys to the\n\
+              \ specified value.\n More formally, returns true if and only\n if this\
+              \ RenderingHints\n contains at least one mapping to a value v such that\n\
+              \ \n (value==null ? v==null : value.equals(v))\n .\n This operation\
+              \ will probably require time linear in the\n RenderingHints size for\
+              \ most implementations\n of RenderingHints."
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<Object, Object>>
-                full: java.util.Set<java.util.Map$Entry<java.lang.Object, java.lang.Object>>
-          - name: entrySet
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Entry<Object, Object>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<java.lang.Object, java.lang.Object>>
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "Object to be compared for equality with\n this RenderingHints."
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: forEach
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiConsumer<? super K, ? super V>
-                full: java.util.function.BiConsumer<? super K, ? super V>
-            return:
-              type:
-                basic: void
-                full: void
+              notes: "true if the specified Object\n is equal to this RenderingHints."
+            notes: "Compares the specified Object with this\n RenderingHints for equality.\n\
+              \ Returns true if the specified object is also a\n Map and the two Map\
+              \ objects represent\n the same mappings.  More formally, two Map objects\n\
+              \ t1 and t2 represent the same mappings\n if t1.keySet().equals(t2.keySet())\
+              \ and for every\n key k in t1.keySet(),\n \n (t1.get(k)==null ? t2.get(k)==null\
+              \ : t1.get(k).equals(t2.get(k)))\n .\n This ensures that the equals\
+              \ method works properly across\n different implementations of the Map\
+              \ interface."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a rendering hint key
             return:
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: get
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: Object
-                full: java.lang.Object
-          - name: getOrDefault
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
+              notes: "the value to which the key is mapped in this object or\n   \
+                \       null if the key is not mapped to any value in\n          this\
+                \ object."
+            notes: Returns the value to which the specified key is mapped.
           - name: hashCode
             modifiers:
             - public
@@ -730,13 +940,13 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: hashCode
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the hash code value for this RenderingHints.
+            notes: "Returns the hash code value for this RenderingHints.\n The hash\
+              \ code of a RenderingHints is defined to be\n the sum of the hashCodes\
+              \ of each Entry in the\n RenderingHints object's entrySet view.  This\
+              \ ensures that\n t1.equals(t2) implies that\n t1.hashCode()==t2.hashCode()\
+              \ for any two Map\n objects t1 and t2, as required by the general\n\
+              \ contract of Object.hashCode."
           - name: isEmpty
             modifiers:
             - public
@@ -744,209 +954,83 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: isEmpty
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if this\n RenderingHints contains no key-value mappings."
+            notes: "Returns true if this\n RenderingHints contains no key-value mappings."
           - name: keySet
             modifiers:
             - public
             return:
               type:
-                basic: Set<Object>
+                basic: Set
                 full: java.util.Set<java.lang.Object>
-          - name: keySet
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Set<Object>
-                full: java.util.Set<java.lang.Object>
-          - name: merge
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: BiFunction<? super V, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super V, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: V
-                full: V
+              notes: "a Set view of the keys contained\n in this RenderingHints."
+            notes: "Returns a Set view of the Keys contained in this\n RenderingHints.\
+              \  The Set is backed by the\n RenderingHints, so changes to the\n RenderingHints\
+              \ are reflected in the Set,\n and vice-versa.  If the RenderingHints\
+              \ is modified\n while an iteration over the Set is in progress,\n the\
+              \ results of the iteration are undefined.  The Set\n supports element\
+              \ removal, which removes the corresponding\n mapping from the RenderingHints,\
+              \ via the\n Iterator.remove, Set.remove,\n removeAll retainAll, and\n\
+              \ clear operations.  It does not support\n the add or addAll operations."
           - name: put
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the rendering hint key.
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the rendering hint value.
             return:
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: put
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: Object
-                full: java.lang.Object
+              notes: "the previous value of the specified key in this object\n   \
+                \          or null if it did not have one."
+            notes: "Maps the specified key to the specified\n value in this RenderingHints\
+              \ object.\n Neither the key nor the value can be null.\n The value can\
+              \ be retrieved by calling the get method\n with a key that is equal\
+              \ to the original key."
           - name: putAll
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
-                basic: Map<?, ?>
+                basic: Map
                 full: java.util.Map<?, ?>
+              notes: the specified Map
             return:
               type:
                 basic: void
                 full: void
-          - name: putAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-            return:
-              type:
-                basic: void
-                full: void
-          - name: putIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
+            notes: "Copies all of the mappings from the specified Map\n to this RenderingHints.\
+              \  These mappings replace\n any mappings that this RenderingHints had\
+              \ for any\n of the keys currently in the specified Map."
           - name: remove
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the rendering hints key that needs to be removed
             return:
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: Object
-                full: java.lang.Object
-          - name: remove
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
-          - name: replace
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: replaceAll
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: BiFunction<? super K, ? super V, ? extends V>
-                full: java.util.function.BiFunction<? super K, ? super V, ? extends
-                  V>
-            return:
-              type:
-                basic: void
-                full: void
+              notes: "the value to which the key had previously been mapped in this\n\
+                \          RenderingHints object, or null\n          if the key did\
+                \ not have a mapping."
+            notes: "Removes the key and its corresponding value from this\n RenderingHints\
+              \ object. This method does nothing if the\n key is not in this RenderingHints\
+              \ object."
           - name: size
             modifiers:
             - public
@@ -954,608 +1038,30 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: size
+              notes: "the number of key-value mappings in this\n RenderingHints."
+            notes: "Returns the number of key-value mappings in this\n RenderingHints."
+          - name: toString
             modifiers:
             - public
             return:
               type:
-                basic: int
-                full: int
+                basic: String
+                full: java.lang.String
           - name: values
             modifiers:
             - public
             return:
               type:
-                basic: Collection<Object>
+                basic: Collection
                 full: java.util.Collection<java.lang.Object>
-          - name: values
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Collection<Object>
-                full: java.util.Collection<java.lang.Object>
-          staticMethods:
-          - name: copyOf
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: entry
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Entry<K, V>
-                full: java.util.Map$Entry<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            - name: arg16
-              type:
-                basic: K
-                full: K
-            - name: arg17
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            - name: arg2
-              type:
-                basic: K
-                full: K
-            - name: arg3
-              type:
-                basic: V
-                full: V
-            - name: arg4
-              type:
-                basic: K
-                full: K
-            - name: arg5
-              type:
-                basic: V
-                full: V
-            - name: arg6
-              type:
-                basic: K
-                full: K
-            - name: arg7
-              type:
-                basic: V
-                full: V
-            - name: arg8
-              type:
-                basic: K
-                full: K
-            - name: arg9
-              type:
-                basic: V
-                full: V
-            - name: arg10
-              type:
-                basic: K
-                full: K
-            - name: arg11
-              type:
-                basic: V
-                full: V
-            - name: arg12
-              type:
-                basic: K
-                full: K
-            - name: arg13
-              type:
-                basic: V
-                full: V
-            - name: arg14
-              type:
-                basic: K
-                full: K
-            - name: arg15
-              type:
-                basic: V
-                full: V
-            - name: arg16
-              type:
-                basic: K
-                full: K
-            - name: arg17
-              type:
-                basic: V
-                full: V
-            - name: arg18
-              type:
-                basic: K
-                full: K
-            - name: arg19
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          - name: ofEntries
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: Entry<? extends K, ? extends V>[>
-                full: java.util.Map$Entry<? extends K, ? extends V>[]
-            return:
-              type:
-                basic: Map<K, V>
-                full: java.util.Map<K, V>
-          javaType: class
-          extends: Object
+              notes: "a Collection view of the values\n          contained in this\
+                \ RenderingHints."
+            notes: "Returns a Collection view of the values\n contained in this RenderingHints.\n\
+              \ The Collection is backed by the\n RenderingHints, so changes to\n\
+              \ the RenderingHints are reflected in\n the Collection, and vice-versa.\n\
+              \ If the RenderingHints is modified while\n an iteration over the Collection\
+              \ is\n in progress, the results of the iteration are undefined.\n The\
+              \ Collection supports element removal,\n which removes the corresponding\
+              \ mapping from the\n RenderingHints, via the\n Iterator.remove,\n Collection.remove,\
+              \ removeAll,\n retainAll and clear operations.\n It does not support\
+              \ the add or\n addAll operations."

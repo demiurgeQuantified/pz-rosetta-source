@@ -4,216 +4,469 @@ languages:
     packages:
       java.awt:
         Frame:
+          extends: java.awt.Window
+          modifiers:
+          - public
+          notes: "A Frame is a top-level window with a title and a border.\n \n The\
+            \ size of the frame includes any area designated for the\n border.  The\
+            \ dimensions of the border area may be obtained\n using the getInsets\
+            \ method, however, since\n these dimensions are platform-dependent, a\
+            \ valid insets\n value cannot be obtained until the frame is made displayable\n\
+            \ by either calling pack or show.\n Since the border area is included\
+            \ in the overall size of the\n frame, the border effectively obscures\
+            \ a portion of the frame,\n constraining the area available for rendering\
+            \ and/or displaying\n subcomponents to the rectangle which has an upper-left\
+            \ corner\n location of (insets.left, insets.top), and has a size of\n\
+            \ width - (insets.left + insets.right) by\n height - (insets.top + insets.bottom).\n\
+            \ \n The default layout for a frame is BorderLayout.\n \n A frame may\
+            \ have its native decorations (i.e. Frame\n and Titlebar) turned off\n\
+            \ with setUndecorated. This can only be done while the frame\n is not\
+            \ displayable.\n \n In a multi-screen environment, you can create a Frame\n\
+            \ on a different screen device by constructing the Frame\n with Frame(GraphicsConfiguration)\
+            \ or\n Frame(String title, GraphicsConfiguration).  The\n GraphicsConfiguration\
+            \ object is one of the\n GraphicsConfiguration objects of the target screen\n\
+            \ device.\n \n In a virtual device multi-screen environment in which the\
+            \ desktop\n area could span multiple physical screen devices, the bounds\
+            \ of all\n configurations are relative to the virtual-coordinate system.\
+            \  The\n origin of the virtual-coordinate system is at the upper left-hand\n\
+            \ corner of the primary physical screen.  Depending on the location\n\
+            \ of the primary screen in the virtual device, negative coordinates\n\
+            \ are possible, as shown in the following figure.\n \n \n \n In such an\
+            \ environment, when calling setLocation,\n you must pass a virtual coordinate\
+            \ to this method.  Similarly,\n calling getLocationOnScreen on a Frame\n\
+            \ returns virtual device coordinates.  Call the getBounds\n method of\
+            \ a GraphicsConfiguration to find its origin in\n the virtual coordinate\
+            \ system.\n \n The following code sets the\n location of the Frame at\
+            \ (10, 10) relative\n to the origin of the physical screen of the corresponding\n\
+            \ GraphicsConfiguration.  If the bounds of the\n GraphicsConfiguration\
+            \ is not taken into account, the\n Frame location would be set at (10,\
+            \ 10) relative to the\n virtual-coordinate system and would appear on\
+            \ the primary physical\n screen, which might be different from the physical\
+            \ screen of the\n specified GraphicsConfiguration.\n\n \n      Frame f\
+            \ = new Frame(GraphicsConfiguration gc);\n      Rectangle bounds = gc.getBounds();\n\
+            \      f.setLocation(10 + bounds.x, 10 + bounds.y);\n \n\n \n Frames are\
+            \ capable of generating the following types of\n WindowEvents:\n \n WINDOW_OPENED\n\
+            \ WINDOW_CLOSING:\n     If the program doesn't\n     explicitly hide or\
+            \ dispose the window while processing\n     this event, the window close\
+            \ operation is canceled.\n WINDOW_CLOSED\n WINDOW_ICONIFIED\n WINDOW_DEICONIFIED\n\
+            \ WINDOW_ACTIVATED\n WINDOW_DEACTIVATED\n WINDOW_GAINED_FOCUS\n WINDOW_LOST_FOCUS\n\
+            \ WINDOW_STATE_CHANGED"
+          fields:
+            frameSerializedDataVersion:
+              name: frameSerializedDataVersion
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            maximizedBounds:
+              name: maximizedBounds
+              modifiers:
+              - package
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
+            mbManagement:
+              name: mbManagement
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            menuBar:
+              name: menuBar
+              modifiers:
+              - package
+              type:
+                basic: MenuBar
+                full: java.awt.MenuBar
+            ownedWindows:
+              name: ownedWindows
+              modifiers:
+              - package
+              type:
+                basic: Vector
+                full: java.util.Vector<java.awt.Window>
+            resizable:
+              name: resizable
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            state:
+              name: state
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            title:
+              name: title
+              modifiers:
+              - package
+              type:
+                basic: String
+                full: java.lang.String
+            undecorated:
+              name: undecorated
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
           staticFields:
             CROSSHAIR_CURSOR:
               name: CROSSHAIR_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             DEFAULT_CURSOR:
               name: DEFAULT_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             E_RESIZE_CURSOR:
               name: E_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             HAND_CURSOR:
               name: HAND_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             ICONIFIED:
               name: ICONIFIED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: This state bit indicates that frame is iconified.
             MAXIMIZED_BOTH:
               name: MAXIMIZED_BOTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This state bit mask indicates that frame is fully maximized\n\
+                \ (that is both horizontally and vertically).  It is just a\n convenience\
+                \ alias for\n MAXIMIZED_VERT\_|\_MAXIMIZED_HORIZ.\n\n Note that the\
+                \ correct test for frame being fully maximized is\n \n     (state\
+                \ & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH\n \n\n To test is\
+                \ frame is maximized in some direction use\n \n     (state & Frame.MAXIMIZED_BOTH)\
+                \ != 0"
             MAXIMIZED_HORIZ:
               name: MAXIMIZED_HORIZ
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This state bit indicates that frame is maximized in the\n horizontal\
+                \ direction."
             MAXIMIZED_VERT:
               name: MAXIMIZED_VERT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "This state bit indicates that frame is maximized in the\n vertical\
+                \ direction."
             MOVE_CURSOR:
               name: MOVE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             NE_RESIZE_CURSOR:
               name: NE_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             NORMAL:
               name: NORMAL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Frame is in the \"normal\" state.  This symbolic constant names\
+                \ a\n frame state with all state bits cleared."
             NW_RESIZE_CURSOR:
               name: NW_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             N_RESIZE_CURSOR:
               name: N_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             SE_RESIZE_CURSOR:
               name: SE_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             SW_RESIZE_CURSOR:
               name: SW_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             S_RESIZE_CURSOR:
               name: S_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             TEXT_CURSOR:
               name: TEXT_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             WAIT_CURSOR:
               name: WAIT_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
             W_RESIZE_CURSOR:
               name: W_RESIZE_CURSOR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: GraphicsConfiguration
-                full: java.awt.GraphicsConfiguration
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            base:
+              name: base
+              modifiers:
+              - private
+              - static
               type:
                 basic: String
                 full: java.lang.String
+            nameCounter:
+              name: nameCounter
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
           - modifiers:
             - public
+            notes: "Constructs a new instance of Frame that is\n initially invisible.\
+              \  The title of the Frame\n is empty."
+          - modifiers:
+            - public
+            parameters:
+            - name: gc
+              type:
+                basic: GraphicsConfiguration
+                full: java.awt.GraphicsConfiguration
+              notes: "the GraphicsConfiguration\n of the target screen device. If\
+                \ gc\n is null, the system default\n GraphicsConfiguration is assumed."
+            notes: "Constructs a new, initially invisible Frame with the\n specified\
+              \ GraphicsConfiguration."
+          - modifiers:
+            - public
+            parameters:
+            - name: title
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title to be displayed in the frame's border.\n         \
+                \     A null value\n              is treated as an empty string, \"\
+                \"."
+            notes: "Constructs a new, initially invisible Frame object\n with the\
+              \ specified title."
+          - modifiers:
+            - public
+            parameters:
+            - name: title
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title to be displayed in the frame's border.\n         \
+                \     A null value\n              is treated as an empty string, \"\
+                \"."
+            - name: gc
+              type:
+                basic: GraphicsConfiguration
+                full: java.awt.GraphicsConfiguration
+              notes: "the GraphicsConfiguration\n of the target screen device.  If\
+                \ gc is\n null, the system default\n GraphicsConfiguration is assumed."
+            notes: "Constructs a new, initially invisible Frame object\n with the\
+              \ specified title and a\n GraphicsConfiguration."
+          methods:
+          - name: addNotify
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Makes this Frame displayable by connecting it to\n a native screen\
+              \ resource.  Making a frame displayable will\n cause any of its children\
+              \ to be made displayable.\n This method is called internally by the\
+              \ toolkit and should\n not be called directly by programs."
+          - name: constructComponentName
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getAccessibleContext
+            modifiers:
+            - public
+            return:
+              type:
+                basic: AccessibleContext
+                full: javax.accessibility.AccessibleContext
+              notes: "an AccessibleAWTFrame that serves as the\n         AccessibleContext\
+                \ of this Frame"
+            notes: "Gets the AccessibleContext associated with this Frame.\n For frames,\
+              \ the AccessibleContext takes the form of an\n AccessibleAWTFrame.\n\
+              \ A new AccessibleAWTFrame instance is created if necessary."
+          - name: getCursorType
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the cursor type for this frame
+          - name: getExtendedState
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: a bitwise mask of frame state constants
+            notes: "Gets the state of this frame. The state is\n represented as a\
+              \ bitwise mask.\n \n NORMAL\n Indicates that no state bits are set.\n\
+              \ ICONIFIED\n MAXIMIZED_HORIZ\n MAXIMIZED_VERT\n MAXIMIZED_BOTH\n Concatenates\
+              \ MAXIMIZED_HORIZ\n and MAXIMIZED_VERT."
+          - name: getIconImage
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Image
+                full: java.awt.Image
+              notes: "the icon image for this frame, or null\n                   \
+                \ if this frame doesn't have an icon image."
+            notes: "Returns the image to be displayed as the icon for this frame.\n\
+              \ \n This method is obsolete and kept for backward compatibility\n only.\
+              \ Use Window.getIconImages() instead.\n \n If a list of several images\
+              \ was specified as a Window's icon,\n this method will return the first\
+              \ item of the list."
+          - name: getMaximizedBounds
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
+              notes: maximized bounds for this frame;  may be null
+            notes: "Gets maximized bounds for this frame.\n Some fields may contain\
+              \ Integer.MAX_VALUE to indicate\n that system supplied values for this\
+              \ field must be used."
+          - name: getMenuBar
+            modifiers:
+            - public
+            return:
+              type:
+                basic: MenuBar
+                full: java.awt.MenuBar
+              notes: "the menu bar for this frame, or null\n                   if\
+                \ this frame doesn't have a menu bar."
+            notes: Gets the menu bar for this frame.
+          - name: getState
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: Frame.NORMAL or Frame.ICONIFIED.
+            notes: "Gets the state of this frame (obsolete).\n \n In older versions\
+              \ of JDK a frame state could only be NORMAL or\n ICONIFIED.  Since JDK\
+              \ 1.4 set of supported frame states is\n expanded and frame state is\
+              \ represented as a bitwise mask.\n \n For compatibility with old programs\
+              \ this method still returns\n Frame.NORMAL and Frame.ICONIFIED but\n\
+              \ it only reports the iconic state of the frame, other aspects of\n\
+              \ frame state are not reported by this method."
+          - name: getTitle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the title of this frame, or an empty string (\"\")\n       \
+                \         if this frame doesn't have a title."
+            notes: "Gets the title of the frame.  The title is displayed in the\n\
+              \ frame's border."
+          - name: init
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -223,78 +476,22 @@ languages:
               type:
                 basic: GraphicsConfiguration
                 full: java.awt.GraphicsConfiguration
-          methods:
-          - name: addNotify
-            modifiers:
-            - public
             return:
               type:
                 basic: void
                 full: void
-          - name: getAccessibleContext
+          - name: isFrameStateSupported
             modifiers:
-            - public
-            return:
-              type:
-                basic: AccessibleContext
-                full: javax.accessibility.AccessibleContext
-          - name: getCursorType
-            modifiers:
-            - public
-            return:
+            - private
+            parameters:
+            - name: arg0
               type:
                 basic: int
                 full: int
-            deprecated: true
-          - name: getExtendedState
-            modifiers:
-            - public
             return:
               type:
-                basic: int
-                full: int
-          - name: getFont
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Font
-                full: java.awt.Font
-          - name: getIconImage
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Image
-                full: java.awt.Image
-          - name: getMaximizedBounds
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Rectangle
-                full: java.awt.Rectangle
-          - name: getMenuBar
-            modifiers:
-            - public
-            return:
-              type:
-                basic: MenuBar
-                full: java.awt.MenuBar
-          - name: getState
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: getTitle
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+                basic: boolean
+                full: boolean
           - name: isResizable
             modifiers:
             - public
@@ -302,6 +499,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the user can resize this frame;\n                  \
+                \      false otherwise."
+            notes: "Indicates whether this frame is resizable by the user.\n By default,\
+              \ all frames are initially resizable."
           - name: isUndecorated
             modifiers:
             - public
@@ -309,27 +510,42 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: postEvent
+              notes: "true if frame is undecorated;\n                        false\
+                \ otherwise."
+            notes: "Indicates whether this frame is undecorated.\n By default, all\
+              \ frames are initially decorated."
+          - name: paramString
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Event
-                full: java.awt.Event
+            - protected
             return:
               type:
-                basic: boolean
-                full: boolean
-            deprecated: true
-          - name: remove
+                basic: String
+                full: java.lang.String
+              notes: the parameter string of this frame
+            notes: "Returns a string representing the state of this Frame.\n This\
+              \ method is intended to be used only for debugging purposes, and the\n\
+              \ content and format of the returned string may vary between\n implementations.\
+              \ The returned string may be empty but may not be\n null."
+          - name: postProcessKeyEvent
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: MenuComponent
-                full: java.awt.MenuComponent
+                basic: KeyEvent
+                full: java.awt.event.KeyEvent
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -338,14 +554,17 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: m
               type:
                 basic: MenuComponent
                 full: java.awt.MenuComponent
+              notes: "the menu component to remove.\n           If m is null, then\n\
+                \           no action is taken"
             return:
               type:
                 basic: void
                 full: void
+            notes: Removes the specified menu bar from this frame.
           - name: removeNotify
             modifiers:
             - public
@@ -353,6 +572,10 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Makes this Frame undisplayable by removing its connection\n to\
+              \ its native screen resource. Making a Frame undisplayable\n will cause\
+              \ any of its children to be made undisplayable.\n This method is called\
+              \ by the toolkit internally and should\n not be called directly by programs."
           - name: setBackground
             modifiers:
             - public
@@ -369,27 +592,47 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cursorType
               type:
                 basic: int
                 full: int
+              notes: the cursor type
             return:
               type:
                 basic: void
                 full: void
-            deprecated: true
+            notes: Sets the cursor for this frame to the specified type.
           - name: setExtendedState
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: state
               type:
                 basic: int
                 full: int
+              notes: a bitwise mask of frame state constants
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the state of this frame. The state is\n represented as a\
+              \ bitwise mask.\n \n NORMAL\n Indicates that no state bits are set.\n\
+              \ ICONIFIED\n MAXIMIZED_HORIZ\n MAXIMIZED_VERT\n MAXIMIZED_BOTH\n Concatenates\
+              \ MAXIMIZED_HORIZ\n and MAXIMIZED_VERT.\n \n Note that if the state\
+              \ is not supported on a\n given platform, neither the state nor the\
+              \ return\n value of the getExtendedState() method will\n be changed.\
+              \ The application may determine whether\n a specific state is supported\
+              \ via the Toolkit.isFrameStateSupported(int) method.\n If the frame\
+              \ is currently visible on the\n screen (the Window.isShowing() method\
+              \ returns\n true), the developer should examine the\n return value of\
+              \ the WindowEvent.getNewState() method of\n the WindowEvent received\
+              \ through the\n WindowStateListener to\n determine that the state has\
+              \ actually been\n changed.\n If the frame is not visible on the\n screen,\
+              \ the events may or may not be\n generated.  In this case the developer\
+              \ may assume\n that the state changes immediately after this\n method\
+              \ returns.  Later, when the \n setVisible(true) method is invoked, the\
+              \ frame\n will attempt to apply this state. Receiving any\n WindowEvent.WINDOW_STATE_CHANGED\n\
+              \ events is not guaranteed in this case also."
           - name: setIconImage
             modifiers:
             - public
@@ -406,26 +649,41 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bounds
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: bounds for the maximized state
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the maximized bounds for this frame.\n \n When a frame is\
+              \ in maximized state the system supplies some\n defaults bounds.  This\
+              \ method allows some or all of those\n system supplied values to be\
+              \ overridden.\n \n If bounds is null, accept bounds\n supplied by the\
+              \ system.  If non-null you can\n override some of the system supplied\
+              \ values while accepting\n others by setting those fields you want to\
+              \ accept from system\n to Integer.MAX_VALUE.\n \n Note, the given maximized\
+              \ bounds are used as a hint for the native\n system, because the underlying\
+              \ platform may not support setting the\n location and/or size of the\
+              \ maximized windows.  If that is the case, the\n provided values do\
+              \ not affect the appearance of the frame in the\n maximized state."
           - name: setMenuBar
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: mb
               type:
                 basic: MenuBar
                 full: java.awt.MenuBar
+              notes: "the menu bar being set.\n            If this parameter is null\
+                \ then any\n            existing menu bar on this frame is removed."
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the menu bar for this frame to the specified menu bar.
           - name: setOpacity
             modifiers:
             - public
@@ -442,14 +700,17 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: resizable
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this frame is resizable;\n                       false\
+                \ otherwise."
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets whether this frame is resizable by the user.
           - name: setShape
             modifiers:
             - public
@@ -466,34 +727,82 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: state
               type:
                 basic: int
                 full: int
+              notes: "either Frame.NORMAL or\n     Frame.ICONIFIED."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the state of this frame (obsolete).\n \n In older versions\
+              \ of JDK a frame state could only be NORMAL or\n ICONIFIED.  Since JDK\
+              \ 1.4 set of supported frame states is\n expanded and frame state is\
+              \ represented as a bitwise mask.\n \n For compatibility with applications\
+              \ developed\n earlier this method still accepts\n Frame.NORMAL and\n\
+              \ Frame.ICONIFIED only.  The iconic\n state of the frame is only changed,\
+              \ other aspects\n of frame state are not affected by this method. If\n\
+              \ the state passed to this method is neither \n Frame.NORMAL nor Frame.ICONIFIED\
+              \ the\n method performs no actions at all.\n Note that if the state\
+              \ is not supported on a\n given platform, neither the state nor the\
+              \ return\n value of the getState() method will be\n changed. The application\
+              \ may determine whether a\n specific state is supported via the Toolkit.isFrameStateSupported(int)\
+              \ method.\n If the frame is currently visible on the\n screen (the Window.isShowing()\
+              \ method returns\n true), the developer should examine the\n return\
+              \ value of the  WindowEvent.getNewState() method of\n the WindowEvent\
+              \ received through the\n WindowStateListener to\n determine that the\
+              \ state has actually been\n changed.\n If the frame is not visible on\
+              \ the\n screen, the events may or may not be\n generated.  In this case\
+              \ the developer may assume\n that the state changes immediately after\
+              \ this\n method returns.  Later, when the \n setVisible(true) method\
+              \ is invoked, the frame\n will attempt to apply this state. Receiving\
+              \ any\n WindowEvent.WINDOW_STATE_CHANGED\n events is not guaranteed\
+              \ in this case also."
           - name: setTitle
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: title
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the title to be displayed in the frame's border.\n         \
+                \     A null value\n              is treated as an empty string, \"\
+                \"."
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the title for this frame to the specified string.
           - name: setUndecorated
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: undecorated
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if no frame decorations are to be\n         enabled; false\
+                \ if frame decorations are to be enabled"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Disables or enables decorations for this frame.\n \n This method\
+              \ can only be called while the frame is not displayable. To\n make this\
+              \ frame decorated, it must be opaque and have the default shape,\n otherwise\
+              \ the IllegalComponentStateException will be thrown.\n Refer to Window.setShape(java.awt.Shape),\
+              \ Window.setOpacity(float) and Window.setBackground(java.awt.Color)\
+              \ for details"
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
                 basic: void
@@ -505,7 +814,23 @@ languages:
             - static
             return:
               type:
-                basic: Frame[]
+                basic: Frame
                 full: java.awt.Frame[]
-          javaType: class
-          extends: Window
+              notes: the array of all Frames created by this application
+            notes: "Returns an array of all Frames created by this application.\n\
+              \ If called from an applet, the array includes only the Frames\n accessible\
+              \ by that applet.\n \n Warning: this method may return system created\
+              \ frames, such\n as a shared, hidden frame which is used by Swing. Applications\n\
+              \ should not assume the existence of these frames, nor should an\n application\
+              \ assume anything about these frames such as component\n positions,\
+              \ LayoutManagers or serialization.\n \n Note: To obtain a list of all\
+              \ ownerless windows, including\n ownerless Dialogs (introduced in release\
+              \ 1.6), use Window.getOwnerlessWindows."
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

@@ -4,58 +4,351 @@ languages:
     packages:
       java.lang:
         Throwable:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The Throwable class is the superclass of all errors and\n exceptions\
+            \ in the Java language. Only objects that are instances of this\n class\
+            \ (or one of its subclasses) are thrown by the Java Virtual Machine or\n\
+            \ can be thrown by the Java throw statement. Similarly, only\n this class\
+            \ or one of its subclasses can be the argument type in a\n catch clause.\n\
+            \n For the purposes of compile-time checking of exceptions, \n Throwable\
+            \ and any subclass of Throwable that is not also a\n subclass of either\
+            \ RuntimeException or Error are\n regarded as checked exceptions.\n\n\
+            \ Instances of two subclasses, Error and\n Exception, are conventionally\
+            \ used to indicate\n that exceptional situations have occurred. Typically,\
+            \ these instances\n are freshly created in the context of the exceptional\
+            \ situation so\n as to include relevant information (such as stack trace\
+            \ data).\n\n A throwable contains a snapshot of the execution stack of\
+            \ its\n thread at the time it was created. It can also contain a message\n\
+            \ string that gives more information about the error. Over time, a\n throwable\
+            \ can suppress other\n throwables from being propagated.  Finally, the\
+            \ throwable can also\n contain a cause: another throwable that caused\
+            \ this\n throwable to be constructed.  The recording of this causal information\n\
+            \ is referred to as the chained exception facility, as the\n cause can,\
+            \ itself, have a cause, and so on, leading to a \"chain\" of\n exceptions,\
+            \ each caused by another.\n\n One reason that a throwable may have a cause\
+            \ is that the class that\n throws it is built atop a lower layered abstraction,\
+            \ and an operation on\n the upper layer fails due to a failure in the\
+            \ lower layer.  It would be bad\n design to let the throwable thrown by\
+            \ the lower layer propagate outward, as\n it is generally unrelated to\
+            \ the abstraction provided by the upper layer.\n Further, doing so would\
+            \ tie the API of the upper layer to the details of\n its implementation,\
+            \ assuming the lower layer's exception was a checked\n exception.  Throwing\
+            \ a \"wrapped exception\" (i.e., an exception containing a\n cause) allows\
+            \ the upper layer to communicate the details of the failure to\n its caller\
+            \ without incurring either of these shortcomings.  It preserves\n the\
+            \ flexibility to change the implementation of the upper layer without\n\
+            \ changing its API (in particular, the set of exceptions thrown by its\n\
+            \ methods).\n\n A second reason that a throwable may have a cause is that\
+            \ the method\n that throws it must conform to a general-purpose interface\
+            \ that does not\n permit the method to throw the cause directly.  For\
+            \ example, suppose\n a persistent collection conforms to the Collection\
+            \ interface, and that its persistence is implemented atop\n java.io. \
+            \ Suppose the internals of the add method\n can throw an IOException.\
+            \  The implementation\n can communicate the details of the IOException\
+            \ to its caller\n while conforming to the Collection interface by wrapping\
+            \ the\n IOException in an appropriate unchecked exception.  (The\n specification\
+            \ for the persistent collection should indicate that it is\n capable of\
+            \ throwing such exceptions.)\n\n A cause can be associated with a throwable\
+            \ in two ways: via a\n constructor that takes the cause as an argument,\
+            \ or via the\n initCause(Throwable) method.  New throwable classes that\n\
+            \ wish to allow causes to be associated with them should provide constructors\n\
+            \ that take a cause and delegate (perhaps indirectly) to one of the\n\
+            \ Throwable constructors that takes a cause.\n\n Because the initCause\
+            \ method is public, it allows a cause to be\n associated with any throwable,\
+            \ even a \"legacy throwable\" whose\n implementation predates the addition\
+            \ of the exception chaining mechanism to\n Throwable.\n\n By convention,\
+            \ class Throwable and its subclasses have two\n constructors, one that\
+            \ takes no arguments and one that takes a\n String argument that can be\
+            \ used to produce a detail message.\n Further, those subclasses that might\
+            \ likely have a cause associated with\n them should have two more constructors,\
+            \ one that takes a\n Throwable (the cause), and one that takes a\n String\
+            \ (the detail message) and a Throwable (the\n cause)."
+          fields:
+            backtrace:
+              name: backtrace
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            cause:
+              name: cause
+              modifiers:
+              - private
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            depth:
+              name: depth
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            detailMessage:
+              name: detailMessage
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            stackTrace:
+              name: stackTrace
+              modifiers:
+              - private
+              type:
+                basic: StackTraceElement
+                full: java.lang.StackTraceElement[]
+            suppressedExceptions:
+              name: suppressedExceptions
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.Throwable>
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            CAUSE_CAPTION:
+              name: CAUSE_CAPTION
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            EMPTY_THROWABLE_ARRAY:
+              name: EMPTY_THROWABLE_ARRAY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Throwable
+                full: java.lang.Throwable[]
+            NULL_CAUSE_MESSAGE:
+              name: NULL_CAUSE_MESSAGE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            SELF_SUPPRESSION_MESSAGE:
+              name: SELF_SUPPRESSION_MESSAGE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            SUPPRESSED_CAPTION:
+              name: SUPPRESSED_CAPTION
+              modifiers:
+              - private
+              - static
+              type:
+                basic: String
+                full: java.lang.String
+            SUPPRESSED_SENTINEL:
+              name: SUPPRESSED_SENTINEL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: List
+                full: java.util.List<java.lang.Throwable>
+            UNASSIGNED_STACK:
+              name: UNASSIGNED_STACK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: StackTraceElement
+                full: java.lang.StackTraceElement[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: "Constructs a new throwable with null as its detail message.\n\
+              \ The cause is not initialized, and may subsequently be initialized\
+              \ by a\n call to initCause(java.lang.Throwable).\n\n The fillInStackTrace()\
+              \ method is called to initialize\n the stack trace data in the newly\
+              \ created throwable."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: message
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the detail message. The detail message is saved for\n      \
+                \    later retrieval by the getMessage() method."
+            notes: "Constructs a new throwable with the specified detail message.\
+              \  The\n cause is not initialized, and may subsequently be initialized\
+              \ by\n a call to initCause(java.lang.Throwable).\n\n The fillInStackTrace()\
+              \ method is called to initialize\n the stack trace data in the newly\
+              \ created throwable."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Throwable
-                full: java.lang.Throwable
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: message
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the detail message (which is saved for later retrieval\n   \
+                \      by the getMessage() method)."
+            - name: cause
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: "the cause (which is saved for later retrieval by the\n     \
+                \    getCause() method).  (A null value is\n         permitted, and\
+                \ indicates that the cause is nonexistent or\n         unknown.)"
+            notes: "Constructs a new throwable with the specified detail message and\n\
+              \ cause.  Note that the detail message associated with\n cause is not\
+              \ automatically incorporated in\n this throwable's detail message.\n\
+              \n The fillInStackTrace() method is called to initialize\n the stack\
+              \ trace data in the newly created throwable."
+          - modifiers:
+            - public
+            parameters:
+            - name: cause
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: "the cause (which is saved for later retrieval by the\n     \
+                \    getCause() method).  (A null value is\n         permitted, and\
+                \ indicates that the cause is nonexistent or\n         unknown.)"
+            notes: "Constructs a new throwable with the specified cause and a detail\n\
+              \ message of (cause==null ? null : cause.toString()) (which\n typically\
+              \ contains the class and detail message of cause).\n This constructor\
+              \ is useful for throwables that are little more than\n wrappers for\
+              \ other throwables (for example, PrivilegedActionException).\n\n The\
+              \ fillInStackTrace() method is called to initialize\n the stack trace\
+              \ data in the newly created throwable."
+          - modifiers:
+            - protected
+            parameters:
+            - name: message
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the detail message.
+            - name: cause
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: "the cause.  (A null value is permitted,\n and indicates that\
+                \ the cause is nonexistent or unknown.)"
+            - name: enableSuppression
+              type:
+                basic: boolean
+                full: boolean
+              notes: whether or not suppression is enabled or disabled
+            - name: writableStackTrace
+              type:
+                basic: boolean
+                full: boolean
+              notes: "whether or not the stack trace should be\n                 \
+                \          writable"
+            notes: "Constructs a new throwable with the specified detail message,\n\
+              \ cause, suppression enabled or\n disabled, and writable stack trace\
+              \ enabled or disabled.  If\n suppression is disabled, getSuppressed()\
+              \ for this object\n will return a zero-length array and calls to addSuppressed(java.lang.Throwable)\
+              \ that would otherwise append an exception to the\n suppressed list\
+              \ will have no effect.  If the writable stack\n trace is false, this\
+              \ constructor will not call fillInStackTrace(), a null will be written\
+              \ to the\n stackTrace field, and subsequent calls to \n fillInStackTrace\
+              \ and setStackTrace(StackTraceElement[]) will not set the stack\n trace.\
+              \  If the writable stack trace is false, getStackTrace() will return\
+              \ a zero length array.\n\n Note that the other constructors of Throwable\
+              \ treat\n suppression as being enabled and the stack trace as being\n\
+              \ writable.  Subclasses of Throwable should document any\n conditions\
+              \ under which suppression is disabled and document\n conditions under\
+              \ which the stack trace is not writable.\n Disabling of suppression\
+              \ should only occur in exceptional\n circumstances where special requirements\
+              \ exist, such as a\n virtual machine reusing exception objects under\
+              \ low-memory\n situations.  Circumstances where a given exception object\
+              \ is\n repeatedly caught and rethrown, such as to implement control\n\
+              \ flow between two sub-systems, is another situation where\n immutable\
+              \ throwable objects would be appropriate."
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: addSuppressed
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: exception
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: "the exception to be added to the list of\n        suppressed\
+                \ exceptions"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Appends the specified exception to the exceptions that were\n\
+              \ suppressed in order to deliver this exception. This method is\n thread-safe\
+              \ and typically called (automatically and implicitly)\n by the try-with-resources\
+              \ statement.\n\n The suppression behavior is enabled unless disabled\n\
+              \ via\n a constructor.  When suppression is disabled, this method does\n\
+              \ nothing other than to validate its argument.\n\n Note that when one\
+              \ exception causes another exception, the first\n exception is usually\
+              \ caught and then the second exception is\n thrown in response.  In\
+              \ other words, there is a causal\n connection between the two exceptions.\n\
+              \n In contrast, there are situations where two independent\n exceptions\
+              \ can be thrown in sibling code blocks, in particular\n in the try block\
+              \ of a try-with-resources\n statement and the compiler-generated finally\
+              \ block\n which closes the resource.\n\n In these situations, only one\
+              \ of the thrown exceptions can be\n propagated.  In the try-with-resources\
+              \ statement, when\n there are two such exceptions, the exception originating\
+              \ from\n the try block is propagated and the exception from the\n finally\
+              \ block is added to the list of exceptions\n suppressed by the exception\
+              \ from the try block.  As an\n exception unwinds the stack, it can accumulate\
+              \ multiple\n suppressed exceptions.\n\n An exception may have suppressed\
+              \ exceptions while also being\n caused by another exception.  Whether\
+              \ or not an exception has a\n cause is semantically known at the time\
+              \ of its creation, unlike\n whether or not an exception will suppress\
+              \ other exceptions\n which is typically only determined after an exception\
+              \ is\n thrown.\n\n Note that programmer written code is also able to\
+              \ take\n advantage of calling this method in situations where there\
+              \ are\n multiple sibling exceptions and only one can be propagated."
           - name: fillInStackTrace
             modifiers:
             - public
+            return:
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: a reference to this Throwable instance.
+            notes: "Fills in the execution stack trace. This method records within\
+              \ this\n Throwable object information about the current state of\n the\
+              \ stack frames for the current thread.\n\n If the stack trace of this\
+              \ Throwable is not\n writable, calling this method has no effect."
+          - name: fillInStackTrace
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: Throwable
@@ -67,6 +360,20 @@ languages:
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: "the cause of this throwable or null if the\n          cause\
+                \ is nonexistent or unknown."
+            notes: "Returns the cause of this throwable or null if the\n cause is\
+              \ nonexistent or unknown.  (The cause is the throwable that\n caused\
+              \ this throwable to get thrown.)\n\n This implementation returns the\
+              \ cause that was supplied via one of\n the constructors requiring a\
+              \ Throwable, or that was set after\n creation with the initCause(Throwable)\
+              \ method.  While it is\n typically unnecessary to override this method,\
+              \ a subclass can override\n it to return a cause set by some other means.\
+              \  This is appropriate for\n a \"legacy chained throwable\" that predates\
+              \ the addition of chained\n exceptions to Throwable.  Note that it is\
+              \ not\n necessary to override any of the PrintStackTrace methods,\n\
+              \ all of which invoke the getCause method to determine the\n cause of\
+              \ a throwable."
           - name: getLocalizedMessage
             modifiers:
             - public
@@ -74,6 +381,11 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The localized description of this throwable.
+            notes: "Creates a localized description of this throwable.\n Subclasses\
+              \ may override this method in order to produce a\n locale-specific message.\
+              \  For subclasses that do not override this\n method, the default implementation\
+              \ returns the same result as\n getMessage()."
           - name: getMessage
             modifiers:
             - public
@@ -81,36 +393,107 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the detail message string of this Throwable instance\n     \
+                \     (which may be null)."
+            notes: Returns the detail message string of this throwable.
+          - name: getOurStackTrace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: StackTraceElement
+                full: java.lang.StackTraceElement[]
           - name: getStackTrace
             modifiers:
             - public
             return:
               type:
-                basic: StackTraceElement[]
+                basic: StackTraceElement
                 full: java.lang.StackTraceElement[]
+              notes: "an array of stack trace elements representing the stack trace\n\
+                \         pertaining to this throwable."
+            notes: "Provides programmatic access to the stack trace information printed\
+              \ by\n printStackTrace().  Returns an array of stack trace elements,\n\
+              \ each representing one stack frame.  The zeroth element of the array\n\
+              \ (assuming the array's length is non-zero) represents the top of the\n\
+              \ stack, which is the last method invocation in the sequence.  Typically,\n\
+              \ this is the point at which this throwable was created and thrown.\n\
+              \ The last element of the array (assuming the array's length is non-zero)\n\
+              \ represents the bottom of the stack, which is the first method invocation\n\
+              \ in the sequence.\n\n Some virtual machines may, under some circumstances,\
+              \ omit one\n or more stack frames from the stack trace.  In the extreme\
+              \ case,\n a virtual machine that has no stack trace information concerning\n\
+              \ this throwable is permitted to return a zero-length array from this\n\
+              \ method.  Generally speaking, the array returned by this method will\n\
+              \ contain one element for every frame that would be printed by\n printStackTrace.\
+              \  Writes to the returned array do not\n affect future calls to this\
+              \ method."
           - name: getSuppressed
             modifiers:
             - public
             - final
             return:
               type:
-                basic: Throwable[]
+                basic: Throwable
                 full: java.lang.Throwable[]
+              notes: "an array containing all of the exceptions that were\n      \
+                \   suppressed to deliver this exception."
+            notes: "Returns an array containing all of the exceptions that were\n\
+              \ suppressed, typically by the try-with-resources\n statement, in order\
+              \ to deliver this exception.\n\n If no exceptions were suppressed or\
+              \ suppression is\n disabled, an empty array is returned.  This method\
+              \ is\n thread-safe.  Writes to the returned array do not affect future\n\
+              \ calls to this method."
           - name: initCause
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: cause
               type:
                 basic: Throwable
                 full: java.lang.Throwable
+              notes: "the cause (which is saved for later retrieval by the\n     \
+                \    getCause() method).  (A null value is\n         permitted, and\
+                \ indicates that the cause is nonexistent or\n         unknown.)"
             return:
               type:
                 basic: Throwable
                 full: java.lang.Throwable
-          - name: printStackTrace
+              notes: a reference to this Throwable instance.
+            notes: "Initializes the cause of this throwable to the specified value.\n\
+              \ (The cause is the throwable that caused this throwable to get thrown.)\n\
+              \n This method can be called at most once.  It is generally called from\n\
+              \ within the constructor, or immediately after creating the\n throwable.\
+              \  If this throwable was created\n with Throwable(Throwable) or\n Throwable(String,Throwable),\
+              \ this method cannot be called\n even once.\n\n An example of using\
+              \ this method on a legacy throwable type\n without other support for\
+              \ setting the cause is:\n\n \n try {\n     lowLevelOp();\n } catch (LowLevelException\
+              \ le) {\n     throw (HighLevelException)\n           new HighLevelException().initCause(le);\
+              \ // Legacy constructor\n }"
+          - name: printEnclosedStackTrace
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable.PrintStreamOrWriter
+                full: java.lang.Throwable$PrintStreamOrWriter
+            - name: arg1
+              type:
+                basic: StackTraceElement
+                full: java.lang.StackTraceElement[]
+            - name: arg2
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg3
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg4
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.Throwable>
             return:
               type:
                 basic: void
@@ -118,11 +501,106 @@ languages:
           - name: printStackTrace
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints this throwable and its backtrace to the\n standard error\
+              \ stream. This method prints a stack trace for this\n Throwable object\
+              \ on the error output stream that is\n the value of the field System.err.\
+              \ The first line of\n output contains the result of the toString() method\
+              \ for\n this object.  Remaining lines represent data previously recorded\
+              \ by\n the method fillInStackTrace(). The format of this\n information\
+              \ depends on the implementation, but the following\n example may be\
+              \ regarded as typical:\n \n java.lang.NullPointerException\n       \
+              \  at MyClass.mash(MyClass.java:9)\n         at MyClass.crunch(MyClass.java:6)\n\
+              \         at MyClass.main(MyClass.java:3)\n \n This example was produced\
+              \ by running the program:\n \n class MyClass {\n     public static void\
+              \ main(String[] args) {\n         crunch(null);\n     }\n     static\
+              \ void crunch(int[] a) {\n         mash(a);\n     }\n     static void\
+              \ mash(int[] b) {\n         System.out.println(b[0]);\n     }\n }\n\
+              \ \n The backtrace for a throwable with an initialized, non-null cause\n\
+              \ should generally include the backtrace for the cause.  The format\n\
+              \ of this information depends on the implementation, but the following\n\
+              \ example may be regarded as typical:\n \n HighLevelException: MidLevelException:\
+              \ LowLevelException\n         at Junk.a(Junk.java:13)\n         at Junk.main(Junk.java:4)\n\
+              \ Caused by: MidLevelException: LowLevelException\n         at Junk.c(Junk.java:23)\n\
+              \         at Junk.b(Junk.java:17)\n         at Junk.a(Junk.java:11)\n\
+              \         ... 1 more\n Caused by: LowLevelException\n         at Junk.e(Junk.java:30)\n\
+              \         at Junk.d(Junk.java:27)\n         at Junk.c(Junk.java:21)\n\
+              \         ... 3 more\n \n Note the presence of lines containing the\
+              \ characters \"...\".\n These lines indicate that the remainder of the\
+              \ stack trace for this\n exception matches the indicated number of frames\
+              \ from the bottom of the\n stack trace of the exception that was caused\
+              \ by this exception (the\n \"enclosing\" exception).  This shorthand\
+              \ can greatly reduce the length\n of the output in the common case where\
+              \ a wrapped exception is thrown\n from same method as the \"causative\
+              \ exception\" is caught.  The above\n example was produced by running\
+              \ the program:\n \n public class Junk {\n     public static void main(String\
+              \ args[]) {\n         try {\n             a();\n         } catch(HighLevelException\
+              \ e) {\n             e.printStackTrace();\n         }\n     }\n    \
+              \ static void a() throws HighLevelException {\n         try {\n    \
+              \         b();\n         } catch(MidLevelException e) {\n          \
+              \   throw new HighLevelException(e);\n         }\n     }\n     static\
+              \ void b() throws MidLevelException {\n         c();\n     }\n     static\
+              \ void c() throws MidLevelException {\n         try {\n            \
+              \ d();\n         } catch(LowLevelException e) {\n             throw\
+              \ new MidLevelException(e);\n         }\n     }\n     static void d()\
+              \ throws LowLevelException {\n        e();\n     }\n     static void\
+              \ e() throws LowLevelException {\n         throw new LowLevelException();\n\
+              \     }\n }\n\n class HighLevelException extends Exception {\n     HighLevelException(Throwable\
+              \ cause) { super(cause); }\n }\n\n class MidLevelException extends Exception\
+              \ {\n     MidLevelException(Throwable cause)  { super(cause); }\n }\n\
+              \n class LowLevelException extends Exception {\n }\n \n As of release\
+              \ 7, the platform supports the notion of\n suppressed exceptions (in\
+              \ conjunction with the \n try-with-resources statement). Any exceptions\
+              \ that were\n suppressed in order to deliver an exception are printed\
+              \ out\n beneath the stack trace.  The format of this information\n depends\
+              \ on the implementation, but the following example may be\n regarded\
+              \ as typical:\n\n \n Exception in thread \"main\" java.lang.Exception:\
+              \ Something happened\n  at Foo.bar(Foo.java:10)\n  at Foo.main(Foo.java:5)\n\
+              \  Suppressed: Resource$CloseFailException: Resource ID = 0\n      \
+              \    at Resource.close(Resource.java:26)\n          at Foo.bar(Foo.java:9)\n\
+              \          ... 1 more\n \n Note that the \"... n more\" notation is\
+              \ used on suppressed exceptions\n just as it is used on causes. Unlike\
+              \ causes, suppressed exceptions are\n indented beyond their \"containing\
+              \ exceptions.\"\n\n An exception can have both a cause and one or more\
+              \ suppressed\n exceptions:\n \n Exception in thread \"main\" java.lang.Exception:\
+              \ Main block\n  at Foo3.main(Foo3.java:7)\n  Suppressed: Resource$CloseFailException:\
+              \ Resource ID = 2\n          at Resource.close(Resource.java:26)\n \
+              \         at Foo3.main(Foo3.java:5)\n  Suppressed: Resource$CloseFailException:\
+              \ Resource ID = 1\n          at Resource.close(Resource.java:26)\n \
+              \         at Foo3.main(Foo3.java:5)\n Caused by: java.lang.Exception:\
+              \ I did it\n  at Foo3.main(Foo3.java:8)\n \n Likewise, a suppressed\
+              \ exception can have a cause:\n \n Exception in thread \"main\" java.lang.Exception:\
+              \ Main block\n  at Foo4.main(Foo4.java:6)\n  Suppressed: Resource2$CloseFailException:\
+              \ Resource ID = 1\n          at Resource2.close(Resource2.java:20)\n\
+              \          at Foo4.main(Foo4.java:5)\n  Caused by: java.lang.Exception:\
+              \ Rats, you caught me\n          at Resource2$CloseFailException.<init>(Resource2.java:45)\n\
+              \          ... 2 more"
+          - name: printStackTrace
+            modifiers:
+            - public
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: PrintStream
                 full: java.io.PrintStream
+              notes: PrintStream to use for output
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Prints this throwable and its backtrace to the specified print
+              stream.
+          - name: printStackTrace
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable.PrintStreamOrWriter
+                full: java.lang.Throwable$PrintStreamOrWriter
             return:
               type:
                 basic: void
@@ -131,10 +609,38 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: PrintWriter
                 full: java.io.PrintWriter
+              notes: PrintWriter to use for output
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Prints this throwable and its backtrace to the specified\n print\
+              \ writer."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setCause
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
             return:
               type:
                 basic: void
@@ -143,13 +649,54 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: stackTrace
               type:
-                basic: StackTraceElement[]
+                basic: StackTraceElement
                 full: java.lang.StackTraceElement[]
+              notes: "the stack trace elements to be associated with\n this Throwable.\
+                \  The specified array is copied by this\n call; changes in the specified\
+                \ array after the method invocation\n returns will have no affect\
+                \ on this Throwable's stack\n trace."
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Sets the stack trace elements that will be returned by\n getStackTrace()\
+              \ and printed by printStackTrace()\n and related methods.\n\n This method,\
+              \ which is designed for use by RPC frameworks and other\n advanced systems,\
+              \ allows the client to override the default\n stack trace that is either\
+              \ generated by fillInStackTrace()\n when a throwable is constructed\
+              \ or deserialized when a throwable is\n read from a serialization stream.\n\
+              \n If the stack trace of this Throwable is not\n writable, calling this\
+              \ method has no effect other than\n validating its argument."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: validateSuppressedExceptionsList
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: List
+                full: java.util.List<java.lang.Throwable>
+            return:
+              type:
+                basic: int
+                full: int
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void

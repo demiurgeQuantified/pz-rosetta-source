@@ -4,8 +4,186 @@ languages:
     packages:
       zombie.core.skinnedmodel.advancedanimation:
         LiveAnimNode:
+          extends: zombie.util.PooledObject
           modifiers:
           - public
+          notes: "The Live version of an AnimNode\n The AnimNode represents the data.\n\
+            \ The LiveAnimNode represents the playback of said data, its blend weights,\
+            \ timing, transitions etc."
+          fields:
+            m_AnimationTracks:
+              name: m_AnimationTracks
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<zombie.core.skinnedmodel.animation.AnimationTrack>
+            m_NodeAnimTime:
+              name: m_NodeAnimTime
+              modifiers:
+              - package
+              type:
+                basic: float
+                full: float
+            m_PrevNodeAnimTime:
+              name: m_PrevNodeAnimTime
+              modifiers:
+              - package
+              type:
+                basic: float
+                full: float
+            m_RagdollTracks:
+              name: m_RagdollTracks
+              modifiers:
+              - package
+              type:
+                basic: List
+                full: java.util.List<zombie.core.skinnedmodel.animation.AnimationTrack>
+            m_RawWeight:
+              name: m_RawWeight
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            m_RunningRagdollTrack:
+              name: m_RunningRagdollTrack
+              modifiers:
+              - public
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            m_TransitioningOut:
+              name: m_TransitioningOut
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+            m_Weight:
+              name: m_Weight
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            m_active:
+              name: m_active
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_animLayer:
+              name: m_animLayer
+              modifiers:
+              - private
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            m_bTweeningInGrapple:
+              name: m_bTweeningInGrapple
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_bTweeningInGrappleFinished:
+              name: m_bTweeningInGrappleFinished
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_blendingIn:
+              name: m_blendingIn
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_blendingOut:
+              name: m_blendingOut
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_cachedRandomAnim:
+              name: m_cachedRandomAnim
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            m_grappleTweenStartPos:
+              name: m_grappleTweenStartPos
+              modifiers:
+              - private
+              type:
+                basic: Vector3f
+                full: org.joml.Vector3f
+            m_isBlendField:
+              name: m_isBlendField
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean
+            m_isNew:
+              name: m_isNew
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_sourceNode:
+              name: m_sourceNode
+              modifiers:
+              - private
+              type:
+                basic: AnimNode
+                full: zombie.core.skinnedmodel.advancedanimation.AnimNode
+            m_transitionIn:
+              name: m_transitionIn
+              modifiers:
+              - private
+              type:
+                basic: LiveAnimNode.TransitionIn
+                full: zombie.core.skinnedmodel.advancedanimation.LiveAnimNode$TransitionIn
+            m_transitionOut:
+              name: m_transitionOut
+              modifiers:
+              - private
+              type:
+                basic: AnimTransition
+                full: zombie.core.skinnedmodel.advancedanimation.AnimTransition
+            m_wasActive:
+              name: m_wasActive
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            m_whileAliveFlags:
+              name: m_whileAliveFlags
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.core.skinnedmodel.advancedanimation.LiveAnimNode$WhileAliveFlag>
+          staticFields:
+            s_pool:
+              name: s_pool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Pool
+                full: zombie.util.Pool<zombie.core.skinnedmodel.advancedanimation.LiveAnimNode>
+          constructors:
+          - modifiers:
+            - protected
           methods:
           - name: addMainTrack
             modifiers:
@@ -14,64 +192,201 @@ languages:
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
+          - name: containsMainAnimationTrack
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: decrementWhileAliveFlags
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
           - name: findTransitionTo
             modifiers:
             - public
             parameters:
-            - name: varSource
+            - name: arg0
               type:
                 basic: IAnimationVariableSource
-            - name: name
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimationVariableSource
+            - name: arg1
               type:
-                basic: String
+                basic: AnimNode
+                full: zombie.core.skinnedmodel.advancedanimation.AnimNode
             return:
               type:
                 basic: AnimTransition
+                full: zombie.core.skinnedmodel.advancedanimation.AnimTransition
+          - name: getAnimName
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getBlendInTime
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
           - name: getBlendOutTime
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
           - name: getDeferredBoneAxis
             modifiers:
             - public
             return:
               type:
                 basic: BoneAxis
+                full: zombie.core.skinnedmodel.animation.BoneAxis
           - name: getDeferredBoneName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
+          - name: getDeferredRotationScale
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getGrappleOffsetForward
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getGrappleTweenInTime
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getGrappleTweenStartPos
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Vector3f
+                full: org.joml.Vector3f
+            return:
+              type:
+                basic: Vector3f
+                full: org.joml.Vector3f
+          - name: getGrappleTweenStartPos
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            return:
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+          - name: getGrappledOffsetYaw
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getGrapplerOffsetBehaviour
+            modifiers:
+            - public
+            return:
+              type:
+                basic: GrappleOffsetBehaviour
+                full: zombie.core.skinnedmodel.advancedanimation.GrappleOffsetBehaviour
           - name: getLayerIdx
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
+          - name: getMainAnimationTrackAt
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+          - name: getMainAnimationTracks
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Iterable
+                full: java.lang.Iterable<zombie.core.skinnedmodel.animation.AnimationTrack>
+          - name: getMainAnimationTracksCount
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
           - name: getMainInitialRewindTime
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
+          - name: getMatchingGrappledAnimNode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getMaxDuration
+            modifiers:
+            - private
+            return:
+              type:
+                basic: float
+                full: float
           - name: getName
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getPlayingTrackAt
             modifiers:
             - public
@@ -79,27 +394,39 @@ languages:
             - name: trackIdx
               type:
                 basic: int
+                full: int
             return:
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
           - name: getPlayingTrackCount
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
           - name: getPriority
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
+          - name: getSkinningData
+            modifiers:
+            - private
+            return:
+              type:
+                basic: SkinningData
+                full: zombie.core.skinnedmodel.model.SkinningData
           - name: getSourceNode
             modifiers:
             - public
             return:
               type:
                 basic: AnimNode
+                full: zombie.core.skinnedmodel.advancedanimation.AnimNode
           - name: getSpeedScale
             modifiers:
             - public
@@ -107,69 +434,222 @@ languages:
             - name: varSource
               type:
                 basic: IAnimationVariableSource
+                full: zombie.core.skinnedmodel.advancedanimation.IAnimationVariableSource
             return:
               type:
                 basic: float
+                full: float
           - name: getSubStateBoneWeights
             modifiers:
             - public
             return:
               type:
                 basic: List
+                full: java.util.List<zombie.core.skinnedmodel.advancedanimation.AnimBoneWeight>
           - name: getTransitionFrom
             modifiers:
             - public
             return:
               type:
                 basic: String
+                full: java.lang.String
           - name: getTransitionInBlendInTime
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
           - name: getTransitionInBlendOutTime
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
           - name: getTransitionInTrack
             modifiers:
             - public
             return:
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
           - name: getTransitionInWeight
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
           - name: getTransitionLayerIdx
             modifiers:
             - public
             return:
               type:
                 basic: int
+                full: int
+          - name: getUseDeferredMovement
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: getUseDeferredRotation
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: getWeight
             modifiers:
             - public
             return:
               type:
                 basic: float
+                full: float
+          - name: getWhileAliveFlags
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.core.skinnedmodel.advancedanimation.LiveAnimNode$WhileAliveFlag>
+          - name: hasMainAnimationTracks
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: incrementBlendTime
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            - name: arg1
+              type:
+                basic: float
+                full: float
+            - name: arg2
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: float
+                full: float
+          - name: incrementWhileAliveFlagOnce
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationVariableReference
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationVariableReference
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: initTrackBoneWeights
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: invokeAnimEndTimeEvent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            return:
+              type:
+                basic: void
+                full: void
+          - name: invokeAnimStartTimeEvent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            return:
+              type:
+                basic: void
+                full: void
+          - name: invokeAnimTimeEvent
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            - name: arg1
+              type:
+                basic: AnimEvent.AnimEventTime
+                full: zombie.core.skinnedmodel.advancedanimation.AnimEvent$AnimEventTime
+            return:
+              type:
+                basic: void
+                full: void
           - name: isActive
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isBlendingIn
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isBlendingOut
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isGrappler
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isIdleAnimActive
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
             notes: Returns TRUE if this Live node is currently Active, and if the
               source AnimNode is an Idle animation.
           - name: isLooped
@@ -178,24 +658,42 @@ languages:
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isMainAnimActive
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isNew
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: isTransitioningIn
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isTweeningInGrapple
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isTweeningInGrappleFinished
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: onAnimStarted
             modifiers:
             - public
@@ -203,9 +701,11 @@ languages:
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
           - name: onLoopedAnim
             modifiers:
             - public
@@ -213,9 +713,18 @@ languages:
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
+          - name: onNoAnimConditionsPass
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: onNonLoopedAnimFadeOut
             modifiers:
             - public
@@ -223,9 +732,11 @@ languages:
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
           - name: onNonLoopedAnimFinished
             modifiers:
             - public
@@ -233,15 +744,18 @@ languages:
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
           - name: onReleased
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: onTrackDestroyed
             modifiers:
             - public
@@ -249,9 +763,56 @@ languages:
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
+          - name: onTransferredToLayer
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimLayer
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeAllTracks
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: removeTrack
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
+            return:
+              type:
+                basic: void
+                full: void
+          - name: reset
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: selectRandomAnim
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: setActive
             modifiers:
             - public
@@ -259,9 +820,47 @@ languages:
             - name: active
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
+          - name: setGrappleTweenStartPos
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Vector3f
+                full: org.joml.Vector3f
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setGrappleTweenStartPos
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Vector3
+                full: zombie.iso.Vector3
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setMainTracksPlaying
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
           - name: setTransitionInBlendDelta
             modifiers:
             - public
@@ -269,9 +868,11 @@ languages:
             - name: blendDelta
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
           - name: setTransitionOut
             modifiers:
             - public
@@ -279,9 +880,49 @@ languages:
             - name: transitionOut
               type:
                 basic: AnimTransition
+                full: zombie.core.skinnedmodel.advancedanimation.AnimTransition
             return:
               type:
                 basic: void
+                full: void
+          - name: setTweeningInGrapple
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setTweeningInGrappleFinished
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setWeightsToFull
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setWeightsToZero
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: startTransitionIn
             modifiers:
             - public
@@ -289,15 +930,19 @@ languages:
             - name: transitionFrom
               type:
                 basic: LiveAnimNode
+                full: zombie.core.skinnedmodel.advancedanimation.LiveAnimNode
             - name: transitionIn
               type:
                 basic: AnimTransition
+                full: zombie.core.skinnedmodel.advancedanimation.AnimTransition
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
           - name: startTransitionIn
             modifiers:
             - public
@@ -305,15 +950,40 @@ languages:
             - name: transitionFrom
               type:
                 basic: AnimNode
+                full: zombie.core.skinnedmodel.advancedanimation.AnimNode
             - name: transitionIn
               type:
                 basic: AnimTransition
+                full: zombie.core.skinnedmodel.advancedanimation.AnimTransition
             - name: track
               type:
                 basic: AnimationTrack
+                full: zombie.core.skinnedmodel.animation.AnimationTrack
             return:
               type:
                 basic: void
+                full: void
+          - name: stopBlendingIn
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: stopBlendingOut
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: stopTransitionIn
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: update
             modifiers:
             - public
@@ -321,41 +991,100 @@ languages:
             - name: timeDelta
               type:
                 basic: float
+                full: float
             return:
               type:
                 basic: void
+                full: void
+          - name: updateBlendingIn
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateBlendingOut
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateRagdollTracks
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: updateTransitioningIn
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: wasActivated
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           - name: wasDeactivated
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
           staticMethods:
           - name: alloc
             modifiers:
             - public
             - static
             parameters:
-            - name: animLayer
+            - name: arg0
               type:
                 basic: AnimLayer
-            - name: sourceNode
+                full: zombie.core.skinnedmodel.advancedanimation.AnimLayer
+            - name: arg1
               type:
                 basic: AnimNode
-            - name: layerIdx
-              type:
-                basic: int
+                full: zombie.core.skinnedmodel.advancedanimation.AnimNode
             return:
               type:
                 basic: LiveAnimNode
-          javaType: class
-          extends: PooledObject
-          notes: The Live version of an AnimNode  The AnimNode represents the data.  The
-            LiveAnimNode represents the playback of said data, its blend weights,
-            timing, transitions etc.
+                full: zombie.core.skinnedmodel.advancedanimation.LiveAnimNode
+          - name: lambda$incrementWhileAliveFlagOnce$0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationVariableReference
+                full: zombie.core.skinnedmodel.advancedanimation.AnimationVariableReference
+            - name: arg1
+              type:
+                basic: LiveAnimNode.WhileAliveFlag
+                full: zombie.core.skinnedmodel.advancedanimation.LiveAnimNode$WhileAliveFlag
+            return:
+              type:
+                basic: boolean
+                full: boolean

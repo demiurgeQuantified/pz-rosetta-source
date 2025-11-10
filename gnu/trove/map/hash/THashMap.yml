@@ -4,6 +4,26 @@ languages:
     packages:
       gnu.trove.map.hash:
         THashMap:
+          extends: gnu.trove.impl.hash.TObjectHash<K>
+          modifiers:
+          - public
+          fields:
+            _values:
+              name: _values
+              modifiers:
+              - protected
+              type:
+                basic: V
+                full: V[]
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - package
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
@@ -12,22 +32,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: THashMap<? extends K, ? extends V>
-                full: gnu.trove.map.hash.THashMap<? extends K, ? extends V>
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
                 basic: int
                 full: int
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Map<? extends K, ? extends V>
-                full: java.util.Map<? extends K, ? extends V>
           - modifiers:
             - public
             parameters:
@@ -39,14 +45,21 @@ languages:
               type:
                 basic: float
                 full: float
-          methods:
-          - name: __toString__
-            modifiers:
+          - modifiers:
             - public
-            return:
+            parameters:
+            - name: arg0
               type:
-                basic: String
-                full: java.lang.String
+                basic: Map
+                full: java.util.Map<? extends K, ? extends V>
+          - modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap<? extends K, ? extends V>
+          methods:
           - name: clear
             modifiers:
             - public
@@ -78,12 +91,28 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+          - name: doPut
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: V
+                full: V
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: V
+                full: V
           - name: entrySet
             modifiers:
             - public
             return:
               type:
-                basic: Entry<K, V>>
+                basic: Set
                 full: java.util.Set<java.util.Map$Entry<K, V>>
           - name: equals
             modifiers:
@@ -103,20 +132,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: TObjectObjectProcedure<? super K, ? super V>
-                full: gnu.trove.procedure.TObjectObjectProcedure<? super K, ? super
-                  V>
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: forEachEntry
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TObjectObjectProcedure<? super K, ? super V>
+                basic: TObjectObjectProcedure
                 full: gnu.trove.procedure.TObjectObjectProcedure<? super K, ? super
                   V>
             return:
@@ -129,19 +145,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: TObjectProcedure<? super K>
-                full: gnu.trove.procedure.TObjectProcedure<? super K>
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: forEachKey
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TObjectProcedure<? super K>
+                basic: TObjectProcedure
                 full: gnu.trove.procedure.TObjectProcedure<? super K>
             return:
               type:
@@ -153,19 +157,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: TObjectProcedure<? super V>
-                full: gnu.trove.procedure.TObjectProcedure<? super V>
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: forEachValue
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TObjectProcedure<? super V>
+                basic: TObjectProcedure
                 full: gnu.trove.procedure.TObjectProcedure<? super V>
             return:
               type:
@@ -195,7 +187,7 @@ languages:
             - public
             return:
               type:
-                basic: Set<K>
+                basic: Set
                 full: java.util.Set<K>
           - name: put
             modifiers:
@@ -219,7 +211,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: Map<? extends K, ? extends V>
+                basic: Map
                 full: java.util.Map<? extends K, ? extends V>
             return:
               type:
@@ -241,22 +233,6 @@ languages:
               type:
                 basic: V
                 full: V
-          - name: putIfAbsent
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: K
-                full: K
-            - name: arg1
-              type:
-                basic: V
-                full: V
-            return:
-              type:
-                basic: V
-                full: V
           - name: readExternal
             modifiers:
             - public
@@ -269,14 +245,14 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: readExternal
+          - name: rehash
             modifiers:
-            - public
+            - protected
             parameters:
             - name: arg0
               type:
-                basic: ObjectInput
-                full: java.io.ObjectInput
+                basic: int
+                full: int
             return:
               type:
                 basic: void
@@ -311,20 +287,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: TObjectObjectProcedure<? super K, ? super V>
-                full: gnu.trove.procedure.TObjectObjectProcedure<? super K, ? super
-                  V>
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: retainEntries
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TObjectObjectProcedure<? super K, ? super V>
+                basic: TObjectObjectProcedure
                 full: gnu.trove.procedure.TObjectObjectProcedure<? super K, ? super
                   V>
             return:
@@ -343,25 +306,20 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: transformValues
+          - name: toString
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TObjectFunction<V, V>
-                full: gnu.trove.function.TObjectFunction<V, V>
             return:
               type:
-                basic: void
-                full: void
+                basic: String
+                full: java.lang.String
           - name: transformValues
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: TObjectFunction<V, V>
+                basic: TObjectFunction
                 full: gnu.trove.function.TObjectFunction<V, V>
             return:
               type:
@@ -372,7 +330,7 @@ languages:
             - public
             return:
               type:
-                basic: Collection<V>
+                basic: Collection
                 full: java.util.Collection<V>
           - name: writeExternal
             modifiers:
@@ -386,17 +344,147 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: writeExternal
+          staticMethods:
+          - name: access$100
             modifiers:
-            - public
+            - package
+            - static
             parameters:
             - name: arg0
               type:
-                basic: ObjectOutput
-                full: java.io.ObjectOutput
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
-                basic: void
-                full: void
-          javaType: class
-          extends: TObjectHash<K>
+                basic: boolean
+                full: boolean
+          - name: access$300
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: access$400
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int
+          - name: access$500
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: access$600
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: access$700
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: access$800
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: THashMap
+                full: gnu.trove.map.hash.THashMap
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg2
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean

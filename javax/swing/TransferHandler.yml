@@ -1,0 +1,576 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      javax.swing:
+        TransferHandler:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "This class is used to handle the transfer of a Transferable\n to\
+            \ and from Swing components.  The Transferable is used to\n represent\
+            \ data that is exchanged via a cut, copy, or paste\n to/from a clipboard.\
+            \  It is also used in drag-and-drop operations\n to represent a drag from\
+            \ a component, and a drop to a component.\n Swing provides functionality\
+            \ that automatically supports cut, copy,\n and paste keyboard bindings\
+            \ that use the functionality provided by\n an implementation of this class.\
+            \  Swing also provides functionality\n that automatically supports drag\
+            \ and drop that uses the functionality\n provided by an implementation\
+            \ of this class.  The Swing developer can\n concentrate on specifying\
+            \ the semantics of a transfer primarily by setting\n the transferHandler\
+            \ property on a Swing component.\n \n This class is implemented to provide\
+            \ a default behavior of transferring\n a component property simply by\
+            \ specifying the name of the property in\n the constructor.  For example,\
+            \ to transfer the foreground color from\n one component to another either\
+            \ via the clipboard or a drag and drop operation\n a TransferHandler can\
+            \ be constructed with the string \"foreground\".  The\n built in support\
+            \ will use the color returned by getForeground as the source\n of the\
+            \ transfer, and setForeground for the target of a transfer.\n \n Please\
+            \ see\n \n How to Use Drag and Drop and Data Transfer,\n a section in\
+            \ The Java Tutorial, for more information."
+          fields:
+            dragImage:
+              name: dragImage
+              modifiers:
+              - private
+              type:
+                basic: Image
+                full: java.awt.Image
+            dragImageOffset:
+              name: dragImageOffset
+              modifiers:
+              - private
+              type:
+                basic: Point
+                full: java.awt.Point
+            propertyName:
+              name: propertyName
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            COPY:
+              name: COPY
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int representing a \"copy\" transfer action.\n This value\
+                \ is used when data is copied to a clipboard\n or copied elsewhere\
+                \ in a drag and drop operation."
+            COPY_OR_MOVE:
+              name: COPY_OR_MOVE
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int representing a source action capability of either\n \"\
+                copy\" or \"move\"."
+            LINK:
+              name: LINK
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int representing a \"link\" transfer action.\n This value\
+                \ is used to specify that data should be linked in a drag\n and drop\
+                \ operation."
+            MOVE:
+              name: MOVE
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "An int representing a \"move\" transfer action.\n This value\
+                \ is used when data is moved to a clipboard (i.e. a cut)\n or moved\
+                \ elsewhere in a drag and drop operation."
+            NONE:
+              name: NONE
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: An int representing no transfer action.
+            copyAction:
+              name: copyAction
+              modifiers:
+              - package
+              - static
+              type:
+                basic: Action
+                full: javax.swing.Action
+            cutAction:
+              name: cutAction
+              modifiers:
+              - package
+              - static
+              type:
+                basic: Action
+                full: javax.swing.Action
+            pasteAction:
+              name: pasteAction
+              modifiers:
+              - package
+              - static
+              type:
+                basic: Action
+                full: javax.swing.Action
+            recognizer:
+              name: recognizer
+              modifiers:
+              - private
+              - static
+              type:
+                basic: TransferHandler.SwingDragGestureRecognizer
+                full: javax.swing.TransferHandler$SwingDragGestureRecognizer
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: property
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the name of the property to transfer; this can\n  be null if\
+                \ there is no property associated with the transfer\n  handler (a\
+                \ subclass that performs some other kind of transfer, for example)"
+            notes: "Constructs a transfer handler that can transfer a Java Bean property\n\
+              \ from one component to another via the clipboard or a drag and drop\n\
+              \ operation."
+          - modifiers:
+            - protected
+            notes: Convenience constructor for subclasses.
+          methods:
+          - name: canImport
+            modifiers:
+            - public
+            parameters:
+            - name: support
+              type:
+                basic: TransferHandler.TransferSupport
+                full: javax.swing.TransferHandler$TransferSupport
+              notes: "the object containing the details of\n        the transfer,\
+                \ not null."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the import can happen,\n         false otherwise"
+            notes: "This method is called repeatedly during a drag and drop operation\n\
+              \ to allow the developer to configure properties of, and to return\n\
+              \ the acceptability of transfers; with a return value of true\n indicating\
+              \ that the transfer represented by the given\n TransferSupport (which\
+              \ contains all of the details of the\n transfer) is acceptable at the\
+              \ current time, and a value of false\n rejecting the transfer.\n \n\
+              \ For those components that automatically display a drop location during\n\
+              \ drag and drop, accepting the transfer, by default, tells them to show\n\
+              \ the drop location. This can be changed by calling\n setShowDropLocation\
+              \ on the TransferSupport.\n \n By default, when the transfer is accepted,\
+              \ the chosen drop action is that\n picked by the user via their drag\
+              \ gesture. The developer can override\n this and choose a different\
+              \ action, from the supported source\n actions, by calling setDropAction\
+              \ on the TransferSupport.\n \n On every call to canImport, the TransferSupport\
+              \ contains\n fresh state. As such, any properties set on it must be\
+              \ set on every\n call. Upon a drop, canImport is called one final time\
+              \ before\n calling into importData. Any state set on the\n TransferSupport\
+              \ during that last call will be available in\n importData.\n \n This\
+              \ method is not called internally in response to paste operations.\n\
+              \ As such, it is recommended that implementations of importData\n explicitly\
+              \ call this method for such cases and that this method\n be prepared\
+              \ to return the suitability of paste operations as well.\n \n Note:\
+              \ The TransferSupport object passed to this method\n is only valid for\
+              \ the duration of the method call. It is undefined\n what values it\
+              \ may contain after this method returns."
+          - name: canImport
+            modifiers:
+            - public
+            parameters:
+            - name: comp
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: "the component to receive the transfer;\n              provided\
+                \ to enable sharing of TransferHandlers"
+            - name: transferFlavors
+              type:
+                basic: DataFlavor
+                full: java.awt.datatransfer.DataFlavor[]
+              notes: the data formats available
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the data can be inserted into the component, false otherwise
+            notes: "Indicates whether a component will accept an import of the given\n\
+              \ set of data flavors prior to actually attempting to import it.\n \n\
+              \ Note: Swing now calls the newer version of canImport\n that takes\
+              \ a TransferSupport, which in turn calls this\n method (only if the\
+              \ component in the TransferSupport is a\n JComponent). Developers are\
+              \ encouraged to call and override the\n newer version as it provides\
+              \ more information (and is the only\n version that supports use with\
+              \ a TransferHandler set directly\n on a JFrame or other non-JComponent)."
+          - name: createTransferable
+            modifiers:
+            - protected
+            parameters:
+            - name: c
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: "the component holding the data to be transferred;\n        \
+                \      provided to enable sharing of TransferHandlers"
+            return:
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: "the representation of the data to be transferred, or\n  null\
+                \ if the property associated with c\n  is null"
+            notes: "Creates a Transferable to use as the source for\n a data transfer.\
+              \ Returns the representation of the data to\n be transferred, or null\
+              \ if the component's\n property is null"
+          - name: exportAsDrag
+            modifiers:
+            - public
+            parameters:
+            - name: comp
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: "the component holding the data to be transferred;\n        \
+                \      provided to enable sharing of TransferHandlers"
+            - name: e
+              type:
+                basic: InputEvent
+                full: java.awt.event.InputEvent
+              notes: the event that triggered the transfer
+            - name: action
+              type:
+                basic: int
+                full: int
+              notes: "the transfer action initially requested;\n               either\
+                \ COPY, MOVE or LINK;\n               the DnD system may change the\
+                \ action used during the\n               course of the drag operation"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Causes the Swing drag support to be initiated.  This is called\
+              \ by\n the various UI implementations in the javax.swing.plaf.basic\n\
+              \ package if the dragEnabled property is set on the component.\n This\
+              \ can be called by custom UI\n implementations to use the Swing drag\
+              \ support.  This method can also be called\n by a Swing extension written\
+              \ as a subclass of JComponent\n to take advantage of the Swing drag\
+              \ support.\n \n The transfer will not necessarily have been completed\
+              \ at the\n return of this call (i.e. the call does not block waiting\
+              \ for the drop).\n The transfer will take place through the Swing implementation\
+              \ of the\n java.awt.dnd mechanism, requiring no further effort\n from\
+              \ the developer. The exportDone method will be called\n when the transfer\
+              \ has completed."
+          - name: exportDone
+            modifiers:
+            - protected
+            parameters:
+            - name: source
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: the component that was the source of the data
+            - name: data
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: "The data that was transferred or possibly null\n           \
+                \    if the action is NONE."
+            - name: action
+              type:
+                basic: int
+                full: int
+              notes: the actual action that was performed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Invoked after data has been exported.  This method should remove\n\
+              \ the data that was transferred if the action was MOVE.\n \n This method\
+              \ is implemented to do nothing since MOVE\n is not a supported action\
+              \ of this implementation\n (getSourceActions does not include MOVE)."
+          - name: exportToClipboard
+            modifiers:
+            - public
+            parameters:
+            - name: comp
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: "the component holding the data to be transferred;\n        \
+                \      provided to enable sharing of TransferHandlers"
+            - name: clip
+              type:
+                basic: Clipboard
+                full: java.awt.datatransfer.Clipboard
+              notes: the clipboard to transfer the data into
+            - name: action
+              type:
+                basic: int
+                full: int
+              notes: "the transfer action requested; this should\n  be a value of\
+                \ either COPY or MOVE;\n  the operation performed is the intersection\
+                \  of the transfer\n  capabilities given by getSourceActions and the\
+                \ requested action;\n  the intersection may result in an action of\
+                \ NONE\n  if the requested action isn't supported"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Causes a transfer from the given component to the\n given clipboard.\
+              \  This method is called by the default cut and\n copy actions registered\
+              \ in a component's action map.\n \n The transfer will take place using\
+              \ the java.awt.datatransfer\n mechanism, requiring no further effort\
+              \ from the developer. Any data\n transfer will be complete and the exportDone\n\
+              \ method will be called with the action that occurred, before this method\n\
+              \ returns. Should the clipboard be unavailable when attempting to place\n\
+              \ data on it, the IllegalStateException thrown by\n Clipboard.setContents(Transferable,\
+              \ ClipboardOwner) will\n be propagated through this method. However,\n\
+              \ exportDone will first be called with an action\n of NONE for consistency."
+          - name: getDragImage
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Image
+                full: java.awt.Image
+              notes: the reference to the drag image
+            notes: "Returns the drag image. If there is no image to drag,\n the returned\
+              \ value is null."
+          - name: getDragImageOffset
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: "a Point object that corresponds\n to coordinates of an anchor\
+                \ offset of the image\n relative to the upper left corner of the image.\n\
+                \ The point (0,0) returns by default."
+            notes: Returns an anchor offset for the image to drag.
+          - name: getPropertyDataFlavor
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: DataFlavor
+                full: java.awt.datatransfer.DataFlavor[]
+            return:
+              type:
+                basic: DataFlavor
+                full: java.awt.datatransfer.DataFlavor
+          - name: getPropertyDescriptor
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+            return:
+              type:
+                basic: PropertyDescriptor
+                full: java.beans.PropertyDescriptor
+          - name: getSourceActions
+            modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: "the component holding the data to be transferred;\n        \
+                \   provided to enable sharing of TransferHandlers"
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "COPY if the transfer property can be found,\n          otherwise\
+                \ returns NONE"
+            notes: "Returns the type of transfer actions supported by the source;\n\
+              \ any bitwise-OR combination of COPY, MOVE\n and LINK.\n \n Some models\
+              \ are not mutable, so a transfer operation of MOVE\n should not be advertised\
+              \ in that case. Returning NONE\n disables transfers from the component."
+          - name: getVisualRepresentation
+            modifiers:
+            - public
+            parameters:
+            - name: t
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: "the data to be transferred; this value is expected to have been\n\
+                \  created by the createTransferable method"
+            return:
+              type:
+                basic: Icon
+                full: javax.swing.Icon
+              notes: "null, indicating\n    there is no default visual representation"
+            notes: "Returns an object that establishes the look of a transfer.  This\
+              \ is\n useful for both providing feedback while performing a drag operation\
+              \ and for\n representing the transfer in a clipboard implementation\
+              \ that has a visual\n appearance.  The implementation of the Icon interface\
+              \ should\n not alter the graphics clip or alpha level.\n The icon implementation\
+              \ need not be rectangular or paint all of the\n bounding rectangle and\
+              \ logic that calls the icons paint method should\n not assume the all\
+              \ bits are painted. null is a valid return value\n for this method and\
+              \ indicates there is no visual representation provided.\n In that case,\
+              \ the calling logic is free to represent the\n transferable however\
+              \ it wants.\n \n The default Swing logic will not do an alpha blended\
+              \ drag animation if\n the return is null."
+          - name: importData
+            modifiers:
+            - public
+            parameters:
+            - name: support
+              type:
+                basic: TransferHandler.TransferSupport
+                full: javax.swing.TransferHandler$TransferSupport
+              notes: "the object containing the details of\n        the transfer,\
+                \ not null."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the data was inserted into the component,\n        \
+                \ false otherwise"
+            notes: "Causes a transfer to occur from a clipboard or a drag and\n drop\
+              \ operation. The Transferable to be\n imported and the component to\
+              \ transfer to are contained\n within the TransferSupport.\n \n While\
+              \ the drag and drop implementation calls canImport\n to determine the\
+              \ suitability of a transfer before calling this\n method, the implementation\
+              \ of paste does not. As such, it cannot\n be assumed that the transfer\
+              \ is acceptable upon a call to\n this method for paste. It is recommended\
+              \ that canImport be\n explicitly called to cover this case.\n \n Note:\
+              \ The TransferSupport object passed to this method\n is only valid for\
+              \ the duration of the method call. It is undefined\n what values it\
+              \ may contain after this method returns."
+          - name: importData
+            modifiers:
+            - public
+            parameters:
+            - name: comp
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: "the component to receive the transfer;\n              provided\
+                \ to enable sharing of TransferHandlers"
+            - name: t
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: the data to import
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the data was inserted into the component, false otherwise
+            notes: "Causes a transfer to a component from a clipboard or a\n DND drop\
+              \ operation.  The Transferable represents\n the data to be imported\
+              \ into the component.\n \n Note: Swing now calls the newer version of\
+              \ importData\n that takes a TransferSupport, which in turn calls this\n\
+              \ method (if the component in the TransferSupport is a\n JComponent).\
+              \ Developers are encouraged to call and override the\n newer version\
+              \ as it provides more information (and is the only\n version that supports\
+              \ use with a TransferHandler set directly\n on a JFrame or other non-JComponent)."
+          - name: setDragImage
+            modifiers:
+            - public
+            parameters:
+            - name: img
+              type:
+                basic: Image
+                full: java.awt.Image
+              notes: an image to drag
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the drag image parameter. The image has to be prepared\n\
+              \ for rendering by the moment of the call. The image is stored\n by\
+              \ reference because of some performance reasons."
+          - name: setDragImageOffset
+            modifiers:
+            - public
+            parameters:
+            - name: p
+              type:
+                basic: Point
+                full: java.awt.Point
+              notes: "a Point object that corresponds\n to coordinates of an anchor\
+                \ offset of the image\n relative to the upper left corner of the image"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets an anchor offset for the image to drag.\n It can not be null."
+          staticMethods:
+          - name: getCopyAction
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Action
+                full: javax.swing.Action
+              notes: an Action for performing copies to the clipboard
+            notes: "Returns an Action that performs copy operations to the\n clipboard.\
+              \ When performed, this action operates on the JComponent\n source of\
+              \ the ActionEvent by invoking exportToClipboard,\n with a COPY action,\
+              \ on the component's TransferHandler."
+          - name: getCutAction
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Action
+                full: javax.swing.Action
+              notes: an Action for performing cuts to the clipboard
+            notes: "Returns an Action that performs cut operations to the\n clipboard.\
+              \ When performed, this action operates on the JComponent\n source of\
+              \ the ActionEvent by invoking exportToClipboard,\n with a MOVE action,\
+              \ on the component's TransferHandler."
+          - name: getDropTargetListener
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: DropTargetListener
+                full: java.awt.dnd.DropTargetListener
+          - name: getPasteAction
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Action
+                full: javax.swing.Action
+              notes: an Action for performing pastes from the clipboard
+            notes: "Returns an Action that performs paste operations from the\n clipboard.\
+              \ When performed, this action operates on the JComponent\n source of\
+              \ the ActionEvent by invoking importData,\n with the clipboard contents,\
+              \ on the component's TransferHandler."

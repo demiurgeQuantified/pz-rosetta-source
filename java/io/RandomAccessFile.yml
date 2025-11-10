@@ -4,9 +4,185 @@ languages:
     packages:
       java.io:
         RandomAccessFile:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "Instances of this class support both reading and writing to a\n\
+            \ random access file. A random access file behaves like a large\n array\
+            \ of bytes stored in the file system. There is a kind of cursor,\n or\
+            \ index into the implied array, called the file pointer;\n input operations\
+            \ read bytes starting at the file pointer and advance\n the file pointer\
+            \ past the bytes read. If the random access file is\n created in read/write\
+            \ mode, then output operations are also available;\n output operations\
+            \ write bytes starting at the file pointer and advance\n the file pointer\
+            \ past the bytes written. Output operations that write\n past the current\
+            \ end of the implied array cause the array to be\n extended. The file\
+            \ pointer can be read by the\n getFilePointer method and set by the seek\n\
+            \ method.\n \n It is generally true of all the reading routines in this\
+            \ class that\n if end-of-file is reached before the desired number of\
+            \ bytes has been\n read, an EOFException (which is a kind of\n IOException)\
+            \ is thrown. If any byte cannot be read for\n any reason other than end-of-file,\
+            \ an IOException other\n than EOFException is thrown. In particular, an\n\
+            \ IOException may be thrown if the stream has been closed."
+          fields:
+            channel:
+              name: channel
+              modifiers:
+              - private
+              type:
+                basic: FileChannel
+                full: java.nio.channels.FileChannel
+            closeLock:
+              name: closeLock
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            fd:
+              name: fd
+              modifiers:
+              - private
+              type:
+                basic: FileDescriptor
+                full: java.io.FileDescriptor
+            path:
+              name: path
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            rw:
+              name: rw
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            O_DSYNC:
+              name: O_DSYNC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            O_RDONLY:
+              name: O_RDONLY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            O_RDWR:
+              name: O_RDWR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            O_SYNC:
+              name: O_SYNC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            O_TEMPORARY:
+              name: O_TEMPORARY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the system-dependent filename
+            - name: mode
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the access mode
+            notes: "Creates a random access file stream to read from, and optionally\n\
+              \ to write to, a file with the specified name. A new\n FileDescriptor\
+              \ object is created to represent the\n connection to the file.\n\n \
+              \ The mode argument specifies the access mode with which the\n file\
+              \ is to be opened.  The permitted values and their meanings are as\n\
+              \ specified for the RandomAccessFile(File,String) constructor.\n\n \n\
+              \ If there is a security manager, its checkRead method\n is called with\
+              \ the name argument\n as its argument to see if read access to the file\
+              \ is allowed.\n If the mode allows writing, the security manager's\n\
+              \ checkWrite method\n is also called with the name argument\n as its\
+              \ argument to see if write access to the file is allowed."
+          - modifiers:
+            - public
+            parameters:
+            - name: file
+              type:
+                basic: File
+                full: java.io.File
+              notes: the file object
+            - name: mode
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the access mode, as described\n                    above"
+            notes: "Creates a random access file stream to read from, and optionally\
+              \ to\n write to, the file specified by the File argument.  A new FileDescriptor\
+              \ object is created to represent this file connection.\n\n The mode\
+              \ argument specifies the access mode\n in which the file is to be opened.\
+              \  The permitted values and their\n meanings are:\n\n \n Access mode\
+              \ permitted values and meanings\n \n ValueMeaning\n \n \n \"r\"\n  \
+              \    Open for reading only. Invoking any of the write\n     methods\
+              \ of the resulting object will cause an\n     IOException to be thrown.\n\
+              \ \"rw\"\n      Open for reading and writing.  If the file does not\
+              \ already\n     exist then an attempt will be made to create it.\n \"\
+              rws\"\n      Open for reading and writing, as with \"rw\", and also\n\
+              \     require that every update to the file's content or metadata be\n\
+              \     written synchronously to the underlying storage device.\n \"rwd\"\
+              \n      Open for reading and writing, as with \"rw\", and also\n   \
+              \  require that every update to the file's content be written\n    \
+              \ synchronously to the underlying storage device.\n \n \n\n The \"rws\"\
+              \ and \"rwd\" modes work much like the force(boolean) method of\n the\
+              \ FileChannel class, passing arguments of\n true and false, respectively,\
+              \ except that they always\n apply to every I/O operation and are therefore\
+              \ often more efficient.  If\n the file resides on a local storage device\
+              \ then when an invocation of a\n method of this class returns it is\
+              \ guaranteed that all changes made to\n the file by that invocation\
+              \ will have been written to that device.  This\n is useful for ensuring\
+              \ that critical information is not lost in the\n event of a system crash.\
+              \  If the file does not reside on a local device\n then no such guarantee\
+              \ is made.\n\n The \"rwd\" mode can be used to reduce the number of\
+              \ I/O\n operations performed.  Using \"rwd\" only requires updates to\
+              \ the\n file's content to be written to storage; using \"rws\" requires\n\
+              \ updates to both the file's content and its metadata to be written,\
+              \ which\n generally requires at least one more low-level I/O operation.\n\
+              \n If there is a security manager, its checkRead method is\n called\
+              \ with the pathname of the file argument as its\n argument to see if\
+              \ read access to the file is allowed.  If the mode\n allows writing,\
+              \ the security manager's checkWrite method is\n also called with the\
+              \ path argument to see if write access to the file is\n allowed."
+          - modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -16,17 +192,10 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: arg2
               type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
+                basic: boolean
+                full: boolean
           methods:
           - name: close
             modifiers:
@@ -35,13 +204,11 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: close
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Closes this random access file stream and releases any system\n\
+              \ resources associated with the stream. A closed random access\n file\
+              \ cannot perform input or output operations and cannot be\n reopened.\n\
+              \n  If this file has an associated channel then the channel is closed\n\
+              \ as well."
           - name: getChannel
             modifiers:
             - public
@@ -50,6 +217,14 @@ languages:
               type:
                 basic: FileChannel
                 full: java.nio.channels.FileChannel
+              notes: the file channel associated with this file
+            notes: "Returns the unique FileChannel\n object associated with this file.\n\
+              \n  The position of the returned channel will always be equal to\n this\
+              \ object's file-pointer offset as returned by the getFilePointer method.\
+              \  Changing this object's\n file-pointer offset, whether explicitly\
+              \ or by reading or writing bytes,\n will change the position of the\
+              \ channel, and vice versa.  Changing the\n file's length via this object\
+              \ will change the length seen via the file\n channel, and vice versa."
           - name: getFD
             modifiers:
             - public
@@ -58,6 +233,9 @@ languages:
               type:
                 basic: FileDescriptor
                 full: java.io.FileDescriptor
+              notes: the file descriptor object associated with this stream.
+            notes: "Returns the opaque file descriptor object associated with this\n\
+              \ stream."
           - name: getFilePointer
             modifiers:
             - public
@@ -65,6 +243,9 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: "the offset from the beginning of the file, in bytes,\n     \
+                \        at which the next read or write occurs."
+            notes: Returns the current offset in this file.
           - name: length
             modifiers:
             - public
@@ -72,41 +253,110 @@ languages:
               type:
                 basic: long
                 full: long
-          - name: read
+              notes: the length of this file, measured in bytes.
+            notes: Returns the length of this file.
+          - name: open
             modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: read
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: int
-                full: int
-          - name: read
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
+                basic: String
+                full: java.lang.String
             - name: arg1
               type:
                 basic: int
                 full: int
-            - name: arg2
+            return:
+              type:
+                basic: void
+                full: void
+          - name: open0
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
               type:
                 basic: int
                 full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: read
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the next byte of data, or -1 if the end of the\n           \
+                \  file has been reached."
+            notes: "Reads a byte of data from this file. The byte is returned as an\n\
+              \ integer in the range 0 to 255 (0x00-0x0ff). This\n method blocks if\
+              \ no input is yet available.\n \n Although RandomAccessFile is not a\
+              \ subclass of\n InputStream, this method behaves in exactly the same\n\
+              \ way as the InputStream.read() method of\n InputStream."
+          - name: read
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer into which the data is read.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: "the start offset in array b\n                   at which the\
+                \ data is written."
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the maximum number of bytes read.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   the file has been reached."
+            notes: "Reads up to len bytes of data from this file into an\n array of\
+              \ bytes. This method blocks until at least one byte of input\n is available.\n\
+              \ \n Although RandomAccessFile is not a subclass of\n InputStream, this\
+              \ method behaves in exactly the\n same way as the InputStream.read(byte[],\
+              \ int, int) method of\n InputStream."
+          - name: read
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer into which the data is read.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end of\n          \
+                \   this file has been reached."
+            notes: "Reads up to b.length bytes of data from this file\n into an array\
+              \ of bytes. This method blocks until at least one byte\n of input is\
+              \ available.\n \n Although RandomAccessFile is not a subclass of\n InputStream,\
+              \ this method behaves in exactly the\n same way as the InputStream.read(byte[])\
+              \ method of\n InputStream."
+          - name: read0
+            modifiers:
+            - private
             return:
               type:
                 basic: int
@@ -119,14 +369,12 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: readBoolean
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: the boolean value read.
+            notes: "Reads a boolean from this file. This method reads a\n single byte\
+              \ from the file, starting at the current file pointer.\n A value of\
+              \ 0 represents\n false. Any other value represents true.\n This method\
+              \ blocks until the byte is read, the end of the stream\n is detected,\
+              \ or an exception is thrown."
           - name: readByte
             modifiers:
             - public
@@ -135,96 +383,20 @@ languages:
               type:
                 basic: byte
                 full: byte
-          - name: readByte
+              notes: "the next byte of this file as a signed eight-bit\n         \
+                \    byte."
+            notes: "Reads a signed eight-bit value from this file. This method reads\
+              \ a\n byte from the file, starting from the current file pointer.\n\
+              \ If the byte read is b, where\n 0 <= b <= 255,\n then the result is:\n\
+              \ \n     (byte)(b)\n \n \n This method blocks until the byte is read,\
+              \ the end of the stream\n is detected, or an exception is thrown."
+          - name: readBytes
             modifiers:
-            - public
-            - final
-            return:
+            - private
+            parameters:
+            - name: arg0
               type:
                 basic: byte
-                full: byte
-          - name: readChar
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: char
-                full: char
-          - name: readChar
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: char
-                full: char
-          - name: readDouble
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: double
-                full: double
-          - name: readDouble
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: double
-                full: double
-          - name: readFloat
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: float
-                full: float
-          - name: readFloat
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: float
-                full: float
-          - name: readFully
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: readFully
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: readFully
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
                 full: byte[]
             - name: arg1
               type:
@@ -236,29 +408,103 @@ languages:
                 full: int
             return:
               type:
-                basic: void
-                full: void
+                basic: int
+                full: int
+          - name: readChar
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: char
+                full: char
+              notes: "the next two bytes of this file, interpreted as a\n        \
+                \          char."
+            notes: "Reads a character from this file. This method reads two\n bytes\
+              \ from the file, starting at the current file pointer.\n If the bytes\
+              \ read, in order, are\n b1 and b2, where\n 0 <= b1, b2 <= 255,\n then\
+              \ the result is equal to:\n \n     (char)((b1 << 8) | b2)\n \n \n This\
+              \ method blocks until the two bytes are read, the end of the\n stream\
+              \ is detected, or an exception is thrown."
+          - name: readDouble
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: double
+                full: double
+              notes: "the next eight bytes of this file, interpreted as a\n      \
+                \       double."
+            notes: "Reads a double from this file. This method reads a\n long value,\
+              \ starting at the current file pointer,\n as if by the readLong method\n\
+              \ and then converts that long to a double\n using the longBitsToDouble\
+              \ method in\n class Double.\n \n This method blocks until the eight\
+              \ bytes are read, the end of the\n stream is detected, or an exception\
+              \ is thrown."
+          - name: readFloat
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: float
+                full: float
+              notes: "the next four bytes of this file, interpreted as a\n       \
+                \      float."
+            notes: "Reads a float from this file. This method reads an\n int value,\
+              \ starting at the current file pointer,\n as if by the readInt method\n\
+              \ and then converts that int to a float\n using the intBitsToFloat method\
+              \ in class\n Float.\n \n This method blocks until the four bytes are\
+              \ read, the end of the\n stream is detected, or an exception is thrown."
           - name: readFully
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+              notes: the buffer into which the data is read.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Reads b.length bytes from this file into the byte\n array, starting\
+              \ at the current file pointer. This method reads\n repeatedly from the\
+              \ file until the requested number of bytes are\n read. This method blocks\
+              \ until the requested number of bytes are\n read, the end of the stream\
+              \ is detected, or an exception is thrown."
+          - name: readFully
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the buffer into which the data is read.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset into the data array b.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes to read.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Reads exactly len bytes from this file into the byte\n array,\
+              \ starting at the current file pointer. This method reads\n repeatedly\
+              \ from the file until the requested number of bytes are\n read. This\
+              \ method blocks until the requested number of bytes are\n read, the\
+              \ end of the stream is detected, or an exception is thrown."
           - name: readInt
             modifiers:
             - public
@@ -267,14 +513,15 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readInt
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the next four bytes of this file, interpreted as an\n      \
+                \       int."
+            notes: "Reads a signed 32-bit integer from this file. This method reads\
+              \ 4\n bytes from the file, starting at the current file pointer.\n If\
+              \ the bytes read, in order, are b1,\n b2, b3, and b4, where\n 0 <= b1,\
+              \ b2, b3, b4 <= 255,\n then the result is equal to:\n \n     (b1 <<\
+              \ 24) | (b2 << 16) + (b3 << 8) + b4\n \n \n This method blocks until\
+              \ the four bytes are read, the end of the\n stream is detected, or an\
+              \ exception is thrown."
           - name: readLine
             modifiers:
             - public
@@ -283,14 +530,22 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: readLine
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+              notes: "the next line of text from this file, or null if end\n     \
+                \        of file is encountered before even one byte is read."
+            notes: "Reads the next line of text from this file.  This method successively\n\
+              \ reads bytes from the file, starting at the current file pointer,\n\
+              \ until it reaches a line terminator or the end\n of the file.  Each\
+              \ byte is converted into a character by taking the\n byte's value for\
+              \ the lower eight bits of the character and setting the\n high eight\
+              \ bits of the character to zero.  This method does not,\n therefore,\
+              \ support the full Unicode character set.\n\n  A line of text is terminated\
+              \ by a carriage-return character\n ('\\r'), a newline character ('\\\
+              n'), a\n carriage-return character immediately followed by a newline\
+              \ character,\n or the end of the file.  Line-terminating characters\
+              \ are discarded and\n are not included as part of the string returned.\n\
+              \n  This method blocks until a newline character is read, a carriage\n\
+              \ return and the byte following it are read (to see if it is a newline),\n\
+              \ the end of the file is reached, or an exception is thrown."
           - name: readLong
             modifiers:
             - public
@@ -299,14 +554,17 @@ languages:
               type:
                 basic: long
                 full: long
-          - name: readLong
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: long
-                full: long
+              notes: "the next eight bytes of this file, interpreted as a\n      \
+                \       long."
+            notes: "Reads a signed 64-bit integer from this file. This method reads\
+              \ eight\n bytes from the file, starting at the current file pointer.\n\
+              \ If the bytes read, in order, are\n b1, b2, b3,\n b4, b5, b6,\n b7,\
+              \ and b8, where:\n \n     0 <= b1, b2, b3, b4, b5, b6, b7, b8 <=255,\n\
+              \ \n \n then the result is equal to:\n \n     ((long)b1 << 56) + ((long)b2\
+              \ << 48)\n     + ((long)b3 << 40) + ((long)b4 << 32)\n     + ((long)b5\
+              \ << 24) + ((long)b6 << 16)\n     + ((long)b7 << 8) + b8\n \n \n This\
+              \ method blocks until the eight bytes are read, the end of the\n stream\
+              \ is detected, or an exception is thrown."
           - name: readShort
             modifiers:
             - public
@@ -315,14 +573,15 @@ languages:
               type:
                 basic: short
                 full: short
-          - name: readShort
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: short
-                full: short
+              notes: "the next two bytes of this file, interpreted as a signed\n \
+                \            16-bit number."
+            notes: "Reads a signed 16-bit number from this file. The method reads\
+              \ two\n bytes from this file, starting at the current file pointer.\n\
+              \ If the two bytes read, in order, are\n b1 and b2, where each of the\
+              \ two values is\n between 0 and 255, inclusive, then the\n result is\
+              \ equal to:\n \n     (short)((b1 << 8) | b2)\n \n \n This method blocks\
+              \ until the two bytes are read, the end of the\n stream is detected,\
+              \ or an exception is thrown."
           - name: readUTF
             modifiers:
             - public
@@ -331,14 +590,16 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: readUTF
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+              notes: a Unicode string.
+            notes: "Reads in a string from this file. The string has been encoded\n\
+              \ using a\n modified UTF-8\n format.\n \n The first two bytes are read,\
+              \ starting from the current file\n pointer, as if by\n readUnsignedShort.\
+              \ This value gives the number of\n following bytes that are in the encoded\
+              \ string, not\n the length of the resulting string. The following bytes\
+              \ are then\n interpreted as bytes encoding characters in the modified\
+              \ UTF-8 format\n and are converted into characters.\n \n This method\
+              \ blocks until all the bytes are read, the end of the\n stream is detected,\
+              \ or an exception is thrown."
           - name: readUnsignedByte
             modifiers:
             - public
@@ -347,14 +608,12 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readUnsignedByte
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the next byte of this file, interpreted as an unsigned\n   \
+                \          eight-bit number."
+            notes: "Reads an unsigned eight-bit number from this file. This method\
+              \ reads\n a byte from this file, starting at the current file pointer,\n\
+              \ and returns that byte.\n \n This method blocks until the byte is read,\
+              \ the end of the stream\n is detected, or an exception is thrown."
           - name: readUnsignedShort
             modifiers:
             - public
@@ -363,17 +622,38 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readUnsignedShort
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the next two bytes of this file, interpreted as an unsigned\n\
+                \             16-bit integer."
+            notes: "Reads an unsigned 16-bit number from this file. This method reads\n\
+              \ two bytes from the file, starting at the current file pointer.\n If\
+              \ the bytes read, in order, are\n b1 and b2, where\n 0 <= b1, b2 <=\
+              \ 255,\n then the result is equal to:\n \n     (b1 << 8) | b2\n \n \n\
+              \ This method blocks until the two bytes are read, the end of the\n\
+              \ stream is detected, or an exception is thrown."
           - name: seek
             modifiers:
             - public
+            parameters:
+            - name: pos
+              type:
+                basic: long
+                full: long
+              notes: "the offset position, measured in bytes from the\n          \
+                \         beginning of the file, at which to set the file\n      \
+                \             pointer."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the file-pointer offset, measured from the beginning of this\n\
+              \ file, at which the next read or write occurs.  The offset may be\n\
+              \ set beyond the end of the file. Setting the offset beyond the end\n\
+              \ of the file does not change the file length.  The file length will\n\
+              \ change only by writing after the offset has been set beyond the end\n\
+              \ of the file."
+          - name: seek0
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -387,65 +667,103 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newLength
               type:
                 basic: long
                 full: long
+              notes: The desired length of the file
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the length of this file.\n\n  If the present length of the\
+              \ file as returned by the\n length method is greater than the newLength\n\
+              \ argument then the file will be truncated.  In this case, if the file\n\
+              \ offset as returned by the getFilePointer method is greater\n than\
+              \ newLength then after this method returns the offset\n will be equal\
+              \ to newLength.\n\n  If the present length of the file as returned by\
+              \ the\n length method is smaller than the newLength\n argument then\
+              \ the file will be extended.  In this case, the contents of\n the extended\
+              \ portion of the file are not defined."
           - name: skipBytes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: int
                 full: int
+              notes: the number of bytes to be skipped.
             return:
               type:
                 basic: int
                 full: int
-          - name: skipBytes
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the actual number of bytes skipped.
+            notes: "Attempts to skip over n bytes of input discarding the\n skipped\
+              \ bytes.\n \n\n This method may skip over some smaller number of bytes,\
+              \ possibly zero.\n This may result from any of a number of conditions;\
+              \ reaching end of\n file before n bytes have been skipped is only one\n\
+              \ possibility. This method never throws an EOFException.\n The actual\
+              \ number of bytes skipped is returned.  If n\n is negative, no bytes\
+              \ are skipped."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: int
+                full: int
+              notes: the byte to be written.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes the specified byte to this file. The write starts at\n\
+              \ the current file pointer."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
                 full: byte[]
+              notes: the data.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes b.length bytes from the specified byte array\n to this\
+              \ file, starting at the current file pointer."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the data.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset in the data.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes to write.
             return:
               type:
                 basic: void
                 full: void
-          - name: write
+            notes: "Writes len bytes from the specified byte array\n starting at offset\
+              \ off to this file."
+          - name: write0
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -455,25 +773,47 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: write
+          - name: writeBoolean
             modifiers:
             - public
+            - final
             parameters:
-            - name: arg0
+            - name: v
               type:
-                basic: int
-                full: int
+                basic: boolean
+                full: boolean
+              notes: a boolean value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: write
+            notes: "Writes a boolean to the file as a one-byte value. The\n value\
+              \ true is written out as the value\n (byte)1; the value false is written\
+              \ out\n as the value (byte)0. The write starts at\n the current position\
+              \ of the file pointer."
+          - name: writeByte
             modifiers:
             - public
+            - final
+            parameters:
+            - name: v
+              type:
+                basic: int
+                full: int
+              notes: a byte value to be written.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes a byte to the file as a one-byte value. The\n write starts\
+              \ at the current position of the file pointer."
+          - name: writeBytes
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
             - name: arg1
               type:
@@ -487,311 +827,168 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: writeBoolean
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: writeBoolean
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
-          - name: writeByte
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: writeByte
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
           - name: writeBytes
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: String
                 full: java.lang.String
+              notes: a string of bytes to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeBytes
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes the string to the file as a sequence of bytes. Each\n character\
+              \ in the string is written out, in sequence, by discarding\n its high\
+              \ eight bits. The write starts at the current position of\n the file\
+              \ pointer."
           - name: writeChar
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: a char value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeChar
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a char to the file as a two-byte value, high\n byte first.\
+              \ The write starts at the current position of the\n file pointer."
           - name: writeChars
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: String
                 full: java.lang.String
+              notes: a String value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeChars
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a string to the file as a sequence of characters. Each\n\
+              \ character is written to the data output stream as if by the\n writeChar\
+              \ method. The write starts at the current\n position of the file pointer."
           - name: writeDouble
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: double
                 full: double
+              notes: a double value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeDouble
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Converts the double argument to a long using the\n doubleToLongBits\
+              \ method in class Double,\n and then writes that long value to the file\
+              \ as an\n eight-byte quantity, high byte first. The write starts at\
+              \ the current\n position of the file pointer."
           - name: writeFloat
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: float
                 full: float
+              notes: a float value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeFloat
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: float
-                full: float
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Converts the float argument to an int using the\n floatToIntBits\
+              \ method in class Float,\n and then writes that int value to the file\
+              \ as a\n four-byte quantity, high byte first. The write starts at the\n\
+              \ current position of the file pointer."
           - name: writeInt
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: an int to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeInt
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes an int to the file as four bytes, high byte first.\n The\
+              \ write starts at the current position of the file pointer."
           - name: writeLong
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: long
                 full: long
+              notes: a long to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeLong
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a long to the file as eight bytes, high byte first.\n The\
+              \ write starts at the current position of the file pointer."
           - name: writeShort
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: a short to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeShort
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a short to the file as two bytes, high byte first.\n The\
+              \ write starts at the current position of the file pointer."
           - name: writeUTF
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: a string to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeUTF
+            notes: "Writes a string to the file using\n modified UTF-8\n encoding\
+              \ in a machine-independent manner.\n \n First, two bytes are written\
+              \ to the file, starting at the\n current file pointer, as if by the\n\
+              \ writeShort method giving the number of bytes to\n follow. This value\
+              \ is the number of bytes actually written out,\n not the length of the\
+              \ string. Following the length, each character\n of the string is output,\
+              \ in sequence, using the modified UTF-8 encoding\n for each character."
+          staticMethods:
+          - name: initIDs
             modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
+            - private
+            - static
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object

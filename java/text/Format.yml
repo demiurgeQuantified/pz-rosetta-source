@@ -4,6 +4,65 @@ languages:
     packages:
       java.text:
         Format:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Format is an abstract base class for formatting locale-sensitive\n\
+            \ information such as dates, messages, and numbers.\n\n \n Format defines\
+            \ the programming interface for formatting\n locale-sensitive objects\
+            \ into Strings (the\n format method) and for parsing Strings back\n into\
+            \ objects (the parseObject method).\n\n \n Generally, a format's parseObject\
+            \ method must be able to parse\n any string formatted by its format method.\
+            \ However, there may\n be exceptional cases where this is not possible.\
+            \ For example, a\n format method might create two adjacent integer numbers\
+            \ with\n no separator in between, and in this case the parseObject could\n\
+            \ not tell which digits belong to which number.\n\n Subclassing\n\n \n\
+            \ The Java Platform provides three specialized subclasses of Format--\n\
+            \ DateFormat, MessageFormat, and\n NumberFormat--for formatting dates,\
+            \ messages, and numbers,\n respectively.\n \n Concrete subclasses must\
+            \ implement three methods:\n \n  format(Object obj, StringBuffer toAppendTo,\
+            \ FieldPosition pos)\n  formatToCharacterIterator(Object obj)\n  parseObject(String\
+            \ source, ParsePosition pos)\n \n These general methods allow polymorphic\
+            \ parsing and formatting of objects\n and are used, for example, by MessageFormat.\n\
+            \ Subclasses often also provide additional format methods for\n specific\
+            \ input types as well as parse methods for specific\n result types. Any\
+            \ parse method that does not take a\n ParsePosition argument should throw\
+            \ ParseException\n when no text in the required format is at the beginning\
+            \ of the input text.\n\n \n Most subclasses will also implement the following\
+            \ factory methods:\n \n \n getInstance for getting a useful format object\
+            \ appropriate\n for the current locale\n \n getInstance(Locale) for getting\
+            \ a useful format\n object appropriate for the specified locale\n \n In\
+            \ addition, some subclasses may also implement other\n getXxxxInstance\
+            \ methods for more specialized control. For\n example, the NumberFormat\
+            \ class provides\n getPercentInstance and getCurrencyInstance\n methods\
+            \ for getting specialized number formatters.\n\n \n Subclasses of Format\
+            \ that allow programmers to create objects\n for locales (with getInstance(Locale)\
+            \ for example)\n must also implement the following class method:\n \n\
+            \ \n public static Locale[] getAvailableLocales()\n \n \n\n \n And finally\
+            \ subclasses may define a set of constants to identify the various\n fields\
+            \ in the formatted output. These constants are used to create a FieldPosition\n\
+            \ object which identifies what information is contained in the field and\
+            \ its\n position in the formatted result. These constants should be named\n\
+            \ item_FIELD where item identifies\n the field. For examples of these\
+            \ constants, see ERA_FIELD and its\n friends in DateFormat.\n\n Synchronization\n\
+            \n \n Formats are generally not synchronized.\n It is recommended to create\
+            \ separate format instances for each thread.\n If multiple threads access\
+            \ a format concurrently, it must be synchronized\n externally."
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Sole constructor.  (For invocation by subclass constructors, typically\n\
+              \ implicit.)"
           methods:
           - name: clone
             modifiers:
@@ -12,44 +71,45 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: format
+              notes: a clone of this instance.
+            notes: Creates and returns a copy of this object.
+          - name: createAttributedCharacterIterator
             modifiers:
-            - public
-            - final
+            - package
             parameters:
             - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
               type:
                 basic: String
                 full: java.lang.String
-          - name: format
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg1
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-            - name: arg2
-              type:
-                basic: FieldPosition
-                full: java.text.FieldPosition
             return:
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: formatToCharacterIterator
+                basic: AttributedCharacterIterator
+                full: java.text.AttributedCharacterIterator
+          - name: createAttributedCharacterIterator
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
+              type:
+                basic: AttributedCharacterIterator
+                full: java.text.AttributedCharacterIterator[]
+            return:
+              type:
+                basic: AttributedCharacterIterator
+                full: java.text.AttributedCharacterIterator
+          - name: createAttributedCharacterIterator
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: AttributedCharacterIterator.Attribute
+                full: java.text.AttributedCharacterIterator$Attribute
+            - name: arg2
               type:
                 basic: Object
                 full: java.lang.Object
@@ -57,33 +117,143 @@ languages:
               type:
                 basic: AttributedCharacterIterator
                 full: java.text.AttributedCharacterIterator
-          - name: parseObject
+          - name: createAttributedCharacterIterator
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
-            return:
+                basic: AttributedCharacterIterator
+                full: java.text.AttributedCharacterIterator
+            - name: arg1
+              type:
+                basic: AttributedCharacterIterator.Attribute
+                full: java.text.AttributedCharacterIterator$Attribute
+            - name: arg2
               type:
                 basic: Object
                 full: java.lang.Object
-          - name: parseObject
+            return:
+              type:
+                basic: AttributedCharacterIterator
+                full: java.text.AttributedCharacterIterator
+          - name: format
             modifiers:
             - public
+            - final
             parameters:
-            - name: arg0
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The object to format
+            return:
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: Formatted string.
+            notes: "Formats an object to produce a string. This is equivalent to\n\
+              \ \n format(obj,\n         new StringBuffer(), new FieldPosition(0)).toString();"
+          - name: format
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The object to format
+            - name: toAppendTo
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: where the text is to be appended
+            - name: pos
+              type:
+                basic: FieldPosition
+                full: java.text.FieldPosition
+              notes: "A FieldPosition identifying a field\n               in the formatted\
+                \ text"
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: "the string buffer passed in as toAppendTo,\n               with\
+                \ formatted text appended"
+            notes: "Formats an object and appends the resulting text to a given string\n\
+              \ buffer.\n If the pos argument identifies a field used by the format,\n\
+              \ then its indices are set to the beginning and end of the first such\n\
+              \ field encountered."
+          - name: formatToCharacterIterator
+            modifiers:
+            - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The object to format
+            return:
+              type:
+                basic: AttributedCharacterIterator
+                full: java.text.AttributedCharacterIterator
+              notes: AttributedCharacterIterator describing the formatted value.
+            notes: "Formats an Object producing an AttributedCharacterIterator.\n\
+              \ You can use the returned AttributedCharacterIterator\n to build the\
+              \ resulting String, as well as to determine information\n about the\
+              \ resulting String.\n \n Each attribute key of the AttributedCharacterIterator\
+              \ will be of type\n Field. It is up to each Format implementation\n\
+              \ to define what the legal values are for each attribute in the\n AttributedCharacterIterator,\
+              \ but typically the attribute\n key is also used as the attribute value.\n\
+              \ The default implementation creates an\n AttributedCharacterIterator\
+              \ with no attributes. Subclasses\n that support fields should override\
+              \ this and create an\n AttributedCharacterIterator with meaningful attributes."
+          - name: parseObject
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: A String, part of which should be parsed.
+            - name: pos
               type:
                 basic: ParsePosition
                 full: java.text.ParsePosition
+              notes: "A ParsePosition object with index and error\n            index\
+                \ information as described above."
             return:
               type:
                 basic: Object
                 full: java.lang.Object
-          javaType: class
-          extends: Object
+              notes: "An Object parsed from the string. In case of\n         error,\
+                \ returns null."
+            notes: "Parses text from a string to produce an object.\n \n The method\
+              \ attempts to parse text starting at the index given by\n pos.\n If\
+              \ parsing succeeds, then the index of pos is updated\n to the index\
+              \ after the last character used (parsing does not necessarily\n use\
+              \ all characters up to the end of the string), and the parsed\n object\
+              \ is returned. The updated pos can be used to\n indicate the starting\
+              \ point for the next call to this method.\n If an error occurs, then\
+              \ the index of pos is not\n changed, the error index of pos is set to\
+              \ the index of\n the character where the error occurred, and null is\
+              \ returned."
+          - name: parseObject
+            modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: A String whose beginning should be parsed.
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: An Object parsed from the string.
+            notes: "Parses text from the beginning of the given string to produce\
+              \ an object.\n The method may not use the entire text of the given string."

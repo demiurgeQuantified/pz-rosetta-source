@@ -4,9 +4,128 @@ languages:
     packages:
       java.security:
         Provider.Service:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The description of a security service. It encapsulates the properties\n\
+            \ of a service and contains a factory method to obtain new implementation\n\
+            \ instances of this service.\n\n Each service has a provider that offers\
+            \ the service, a type,\n an algorithm name, and the name of the class\
+            \ that implements the\n service. Optionally, it also includes a list of\
+            \ alternate algorithm\n names for this service (aliases) and attributes,\
+            \ which are a map of\n (name, value) String pairs.\n\n This class defines\
+            \ the methods supportsParameter() and newInstance()\n which are used by\
+            \ the Java security framework when it searches for\n suitable services\
+            \ and instantiates them. The valid arguments to those\n methods depend\
+            \ on the type of service. For the service types defined\n within Java\
+            \ SE, see the\n Java Cryptography Architecture (JCA) Reference Guide\n\
+            \ for the valid values.\n Note that components outside of Java SE can\
+            \ define additional types of\n services and their behavior.\n\n Instances\
+            \ of this class are immutable."
+          fields:
+            algorithm:
+              name: algorithm
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            aliases:
+              name: aliases
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.lang.String>
+            attributes:
+              name: attributes
+              modifiers:
+              - private
+              type:
+                basic: Map
+                full: java.util.Map<java.security.Provider$UString, java.lang.String>
+            classCache:
+              name: classCache
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            className:
+              name: className
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            constructorCache:
+              name: constructorCache
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            engineDescription:
+              name: engineDescription
+              modifiers:
+              - private
+              type:
+                basic: Provider.EngineDescription
+                full: java.security.Provider$EngineDescription
+            hasKeyAttributes:
+              name: hasKeyAttributes
+              modifiers:
+              - private
+              type:
+                basic: Boolean
+                full: java.lang.Boolean
+            provider:
+              name: provider
+              modifiers:
+              - private
+              type:
+                basic: Provider
+                full: java.security.Provider
+            registered:
+              name: registered
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            supportedClasses:
+              name: supportedClasses
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
+            supportedFormats:
+              name: supportedFormats
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String[]
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            CLASS0:
+              name: CLASS0
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Class
+                full: java.lang.Class<?>[]
           constructors:
           - modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
@@ -20,26 +139,70 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg3
+          - modifiers:
+            - public
+            parameters:
+            - name: provider
+              type:
+                basic: Provider
+                full: java.security.Provider
+              notes: the provider that offers this service
+            - name: type
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg4
+              notes: the type of this service
+            - name: algorithm
               type:
-                basic: List<String>
+                basic: String
+                full: java.lang.String
+              notes: the algorithm name
+            - name: className
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the class implementing this service
+            - name: aliases
+              type:
+                basic: List
                 full: java.util.List<java.lang.String>
-            - name: arg5
+              notes: List of aliases or null if algorithm has no aliases
+            - name: attributes
               type:
-                basic: Map<String, String>
+                basic: Map
                 full: java.util.Map<java.lang.String, java.lang.String>
+              notes: "Map of attributes or null if this implementation\n         \
+                \          has no attributes"
+            notes: Construct a new service.
           methods:
-          - name: __toString__
+          - name: addAlias
             modifiers:
-            - public
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
             return:
               type:
+                basic: void
+                full: void
+          - name: addAttribute
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
                 basic: String
                 full: java.lang.String
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: void
+                full: void
           - name: getAlgorithm
             modifiers:
             - public
@@ -48,19 +211,35 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the algorithm of this service
+            notes: "Return the name of the algorithm of this service. For example,\n\
+              \ SHA-1."
+          - name: getAliases
+            modifiers:
+            - private
+            - final
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.lang.String>
           - name: getAttribute
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the requested attribute
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the value of the specified attribute or null if the\n      \
+                \   attribute is not present"
+            notes: "Return the value of the specified attribute or null if this\n\
+              \ attribute is not set for this Service."
           - name: getClassName
             modifiers:
             - public
@@ -69,6 +248,34 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the class implementing this service
+            notes: Return the name of the class implementing this service.
+          - name: getDefaultConstructor
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Constructor
+                full: java.lang.reflect.Constructor<?>
+          - name: getImplClass
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+          - name: getKeyClass
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Class
+                full: java.lang.Class<?>
           - name: getProvider
             modifiers:
             - public
@@ -77,6 +284,8 @@ languages:
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: the Provider of this service
+            notes: Return the Provider of this service.
           - name: getType
             modifiers:
             - public
@@ -85,29 +294,122 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: newInstance
+              notes: the type of this service
+            notes: Get the type of this service. For example, MessageDigest.
+          - name: hasKeyAttributes
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: Object
-                full: java.lang.Object
-          - name: supportsParameter
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
+            - private
             return:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+          - name: isValid
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: newInstance
+            modifiers:
+            - public
+            parameters:
+            - name: constructorParameter
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "the value to pass to the constructor,\n or null if this type\
+                \ of service does not use a constructorParameter."
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a new implementation of this service
+            notes: "Return a new instance of the implementation described by this\n\
+              \ service. The security provider framework uses this method to\n construct\
+              \ implementations. Applications will typically not need\n to call it.\n\
+              \n The default implementation uses reflection to invoke the\n standard\
+              \ constructor for this type of service.\n Security providers can override\
+              \ this method to implement\n instantiation in a different way.\n For\
+              \ details and the values of constructorParameter that are\n valid for\
+              \ the various types of services see the\n Java Cryptography Architecture\
+              \ (JCA) Reference Guide."
+          - name: newInstanceOf
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: newInstanceUtil
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: supportsKeyClass
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Key
+                full: java.security.Key
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: supportsKeyFormat
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Key
+                full: java.security.Key
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: supportsParameter
+            modifiers:
+            - public
+            parameters:
+            - name: parameter
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the parameter to test
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "false if this service cannot use the specified\n parameter;\
+                \ true if it can possibly use the parameter"
+            notes: "Test whether this Service can use the specified parameter.\n Returns\
+              \ false if this service cannot use the parameter. Returns\n true if\
+              \ this service can use the parameter, if a fast test is\n infeasible,\
+              \ or if the status is unknown.\n\n The security provider framework uses\
+              \ this method with\n some types of services to quickly exclude non-matching\n\
+              \ implementations for consideration.\n Applications will typically not\
+              \ need to call it.\n\n For details and the values of parameter that\
+              \ are valid for the\n various types of services see the top of this\
+              \ class and the\n Java Cryptography Architecture (JCA) Reference Guide.\n\
+              \ Security providers can override it to implement their own test."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

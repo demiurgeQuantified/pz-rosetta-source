@@ -4,596 +4,786 @@ languages:
     packages:
       java.awt.font:
         TextAttribute:
+          extends: java.text.AttributedCharacterIterator$Attribute
+          modifiers:
+          - public
+          - final
           staticFields:
             BACKGROUND:
               name: BACKGROUND
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the paint used to render the background of\n\
+                \ the text.  Values are instances of Paint.\n The default value is\
+                \ null, indicating that the background\n should not be rendered.\n\
+                \n The logical bounds of the text will be filled using this\n Paint,\
+                \ and then the text will be rendered on top\n of it (but see SWAP_COLORS).\n\
+                \n The visual bounds of the text is extended to include the\n logical\
+                \ bounds, if necessary.  The outline is not affected."
             BIDI_EMBEDDING:
               name: BIDI_EMBEDDING
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the embedding level of the text.  Values are\n\
+                \ instances of Integer.  The default value is\n null, indicating that\
+                \ the Bidirectional\n algorithm should run without explicit embeddings.\n\
+                \n Positive values 1 through 61 are embedding levels,\n negative values\
+                \ -1 through -61 are override levels.\n The value 0 means that the\
+                \ base line direction is used.  These\n levels are passed in the embedding\
+                \ levels array to the Bidi constructor.\n\n Note: When this attribute\
+                \ is present anywhere in\n a paragraph, then any Unicode bidi control\
+                \ characters (RLO,\n LRO, RLE, LRE, and PDF) in the paragraph are\n\
+                \ disregarded, and runs of text where this attribute is not\n present\
+                \ are treated as though it were present and had the value\n 0."
             CHAR_REPLACEMENT:
               name: CHAR_REPLACEMENT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for a user-defined glyph to display in lieu\n\
+                \ of the font's standard glyph for a character.  Values are\n instances\
+                \ of GraphicAttribute.  The default value is null,\n indicating that\
+                \ the standard glyphs provided by the font\n should be used.\n\n This\
+                \ attribute is used to reserve space for a graphic or\n other component\
+                \ embedded in a line of text.  It is required for\n correct positioning\
+                \ of 'inline' components within a line when\n bidirectional reordering\
+                \ (see Bidi) is\n performed.  Each character (Unicode code point)\
+                \ will be\n rendered using the provided GraphicAttribute. Typically,\
+                \ the\n characters to which this attribute is applied should be\n\
+                \ \\uFFFC.\n\n The GraphicAttribute determines the logical and visual\n\
+                \ bounds of the text; the actual Font values are ignored."
             FAMILY:
               name: FAMILY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the font name.  Values are instances of\n\
+                \ String.  The default value is\n \"Default\", which causes the platform\
+                \ default font\n family to be used.\n\n  The Font class defines constants\
+                \ for the logical\n font names\n DIALOG,\n DIALOG_INPUT,\n SANS_SERIF,\n\
+                \ SERIF, and\n MONOSPACED.\n\n This defines the value passed as name\
+                \ to the\n Font constructor.  Both logical and physical\n font names\
+                \ are allowed. If a font with the requested name\n is not found, the\
+                \ default font is used.\n\n Note: This attribute is unfortunately\
+                \ misnamed, as\n it specifies the face name and not just the family.\
+                \  Thus\n values such as \"Lucida Sans Bold\" will select that face\
+                \ if it\n exists.  Note, though, that if the requested face does not\n\
+                \ exist, the default will be used with regular weight.\n The \"Bold\"\
+                \ in the name is part of the face name, not a separate\n request that\
+                \ the font's weight be bold."
             FONT:
               name: FONT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key used to provide the font to use to render text.\n\
+                \ Values are instances of Font.  The default\n value is null, indicating\
+                \ that normal resolution of a\n Font from attributes should be performed.\n\
+                \n TextLayout and\n AttributedCharacterIterator work in terms of\n\
+                \ Maps of TextAttributes.  Normally,\n all the attributes are examined\
+                \ and used to select and\n configure a Font instance.  If a FONT\n\
+                \ attribute is present, though, its associated Font\n will be used.\
+                \  This provides a way for users to override the\n resolution of font\
+                \ attributes into a Font, or\n force use of a particular Font instance.\
+                \  This\n also allows users to specify subclasses of Font in\n cases\
+                \ where a Font can be subclassed.\n\n FONT is used for special situations\
+                \ where\n clients already have a Font instance but still\n need to\
+                \ use Map-based APIs.  Typically, there will\n be no other attributes\
+                \ in the Map except the\n FONT attribute.  With Map-based APIs\n the\
+                \ common case is to specify all attributes individually, so\n FONT\
+                \ is not needed or desirable.\n\n However, if both FONT and other\
+                \ attributes are\n present in the Map, the rendering system will\n\
+                \ merge the attributes defined in the Font with the\n additional attributes.\
+                \  This merging process classifies\n TextAttributes into two groups.\
+                \  One group, the\n 'primary' group, is considered fundamental to\
+                \ the selection and\n metric behavior of a font.  These attributes\
+                \ are\n FAMILY, WEIGHT, WIDTH,\n POSTURE, SIZE,\n TRANSFORM, SUPERSCRIPT,\
+                \ and\n TRACKING. The other group, the 'secondary' group,\n consists\
+                \ of all other defined attributes, with the exception of\n FONT itself.\n\
+                \n To generate the new Map, first the\n Font is obtained from the\
+                \ FONT\n attribute, and all of its attributes extracted into a\n new\
+                \ Map.  Then only the secondary\n attributes from the original Map\
+                \ are added to\n those in the new Map.  Thus the values of primary\n\
+                \ attributes come solely from the Font, and the\n values of secondary\
+                \ attributes originate with the\n Font but can be overridden by other\
+                \ values in the\n Map.\n\n Note:Font's Map-based\n constructor and\
+                \ deriveFont methods do not process\n the FONT attribute, as these\
+                \ are used to create\n new Font objects.  Instead, Font.getFont(Map)\
+                \ should be used to\n handle the FONT attribute."
             FOREGROUND:
               name: FOREGROUND
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the paint used to render the text.  Values\
+                \ are\n instances of Paint.  The default value is\n null, indicating\
+                \ that the Paint set on the\n Graphics2D at the time of rendering\
+                \ is used.\n\n Glyphs will be rendered using this\n Paint regardless\
+                \ of the Paint value\n set on the Graphics (but see SWAP_COLORS)."
             INPUT_METHOD_HIGHLIGHT:
               name: INPUT_METHOD_HIGHLIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for input method highlight styles.\n\n Values\
+                \ are instances of InputMethodHighlight or Annotation.  The default\
+                \ value is null,\n which means that input method styles should not\
+                \ be applied\n before rendering.\n\n If adjacent runs of text with\
+                \ the same\n InputMethodHighlight need to be rendered\n separately,\
+                \ the InputMethodHighlights should be\n wrapped in Annotation instances.\n\
+                \n Input method highlights are used while text is being\n composed\
+                \ by an input method. Text editing components should\n retain them\
+                \ even if they generally only deal with unstyled\n text, and make\
+                \ them available to the drawing routines."
             INPUT_METHOD_UNDERLINE:
               name: INPUT_METHOD_UNDERLINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for input method underlines.  Values\n are instances\
+                \ of Integer.  The default\n value is -1, which means no underline.\n\
+                \n Several constant values are provided, see UNDERLINE_LOW_ONE_PIXEL,\
+                \ UNDERLINE_LOW_TWO_PIXEL,\n UNDERLINE_LOW_DOTTED, UNDERLINE_LOW_GRAY,\
+                \ and\n UNDERLINE_LOW_DASHED.\n\n This may be used in conjunction\
+                \ with UNDERLINE if\n desired.  The primary purpose is for use by\
+                \ input methods.\n Other use of these underlines for simple ornamentation\
+                \ might\n confuse users.\n\n The input method underline affects both\
+                \ the visual bounds and\n the outline of the text."
             JUSTIFICATION:
               name: JUSTIFICATION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the justification of a paragraph.  Values\
+                \ are\n instances of Number.  The default value is\n 1, indicating\
+                \ that justification should use the full width\n provided.  Values\
+                \ are pinned to the range [0..1].\n\n The constants JUSTIFICATION_FULL\
+                \ and JUSTIFICATION_NONE are provided.\n\n Specifies the fraction\
+                \ of the extra space to use when\n justification is requested on a\
+                \ TextLayout. For\n example, if the line is 50 points wide and it\
+                \ is requested to\n justify to 70 points, a value of 0.75 will pad\
+                \ to use\n three-quarters of the remaining space, or 15 points, so\
+                \ that\n the resulting line will be 65 points in length.\n\n Note:\
+                \ This should have the same value for all the\n text in a paragraph,\
+                \ otherwise the behavior is undetermined."
             JUSTIFICATION_FULL:
               name: JUSTIFICATION_FULL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: "Justify the line to the full requested width.  This is the\n\
+                \ default value for JUSTIFICATION."
             JUSTIFICATION_NONE:
               name: JUSTIFICATION_NONE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: Do not allow the line to be justified.
             KERNING:
               name: KERNING
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key to request kerning. Values are instances of\n\
+                \ Integer.  The default value is\n 0, which does not request kerning.\n\
+                \n The constant value KERNING_ON is provided.\n\n The default advances\
+                \ of single characters are not\n appropriate for some character sequences,\
+                \ for example \"To\" or\n \"AWAY\".  Without kerning the adjacent\
+                \ characters appear to be\n separated by too much space.  Kerning\
+                \ causes selected sequences\n of characters to be spaced differently\
+                \ for a more pleasing\n visual appearance."
             KERNING_ON:
               name: KERNING_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Request standard kerning.
             LIGATURES:
               name: LIGATURES
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for enabling optional ligatures. Values are\n\
+                \ instances of Integer.  The default value is\n 0, which means do\
+                \ not use optional ligatures.\n\n The constant value LIGATURES_ON\
+                \ is defined.\n\n Ligatures required by the writing system are always\
+                \ enabled."
             LIGATURES_ON:
               name: LIGATURES_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Request standard optional ligatures.
             NUMERIC_SHAPING:
               name: NUMERIC_SHAPING
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for converting ASCII decimal digits to other\n\
+                \ decimal ranges.  Values are instances of NumericShaper.\n The default\
+                \ is null, which means do not perform\n numeric shaping.\n\n When\
+                \ a numeric shaper is defined, the text is first\n processed by the\
+                \ shaper before any other analysis of the text\n is performed.\n\n\
+                \ Note: This should have the same value for all the\n text in the\
+                \ paragraph, otherwise the behavior is undetermined."
             POSTURE:
               name: POSTURE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the posture of a font.  Values are instances\n\
+                \ of Number. The default value is\n POSTURE_REGULAR.\n\n Two constant\
+                \ values are provided, POSTURE_REGULAR\n and POSTURE_OBLIQUE. The\
+                \ value\n POSTURE_OBLIQUE corresponds to the style value\n Font.ITALIC\
+                \ as passed to the Font\n constructor.\n\n The value is roughly the\
+                \ slope of the stems of the font,\n expressed as the run over the\
+                \ rise.  Positive values lean right.\n\n The system can interpolate\
+                \ the provided value.\n\n This will affect the font's italic angle\
+                \ as returned by\n Font.getItalicAngle."
             POSTURE_OBLIQUE:
               name: POSTURE_OBLIQUE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The standard italic posture.
             POSTURE_REGULAR:
               name: POSTURE_REGULAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: "The standard posture, upright.  This is the default value for\n\
+                \ POSTURE."
             RUN_DIRECTION:
               name: RUN_DIRECTION
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the run direction of the line.  Values are\n\
+                \ instances of Boolean.  The default value is\n null, which indicates\
+                \ that the standard Bidi algorithm for\n determining run direction\
+                \ should be used with the value Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT.\n\
+                \n The constants RUN_DIRECTION_RTL and RUN_DIRECTION_LTR are provided.\n\
+                \n This determines the value passed to the Bidi constructor to select\
+                \ the primary direction of\n the text in the paragraph.\n\n Note:\
+                \ This attribute should have the same value for\n all the text in\
+                \ a paragraph, otherwise the behavior is\n undetermined."
             RUN_DIRECTION_LTR:
               name: RUN_DIRECTION_LTR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Boolean
                 full: java.lang.Boolean
-                nullable: true
+              notes: Left-to-right run direction.
             RUN_DIRECTION_RTL:
               name: RUN_DIRECTION_RTL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Boolean
                 full: java.lang.Boolean
-                nullable: true
+              notes: Right-to-left run direction.
             SIZE:
               name: SIZE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the font size.  Values are instances of\n\
+                \ Number.  The default value is 12pt.\n\n This corresponds to the\
+                \ size parameter to the\n Font constructor.\n\n Very large or small\
+                \ sizes will impact rendering performance,\n and the rendering system\
+                \ might not render text at these sizes.\n Negative sizes are illegal\
+                \ and result in the default size.\n\n Note that the appearance and\
+                \ metrics of a 12pt font with a\n 2x transform might be different\
+                \ than that of a 24 point font\n with no transform."
             STRIKETHROUGH:
               name: STRIKETHROUGH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for strikethrough.  Values are instances of\n\
+                \ Boolean.  The default value is\n false, which means no strikethrough.\n\
+                \n The constant value STRIKETHROUGH_ON is provided.\n\n The strikethrough\
+                \ affects both the visual bounds and the\n outline of the text."
             STRIKETHROUGH_ON:
               name: STRIKETHROUGH_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Boolean
                 full: java.lang.Boolean
-                nullable: true
+              notes: A single strikethrough.
             SUPERSCRIPT:
               name: SUPERSCRIPT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for superscripting and subscripting.  Values are\n\
+                \ instances of Integer.  The default value is\n 0, which means that\
+                \ no superscript or subscript is used.\n\n Two constant values are\
+                \ provided, see SUPERSCRIPT_SUPER and SUPERSCRIPT_SUB.  These have\n\
+                \ the values 1 and -1 respectively.  Values of\n greater magnitude\
+                \ define greater levels of superscript or\n subscripting, for example,\
+                \ 2 corresponds to super-superscript,\n 3 to super-super-superscript,\
+                \ and similarly for negative values\n and subscript, up to a level\
+                \ of 7 (or -7).  Values beyond this\n range are reserved; behavior\
+                \ is platform-dependent.\n\n SUPERSCRIPT can\n impact the ascent and\
+                \ descent of a font.  The ascent\n and descent can never become negative,\
+                \ however."
             SUPERSCRIPT_SUB:
               name: SUPERSCRIPT_SUB
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Standard subscript.
             SUPERSCRIPT_SUPER:
               name: SUPERSCRIPT_SUPER
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Standard superscript.
             SWAP_COLORS:
               name: SWAP_COLORS
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for swapping foreground and background\n Paints.\
+                \  Values are instances of\n Boolean.  The default value is\n false,\
+                \ which means do not swap colors.\n\n The constant value SWAP_COLORS_ON\
+                \ is defined.\n\n If the FOREGROUND attribute is set, its\n Paint\
+                \ will be used as the background, otherwise\n the Paint currently\
+                \ on the Graphics\n will be used.  If the BACKGROUND attribute is\
+                \ set, its\n Paint will be used as the foreground, otherwise\n the\
+                \ system will find a contrasting color to the\n (resolved) background\
+                \ so that the text will be visible."
             SWAP_COLORS_ON:
               name: SWAP_COLORS_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Boolean
                 full: java.lang.Boolean
-                nullable: true
+              notes: Swap foreground and background.
             TRACKING:
               name: TRACKING
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key to control tracking.  Values are instances of\n\
+                \ Number.  The default value is\n 0, which means no additional tracking.\n\
+                \n The constant values TRACKING_TIGHT and TRACKING_LOOSE are provided.\n\
+                \n The tracking value is multiplied by the font point size and\n passed\
+                \ through the font transform to determine an additional\n amount to\
+                \ add to the advance of each glyph cluster.  Positive\n tracking values\
+                \ will inhibit formation of optional ligatures.\n Tracking values\
+                \ are typically between -0.1 and\n 0.3; values outside this range\
+                \ are generally not\n desirable."
             TRACKING_LOOSE:
               name: TRACKING_LOOSE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: Perform loose tracking.
             TRACKING_TIGHT:
               name: TRACKING_TIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: Perform tight tracking.
             TRANSFORM:
               name: TRANSFORM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the transform of a font.  Values are\n instances\
+                \ of TransformAttribute.  The\n default value is TransformAttribute.IDENTITY.\n\
+                \n The TransformAttribute class defines the\n constant IDENTITY.\n\
+                \n This corresponds to the transform passed to\n Font.deriveFont(AffineTransform).\
+                \  Since that\n transform is mutable and TextAttribute values must\n\
+                \ not be, the TransformAttribute wrapper class is\n used.\n\n The\
+                \ primary intent is to support scaling and skewing, though\n other\
+                \ effects are possible.\n\n Some transforms will cause the baseline\
+                \ to be rotated and/or\n shifted.  The text and the baseline are transformed\
+                \ together so\n that the text follows the new baseline.  For example,\
+                \ with text\n on a horizontal baseline, the new baseline follows the\n\
+                \ direction of the unit x vector passed through the\n transform. Text\
+                \ metrics are measured against this new baseline.\n So, for example,\
+                \ with other things being equal, text rendered\n with a rotated TRANSFORM\
+                \ and an unrotated TRANSFORM will measure as\n having the same ascent,\
+                \ descent, and advance.\n\n In styled text, the baselines for each\
+                \ such run are aligned\n one after the other to potentially create\
+                \ a non-linear baseline\n for the entire run of text. For more information,\
+                \ see TextLayout.getLayoutPath()."
             UNDERLINE:
               name: UNDERLINE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for underline.  Values are instances of\n Integer.\
+                \  The default value is -1, which\n means no underline.\n\n The constant\
+                \ value UNDERLINE_ON is provided.\n\n The underline affects both the\
+                \ visual bounds and the outline\n of the text."
             UNDERLINE_LOW_DASHED:
               name: UNDERLINE_LOW_DASHED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Single pixel dashed low underline.
             UNDERLINE_LOW_DOTTED:
               name: UNDERLINE_LOW_DOTTED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Single pixel dotted low underline.
             UNDERLINE_LOW_GRAY:
               name: UNDERLINE_LOW_GRAY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Double pixel gray low underline.
             UNDERLINE_LOW_ONE_PIXEL:
               name: UNDERLINE_LOW_ONE_PIXEL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Single pixel solid low underline.
             UNDERLINE_LOW_TWO_PIXEL:
               name: UNDERLINE_LOW_TWO_PIXEL
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Double pixel solid low underline.
             UNDERLINE_ON:
               name: UNDERLINE_ON
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Integer
                 full: java.lang.Integer
-                nullable: true
+              notes: Standard underline.
             WEIGHT:
               name: WEIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the weight of a font.  Values are instances\n\
+                \ of Number.  The default value is\n WEIGHT_REGULAR.\n\n Several constant\
+                \ values are provided, see WEIGHT_EXTRA_LIGHT, WEIGHT_LIGHT, WEIGHT_DEMILIGHT,\
+                \ WEIGHT_REGULAR, WEIGHT_SEMIBOLD, WEIGHT_MEDIUM, WEIGHT_DEMIBOLD,\
+                \ WEIGHT_BOLD, WEIGHT_HEAVY,\n WEIGHT_EXTRABOLD, and WEIGHT_ULTRABOLD.\
+                \  The\n value WEIGHT_BOLD corresponds to the\n style value Font.BOLD\
+                \ as passed to the\n Font constructor.\n\n The value is roughly the\
+                \ ratio of the stem width to that of\n the regular weight.\n\n The\
+                \ system can interpolate the provided value."
             WEIGHT_BOLD:
               name: WEIGHT_BOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The standard bold weight.
             WEIGHT_DEMIBOLD:
               name: WEIGHT_DEMIBOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: A moderately lighter weight than WEIGHT_BOLD.
             WEIGHT_DEMILIGHT:
               name: WEIGHT_DEMILIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: "An intermediate weight between WEIGHT_LIGHT and\n WEIGHT_STANDARD."
             WEIGHT_EXTRABOLD:
               name: WEIGHT_EXTRABOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: An extra heavy weight.
             WEIGHT_EXTRA_LIGHT:
               name: WEIGHT_EXTRA_LIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The lightest predefined weight.
             WEIGHT_HEAVY:
               name: WEIGHT_HEAVY
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: A moderately heavier weight than WEIGHT_BOLD.
             WEIGHT_LIGHT:
               name: WEIGHT_LIGHT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The standard light weight.
             WEIGHT_MEDIUM:
               name: WEIGHT_MEDIUM
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: "An intermediate weight between WEIGHT_REGULAR and\n WEIGHT_BOLD."
             WEIGHT_REGULAR:
               name: WEIGHT_REGULAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The standard weight. This is the default value for WEIGHT.
             WEIGHT_SEMIBOLD:
               name: WEIGHT_SEMIBOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: A moderately heavier weight than WEIGHT_REGULAR.
             WEIGHT_ULTRABOLD:
               name: WEIGHT_ULTRABOLD
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The heaviest predefined weight.
             WIDTH:
               name: WIDTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: TextAttribute
                 full: java.awt.font.TextAttribute
-                nullable: true
+              notes: "Attribute key for the width of a font.  Values are instances\
+                \ of\n Number.  The default value is\n WIDTH_REGULAR.\n\n Several\
+                \ constant values are provided, see WIDTH_CONDENSED, WIDTH_SEMI_CONDENSED,\
+                \ WIDTH_REGULAR, WIDTH_SEMI_EXTENDED, WIDTH_EXTENDED.\n\n The value\
+                \ is roughly the ratio of the advance width to that\n of the regular\
+                \ width.\n\n The system can interpolate the provided value."
             WIDTH_CONDENSED:
               name: WIDTH_CONDENSED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The most condensed predefined width.
             WIDTH_EXTENDED:
               name: WIDTH_EXTENDED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: The most extended predefined width.
             WIDTH_REGULAR:
               name: WIDTH_REGULAR
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: "The standard width. This is the default value for\n WIDTH."
             WIDTH_SEMI_CONDENSED:
               name: WIDTH_SEMI_CONDENSED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
+              notes: A moderately condensed width.
             WIDTH_SEMI_EXTENDED:
               name: WIDTH_SEMI_EXTENDED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Float
                 full: java.lang.Float
-                nullable: true
-          javaType: class
-          extends: AttributedCharacterIterator.Attribute
+              notes: A moderately extended width.
+            instanceMap:
+              name: instanceMap
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Map
+                full: java.util.Map<java.lang.String, java.awt.font.TextAttribute>
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the attribute name to assign to this\n TextAttribute"
+            notes: Constructs a TextAttribute with the specified name.
+          methods:
+          - name: readResolve
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the resolved Attribute object
+            notes: Resolves instances being deserialized to the predefined constants.

@@ -4,33 +4,180 @@ languages:
     packages:
       java.net:
         InetAddress:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          fields:
+            canonicalHostName:
+              name: canonicalHostName
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            holder:
+              name: holder
+              modifiers:
+              - package
+              type:
+                basic: InetAddress.InetAddressHolder
+                full: java.net.InetAddress$InetAddressHolder
+          staticFields:
+            FIELDS_OFFSET:
+              name: FIELDS_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            IPv4:
+              name: IPv4
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            IPv6:
+              name: IPv6
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            PREFER_IPV4_VALUE:
+              name: PREFER_IPV4_VALUE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            PREFER_IPV6_VALUE:
+              name: PREFER_IPV6_VALUE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            PREFER_SYSTEM_VALUE:
+              name: PREFER_SYSTEM_VALUE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            UNSAFE:
+              name: UNSAFE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            cache:
+              name: cache
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.lang.String, java.net.InetAddress$Addresses>
+            cachedLocalHost:
+              name: cachedLocalHost
+              modifiers:
+              - private
+              - static
+              type:
+                basic: InetAddress.CachedLocalHost
+                full: java.net.InetAddress$CachedLocalHost
+            expirySet:
+              name: expirySet
+              modifiers:
+              - private
+              - static
+              type:
+                basic: NavigableSet
+                full: java.util.NavigableSet<java.net.InetAddress$CachedAddresses>
+            impl:
+              name: impl
+              modifiers:
+              - package
+              - static
+              type:
+                basic: InetAddressImpl
+                full: java.net.InetAddressImpl
+            nameService:
+              name: nameService
+              modifiers:
+              - private
+              - static
+              type:
+                basic: InetAddress.NameService
+                full: java.net.InetAddress$NameService
+            preferIPv6Address:
+              name: preferIPv6Address
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare against.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the objects are the same;\n          false otherwise."
+            notes: "Compares this object against the specified object.\n The result\
+              \ is true if and only if the argument is\n not null and it represents\
+              \ the same IP address as\n this object.\n \n Two instances of InetAddress\
+              \ represent the same IP\n address if the length of the byte arrays returned\
+              \ by\n getAddress is the same for both, and each of the\n array components\
+              \ is the same for the byte arrays."
           - name: getAddress
             modifiers:
             - public
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the raw IP address of this object.
+            notes: "Returns the raw IP address of this InetAddress\n object. The result\
+              \ is in network byte order: the highest order\n byte of the address\
+              \ is in getAddress()[0]."
           - name: getCanonicalHostName
             modifiers:
             - public
@@ -38,6 +185,17 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the fully qualified domain name for this IP address,\n    or\
+                \ if the operation is not allowed by the security check,\n    the\
+                \ textual representation of the IP address."
+            notes: "Gets the fully qualified domain name for this IP address.\n Best\
+              \ effort method, meaning we may not be able to return\n the FQDN depending\
+              \ on the underlying system configuration.\n\n If there is a security\
+              \ manager, this method first\n calls its checkConnect method\n with\
+              \ the hostname and -1\n as its arguments to see if the calling code\
+              \ is allowed to know\n the hostname for this IP address, i.e., to connect\
+              \ to the host.\n If the operation is not allowed, it will return\n the\
+              \ textual representation of the IP address."
           - name: getHostAddress
             modifiers:
             - public
@@ -45,9 +203,35 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the raw IP address in a string format.
+            notes: Returns the IP address string in textual presentation.
           - name: getHostName
             modifiers:
             - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the host name for this IP address, or if the operation\n   \
+                \ is not allowed by the security check, the textual\n    representation\
+                \ of the IP address."
+            notes: "Gets the host name for this IP address.\n\n If this InetAddress\
+              \ was created with a host name,\n this host name will be remembered\
+              \ and returned;\n otherwise, a reverse name lookup will be performed\n\
+              \ and the result will be returned based on the system\n configured name\
+              \ lookup service. If a lookup of the name service\n is required, call\n\
+              \ getCanonicalHostName.\n\n If there is a security manager, its\n checkConnect\
+              \ method is first called\n with the hostname and -1\n as its arguments\
+              \ to see if the operation is allowed.\n If the operation is not allowed,\
+              \ it will return\n the textual representation of the IP address."
+          - name: getHostName
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: String
@@ -59,6 +243,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this IP address.
+            notes: Returns a hashcode for this IP address.
+          - name: holder
+            modifiers:
+            - package
+            return:
+              type:
+                basic: InetAddress.InetAddressHolder
+                full: java.net.InetAddress$InetAddressHolder
           - name: isAnyLocalAddress
             modifiers:
             - public
@@ -66,6 +259,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the InetAddress is\n         a wildcard\
+                \ address."
+            notes: Utility routine to check if the InetAddress is a wildcard address.
           - name: isLinkLocalAddress
             modifiers:
             - public
@@ -73,6 +269,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the InetAddress is\n a link local address;\
+                \ or false if address is not a link local unicast address."
+            notes: Utility routine to check if the InetAddress is an link local address.
           - name: isLoopbackAddress
             modifiers:
             - public
@@ -80,6 +279,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the InetAddress is\n a loopback address;\
+                \ or false otherwise."
+            notes: Utility routine to check if the InetAddress is a loopback address.
           - name: isMCGlobal
             modifiers:
             - public
@@ -87,6 +289,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the address has\n         is a multicast\
+                \ address of global scope, false if it is not\n         of global\
+                \ scope or it is not a multicast address"
+            notes: Utility routine to check if the multicast address has global scope.
           - name: isMCLinkLocal
             modifiers:
             - public
@@ -94,6 +300,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the address has\n         is a multicast\
+                \ address of link-local scope, false if it is not\n         of link-local\
+                \ scope or it is not a multicast address"
+            notes: Utility routine to check if the multicast address has link scope.
           - name: isMCNodeLocal
             modifiers:
             - public
@@ -101,6 +311,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the address has\n         is a multicast\
+                \ address of node-local scope, false if it is not\n         of node-local\
+                \ scope or it is not a multicast address"
+            notes: Utility routine to check if the multicast address has node scope.
           - name: isMCOrgLocal
             modifiers:
             - public
@@ -108,6 +322,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the address has\n         is a multicast\
+                \ address of organization-local scope,\n         false if it is not\
+                \ of organization-local scope\n         or it is not a multicast address"
+            notes: Utility routine to check if the multicast address has organization
+              scope.
           - name: isMCSiteLocal
             modifiers:
             - public
@@ -115,6 +334,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the address has\n         is a multicast\
+                \ address of site-local scope, false if it is not\n         of site-local\
+                \ scope or it is not a multicast address"
+            notes: Utility routine to check if the multicast address has site scope.
           - name: isMulticastAddress
             modifiers:
             - public
@@ -122,38 +345,76 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "a boolean indicating if the InetAddress is\n an IP multicast\
+                \ address"
+            notes: "Utility routine to check if the InetAddress is an\n IP multicast\
+              \ address."
           - name: isReachable
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: int
                 full: int
+              notes: the time, in milliseconds, before the call aborts
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: a boolean indicating if the address is reachable.
+            notes: "Test whether that address is reachable. Best effort is made by\
+              \ the\n implementation to try to reach the host, but firewalls and server\n\
+              \ configuration may block requests resulting in a unreachable status\n\
+              \ while some specific ports may be accessible.\n A typical implementation\
+              \ will use ICMP ECHO REQUESTs if the\n privilege can be obtained, otherwise\
+              \ it will try to establish\n a TCP connection on port 7 (Echo) of the\
+              \ destination host.\n \n The timeout value, in milliseconds, indicates\
+              \ the maximum amount of time\n the try should take. If the operation\
+              \ times out before getting an\n answer, the host is deemed unreachable.\
+              \ A negative value will result\n in an IllegalArgumentException being\
+              \ thrown."
           - name: isReachable
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: netif
               type:
                 basic: NetworkInterface
                 full: java.net.NetworkInterface
-            - name: arg1
+              notes: "the NetworkInterface through which the\n                   \
+                \ test will be done, or null for any interface"
+            - name: ttl
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the maximum numbers of hops to try or 0 for the\n          \
+                \        default"
+            - name: timeout
               type:
                 basic: int
                 full: int
+              notes: the time, in milliseconds, before the call aborts
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: a boolean indicating if the address is reachable.
+            notes: "Test whether that address is reachable. Best effort is made by\
+              \ the\n implementation to try to reach the host, but firewalls and server\n\
+              \ configuration may block requests resulting in a unreachable status\n\
+              \ while some specific ports may be accessible.\n A typical implementation\
+              \ will use ICMP ECHO REQUESTs if the\n privilege can be obtained, otherwise\
+              \ it will try to establish\n a TCP connection on port 7 (Echo) of the\
+              \ destination host.\n \n The network interface and ttl parameters\n\
+              \ let the caller specify which network interface the test will go through\n\
+              \ and the maximum number of hops the packets should go through.\n A\
+              \ negative value for the ttl will result in an\n IllegalArgumentException\
+              \ being thrown.\n \n The timeout value, in milliseconds, indicates the\
+              \ maximum amount of time\n the try should take. If the operation times\
+              \ out before getting an\n answer, the host is deemed unreachable. A\
+              \ negative value will result\n in an IllegalArgumentException being\
+              \ thrown."
           - name: isSiteLocalAddress
             modifiers:
             - public
@@ -161,10 +422,66 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          staticMethods:
-          - name: getAllByName
+              notes: "a boolean indicating if the InetAddress is\n a site local address;\
+                \ or false if address is not a site local unicast address."
+            notes: Utility routine to check if the InetAddress is a site local address.
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readObjectNoData
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readResolve
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: toString
             modifiers:
             - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: anyLocalAddress
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+          - name: checkNumericZone
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -173,24 +490,19 @@ languages:
                 full: java.lang.String
             return:
               type:
-                basic: InetAddress[]
-                full: java.net.InetAddress[]
-          - name: getByAddress
+                basic: int
+                full: int
+          - name: createNameService
             modifiers:
-            - public
+            - private
             - static
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
             return:
               type:
-                basic: InetAddress
-                full: java.net.InetAddress
-          - name: getByAddress
+                basic: InetAddress.NameService
+                full: java.net.InetAddress$NameService
+          - name: getAddressesFromNameService
             modifiers:
-            - public
+            - package
             - static
             parameters:
             - name: arg0
@@ -199,15 +511,63 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
-                basic: byte[]
-                full: byte[]
+                basic: InetAddress
+                full: java.net.InetAddress
             return:
               type:
                 basic: InetAddress
-                full: java.net.InetAddress
-          - name: getByName
+                full: java.net.InetAddress[]
+          - name: getAllByName
             modifiers:
             - public
+            - static
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the host, or null.
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+              notes: an array of all the IP addresses for a given host name.
+            notes: "Given the name of a host, returns an array of its IP addresses,\n\
+              \ based on the configured name service on the system.\n\n  The host\
+              \ name can either be a machine name, such as\n \"www.example.com\",\
+              \ or a textual representation of its IP\n address. If a literal IP address\
+              \ is supplied, only the\n validity of the address format is checked.\n\
+              \n  For host specified in literal IPv6 address,\n either the form defined\
+              \ in RFC 2732 or the literal IPv6 address\n format defined in RFC 2373\
+              \ is accepted. A literal IPv6 address may\n also be qualified by appending\
+              \ a scoped zone identifier or scope_id.\n The syntax and usage of scope_ids\
+              \ is described\n here.\n\n  If the host is null or host.length() is\
+              \ equal\n to zero, then an InetAddress representing an address of the\n\
+              \ loopback interface is returned.\n See RFC 3330\n section 2 and RFC\
+              \ 2373\n section 2.5.3. \n\n  If there is a security manager, and host\
+              \ is not null\n or host.length()  is not equal to zero, the security\
+              \ manager's\n checkConnect method is called with the hostname and -1\n\
+              \ as its arguments to determine if the operation is allowed."
+          - name: getAllByName
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+          - name: getAllByName0
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
@@ -217,7 +577,162 @@ languages:
             return:
               type:
                 basic: InetAddress
+                full: java.net.InetAddress[]
+          - name: getAllByName0
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+          - name: getAllByName0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: InetAddress
                 full: java.net.InetAddress
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress[]
+          - name: getByAddress
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the specified host
+            - name: addr
+              type:
+                basic: byte
+                full: byte[]
+              notes: the raw IP address in network byte order
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: an InetAddress object created from the raw IP address.
+            notes: "Creates an InetAddress based on the provided host name and IP\
+              \ address.\n No name service is checked for the validity of the address.\n\
+              \n  The host name can either be a machine name, such as\n \"www.example.com\"\
+              , or a textual representation of its IP\n address.\n  No validity checking\
+              \ is done on the host name either.\n\n  If addr specifies an IPv4 address\
+              \ an instance of Inet4Address\n will be returned; otherwise, an instance\
+              \ of Inet6Address\n will be returned.\n\n  IPv4 address byte array must\
+              \ be 4 bytes long and IPv6 byte array\n must be 16 bytes long"
+          - name: getByAddress
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: addr
+              type:
+                basic: byte
+                full: byte[]
+              notes: the raw IP address in network byte order
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: an InetAddress object created from the raw IP address.
+            notes: "Returns an InetAddress object given the raw IP address .\n The\
+              \ argument is in network byte order: the highest order\n byte of the\
+              \ address is in getAddress()[0].\n\n  This method doesn't block, i.e.\
+              \ no reverse name service lookup\n is performed.\n\n  IPv4 address byte\
+              \ array must be 4 bytes long and IPv6 byte array\n must be 16 bytes\
+              \ long"
+          - name: getByName
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the specified host, or null.
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: an IP address for the given host name.
+            notes: "Determines the IP address of a host, given the host's name.\n\n\
+              \  The host name can either be a machine name, such as\n \"www.example.com\"\
+              , or a textual representation of its\n IP address. If a literal IP address\
+              \ is supplied, only the\n validity of the address format is checked.\n\
+              \n  For host specified in literal IPv6 address,\n either the form defined\
+              \ in RFC 2732 or the literal IPv6 address\n format defined in RFC 2373\
+              \ is accepted. IPv6 scoped addresses are also\n supported. See here\
+              \ for a description of IPv6\n scoped addresses.\n\n  If the host is\
+              \ null or host.length() is equal\n to zero, then an InetAddress representing\
+              \ an address of the\n loopback interface is returned.\n See RFC 3330\n\
+              \ section 2 and RFC 2373\n section 2.5.3.\n\n  If there is a security\
+              \ manager, and host is not null\n or host.length()  is not equal to\
+              \ zero, the security manager's\n checkConnect method is called with\
+              \ the hostname and -1\n as its arguments to determine if the operation\
+              \ is allowed."
+          - name: getByName
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+          - name: getHostFromNameService
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getLocalHost
             modifiers:
             - public
@@ -226,6 +741,15 @@ languages:
               type:
                 basic: InetAddress
                 full: java.net.InetAddress
+              notes: the address of the local host.
+            notes: "Returns the address of the local host. This is achieved by retrieving\n\
+              \ the name of the host from the system, then resolving that name into\n\
+              \ an InetAddress.\n\n Note: The resolved address may be cached for a\
+              \ short period of time.\n \n\n If there is a security manager, its\n\
+              \ checkConnect method is called\n with the local host name and -1\n\
+              \ as its arguments to see if the operation is allowed.\n If the operation\
+              \ is not allowed, an InetAddress representing\n the loopback address\
+              \ is returned."
           - name: getLoopbackAddress
             modifiers:
             - public
@@ -234,5 +758,29 @@ languages:
               type:
                 basic: InetAddress
                 full: java.net.InetAddress
-          javaType: class
-          extends: Object
+              notes: the InetAddress loopback instance.
+            notes: "Returns the loopback address.\n \n The InetAddress returned will\
+              \ represent the IPv4\n loopback address, 127.0.0.1, or the IPv6 loopback\n\
+              \ address, ::1. The IPv4 loopback address returned\n is only one of\
+              \ many in the form 127.*.*.*"
+          - name: init
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadImpl
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: InetAddressImpl
+                full: java.net.InetAddressImpl

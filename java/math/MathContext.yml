@@ -4,93 +4,167 @@ languages:
     packages:
       java.math:
         MathContext:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "Immutable objects which encapsulate the context settings which\n\
+            \ describe certain rules for numerical operators, such as those\n implemented\
+            \ by the BigDecimal class.\n\n The base-independent settings are:\n \n\
+            \ precision:\n the number of digits to be used for an operation; results\
+            \ are\n rounded to this precision\n\n roundingMode:\n a RoundingMode object\
+            \ which specifies the algorithm to be\n used for rounding."
+          fields:
+            precision:
+              name: precision
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            roundingMode:
+              name: roundingMode
+              modifiers:
+              - package
+              type:
+                basic: RoundingMode
+                full: java.math.RoundingMode
           staticFields:
             DECIMAL128:
               name: DECIMAL128
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: MathContext
                 full: java.math.MathContext
-                nullable: true
+              notes: "A MathContext object with a precision setting\n matching the\
+                \ precision of the IEEE 754-2019 decimal128 format, 34 digits, and\
+                \ a\n rounding mode of HALF_EVEN.\n Note the exponent range of decimal64\
+                \ is not used for\n rounding."
             DECIMAL32:
               name: DECIMAL32
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: MathContext
                 full: java.math.MathContext
-                nullable: true
+              notes: "A MathContext object with a precision setting\n matching the\
+                \ precision of the IEEE 754-2019 decimal32 format, 7 digits, and a\n\
+                \ rounding mode of HALF_EVEN.\n Note the exponent range of decimal32\
+                \ is not used for\n rounding."
             DECIMAL64:
               name: DECIMAL64
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: MathContext
                 full: java.math.MathContext
-                nullable: true
+              notes: "A MathContext object with a precision setting\n matching the\
+                \ precision of the IEEE 754-2019 decimal64 format, 16 digits, and\
+                \ a\n rounding mode of HALF_EVEN.\n Note the exponent range of decimal64\
+                \ is not used for\n rounding."
+            DEFAULT_DIGITS:
+              name: DEFAULT_DIGITS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            DEFAULT_ROUNDINGMODE:
+              name: DEFAULT_ROUNDINGMODE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: RoundingMode
+                full: java.math.RoundingMode
+            MIN_DIGITS:
+              name: MIN_DIGITS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
             UNLIMITED:
               name: UNLIMITED
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: MathContext
                 full: java.math.MathContext
-                nullable: true
+              notes: "A MathContext object whose settings have the values\n required\
+                \ for unlimited precision arithmetic.\n The values of the settings\
+                \ are: precision=0 roundingMode=HALF_UP"
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: setPrecision
               type:
                 basic: int
                 full: int
+              notes: The non-negative int precision setting.
+            notes: "Constructs a new MathContext with the specified\n precision and\
+              \ the HALF_UP rounding\n mode."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: setPrecision
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The non-negative int precision setting.
+            - name: setRoundingMode
               type:
                 basic: RoundingMode
                 full: java.math.RoundingMode
-          methods:
-          - name: __toString__
-            modifiers:
+              notes: The rounding mode to use.
+            notes: "Constructs a new MathContext with a specified\n precision and\
+              \ rounding mode."
+          - modifiers:
             - public
-            return:
+            parameters:
+            - name: val
               type:
                 basic: String
                 full: java.lang.String
+              notes: The string to be parsed
+            notes: "Constructs a new MathContext from a string.\n\n The string must\
+              \ be in the same format as that produced by the\n toString() method.\n\
+              \n An IllegalArgumentException is thrown if the precision\n section\
+              \ of the string is out of range (< 0) or the string is\n not in the\
+              \ format created by the toString() method."
+          methods:
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "Object to which this MathContext is to\n         be compared."
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if and only if the specified Object is\n         a MathContext\
+                \ object which has exactly the same\n         settings as this object"
+            notes: "Compares this MathContext with the specified\n Object for equality."
           - name: getPrecision
             modifiers:
             - public
@@ -98,6 +172,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "an int which is the value of the precision\n         setting"
+            notes: "Returns the precision setting.\n This value is always non-negative."
           - name: getRoundingMode
             modifiers:
             - public
@@ -105,6 +181,12 @@ languages:
               type:
                 basic: RoundingMode
                 full: java.math.RoundingMode
+              notes: "a RoundingMode object which is the value of the\n         roundingMode\
+                \ setting"
+            notes: "Returns the roundingMode setting.\n This will be one of\n RoundingMode.CEILING,\n\
+              \ RoundingMode.DOWN,\n RoundingMode.FLOOR,\n RoundingMode.HALF_DOWN,\n\
+              \ RoundingMode.HALF_EVEN,\n RoundingMode.HALF_UP,\n RoundingMode.UNNECESSARY,\
+              \ or\n RoundingMode.UP."
           - name: hashCode
             modifiers:
             - public
@@ -112,5 +194,24 @@ languages:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Object
+              notes: hash code for this MathContext
+            notes: Returns the hash code for this MathContext.
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

@@ -4,7 +4,58 @@ languages:
     packages:
       zombie.entity.components.resources:
         ResourceItem:
+          extends: zombie.entity.components.resources.Resource
+          modifiers:
+          - public
+          fields:
+            capacity:
+              name: capacity
+              modifiers:
+              - private
+              type:
+                basic: float
+                full: float
+            itemFilter:
+              name: itemFilter
+              modifiers:
+              - private
+              type:
+                basic: ItemFilter
+                full: zombie.inventory.ItemFilter
+            stackAnyItem:
+              name: stackAnyItem
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            storedItems:
+              name: storedItems
+              modifiers:
+              - private
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
+          constructors:
+          - modifiers:
+            - protected
           methods:
+          - name: DoDebugTooltip
+            modifiers:
+            - protected
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectTooltip
+                full: zombie.ui.ObjectTooltip
+            - name: arg1
+              type:
+                basic: ObjectTooltip.Layout
+                full: zombie.ui.ObjectTooltip$Layout
+            return:
+              type:
+                basic: void
+                full: void
           - name: DoTooltip
             modifiers:
             - public
@@ -27,7 +78,7 @@ languages:
                 full: zombie.ui.ObjectTooltip
             - name: arg1
               type:
-                basic: Layout
+                basic: ObjectTooltip.Layout
                 full: zombie.ui.ObjectTooltip$Layout
             return:
               type:
@@ -155,6 +206,18 @@ languages:
               type:
                 basic: int
                 full: int
+          - name: getItemAmount
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Item
+                full: zombie.scripting.objects.Item
+            return:
+              type:
+                basic: int
+                full: int
           - name: getItemCapacity
             modifiers:
             - public
@@ -169,6 +232,18 @@ languages:
               type:
                 basic: ItemFilter
                 full: zombie.inventory.ItemFilter
+          - name: getItemUses
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: InputScript
+                full: zombie.scripting.entity.components.crafting.InputScript
+            return:
+              type:
+                basic: float
+                full: float
           - name: getItemUsesAmount
             modifiers:
             - public
@@ -188,8 +263,27 @@ languages:
             - public
             return:
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
+          - name: getStoredItemsOfType
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Item
+                full: zombie.scripting.objects.Item
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
+          - name: getUniqueItems
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.scripting.objects.Item>
           - name: isEmpty
             modifiers:
             - public
@@ -198,6 +292,13 @@ languages:
                 basic: boolean
                 full: boolean
           - name: isFull
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isStackAnyItem
             modifiers:
             - public
             return:
@@ -216,6 +317,18 @@ languages:
               type:
                 basic: int
                 full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: loadBlueprint
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ResourceBlueprint
+                full: zombie.entity.components.resources.ResourceBlueprint
             return:
               type:
                 basic: void
@@ -282,11 +395,11 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
             return:
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
           - name: offerItems
             modifiers:
@@ -294,7 +407,7 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
             - name: arg1
               type:
@@ -302,7 +415,7 @@ languages:
                 full: boolean
             return:
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
           - name: peekItem
             modifiers:
@@ -352,12 +465,47 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
             return:
               type:
-                basic: ArrayList<InventoryItem>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.inventory.InventoryItem>
+          - name: removeAllItems
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
+            - name: arg1
+              type:
+                basic: Item
+                full: zombie.scripting.objects.Item
+            return:
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.inventory.InventoryItem>
+          - name: removeItem
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: InventoryItem
+                full: zombie.inventory.InventoryItem
+            return:
+              type:
+                basic: InventoryItem
+                full: zombie.inventory.InventoryItem
+          - name: reset
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
           - name: save
             modifiers:
             - public
@@ -461,5 +609,3 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Resource

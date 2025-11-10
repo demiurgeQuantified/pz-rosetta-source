@@ -1,0 +1,152 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.nio.channels.spi:
+        AbstractInterruptibleChannel:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Base implementation class for interruptible channels.\n\n  This\
+            \ class encapsulates the low-level machinery required to implement\n the\
+            \ asynchronous closing and interruption of channels.  A concrete channel\n\
+            \ class must invoke the begin and end methods\n before and after, respectively,\
+            \ invoking an I/O operation that might block\n indefinitely.  In order\
+            \ to ensure that the end method is always\n invoked, these methods should\
+            \ be used within a\n try ... finally block:\n\n \n boolean completed =\
+            \ false;\n try {\n     begin();\n     completed = ...;    // Perform blocking\
+            \ I/O operation\n     return ...;         // Return result\n } finally\
+            \ {\n     end(completed);\n }\n\n  The completed argument to the end method\
+            \ tells\n whether or not the I/O operation actually completed, that is,\
+            \ whether it had\n any effect that would be visible to the invoker.  In\
+            \ the case of an\n operation that reads bytes, for example, this argument\
+            \ should be\n true if, and only if, some bytes were actually transferred\
+            \ into the\n invoker's target buffer.\n\n  A concrete channel class must\
+            \ also implement the implCloseChannel method in such a way that if it\
+            \ is\n invoked while another thread is blocked in a native I/O operation\
+            \ upon the\n channel then that operation will immediately return, either\
+            \ by throwing an\n exception or by returning normally.  If a thread is\
+            \ interrupted or the\n channel upon which it is blocked is asynchronously\
+            \ closed then the channel's\n end method will throw the appropriate exception.\n\
+            \n  This class performs the synchronization required to implement the\
+            \ Channel specification.  Implementations of the implCloseChannel method\
+            \ need not synchronize against\n other threads that might be attempting\
+            \ to close the channel."
+          fields:
+            closeLock:
+              name: closeLock
+              modifiers:
+              - private
+              type:
+                basic: Object
+                full: java.lang.Object
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            interrupted:
+              name: interrupted
+              modifiers:
+              - private
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            interruptor:
+              name: interruptor
+              modifiers:
+              - private
+              type:
+                basic: Interruptible
+                full: sun.nio.ch.Interruptible
+          constructors:
+          - modifiers:
+            - protected
+            notes: Initializes a new instance of this class.
+          methods:
+          - name: begin
+            modifiers:
+            - protected
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Marks the beginning of an I/O operation that might block indefinitely.\n\
+              \n  This method should be invoked in tandem with the end\n method, using\
+              \ a try ... finally block as\n shown above, in order to implement asynchronous\n\
+              \ closing and interruption for this channel."
+          - name: close
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Closes this channel.\n\n  If the channel has already been closed\
+              \ then this method returns\n immediately.  Otherwise it marks the channel\
+              \ as closed and then invokes\n the implCloseChannel method in order\
+              \ to\n complete the close operation."
+          - name: end
+            modifiers:
+            - protected
+            - final
+            parameters:
+            - name: completed
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if, and only if, the I/O operation completed\n        \
+                \ successfully, that is, had some effect that would be visible to\n\
+                \         the operation's invoker"
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Marks the end of an I/O operation that might block indefinitely.\n\
+              \n  This method should be invoked in tandem with the begin method, using\
+              \ a try ... finally block\n as shown above, in order to implement asynchronous\n\
+              \ closing and interruption for this channel."
+          - name: implCloseChannel
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Closes this channel.\n\n  This method is invoked by the close\
+              \ method in order\n to perform the actual work of closing the channel.\
+              \  This method is only\n invoked if the channel has not yet been closed,\
+              \ and it is never invoked\n more than once.\n\n  An implementation of\
+              \ this method must arrange for any other thread\n that is blocked in\
+              \ an I/O operation upon this channel to return\n immediately, either\
+              \ by throwing an exception or by returning normally."
+          - name: isOpen
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if, and only if, this channel is open
+            notes: 'Description copied from interface: Channel'
+          staticMethods:
+          - name: blockedOn
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Interruptible
+                full: sun.nio.ch.Interruptible
+            return:
+              type:
+                basic: void
+                full: void

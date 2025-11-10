@@ -4,6 +4,10 @@ languages:
     packages:
       zombie.audio:
         FMODAmbientWallLevelData:
+          extends: zombie.util.PooledObject
+          modifiers:
+          - public
+          - final
           fields:
             bDirty:
               name: bDirty
@@ -12,7 +16,6 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-                nullable: true
             m_chunkLevel:
               name: m_chunkLevel
               modifiers:
@@ -20,16 +23,30 @@ languages:
               type:
                 basic: IsoChunkLevel
                 full: zombie.iso.IsoChunkLevel
-                nullable: true
             m_walls:
               name: m_walls
               modifiers:
               - public
-              - final
               type:
-                basic: FMODAmbientWall>
+                basic: ArrayList
                 full: java.util.ArrayList<zombie.audio.FMODAmbientWallLevelData$FMODAmbientWall>
-                nullable: true
+          staticFields:
+            s_levelDataPool:
+              name: s_levelDataPool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Pool
+                full: zombie.util.Pool<zombie.audio.FMODAmbientWallLevelData>
+            s_wallPool:
+              name: s_wallPool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Pool
+                full: zombie.util.Pool<zombie.audio.FMODAmbientWallLevelData$FMODAmbientWall>
           constructors:
           - modifiers:
             - public
@@ -60,6 +77,37 @@ languages:
               type:
                 basic: void
                 full: void
+          - name: recreate
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: shouldAddNorth
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: shouldAddWest
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoGridSquare
+                full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
           staticMethods:
           - name: alloc
             modifiers:
@@ -69,6 +117,19 @@ languages:
               type:
                 basic: FMODAmbientWallLevelData
                 full: zombie.audio.FMODAmbientWallLevelData
+          - name: isDoorBlocked
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoObject
+                full: zombie.iso.IsoObject
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isOutside
             modifiers:
             - public
@@ -78,6 +139,19 @@ languages:
               type:
                 basic: IsoGridSquare
                 full: zombie.iso.IsoGridSquare
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isWindowBlocked
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: IsoWindow
+                full: zombie.iso.objects.IsoWindow
             return:
               type:
                 basic: boolean
@@ -116,5 +190,3 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: PooledObject

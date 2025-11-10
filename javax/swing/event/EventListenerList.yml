@@ -4,33 +4,86 @@ languages:
     packages:
       javax.swing.event:
         EventListenerList:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A class that holds a list of EventListeners.  A single instance\n\
+            \ can be used to hold all listeners (of all types) for the instance\n\
+            \ using the list.  It is the responsiblity of the class using the\n EventListenerList\
+            \ to provide type-safe API (preferably conforming\n to the JavaBeans spec)\
+            \ and methods which dispatch event notification\n methods to appropriate\
+            \ Event Listeners on the list.\n\n The main benefits that this class provides\
+            \ are that it is relatively\n cheap in the case of no listeners, and it\
+            \ provides serialization for\n event-listener lists in a single place,\
+            \ as well as a degree of MT safety\n (when used correctly).\n\n Usage\
+            \ example:\n    Say one is defining a class that sends out FooEvents,\
+            \ and one wants\n to allow users of the class to register FooListeners\
+            \ and receive\n notification when FooEvents occur.  The following should\
+            \ be added\n to the class definition:\n \n EventListenerList listenerList\
+            \ = new EventListenerList();\n FooEvent fooEvent = null;\n\n public void\
+            \ addFooListener(FooListener l) {\n     listenerList.add(FooListener.class,\
+            \ l);\n }\n\n public void removeFooListener(FooListener l) {\n     listenerList.remove(FooListener.class,\
+            \ l);\n }\n\n\n // Notify all listeners that have registered interest\
+            \ for\n // notification on this event type.  The event instance\n // is\
+            \ lazily created using the parameters passed into\n // the fire method.\n\
+            \n protected void fireFooXXX() {\n     // Guaranteed to return a non-null\
+            \ array\n     Object[] listeners = listenerList.getListenerList();\n \
+            \    // Process the listeners last to first, notifying\n     // those\
+            \ that are interested in this event\n     for (int i = listeners.length-2;\
+            \ i>=0; i-=2) {\n         if (listeners[i]==FooListener.class) {\n   \
+            \          // Lazily create the event:\n             if (fooEvent == null)\n\
+            \                 fooEvent = new FooEvent(this);\n             ((FooListener)listeners[i+1]).fooXXX(fooEvent);\n\
+            \         }\n     }\n }\n \n foo should be changed to the appropriate\
+            \ name, and fireFooXxx to the\n appropriate method name.  One fire method\
+            \ should exist for each\n notification method in the FooListener interface.\n\
+            \ \n Warning:\n Serialized objects of this class will not be compatible\
+            \ with\n future Swing releases. The current serialization support is\n\
+            \ appropriate for short term storage or RMI between applications running\n\
+            \ the same version of Swing.  As of 1.4, support for long term storage\n\
+            \ of all JavaBeans\n has been added to the java.beans package.\n Please\
+            \ see XMLEncoder."
+          fields:
+            listenerList:
+              name: listenerList
+              modifiers:
+              - protected
+              type:
+                basic: Object
+                full: java.lang.Object[]
+              notes: The list of ListenerType - Listener pairs
+          staticFields:
+            NULL_ARRAY:
+              name: NULL_ARRAY
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Object
+                full: java.lang.Object[]
           constructors:
           - modifiers:
             - public
+            notes: Constructs a EventListenerList.
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: add
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: t
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
-            - name: arg1
+              notes: the type of the EventListener class to add
+            - name: l
               type:
                 basic: T
                 full: T
+              notes: the listener to be added
             return:
               type:
                 basic: void
                 full: void
+            notes: Adds the listener as a listener of the specified type.
           - name: getListenerCount
             modifiers:
             - public
@@ -38,13 +91,35 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: an integer count of total number of listeners
+            notes: Returns the total number of listeners for this listener list.
           - name: getListenerCount
             modifiers:
             - public
             parameters:
+            - name: t
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: the type of listeners to count
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of listeners of type t
+            notes: "Returns the total number of listeners of the supplied type\n for\
+              \ this listener list."
+          - name: getListenerCount
+            modifiers:
+            - private
+            parameters:
             - name: arg0
               type:
-                basic: Class<?>
+                basic: Object
+                full: java.lang.Object[]
+            - name: arg1
+              type:
+                basic: Class
                 full: java.lang.Class<?>
             return:
               type:
@@ -55,35 +130,81 @@ languages:
             - public
             return:
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
+              notes: array of ListenerType-listener pairs
+            notes: "Passes back the event listener list as an array\n of ListenerType-listener\
+              \ pairs.  Note that for\n performance reasons, this implementation passes\
+              \ back\n the actual data structure in which the listener data\n is stored\
+              \ internally!\n This method is guaranteed to pass back a non-null\n\
+              \ array, so that no null-checking is required in\n fire methods.  A\
+              \ zero-length array of Object should\n be returned if there are currently\
+              \ no listeners.\n\n WARNING!!! Absolutely NO modification of\n the data\
+              \ contained in this array should be made -- if\n any such manipulation\
+              \ is necessary, it should be done\n on a copy of the array returned\
+              \ rather than the array\n itself."
           - name: getListeners
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: t
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: the type of EventListener classes to be returned
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          - name: remove
+              notes: all of the listeners of the specified type.
+            notes: Return an array of all the listeners of the given type.
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            - name: arg1
-              type:
-                basic: T
-                full: T
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+          - name: remove
+            modifiers:
+            - public
+            parameters:
+            - name: t
+              type:
+                basic: Class
+                full: java.lang.Class<T>
+              notes: the type of the listener to be removed
+            - name: l
+              type:
+                basic: T
+                full: T
+              notes: the listener to be removed
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Removes the listener as a listener of the specified type.
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void

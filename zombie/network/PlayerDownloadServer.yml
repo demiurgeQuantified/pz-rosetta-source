@@ -4,9 +4,67 @@ languages:
     packages:
       zombie.network:
         PlayerDownloadServer:
+          extends: java.lang.Object
           modifiers:
           - public
           - final
+          fields:
+            NetworkFileDebug:
+              name: NetworkFileDebug
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            bb:
+              name: bb
+              modifiers:
+              - private
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            bbw:
+              name: bbw
+              modifiers:
+              - private
+              type:
+                basic: ByteBufferWriter
+                full: zombie.core.network.ByteBufferWriter
+            ccrWaiting:
+              name: ccrWaiting
+              modifiers:
+              - public
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<zombie.network.ClientChunkRequest>
+            connection:
+              name: connection
+              modifiers:
+              - private
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            crc32:
+              name: crc32
+              modifiers:
+              - private
+              type:
+                basic: CRC32
+                full: java.util.zip.CRC32
+            sb:
+              name: sb
+              modifiers:
+              - private
+              type:
+                basic: ByteBuffer
+                full: java.nio.ByteBuffer
+            workerThread:
+              name: workerThread
+              modifiers:
+              - public
+              type:
+                basic: PlayerDownloadServer.WorkerThread
+                full: zombie.network.PlayerDownloadServer$WorkerThread
           constructors:
           - modifiers:
             - public
@@ -14,13 +72,42 @@ languages:
             - name: connection
               type:
                 basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
           methods:
+          - name: cancelDuplicateChunk
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ClientChunkRequest
+                full: zombie.network.ClientChunkRequest
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: destroy
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
+          - name: getClientChunkRequest
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ClientChunkRequest
+                full: zombie.network.ClientChunkRequest
           - name: getWaitingRequests
             modifiers:
             - public
@@ -28,47 +115,37 @@ languages:
             return:
               type:
                 basic: int
-          - name: receiveCancelRequest
+                full: int
+          - name: removeOlderDuplicateRequests
             modifiers:
-            - public
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: sendPacket
+            modifiers:
+            - private
             parameters:
-            - name: bb
+            - name: arg0
               type:
-                basic: ByteBuffer
+                basic: PacketTypes.PacketType
+                full: zombie.network.PacketTypes$PacketType
             return:
               type:
                 basic: void
-          - name: receiveRequestArray
+                full: void
+          - name: startPacket
             modifiers:
-            - public
-            parameters:
-            - name: bb
-              type:
-                basic: ByteBuffer
+            - private
             return:
               type:
-                basic: void
-          - name: receiveRequestLargeArea
-            modifiers:
-            - public
-            parameters:
-            - name: bb
-              type:
-                basic: ByteBuffer
-            return:
-              type:
-                basic: void
-          - name: startConnectionTest
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
+                basic: ByteBufferWriter
+                full: zombie.core.network.ByteBufferWriter
           - name: update
             modifiers:
             - public
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
+                full: void

@@ -1,0 +1,372 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.awt.event:
+        InvocationEvent:
+          extends: java.awt.AWTEvent
+          modifiers:
+          - public
+          notes: "An event which executes the run() method on a Runnable\n  when dispatched\
+            \ by the AWT event dispatcher thread. This class can\n be used as a reference\
+            \ implementation of ActiveEvent rather\n than declaring a new class and\
+            \ defining dispatch().\n\n Instances of this class are placed on the EventQueue\
+            \ by calls\n to invokeLater and invokeAndWait. Client code\n can use this\
+            \ fact to write replacement functions for invokeLater\n  and invokeAndWait\
+            \ without writing special-case code\n in any AWTEventListener objects.\n\
+            \ \n An unspecified behavior will be caused if the id parameter\n of any\
+            \ particular InvocationEvent instance is not\n in the range from INVOCATION_FIRST\
+            \ to INVOCATION_LAST."
+          fields:
+            catchExceptions:
+              name: catchExceptions
+              modifiers:
+              - protected
+              type:
+                basic: boolean
+                full: boolean
+              notes: "Set to true if dispatch() catches Throwable and stores it in\
+                \ the\n exception instance variable. If false, Throwables are propagated\
+                \ up\n to the EventDispatchThread's dispatch loop."
+            dispatched:
+              name: dispatched
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            exception:
+              name: exception
+              modifiers:
+              - private
+              type:
+                basic: Exception
+                full: java.lang.Exception
+            listener:
+              name: listener
+              modifiers:
+              - private
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            notifier:
+              name: notifier
+              modifiers:
+              - protected
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The (potentially null) Object whose notifyAll() method will\
+                \ be called\n immediately after the Runnable.run() method has returned\
+                \ or thrown an exception\n or after the event was disposed."
+            runnable:
+              name: runnable
+              modifiers:
+              - protected
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: The Runnable whose run() method will be called.
+            throwable:
+              name: throwable
+              modifiers:
+              - private
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            when:
+              name: when
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+          staticFields:
+            INVOCATION_DEFAULT:
+              name: INVOCATION_DEFAULT
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: The default id for all InvocationEvents.
+            INVOCATION_FIRST:
+              name: INVOCATION_FIRST
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: Marks the first integer id for the range of invocation event
+                ids.
+            INVOCATION_LAST:
+              name: INVOCATION_LAST
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: Marks the last integer id for the range of invocation event ids.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: The Object that originated the event
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "The Runnable whose run()\n                  method will be executed"
+            notes: "Constructs an InvocationEvent with the specified\n source which\
+              \ will execute the runnable's run()\n method when dispatched.\n This\
+              \ is a convenience constructor.  An invocation of the form\n InvocationEvent(source,\
+              \ runnable)\n behaves in exactly the same way as the invocation of\n\
+              \ InvocationEvent(source, runnable, null, false).\n  This method throws\
+              \ an IllegalArgumentException\n if source is null."
+          - modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The Object that originated\n                          the event"
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "The Runnable whose\n                          run() method will\
+                \ be\n                          executed"
+            - name: notifier
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The Object whose notifyAll\n                          method\
+                \ will be called after\n                          Runnable.run has\
+                \ returned or\n                          thrown an exception or after\
+                \ the event was\n                          disposed"
+            - name: catchThrowables
+              type:
+                basic: boolean
+                full: boolean
+              notes: "Specifies whether dispatch\n                          should\
+                \ catch Throwable when executing\n                          the Runnable's\
+                \ run()\n                          method, or should instead propagate\
+                \ those\n                          Throwables to the EventDispatchThread's\n\
+                \                          dispatch loop"
+            notes: "Constructs an InvocationEvent with the specified\n source which\
+              \ will execute the runnable's run()\n method when dispatched.  If notifier\
+              \ is non-null,\n notifyAll() will be called on it\n immediately after\
+              \ run() has returned or thrown an exception.\n An invocation of the\
+              \ form\n InvocationEvent(source, runnable, notifier, catchThrowables)\n\
+              \ behaves in exactly the same way as the invocation of\n InvocationEvent(source,\
+              \ InvocationEvent.INVOCATION_DEFAULT, runnable, notifier, catchThrowables).\n\
+              \ This method throws an IllegalArgumentException\n if source is null."
+          - modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The Object that originated\n                          the event"
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "The Runnable whose\n                          run() method will\
+                \ be\n                          executed"
+            - name: listener
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "The Runnable whose\n                          run() method will\
+                \ be called\n                          after the InvocationEvent\n\
+                \                          was dispatched or disposed"
+            - name: catchThrowables
+              type:
+                basic: boolean
+                full: boolean
+              notes: "Specifies whether dispatch\n                          should\
+                \ catch Throwable when executing\n                          the Runnable's\
+                \ run()\n                          method, or should instead propagate\
+                \ those\n                          Throwables to the EventDispatchThread's\n\
+                \                          dispatch loop"
+            notes: "Constructs an InvocationEvent with the specified\n source which\
+              \ will execute the runnable's run()\n method when dispatched.  If listener\
+              \ is non-null,\n listener.run() will be called immediately after\n run\
+              \ has returned, thrown an exception or the event\n was disposed.\n This\
+              \ method throws an IllegalArgumentException\n if source is null."
+          - modifiers:
+            - protected
+            parameters:
+            - name: source
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The Object that originated\n                          the event"
+            - name: id
+              type:
+                basic: int
+                full: int
+              notes: "An integer indicating the type of event.\n                 \
+                \    For information on allowable values, see\n                  \
+                \   the class description for InvocationEvent"
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: "The Runnable whose\n                          run() method will\
+                \ be executed"
+            - name: notifier
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: "The Object whose notifyAll\n                          method\
+                \ will be called after\n                          Runnable.run has\
+                \ returned or\n                          thrown an exception or after\
+                \ the event was\n                          disposed"
+            - name: catchThrowables
+              type:
+                basic: boolean
+                full: boolean
+              notes: "Specifies whether dispatch\n                          should\
+                \ catch Throwable when executing the\n                          Runnable's\
+                \ run()\n                          method, or should instead propagate\
+                \ those\n                          Throwables to the EventDispatchThread's\n\
+                \                          dispatch loop"
+            notes: "Constructs an InvocationEvent with the specified\n source and\
+              \ ID which will execute the runnable's run()\n method when dispatched.\
+              \  If notifier is non-null,\n notifyAll() will be called on it immediately\
+              \ after\n run() has returned or thrown an exception.\n This method throws\
+              \ an\n IllegalArgumentException if source\n is null."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg3
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg4
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+            - name: arg5
+              type:
+                basic: boolean
+                full: boolean
+          methods:
+          - name: dispatch
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Executes the Runnable's run() method and notifies the\n notifier\
+              \ (if any) when run() has returned or thrown an exception."
+          - name: finishedDispatching
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getException
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Exception
+                full: java.lang.Exception
+              notes: "A reference to the Exception if one was thrown; null if no\n\
+                \          Exception was thrown or if this InvocationEvent does not\n\
+                \          catch exceptions"
+            notes: "Returns any Exception caught while executing\n the Runnable's\
+              \ run() method."
+          - name: getThrowable
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: "A reference to the Throwable if one was thrown; null if no\n\
+                \          Throwable was thrown or if this InvocationEvent does not\n\
+                \          catch Throwables"
+            notes: "Returns any Throwable caught while executing\n the Runnable's\
+              \ run() method."
+          - name: getWhen
+            modifiers:
+            - public
+            return:
+              type:
+                basic: long
+                full: long
+              notes: this event's timestamp
+            notes: Returns the timestamp of when this event occurred.
+          - name: isDispatched
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the event has been dispatched, or any exception\n has\
+                \ been thrown while dispatching, false otherwise"
+            notes: "Returns true if the event is dispatched or any exception is\n\
+              \ thrown while dispatching, false otherwise. The method should\n be\
+              \ called by a waiting thread that calls the notifier.wait() method.\n\
+              \ Since spurious wakeups are possible (as explained in Object.wait()),\n\
+              \ this method should be used in a waiting loop to ensure that the event\n\
+              \ got dispatched:\n \n     while (!event.isDispatched()) {\n       \
+              \  notifier.wait();\n     }\n \n If the waiting thread wakes up without\
+              \ dispatching the event,\n the isDispatched() method returns false,\
+              \ and\n the while loop executes once more, thus, causing\n the awakened\
+              \ thread to revert to the waiting mode.\n \n If the notifier.notifyAll()\
+              \ happens before the waiting thread\n enters the notifier.wait() method,\
+              \ the while loop ensures\n that the waiting thread will not enter the\
+              \ notifier.wait() method.\n Otherwise, there is no guarantee that the\
+              \ waiting thread will ever be woken\n from the wait."
+          - name: paramString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: A string identifying the event and its attributes
+            notes: "Returns a parameter string identifying this event.\n This method\
+              \ is useful for event-logging and for debugging."

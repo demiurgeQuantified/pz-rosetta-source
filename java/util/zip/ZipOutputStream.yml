@@ -1,0 +1,443 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.zip:
+        ZipOutputStream:
+          extends: java.util.zip.DeflaterOutputStream
+          modifiers:
+          - public
+          notes: "This class implements an output stream filter for writing files\
+            \ in the\n ZIP file format. Includes support for both compressed and uncompressed\n\
+            \ entries."
+          fields:
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            comment:
+              name: comment
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            crc:
+              name: crc
+              modifiers:
+              - private
+              type:
+                basic: CRC32
+                full: java.util.zip.CRC32
+            current:
+              name: current
+              modifiers:
+              - private
+              type:
+                basic: ZipOutputStream.XEntry
+                full: java.util.zip.ZipOutputStream$XEntry
+            finished:
+              name: finished
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            locoff:
+              name: locoff
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            method:
+              name: method
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            names:
+              name: names
+              modifiers:
+              - private
+              type:
+                basic: HashSet
+                full: java.util.HashSet<java.lang.String>
+            written:
+              name: written
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            xentries:
+              name: xentries
+              modifiers:
+              - private
+              type:
+                basic: Vector
+                full: java.util.Vector<java.util.zip.ZipOutputStream$XEntry>
+            zc:
+              name: zc
+              modifiers:
+              - private
+              type:
+                basic: ZipCoder
+                full: java.util.zip.ZipCoder
+          staticFields:
+            DEFLATED:
+              name: DEFLATED
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: Compression method for compressed (DEFLATED) entries.
+            STORED:
+              name: STORED
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: Compression method for uncompressed (STORED) entries.
+            inhibitZip64:
+              name: inhibitZip64
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the actual output stream
+            notes: "Creates a new ZIP output stream.\n\n The UTF-8 charset is used\n\
+              \ to encode the entry names and comments."
+          - modifiers:
+            - public
+            parameters:
+            - name: out
+              type:
+                basic: OutputStream
+                full: java.io.OutputStream
+              notes: the actual output stream
+            - name: charset
+              type:
+                basic: Charset
+                full: java.nio.charset.Charset
+              notes: "the charset\n                to be used to encode the entry\
+                \ names and comments"
+            notes: Creates a new ZIP output stream.
+          methods:
+          - name: close
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Closes the ZIP output stream as well as the stream being filtered.
+          - name: closeEntry
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Closes the current ZIP entry and positions the stream for writing\n\
+              \ the next entry."
+          - name: ensureOpen
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: finish
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Finishes writing the contents of the ZIP output stream without\
+              \ closing\n the underlying stream. Use this method when applying multiple\
+              \ filters\n in succession to the same output stream."
+          - name: getExtraLen
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: int
+                full: int
+          - name: putNextEntry
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: ZipEntry
+                full: java.util.zip.ZipEntry
+              notes: the ZIP entry to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Begins writing a new ZIP file entry and positions the stream to\
+              \ the\n start of the entry data. Closes the current entry if still active.\n\
+              \ \n The default compression method will be used if no compression method\n\
+              \ was specified for the entry. When writing a compressed (DEFLATED)\n\
+              \ entry, and the compressed size has not been explicitly set with the\n\
+              \ ZipEntry.setCompressedSize(long) method, then the compressed\n size\
+              \ will be set to the actual compressed size after deflation.\n \n The\
+              \ current time will be used if the entry has no set modification time."
+          - name: setComment
+            modifiers:
+            - public
+            parameters:
+            - name: comment
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the comment string
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Sets the ZIP file comment.
+          - name: setLevel
+            modifiers:
+            - public
+            parameters:
+            - name: level
+              type:
+                basic: int
+                full: int
+              notes: the compression level (0-9)
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the compression level for subsequent entries which are DEFLATED.\n\
+              \ The default setting is DEFAULT_COMPRESSION."
+          - name: setMethod
+            modifiers:
+            - public
+            parameters:
+            - name: method
+              type:
+                basic: int
+                full: int
+              notes: the default compression method
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the default compression method for subsequent entries. This\n\
+              \ default will be used whenever the compression method is not specified\n\
+              \ for an individual ZIP file entry, and is initially set to DEFLATED."
+          - name: versionMadeBy
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ZipEntry
+                full: java.util.zip.ZipEntry
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
+                full: byte[]
+              notes: the data to be written
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset in the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes that are written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes an array of bytes to the current ZIP entry data. This method\n\
+              \ will block until all the bytes are written."
+          - name: writeByte
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeBytes
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeCEN
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ZipOutputStream.XEntry
+                full: java.util.zip.ZipOutputStream$XEntry
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeEND
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeEXT
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ZipEntry
+                full: java.util.zip.ZipEntry
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeExtra
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeInt
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeLOC
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ZipOutputStream.XEntry
+                full: java.util.zip.ZipOutputStream$XEntry
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeLong
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeShort
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: version
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ZipEntry
+                full: java.util.zip.ZipEntry
+            return:
+              type:
+                basic: int
+                full: int

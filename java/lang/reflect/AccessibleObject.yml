@@ -4,16 +4,176 @@ languages:
     packages:
       java.lang.reflect:
         AccessibleObject:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The AccessibleObject class is the base class for Field,\n Method,\
+            \ and Constructor objects (known as reflected\n objects). It provides\
+            \ the ability to flag a reflected object as\n suppressing checks for Java\
+            \ language access control when it is used. This\n permits sophisticated\
+            \ applications with sufficient privilege, such as Java\n Object Serialization\
+            \ or other persistence mechanisms, to manipulate objects\n in a manner\
+            \ that would normally be prohibited.\n\n  Java language access control\
+            \ prevents use of private members outside\n their top-level class; package\
+            \ access members outside their package; protected members\n outside their\
+            \ package or subclasses; and public members outside their\n module unless\
+            \ they are declared in an exported package and the user reads their module.\
+            \ By\n default, Java language access control is enforced (with one variation)\
+            \ when\n Fields, Methods, or Constructors are used to get or\n set fields,\
+            \ to invoke methods, or to create and initialize new instances of\n classes,\
+            \ respectively. Every reflected object checks that the code using it\n\
+            \ is in an appropriate class, package, or module. The check when invoked\
+            \ by\n JNI code with no Java\n class on the stack only succeeds if the\
+            \ member and the declaring class are\n public, and the class is in a package\
+            \ that is exported to all modules. \n\n  The one variation from Java language\
+            \ access control is that the checks\n by reflected objects assume readability.\
+            \ That is, the module containing\n the use of a reflected object is assumed\
+            \ to read the module in which\n the underlying field, method, or constructor\
+            \ is declared. \n\n  Whether the checks for Java language access control\
+            \ can be suppressed\n (and thus, whether access can be enabled) depends\
+            \ on whether the reflected\n object corresponds to a member in an exported\
+            \ or open package\n (see setAccessible(boolean))."
+          fields:
+            accessCheckCache:
+              name: accessCheckCache
+              modifiers:
+              - package
+              type:
+                basic: Object
+                full: java.lang.Object
+            override:
+              name: override
+              modifiers:
+              - package
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            printStackPropertiesSet:
+              name: printStackPropertiesSet
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            printStackWhenAccessFails:
+              name: printStackWhenAccessFails
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            reflectionFactory:
+              name: reflectionFactory
+              modifiers:
+              - package
+              - static
+              type:
+                basic: ReflectionFactory
+                full: jdk.internal.reflect.ReflectionFactory
+          constructors:
+          - modifiers:
+            - protected
+            notes: 'Constructor: only used by the Java Virtual Machine.'
           methods:
           - name: canAccess
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "an instance object of the declaring class of this reflected\n\
+                \            object if it is an instance method or field"
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the caller can access this reflected object.
+            notes: "Test if the caller can access this reflected object. If this reflected\n\
+              \ object corresponds to an instance method or field then this method\
+              \ tests\n if the caller can access the given obj with the reflected\
+              \ object.\n For instance methods or fields then the obj argument must\
+              \ be an\n instance of the declaring class. For\n static members and\
+              \ constructors then obj must be null.\n\n  This method returns true\
+              \ if the accessible flag\n is set to true, i.e. the checks for Java\
+              \ language access control\n are suppressed, or if the caller can access\
+              \ the member as\n specified in The Java Language Specification,\n with\
+              \ the variation noted in the class description."
+          - name: checkAccess
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg2
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkCanSetAccessible
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkCanSetAccessible
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: checkCanSetAccessible
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: boolean
@@ -22,126 +182,159 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: annotationClass
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the Class object corresponding to the\n        annotation type"
             return:
               type:
                 basic: T
                 full: T
-          - name: getAnnotation
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: T
-                full: T
+              notes: "this element's annotation for the specified annotation type\
+                \ if\n     present on this element, else null"
+            notes: "Returns this element's annotation for the specified type if\n\
+              \ such an annotation is present, else null.\n\n  Note that any annotation\
+              \ returned by this method is a\n declaration annotation."
           - name: getAnnotations
             modifiers:
             - public
             return:
               type:
-                basic: Annotation[]
+                basic: Annotation
                 full: java.lang.annotation.Annotation[]
-          - name: getAnnotations
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Annotation[]
-                full: java.lang.annotation.Annotation[]
+              notes: annotations present on this element
+            notes: "Returns annotations that are present on this element.\n\n If there\
+              \ are no annotations present on this element, the return\n value is\
+              \ an array of length 0.\n\n The caller of this method is free to modify\
+              \ the returned array; it will\n have no effect on the arrays returned\
+              \ to other callers.\n\n  Note that any annotations returned by this\
+              \ method are\n declaration annotations."
           - name: getAnnotationsByType
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: annotationClass
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the Class object corresponding to the\n        annotation type"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          - name: getAnnotationsByType
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: T[]
-                full: T[]
+              notes: "all this element's annotations for the specified annotation\
+                \ type if\n     associated with this element, else an array of length\
+                \ zero"
+            notes: "Returns annotations that are associated with this element.\n\n\
+              \ If there are no annotations associated with this element, the return\n\
+              \ value is an array of length 0.\n\n The difference between this method\
+              \ and AnnotatedElement.getAnnotation(Class)\n is that this method detects\
+              \ if its argument is a repeatable\n annotation type (JLS 9.6), and if\
+              \ so, attempts to find one or\n more annotations of that type by \"\
+              looking through\" a container\n annotation.\n\n The caller of this method\
+              \ is free to modify the returned array; it will\n have no effect on\
+              \ the arrays returned to other callers.\n\n  Note that any annotations\
+              \ returned by this method are\n declaration annotations."
           - name: getDeclaredAnnotation
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: annotationClass
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the Class object corresponding to the\n        annotation type"
             return:
               type:
                 basic: T
                 full: T
-          - name: getDeclaredAnnotation
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Class<T>
-                full: java.lang.Class<T>
-            return:
-              type:
-                basic: T
-                full: T
+              notes: "this element's annotation for the specified annotation type\
+                \ if\n     directly present on this element, else null"
+            notes: "Returns this element's annotation for the specified type if\n\
+              \ such an annotation is directly present, else null.\n\n This method\
+              \ ignores inherited annotations. (Returns null if no\n annotations are\
+              \ directly present on this element.)\n\n  Note that any annotation returned\
+              \ by this method is a\n declaration annotation."
           - name: getDeclaredAnnotations
             modifiers:
             - public
             return:
               type:
-                basic: Annotation[]
+                basic: Annotation
                 full: java.lang.annotation.Annotation[]
-          - name: getDeclaredAnnotations
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Annotation[]
-                full: java.lang.annotation.Annotation[]
+              notes: annotations directly present on this element
+            notes: "Returns annotations that are directly present on this element.\n\
+              \ This method ignores inherited annotations.\n\n If there are no annotations\
+              \ directly present on this element,\n the return value is an array of\
+              \ length 0.\n\n The caller of this method is free to modify the returned\
+              \ array; it will\n have no effect on the arrays returned to other callers.\n\
+              \n  Note that any annotations returned by this method are\n declaration\
+              \ annotations."
           - name: getDeclaredAnnotationsByType
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: annotationClass
               type:
-                basic: Class<T>
+                basic: Class
                 full: java.lang.Class<T>
+              notes: "the Class object corresponding to the\n        annotation type"
             return:
               type:
-                basic: T[]
+                basic: T
                 full: T[]
-          - name: getDeclaredAnnotationsByType
+              notes: "all this element's annotations for the specified annotation\
+                \ type if\n     directly or indirectly present on this element, else\
+                \ an array of length zero"
+            notes: "Returns this element's annotation(s) for the specified type if\n\
+              \ such annotations are either directly present or\n indirectly present.\
+              \ This method ignores inherited\n annotations.\n\n If there are no specified\
+              \ annotations directly or indirectly\n present on this element, the\
+              \ return value is an array of length\n 0.\n\n The difference between\
+              \ this method and AnnotatedElement.getDeclaredAnnotation(Class) is that\
+              \ this method detects if its\n argument is a repeatable annotation type\
+              \ (JLS 9.6), and if so,\n attempts to find one or more annotations of\
+              \ that type by \"looking\n through\" a container annotation if one is\
+              \ present.\n\n The caller of this method is free to modify the returned\
+              \ array; it will\n have no effect on the arrays returned to other callers.\n\
+              \n  Note that any annotations returned by this method are\n declaration\
+              \ annotations."
+          - name: getRoot
             modifiers:
-            - public
+            - package
+            return:
+              type:
+                basic: AccessibleObject
+                full: java.lang.reflect.AccessibleObject
+          - name: isAccessChecked
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Class<T>
-                full: java.lang.Class<T>
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
             return:
               type:
-                basic: T[]
-                full: T[]
+                basic: boolean
+                full: boolean
+          - name: isAccessChecked
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isAccessible
             modifiers:
             - public
@@ -149,27 +342,40 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: the value of the object's accessible flag
+            notes: Get the value of the accessible flag for this reflected object.
           - name: isAnnotationPresent
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: annotationClass
               type:
-                basic: Class<? extends Annotation>
+                basic: Class
                 full: java.lang.Class<? extends java.lang.annotation.Annotation>
+              notes: "the Class object corresponding to the\n        annotation type"
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: isAnnotationPresent
+              notes: "true if an annotation for the specified annotation\n     type\
+                \ is present on this element, else false"
+            notes: "Returns true if an annotation for the specified type\n is present\
+              \ on this element, else false.  This method\n is designed primarily\
+              \ for convenient access to marker annotations.\n\n The truth value returned\
+              \ by this method is equivalent to:\n getAnnotation(annotationClass)\
+              \ != null"
+          - name: isSubclassOf
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Class<? extends Annotation>
-                full: java.lang.Class<? extends java.lang.annotation.Annotation>
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
             return:
               type:
                 basic: boolean
@@ -178,14 +384,88 @@ languages:
             modifiers:
             - public
             parameters:
+            - name: flag
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value for the accessible flag
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Set the accessible flag for this reflected object to\n the indicated\
+              \ boolean value.  A value of true indicates that\n the reflected object\
+              \ should suppress checks for Java language access\n control when it\
+              \ is used. A value of false indicates that\n the reflected object should\
+              \ enforce checks for Java language access\n control when it is used,\
+              \ with the variation noted in the class description.\n\n  This method\
+              \ may be used by a caller in class C to enable\n access to a member\
+              \ of declaring class D if any of the following hold: \n\n \n      C\
+              \ and D are in the same module. \n\n      The member is public and D\
+              \ is public in\n     a package that the module containing D exports\
+              \ to at least the module\n     containing C. \n\n      The member is\
+              \ protected static, D is\n     public in a package that the module containing\
+              \ D\n     exports to at least the module containing C, and C\n     is\
+              \ a subclass of D. \n\n      D is in a package that the module containing\
+              \ D\n     opens to at least the module\n     containing C.\n     All\
+              \ packages in unnamed and open modules are open to all modules and\n\
+              \     so this method always succeeds when D is in an unnamed or\n  \
+              \   open module. \n \n\n  This method cannot be used to enable access\
+              \ to private members,\n members with default (package) access, protected\
+              \ instance members, or\n protected constructors when the declaring class\
+              \ is in a different module\n to the caller and the package containing\
+              \ the declaring class is not open\n to the caller's module. \n\n  This\
+              \ method cannot be used to enable write\n access to a non-modifiable\
+              \ final field.  The following fields\n are non-modifiable:\n \n static\
+              \ final fields declared in any class or interface\n final fields declared\
+              \ in a hidden class\n final fields declared in a record\n \n  The accessible\
+              \ flag when true suppresses Java language access\n control checks to\
+              \ only enable read access to\n these non-modifiable final fields.\n\n\
+              \  If there is a security manager, its\n checkPermission method is first\
+              \ called with a\n ReflectPermission(\"suppressAccessChecks\") permission."
+          - name: setAccessible0
+            modifiers:
+            - package
+            parameters:
             - name: arg0
               type:
                 basic: boolean
                 full: boolean
             return:
               type:
-                basic: void
-                full: void
+                basic: boolean
+                full: boolean
+          - name: slowVerifyAccess
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg2
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: toShortString
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: trySetAccessible
             modifiers:
             - public
@@ -194,23 +474,96 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the accessible flag is set to true;\n         false\
+                \ if access cannot be enabled."
+            notes: "Set the accessible flag for this reflected object to true\n if\
+              \ possible. This method sets the accessible flag, as if by\n invoking\
+              \ setAccessible(true), and returns\n the possibly-updated value for\
+              \ the accessible flag. If access\n cannot be enabled, i.e. the checks\
+              \ or Java language access control cannot\n be suppressed, this method\
+              \ returns false (as opposed to \n setAccessible(true) throwing InaccessibleObjectException\
+              \ when\n it fails).\n\n  This method is a no-op if the accessible flag\
+              \ for\n this reflected object is true.\n\n  For example, a caller can\
+              \ invoke trySetAccessible\n on a Method object for a private instance\
+              \ method\n p.T::privateMethod to suppress the checks for Java language\
+              \ access\n control when the Method is invoked.\n If p.T class is in\
+              \ a different module to the caller and\n package p is open to at least\
+              \ the caller's module,\n the code below successfully sets the accessible\
+              \ flag\n to true.\n\n \n <code>\n     p.T obj = ....;  // instance of\
+              \ p.T\n     :\n     Method m = p.T.class.getDeclaredMethod(\"privateMethod\"\
+              );\n     if (m.trySetAccessible()) {\n         m.invoke(obj);\n    \
+              \ } else {\n         // package p is not opened to the caller to access\
+              \ private member of T\n         ...\n     }\n </code>\n\n  If there\
+              \ is a security manager, its checkPermission method\n is first called\
+              \ with a ReflectPermission(\"suppressAccessChecks\")\n permission."
+          - name: verifyAccess
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg2
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           staticMethods:
+          - name: checkPermission
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+          - name: printStackTraceWhenAccessFails
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: setAccessible
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: array
               type:
-                basic: AccessibleObject[]
+                basic: AccessibleObject
                 full: java.lang.reflect.AccessibleObject[]
-            - name: arg1
+              notes: the array of AccessibleObjects
+            - name: flag
               type:
                 basic: boolean
                 full: boolean
+              notes: "the new value for the accessible flag\n              in each\
+                \ object"
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Convenience method to set the accessible flag for an\n array of\
+              \ reflected objects with a single security check (for efficiency).\n\
+              \n  This method may be used to enable access to all reflected objects\
+              \ in\n the array when access to each reflected object can be enabled\
+              \ as\n specified by setAccessible(boolean). \n\n If there is a security\
+              \ manager, its\n checkPermission method is first called with a\n ReflectPermission(\"\
+              suppressAccessChecks\") permission.\n\n A SecurityException is also\
+              \ thrown if any of the elements of\n the input array is a Constructor\n\
+              \ object for the class java.lang.Class and flag is true."

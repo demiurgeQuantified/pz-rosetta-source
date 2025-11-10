@@ -4,16 +4,151 @@ languages:
     packages:
       java.security:
         AccessControlContext:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "An AccessControlContext is used to make system resource access decisions\n\
+            \ based on the context it encapsulates.\n\n More specifically, it encapsulates\
+            \ a context and\n has a single method, checkPermission,\n that is equivalent\
+            \ to the checkPermission method\n in the AccessController class, with\
+            \ one difference: The AccessControlContext\n checkPermission method makes\
+            \ access decisions based on the\n context it encapsulates,\n rather than\
+            \ that of the current execution thread.\n\n Thus, the purpose of AccessControlContext\
+            \ is for those situations where\n a security check that should be made\
+            \ within a given context\n actually needs to be done from within a\n different\
+            \ context (for example, from within a worker thread).\n\n  An AccessControlContext\
+            \ is created by calling the\n AccessController.getContext method.\n The\
+            \ getContext method takes a \"snapshot\"\n of the current calling context,\
+            \ and places\n it in an AccessControlContext object, which it returns.\
+            \ A sample call is\n the following:\n\n \n   AccessControlContext acc\
+            \ = AccessController.getContext()\n \n\n \n Code within a different context\
+            \ can subsequently call the\n checkPermission method on the\n previously-saved\
+            \ AccessControlContext object. A sample call is the\n following:\n\n \n\
+            \   acc.checkPermission(permission)"
+          deprecated: true
+          fields:
+            combiner:
+              name: combiner
+              modifiers:
+              - private
+              type:
+                basic: DomainCombiner
+                full: java.security.DomainCombiner
+            context:
+              name: context
+              modifiers:
+              - private
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            isAuthorized:
+              name: isAuthorized
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            isLimited:
+              name: isLimited
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            isPrivileged:
+              name: isPrivileged
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            isWrapped:
+              name: isWrapped
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            limitedContext:
+              name: limitedContext
+              modifiers:
+              - private
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            parent:
+              name: parent
+              modifiers:
+              - private
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            permissions:
+              name: permissions
+              modifiers:
+              - private
+              type:
+                basic: Permission
+                full: java.security.Permission[]
+            privilegedContext:
+              name: privilegedContext
+              modifiers:
+              - private
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+          staticFields:
+            debug:
+              name: debug
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Debug
+                full: sun.security.util.Debug
+            debugInit:
+              name: debugInit
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: context
               type:
-                basic: ProtectionDomain[]
+                basic: ProtectionDomain
                 full: java.security.ProtectionDomain[]
+              notes: "the ProtectionDomains associated with this context.\n The non-duplicate\
+                \ domains are copied from the array. Subsequent\n changes to the array\
+                \ will not affect this AccessControlContext."
+            notes: "Create an AccessControlContext with the given array of ProtectionDomains.\n\
+              \ Context must not be null. Duplicate domains will be removed from the\n\
+              \ context."
           - modifiers:
             - public
+            parameters:
+            - name: acc
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+              notes: "the AccessControlContext associated\n          with the provided\
+                \ DomainCombiner."
+            - name: combiner
+              type:
+                basic: DomainCombiner
+                full: java.security.DomainCombiner
+              notes: "the DomainCombiner to be associated\n          with the provided\
+                \ AccessControlContext."
+            notes: "Create a new AccessControlContext with the given\n AccessControlContext\
+              \ and DomainCombiner.\n This constructor associates the provided\n DomainCombiner\
+              \ with the provided\n AccessControlContext."
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -23,10 +158,99 @@ languages:
               type:
                 basic: DomainCombiner
                 full: java.security.DomainCombiner
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain
+            - name: arg1
+              type:
+                basic: DomainCombiner
+                full: java.security.DomainCombiner
+            - name: arg2
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            - name: arg3
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            - name: arg4
+              type:
+                basic: Permission
+                full: java.security.Permission[]
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            - name: arg1
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
           methods:
+          - name: calculateFields
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            - name: arg1
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            - name: arg2
+              type:
+                basic: Permission
+                full: java.security.Permission[]
+            return:
+              type:
+                basic: void
+                full: void
           - name: checkPermission
             modifiers:
             - public
+            parameters:
+            - name: perm
+              type:
+                basic: Permission
+                full: java.security.Permission
+              notes: the requested permission.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Determines whether the access request indicated by the\n specified\
+              \ permission should be allowed or denied, based on\n the security policy\
+              \ currently in effect, and the context in\n this object. The request\
+              \ is allowed only if every ProtectionDomain\n in the context implies\
+              \ the permission. Otherwise the request is\n denied.\n\n \n This method\
+              \ quietly returns if the access request\n is permitted, or throws a\
+              \ suitable AccessControlException otherwise."
+          - name: checkPermission2
+            modifiers:
+            - private
             parameters:
             - name: arg0
               type:
@@ -36,18 +260,97 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: equals
+          - name: containsAllLimits
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Object
-                full: java.lang.Object
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
             return:
               type:
                 basic: boolean
                 full: boolean
+          - name: equalContext
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: equalLimitedContext
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: equalPDs
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            - name: arg1
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the object we are testing for equality with this object.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if obj is an AccessControlContext, and has the\n same set\
+                \ of ProtectionDomains as this context, false otherwise."
+            notes: "Checks two AccessControlContext objects for equality.\n Checks\
+              \ that obj is\n an AccessControlContext and has the same set of ProtectionDomains\n\
+              \ as this context."
+          - name: getAssignedCombiner
+            modifiers:
+            - package
+            return:
+              type:
+                basic: DomainCombiner
+                full: java.security.DomainCombiner
+          - name: getCombiner
+            modifiers:
+            - package
+            return:
+              type:
+                basic: DomainCombiner
+                full: java.security.DomainCombiner
+          - name: getContext
+            modifiers:
+            - package
+            return:
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
           - name: getDomainCombiner
             modifiers:
             - public
@@ -55,6 +358,9 @@ languages:
               type:
                 basic: DomainCombiner
                 full: java.security.DomainCombiner
+              notes: "the DomainCombiner associated with this\n          AccessControlContext,\
+                \ or null\n          if there is none."
+            notes: "Get the DomainCombiner associated with this\n AccessControlContext."
           - name: hashCode
             modifiers:
             - public
@@ -62,5 +368,84 @@ languages:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Object
+              notes: a hash code value for this context.
+            notes: "Returns the hash code value for this context. The hash code\n\
+              \ is computed by exclusive or-ing the hash code of all the protection\n\
+              \ domains in the context together."
+          - name: isAuthorized
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isPrivileged
+            modifiers:
+            - package
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: optimize
+            modifiers:
+            - package
+            return:
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+          staticMethods:
+          - name: combine
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            - name: arg1
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            return:
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+          - name: containsAllPDs
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            - name: arg1
+              type:
+                basic: ProtectionDomain
+                full: java.security.ProtectionDomain[]
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: getDebug
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: Debug
+                full: sun.security.util.Debug
+          - name: getNextPC
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext
+            return:
+              type:
+                basic: AccessControlContext
+                full: java.security.AccessControlContext

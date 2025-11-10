@@ -4,157 +4,267 @@ languages:
     packages:
       java.time:
         Instant:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "An instantaneous point on the time-line.\n \n This class models\
+            \ a single instantaneous point on the time-line.\n This might be used\
+            \ to record event time-stamps in the application.\n \n The range of an\
+            \ instant requires the storage of a number larger than a long.\n To achieve\
+            \ this, the class stores a long representing epoch-seconds and an\n int\
+            \ representing nanosecond-of-second, which will always be between 0 and\
+            \ 999,999,999.\n The epoch-seconds are measured from the standard Java\
+            \ epoch of 1970-01-01T00:00:00Z\n where instants after the epoch have\
+            \ positive values, and earlier instants have negative values.\n For both\
+            \ the epoch-second and nanosecond parts, a larger value is always later\
+            \ on the time-line\n than a smaller value.\n\n Time-scale\n \n The length\
+            \ of the solar day is the standard way that humans measure time.\n This\
+            \ has traditionally been subdivided into 24 hours of 60 minutes of 60\
+            \ seconds,\n forming a 86400 second day.\n \n Modern timekeeping is based\
+            \ on atomic clocks which precisely define an SI second\n relative to the\
+            \ transitions of a Caesium atom. The length of an SI second was defined\n\
+            \ to be very close to the 86400th fraction of a day.\n \n Unfortunately,\
+            \ as the Earth rotates the length of the day varies.\n In addition, over\
+            \ time the average length of the day is getting longer as the Earth slows.\n\
+            \ As a result, the length of a solar day in 2012 is slightly longer than\
+            \ 86400 SI seconds.\n The actual length of any given day and the amount\
+            \ by which the Earth is slowing\n are not predictable and can only be\
+            \ determined by measurement.\n The UT1 time-scale captures the accurate\
+            \ length of day, but is only available some\n time after the day has completed.\n\
+            \ \n The UTC time-scale is a standard approach to bundle up all the additional\
+            \ fractions\n of a second from UT1 into whole seconds, known as leap-seconds.\n\
+            \ A leap-second may be added or removed depending on the Earth's rotational\
+            \ changes.\n As such, UTC permits a day to have 86399 SI seconds or 86401\
+            \ SI seconds where\n necessary in order to keep the day aligned with the\
+            \ Sun.\n \n The modern UTC time-scale was introduced in 1972, introducing\
+            \ the concept of whole leap-seconds.\n Between 1958 and 1972, the definition\
+            \ of UTC was complex, with minor sub-second leaps and\n alterations to\
+            \ the length of the notional second. As of 2012, discussions are underway\n\
+            \ to change the definition of UTC again, with the potential to remove\
+            \ leap seconds or\n introduce other changes.\n \n Given the complexity\
+            \ of accurate timekeeping described above, this Java API defines\n its\
+            \ own time-scale, the Java Time-Scale.\n \n The Java Time-Scale divides\
+            \ each calendar day into exactly 86400\n subdivisions, known as seconds.\
+            \  These seconds may differ from the\n SI second.  It closely matches\
+            \ the de facto international civil time\n scale, the definition of which\
+            \ changes from time to time.\n \n The Java Time-Scale has slightly different\
+            \ definitions for different\n segments of the time-line, each based on\
+            \ the consensus international\n time scale that is used as the basis for\
+            \ civil time. Whenever the\n internationally-agreed time scale is modified\
+            \ or replaced, a new\n segment of the Java Time-Scale must be defined\
+            \ for it.  Each segment\n must meet these requirements:\n \n the Java\
+            \ Time-Scale shall closely match the underlying international\n  civil\
+            \ time scale;\n the Java Time-Scale shall exactly match the international\
+            \ civil\n  time scale at noon each day;\n the Java Time-Scale shall have\
+            \ a precisely-defined relationship to\n  the international civil time\
+            \ scale.\n \n There are currently, as of 2013, two segments in the Java\
+            \ time-scale.\n \n For the segment from 1972-11-03 (exact boundary discussed\
+            \ below) until\n further notice, the consensus international time scale\
+            \ is UTC (with\n leap seconds).  In this segment, the Java Time-Scale\
+            \ is identical to\n UTC-SLS.\n This is identical to UTC on days that do\
+            \ not have a leap second.\n On days that do have a leap second, the leap\
+            \ second is spread equally\n over the last 1000 seconds of the day, maintaining\
+            \ the appearance of\n exactly 86400 seconds per day.\n \n For the segment\
+            \ prior to 1972-11-03, extending back arbitrarily far,\n the consensus\
+            \ international time scale is defined to be UT1, applied\n proleptically,\
+            \ which is equivalent to the (mean) solar time on the\n prime meridian\
+            \ (Greenwich). In this segment, the Java Time-Scale is\n identical to\
+            \ the consensus international time scale. The exact\n boundary between\
+            \ the two segments is the instant where UT1 = UTC\n between 1972-11-03T00:00\
+            \ and 1972-11-04T12:00.\n \n Implementations of the Java time-scale using\
+            \ the JSR-310 API are not\n required to provide any clock that is sub-second\
+            \ accurate, or that\n progresses monotonically or smoothly. Implementations\
+            \ are therefore\n not required to actually perform the UTC-SLS slew or\
+            \ to otherwise be\n aware of leap seconds. JSR-310 does, however, require\
+            \ that\n implementations must document the approach they use when defining\
+            \ a\n clock representing the current instant.\n See Clock for details\
+            \ on the available clocks.\n \n The Java time-scale is used for all date-time\
+            \ classes.\n This includes Instant, LocalDate, LocalTime, OffsetDateTime,\n\
+            \ ZonedDateTime and Duration.\n \n This is a value-based\n class; programmers\
+            \ should treat instances that are\n equal as interchangeable and should\
+            \ not\n use instances for synchronization, or unpredictable behavior may\n\
+            \ occur. For example, in a future release, synchronization may fail.\n\
+            \ The equals method should be used for comparisons."
+          fields:
+            nanos:
+              name: nanos
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            seconds:
+              name: seconds
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
           staticFields:
             EPOCH:
               name: EPOCH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Instant
                 full: java.time.Instant
-                nullable: true
+              notes: Constant for the 1970-01-01T00:00:00Z epoch instant.
             MAX:
               name: MAX
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Instant
                 full: java.time.Instant
-                nullable: true
+              notes: "The maximum supported Instant, '1000000000-12-31T23:59:59.999999999Z'.\n\
+                \ This could be used by an application as a \"far future\" instant.\n\
+                \ \n This is one year later than the maximum LocalDateTime.\n This\
+                \ provides sufficient values to handle the range of ZoneOffset\n which\
+                \ affect the instant in addition to the local date-time.\n The value\
+                \ is also chosen such that the value of the year fits in\n an int."
+            MAX_SECOND:
+              name: MAX_SECOND
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
             MIN:
               name: MIN
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Instant
                 full: java.time.Instant
-                nullable: true
+              notes: "The minimum supported Instant, '-1000000000-01-01T00:00Z'.\n\
+                \ This could be used by an application as a \"far past\" instant.\n\
+                \ \n This is one year earlier than the minimum LocalDateTime.\n This\
+                \ provides sufficient values to handle the range of ZoneOffset\n which\
+                \ affect the instant in addition to the local date-time.\n The value\
+                \ is also chosen such that the value of the year fits in\n an int."
+            MIN_SECOND:
+              name: MIN_SECOND
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-          - name: __until__
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: long
-                full: long
-          - name: __until__
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: long
-                full: long
           - name: adjustInto
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the target object to be adjusted, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: adjustInto
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-            return:
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
+              notes: the adjusted object, not null
+            notes: "Adjusts the specified temporal object to have this instant.\n\
+              \ \n This returns a temporal object of the same observable type as the\
+              \ input\n with the instant changed to be the same as this.\n \n The\
+              \ adjustment is equivalent to using Temporal.with(TemporalField, long)\n\
+              \ twice, passing ChronoField.INSTANT_SECONDS and\n ChronoField.NANO_OF_SECOND\
+              \ as the fields.\n \n In most cases, it is clearer to reverse the calling\
+              \ pattern by using\n Temporal.with(TemporalAdjuster):\n \n   // these\
+              \ two lines are equivalent, but the second approach is recommended\n\
+              \   temporal = thisInstant.adjustInto(temporal);\n   temporal = temporal.with(thisInstant);\n\
+              \ \n \n This instance is immutable and unaffected by this method call."
           - name: atOffset
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+              notes: the offset to combine with, not null
             return:
               type:
                 basic: OffsetDateTime
                 full: java.time.OffsetDateTime
+              notes: the offset date-time formed from this instant and the specified
+                offset, not null
+            notes: "Combines this instant with an offset to create an OffsetDateTime.\n\
+              \ \n This returns an OffsetDateTime formed from this instant at the\n\
+              \ specified offset from UTC/Greenwich. An exception will be thrown if\
+              \ the\n instant is too large to fit into an offset date-time.\n \n This\
+              \ method is equivalent to\n OffsetDateTime.ofInstant(this, offset)."
           - name: atZone
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the zone to combine with, not null
             return:
               type:
                 basic: ZonedDateTime
                 full: java.time.ZonedDateTime
+              notes: the zoned date-time formed from this instant and the specified
+                zone, not null
+            notes: "Combines this instant with a time-zone to create a ZonedDateTime.\n\
+              \ \n This returns an ZonedDateTime formed from this instant at the\n\
+              \ specified time-zone. An exception will be thrown if the instant is\
+              \ too\n large to fit into a zoned date-time.\n \n This method is equivalent\
+              \ to\n ZonedDateTime.ofInstant(this, zone)."
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: otherInstant
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the other instant to compare to, not null
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the comparator value, negative if less, positive if greater
+            notes: "Compares this instant to the specified instant.\n \n The comparison\
+              \ is based on the time-line position of the instants.\n It is \"consistent\
+              \ with equals\", as defined by Comparable."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -163,26 +273,46 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the other instant, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the other instant is equal to this one
+            notes: "Checks if this instant is equal to the specified instant.\n \n\
+              \ The comparison is based on the time-line position of the instants."
           - name: get
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to get, not null
             return:
               type:
                 basic: int
                 full: int
+              notes: the value for the field
+            notes: "Gets the value of the specified field from this instant as an\
+              \ int.\n \n This queries this instant for the value of the specified\
+              \ field.\n The returned value will always be within the valid range\
+              \ of values for the field.\n If it is not possible to return the value,\
+              \ because the field is not supported\n or for some other reason, an\
+              \ exception is thrown.\n \n If the field is a ChronoField then the query\
+              \ is implemented here.\n The supported fields will return valid\n values\
+              \ based on this date-time, except INSTANT_SECONDS which is too\n large\
+              \ to fit in an int and throws a DateTimeException.\n All other ChronoField\
+              \ instances will throw an UnsupportedTemporalTypeException.\n \n If\
+              \ the field is not a ChronoField, then the result of this method\n is\
+              \ obtained by invoking TemporalField.getFrom(TemporalAccessor)\n passing\
+              \ this as the argument. Whether the value can be obtained,\n and what\
+              \ the value represents, is determined by the field."
           - name: getEpochSecond
             modifiers:
             - public
@@ -190,18 +320,36 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the seconds from the epoch of 1970-01-01T00:00:00Z
+            notes: "Gets the number of seconds from the Java epoch of 1970-01-01T00:00:00Z.\n\
+              \ \n The epoch second count is a simple incrementing count of seconds\
+              \ where\n second 0 is 1970-01-01T00:00:00Z.\n The nanosecond part is\
+              \ returned by getNano()."
           - name: getLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to get, not null
             return:
               type:
                 basic: long
                 full: long
+              notes: the value for the field
+            notes: "Gets the value of the specified field from this instant as a long.\n\
+              \ \n This queries this instant for the value of the specified field.\n\
+              \ If it is not possible to return the value, because the field is not\
+              \ supported\n or for some other reason, an exception is thrown.\n \n\
+              \ If the field is a ChronoField then the query is implemented here.\n\
+              \ The supported fields will return valid\n values based on this date-time.\n\
+              \ All other ChronoField instances will throw an UnsupportedTemporalTypeException.\n\
+              \ \n If the field is not a ChronoField, then the result of this method\n\
+              \ is obtained by invoking TemporalField.getFrom(TemporalAccessor)\n\
+              \ passing this as the argument. Whether the value can be obtained,\n\
+              \ and what the value represents, is determined by the field."
           - name: getNano
             modifiers:
             - public
@@ -209,6 +357,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the nanoseconds within the second, always positive, never exceeds
+                999,999,999
+            notes: "Gets the number of nanoseconds, later along the time-line, from\
+              \ the start\n of the second.\n \n The nanosecond-of-second value measures\
+              \ the total number of nanoseconds from\n the second returned by getEpochSecond()."
           - name: hashCode
             modifiers:
             - public
@@ -216,102 +369,142 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a suitable hash code
+            notes: Returns a hash code for this instant.
           - name: isAfter
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: otherInstant
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the other instant to compare to, not null
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this instant is after the specified instant
+            notes: "Checks if this instant is after the specified instant.\n \n The\
+              \ comparison is based on the time-line position of the instants."
           - name: isBefore
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: otherInstant
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the other instant to compare to, not null
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this instant is before the specified instant
+            notes: "Checks if this instant is before the specified instant.\n \n The\
+              \ comparison is based on the time-line position of the instants."
           - name: isSupported
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the field is supported on this instant, false if not
+            notes: "Checks if the specified field is supported.\n \n This checks if\
+              \ this instant can be queried for the specified field.\n If false, then\
+              \ calling the range,\n get and with(TemporalField, long)\n methods will\
+              \ throw an exception.\n \n If the field is a ChronoField then the query\
+              \ is implemented here.\n The supported fields are:\n \n NANO_OF_SECOND\n\
+              \ MICRO_OF_SECOND\n MILLI_OF_SECOND\n INSTANT_SECONDS\n \n All other\
+              \ ChronoField instances will return false.\n \n If the field is not\
+              \ a ChronoField, then the result of this method\n is obtained by invoking\
+              \ TemporalField.isSupportedBy(TemporalAccessor)\n passing this as the\
+              \ argument.\n Whether the field is supported is determined by the field."
           - name: isSupported
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the unit to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: isSupported
+              notes: true if the unit can be added/subtracted, false if not
+            notes: "Checks if the specified unit is supported.\n \n This checks if\
+              \ the specified unit can be added to, or subtracted from, this date-time.\n\
+              \ If false, then calling the plus(long, TemporalUnit) and\n minus methods\
+              \ will throw an exception.\n \n If the unit is a ChronoUnit then the\
+              \ query is implemented here.\n The supported units are:\n \n NANOS\n\
+              \ MICROS\n MILLIS\n SECONDS\n MINUTES\n HOURS\n HALF_DAYS\n DAYS\n \n\
+              \ All other ChronoUnit instances will return false.\n \n If the unit\
+              \ is not a ChronoUnit, then the result of this method\n is obtained\
+              \ by invoking TemporalUnit.isSupportedBy(Temporal)\n passing this as\
+              \ the argument.\n Whether the unit is supported is determined by the\
+              \ unit."
+          - name: minus
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: amountToSubtract
+              type:
+                basic: TemporalAmount
+                full: java.time.temporal.TemporalAmount
+              notes: the amount to subtract, not null
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: an Instant based on this instant with the subtraction made, not
+                null
+            notes: "Returns a copy of this instant with the specified amount subtracted.\n\
+              \ \n This returns an Instant, based on this one, with the specified\
+              \ amount subtracted.\n The amount is typically Duration but may be any\
+              \ other type implementing\n the TemporalAmount interface.\n \n The calculation\
+              \ is delegated to the amount object by calling\n TemporalAmount.subtractFrom(Temporal).\
+              \ The amount implementation is free\n to implement the subtraction in\
+              \ any way it wishes, however it typically\n calls back to minus(long,\
+              \ TemporalUnit). Consult the documentation\n of the amount implementation\
+              \ to determine if it can be successfully subtracted.\n \n This instance\
+              \ is immutable and unaffected by this method call."
+          - name: minus
+            modifiers:
+            - public
+            parameters:
+            - name: amountToSubtract
+              type:
+                basic: long
+                full: long
+              notes: the amount of the unit to subtract from the result, may be negative
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: minus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
+              notes: the unit of the amount to subtract, not null
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
-          - name: minus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
-          - name: minus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
+              notes: an Instant based on this instant with the specified amount subtracted,
+                not null
+            notes: "Returns a copy of this instant with the specified amount subtracted.\n\
+              \ \n This returns an Instant, based on this one, with the amount\n in\
+              \ terms of the unit subtracted. If it is not possible to subtract the\
+              \ amount,\n because the unit is not supported or for some other reason,\
+              \ an exception is thrown.\n \n This method is equivalent to plus(long,\
+              \ TemporalUnit) with the amount negated.\n See that method for a full\
+              \ description of how addition, and thus subtraction, works.\n \n This\
+              \ instance is immutable and unaffected by this method call."
           - name: minus
             modifiers:
             - public
@@ -326,69 +519,170 @@ languages:
                 full: java.time.temporal.TemporalUnit
             return:
               type:
-                basic: Instant
-                full: java.time.Instant
+                basic: Temporal
+                full: java.time.temporal.Temporal
           - name: minus
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
+                basic: TemporalAmount
+                full: java.time.temporal.TemporalAmount
             return:
               type:
-                basic: Instant
-                full: java.time.Instant
-          - name: minus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
+                basic: Temporal
+                full: java.time.temporal.Temporal
           - name: minusMillis
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: millisToSubtract
               type:
                 basic: long
                 full: long
+              notes: the milliseconds to subtract, positive or negative
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this instant with the specified milliseconds
+                subtracted, not null
+            notes: "Returns a copy of this instant with the specified duration in\
+              \ milliseconds subtracted.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: minusNanos
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: nanosToSubtract
               type:
                 basic: long
                 full: long
+              notes: the nanoseconds to subtract, positive or negative
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this instant with the specified nanoseconds
+                subtracted, not null
+            notes: "Returns a copy of this instant with the specified duration in\
+              \ nanoseconds subtracted.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: minusSeconds
             modifiers:
             - public
             parameters:
+            - name: secondsToSubtract
+              type:
+                basic: long
+                full: long
+              notes: the seconds to subtract, positive or negative
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: an Instant based on this instant with the specified seconds subtracted,
+                not null
+            notes: "Returns a copy of this instant with the specified duration in\
+              \ seconds subtracted.\n \n This instance is immutable and unaffected\
+              \ by this method call."
+          - name: nanosUntil
+            modifiers:
+            - private
+            parameters:
             - name: arg0
+              type:
+                basic: Instant
+                full: java.time.Instant
+            return:
+              type:
+                basic: long
+                full: long
+          - name: plus
+            modifiers:
+            - public
+            parameters:
+            - name: amountToAdd
+              type:
+                basic: TemporalAmount
+                full: java.time.temporal.TemporalAmount
+              notes: the amount to add, not null
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: an Instant based on this instant with the addition made, not
+                null
+            notes: "Returns a copy of this instant with the specified amount added.\n\
+              \ \n This returns an Instant, based on this one, with the specified\
+              \ amount added.\n The amount is typically Duration but may be any other\
+              \ type implementing\n the TemporalAmount interface.\n \n The calculation\
+              \ is delegated to the amount object by calling\n TemporalAmount.addTo(Temporal).\
+              \ The amount implementation is free\n to implement the addition in any\
+              \ way it wishes, however it typically\n calls back to plus(long, TemporalUnit).\
+              \ Consult the documentation\n of the amount implementation to determine\
+              \ if it can be successfully added.\n \n This instance is immutable and\
+              \ unaffected by this method call."
+          - name: plus
+            modifiers:
+            - public
+            parameters:
+            - name: amountToAdd
+              type:
+                basic: long
+                full: long
+              notes: the amount of the unit to add to the result, may be negative
+            - name: unit
+              type:
+                basic: TemporalUnit
+                full: java.time.temporal.TemporalUnit
+              notes: the unit of the amount to add, not null
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: an Instant based on this instant with the specified amount added,
+                not null
+            notes: "Returns a copy of this instant with the specified amount added.\n\
+              \ \n This returns an Instant, based on this one, with the amount\n in\
+              \ terms of the unit added. If it is not possible to add the amount,\
+              \ because the\n unit is not supported or for some other reason, an exception\
+              \ is thrown.\n \n If the field is a ChronoUnit then the addition is\
+              \ implemented here.\n The supported fields behave as follows:\n \n NANOS\
+              \ -\n  Returns an Instant with the specified number of nanoseconds added.\n\
+              \  This is equivalent to plusNanos(long).\n MICROS -\n  Returns an Instant\
+              \ with the specified number of microseconds added.\n  This is equivalent\
+              \ to plusNanos(long) with the amount\n  multiplied by 1,000.\n MILLIS\
+              \ -\n  Returns an Instant with the specified number of milliseconds\
+              \ added.\n  This is equivalent to plusNanos(long) with the amount\n\
+              \  multiplied by 1,000,000.\n SECONDS -\n  Returns an Instant with the\
+              \ specified number of seconds added.\n  This is equivalent to plusSeconds(long).\n\
+              \ MINUTES -\n  Returns an Instant with the specified number of minutes\
+              \ added.\n  This is equivalent to plusSeconds(long) with the amount\n\
+              \  multiplied by 60.\n HOURS -\n  Returns an Instant with the specified\
+              \ number of hours added.\n  This is equivalent to plusSeconds(long)\
+              \ with the amount\n  multiplied by 3,600.\n HALF_DAYS -\n  Returns an\
+              \ Instant with the specified number of half-days added.\n  This is equivalent\
+              \ to plusSeconds(long) with the amount\n  multiplied by 43,200 (12 hours).\n\
+              \ DAYS -\n  Returns an Instant with the specified number of days added.\n\
+              \  This is equivalent to plusSeconds(long) with the amount\n  multiplied\
+              \ by 86,400 (24 hours).\n \n \n All other ChronoUnit instances will\
+              \ throw an UnsupportedTemporalTypeException.\n \n If the field is not\
+              \ a ChronoUnit, then the result of this method\n is obtained by invoking\
+              \ TemporalUnit.addTo(Temporal, long)\n passing this as the argument.\
+              \ In this case, the unit determines\n whether and how to perform the\
+              \ addition.\n \n This instance is immutable and unaffected by this method\
+              \ call."
+          - name: plus
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
               type:
                 basic: long
                 full: long
@@ -402,8 +696,12 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: TemporalUnit
+                full: java.time.temporal.TemporalUnit
             return:
               type:
                 basic: Temporal
@@ -420,126 +718,131 @@ languages:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
-          - name: plus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAmount
-                full: java.time.temporal.TemporalAmount
-            return:
-              type:
-                basic: Temporal
-                full: java.time.temporal.Temporal
-          - name: plus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
-          - name: plus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
-          - name: plus
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            - name: arg1
-              type:
-                basic: TemporalUnit
-                full: java.time.temporal.TemporalUnit
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
           - name: plusMillis
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: millisToAdd
               type:
                 basic: long
                 full: long
+              notes: the milliseconds to add, positive or negative
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this instant with the specified milliseconds
+                added, not null
+            notes: "Returns a copy of this instant with the specified duration in\
+              \ milliseconds added.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: plusNanos
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: nanosToAdd
               type:
                 basic: long
                 full: long
+              notes: the nanoseconds to add, positive or negative
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this instant with the specified nanoseconds
+                added, not null
+            notes: "Returns a copy of this instant with the specified duration in\
+              \ nanoseconds added.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: plusSeconds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: secondsToAdd
               type:
                 basic: long
                 full: long
+              notes: the seconds to add, positive or negative
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this instant with the specified seconds added,
+                not null
+            notes: "Returns a copy of this instant with the specified duration in\
+              \ seconds added.\n \n This instance is immutable and unaffected by this\
+              \ method call."
           - name: query
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: query
               type:
-                basic: TemporalQuery<R>
+                basic: TemporalQuery
                 full: java.time.temporal.TemporalQuery<R>
+              notes: the query to invoke, not null
             return:
               type:
                 basic: R
                 full: R
+              notes: the query result, null may be returned (defined by the query)
+            notes: "Queries this instant using the specified query.\n \n This queries\
+              \ this instant using the specified query strategy object.\n The TemporalQuery\
+              \ object defines the logic to be used to\n obtain the result. Read the\
+              \ documentation of the query to understand\n what the result of this\
+              \ method will be.\n \n The result of this method is obtained by invoking\
+              \ the\n TemporalQuery.queryFrom(TemporalAccessor) method on the\n specified\
+              \ query passing this as the argument."
           - name: range
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: TemporalField
                 full: java.time.temporal.TemporalField
+              notes: the field to query the range for, not null
             return:
               type:
                 basic: ValueRange
                 full: java.time.temporal.ValueRange
+              notes: the range of valid values for the field, not null
+            notes: "Gets the range of valid values for the specified field.\n \n The\
+              \ range object expresses the minimum and maximum valid values for a\
+              \ field.\n This instant is used to enhance the accuracy of the returned\
+              \ range.\n If it is not possible to return the range, because the field\
+              \ is not supported\n or for some other reason, an exception is thrown.\n\
+              \ \n If the field is a ChronoField then the query is implemented here.\n\
+              \ The supported fields will return\n appropriate range instances.\n\
+              \ All other ChronoField instances will throw an UnsupportedTemporalTypeException.\n\
+              \ \n If the field is not a ChronoField, then the result of this method\n\
+              \ is obtained by invoking TemporalField.rangeRefinedBy(TemporalAccessor)\n\
+              \ passing this as the argument.\n Whether the range can be obtained\
+              \ is determined by the field."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: secondsUntil
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Instant
+                full: java.time.Instant
+            return:
+              type:
+                basic: long
+                full: long
           - name: toEpochMilli
             modifiers:
             - public
@@ -547,54 +850,151 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
+            notes: "Converts this instant to the number of milliseconds from the epoch\n\
+              \ of 1970-01-01T00:00:00Z.\n \n If this instant represents a point on\
+              \ the time-line too far in the future\n or past to fit in a long milliseconds,\
+              \ then an exception is thrown.\n \n If this instant has greater than\
+              \ millisecond precision, then the conversion\n will drop any excess\
+              \ precision information as though the amount in nanoseconds\n was subject\
+              \ to integer division by one million."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: truncatedTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the unit to truncate to, not null
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this instant with the time truncated, not
+                null
+            notes: "Returns a copy of this Instant truncated to the specified unit.\n\
+              \ \n Truncating the instant returns a copy of the original with fields\n\
+              \ smaller than the specified unit set to zero.\n The fields are calculated\
+              \ on the basis of using a UTC offset as seen\n in toString.\n For example,\
+              \ truncating with the MINUTES unit will\n round down to the nearest\
+              \ minute, setting the seconds and nanoseconds to zero.\n \n The unit\
+              \ must have a duration\n that divides into the length of a standard\
+              \ day without remainder.\n This includes all supplied time units on\
+              \ ChronoUnit and\n DAYS. Other units throw an exception.\n \n This instance\
+              \ is immutable and unaffected by this method call."
+          - name: until
+            modifiers:
+            - public
+            parameters:
+            - name: endExclusive
+              type:
+                basic: Temporal
+                full: java.time.temporal.Temporal
+              notes: the end date, exclusive, which is converted to an Instant, not
+                null
+            - name: unit
+              type:
+                basic: TemporalUnit
+                full: java.time.temporal.TemporalUnit
+              notes: the unit to measure the amount in, not null
+            return:
+              type:
+                basic: long
+                full: long
+              notes: the amount of time between this instant and the end instant
+            notes: "Calculates the amount of time until another instant in terms of\
+              \ the specified unit.\n \n This calculates the amount of time between\
+              \ two Instant\n objects in terms of a single TemporalUnit.\n The start\
+              \ and end points are this and the specified instant.\n The result will\
+              \ be negative if the end is before the start.\n The calculation returns\
+              \ a whole number, representing the number of\n complete units between\
+              \ the two instants.\n The Temporal passed to this method is converted\
+              \ to a\n Instant using from(TemporalAccessor).\n For example, the amount\
+              \ in seconds between two dates can be calculated\n using startInstant.until(endInstant,\
+              \ SECONDS).\n \n There are two equivalent ways of using this method.\n\
+              \ The first is to invoke this method.\n The second is to use TemporalUnit.between(Temporal,\
+              \ Temporal):\n \n   // these two lines are equivalent\n   amount = start.until(end,\
+              \ SECONDS);\n   amount = SECONDS.between(start, end);\n \n The choice\
+              \ should be made based on which makes the code more readable.\n \n The\
+              \ calculation is implemented in this method for ChronoUnit.\n The units\
+              \ NANOS, MICROS, MILLIS, SECONDS,\n MINUTES, HOURS, HALF_DAYS and DAYS\n\
+              \ are supported. Other ChronoUnit values will throw an exception.\n\
+              \ \n If the unit is not a ChronoUnit, then the result of this method\n\
+              \ is obtained by invoking TemporalUnit.between(Temporal, Temporal)\n\
+              \ passing this as the first argument and the converted input temporal\n\
+              \ as the second argument.\n \n This instance is immutable and unaffected\
+              \ by this method call."
           - name: with
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: adjuster
               type:
                 basic: TemporalAdjuster
                 full: java.time.temporal.TemporalAdjuster
+              notes: the adjuster to use, not null
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an Instant based on this with the adjustment made, not null
+            notes: "Returns an adjusted copy of this instant.\n \n This returns an\
+              \ Instant, based on this one, with the instant adjusted.\n The adjustment\
+              \ takes place using the specified adjuster strategy object.\n Read the\
+              \ documentation of the adjuster to understand what adjustment will be\
+              \ made.\n \n The result of this method is obtained by invoking the\n\
+              \ TemporalAdjuster.adjustInto(Temporal) method on the\n specified adjuster\
+              \ passing this as the argument.\n \n This instance is immutable and\
+              \ unaffected by this method call."
           - name: with
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
-                basic: TemporalAdjuster
-                full: java.time.temporal.TemporalAdjuster
+                basic: TemporalField
+                full: java.time.temporal.TemporalField
+              notes: the field to set in the result, not null
+            - name: newValue
+              type:
+                basic: long
+                full: long
+              notes: the new value of the field in the result
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
-          - name: with
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: TemporalAdjuster
-                full: java.time.temporal.TemporalAdjuster
-            return:
-              type:
-                basic: Instant
-                full: java.time.Instant
+              notes: an Instant based on this with the specified field set, not null
+            notes: "Returns a copy of this instant with the specified field set to\
+              \ a new value.\n \n This returns an Instant, based on this one, with\
+              \ the value\n for the specified field changed.\n If it is not possible\
+              \ to set the value, because the field is not supported or for\n some\
+              \ other reason, an exception is thrown.\n \n If the field is a ChronoField\
+              \ then the adjustment is implemented here.\n The supported fields behave\
+              \ as follows:\n \n NANO_OF_SECOND -\n  Returns an Instant with the specified\
+              \ nano-of-second.\n  The epoch-second will be unchanged.\n MICRO_OF_SECOND\
+              \ -\n  Returns an Instant with the nano-of-second replaced by the specified\n\
+              \  micro-of-second multiplied by 1,000. The epoch-second will be unchanged.\n\
+              \ MILLI_OF_SECOND -\n  Returns an Instant with the nano-of-second replaced\
+              \ by the specified\n  milli-of-second multiplied by 1,000,000. The epoch-second\
+              \ will be unchanged.\n INSTANT_SECONDS -\n  Returns an Instant with\
+              \ the specified epoch-second.\n  The nano-of-second will be unchanged.\n\
+              \ \n \n In all cases, if the new value is outside the valid range of\
+              \ values for the field\n then a DateTimeException will be thrown.\n\
+              \ \n All other ChronoField instances will throw an UnsupportedTemporalTypeException.\n\
+              \ \n If the field is not a ChronoField, then the result of this method\n\
+              \ is obtained by invoking TemporalField.adjustInto(Temporal, long)\n\
+              \ passing this as the argument. In this case, the field determines\n\
+              \ whether and how to adjust the instant.\n \n This instance is immutable\
+              \ and unaffected by this method call."
           - name: with
             modifiers:
             - public
@@ -609,54 +1009,79 @@ languages:
                 full: long
             return:
               type:
-                basic: Instant
-                full: java.time.Instant
+                basic: Temporal
+                full: java.time.temporal.Temporal
           - name: with
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: TemporalField
-                full: java.time.temporal.TemporalField
-            - name: arg1
-              type:
-                basic: long
-                full: long
+                basic: TemporalAdjuster
+                full: java.time.temporal.TemporalAdjuster
             return:
               type:
-                basic: Instant
-                full: java.time.Instant
-          - name: with
+                basic: Temporal
+                full: java.time.temporal.Temporal
+          - name: writeExternal
             modifiers:
-            - public
+            - package
             parameters:
             - name: arg0
               type:
-                basic: TemporalField
-                full: java.time.temporal.TemporalField
-            - name: arg1
-              type:
-                basic: long
-                full: long
+                basic: DataOutput
+                full: java.io.DataOutput
             return:
               type:
-                basic: Instant
-                full: java.time.Instant
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           staticMethods:
+          - name: create
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant
           - name: from
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: TemporalAccessor
                 full: java.time.temporal.TemporalAccessor
+              notes: the temporal object to convert, not null
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the instant, not null
+            notes: "Obtains an instance of Instant from a temporal object.\n \n This\
+              \ obtains an instant based on the specified temporal.\n A TemporalAccessor\
+              \ represents an arbitrary set of date and time information,\n which\
+              \ this factory converts to an instance of Instant.\n \n The conversion\
+              \ extracts the INSTANT_SECONDS\n and NANO_OF_SECOND fields.\n \n This\
+              \ method matches the signature of the functional interface TemporalQuery\n\
+              \ allowing it to be used as a query via method reference, Instant::from."
           - name: now
             modifiers:
             - public
@@ -665,74 +1090,122 @@ languages:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the current instant using the system clock, not null
+            notes: "Obtains the current instant from the system clock.\n \n This will\
+              \ query the system UTC clock to\n obtain the current instant.\n \n Using\
+              \ this method will prevent the ability to use an alternate time-source\
+              \ for\n testing because the clock is effectively hard-coded."
           - name: now
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: clock
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: the clock to use, not null
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the current instant, not null
+            notes: "Obtains the current instant from the specified clock.\n \n This\
+              \ will query the specified clock to obtain the current time.\n \n Using\
+              \ this method allows the use of an alternate clock for testing.\n The\
+              \ alternate clock may be introduced using dependency injection."
           - name: ofEpochMilli
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: epochMilli
               type:
                 basic: long
                 full: long
+              notes: the number of milliseconds from 1970-01-01T00:00:00Z
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an instant, not null
+            notes: "Obtains an instance of Instant using milliseconds from the\n epoch\
+              \ of 1970-01-01T00:00:00Z.\n \n The seconds and nanoseconds are extracted\
+              \ from the specified milliseconds."
           - name: ofEpochSecond
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: epochSecond
               type:
                 basic: long
                 full: long
+              notes: the number of seconds from 1970-01-01T00:00:00Z
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an instant, not null
+            notes: "Obtains an instance of Instant using seconds from the\n epoch\
+              \ of 1970-01-01T00:00:00Z.\n \n The nanosecond field is set to zero."
           - name: ofEpochSecond
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: epochSecond
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the number of seconds from 1970-01-01T00:00:00Z
+            - name: nanoAdjustment
               type:
                 basic: long
                 full: long
+              notes: the nanosecond adjustment to the number of seconds, positive
+                or negative
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: an instant, not null
+            notes: "Obtains an instance of Instant using seconds from the\n epoch\
+              \ of 1970-01-01T00:00:00Z and nanosecond fraction of second.\n \n This\
+              \ method allows an arbitrary number of nanoseconds to be passed in.\n\
+              \ The factory will alter the values of the second and nanosecond in\
+              \ order\n to ensure that the stored nanosecond is in the range 0 to\
+              \ 999,999,999.\n For example, the following will result in exactly the\
+              \ same instant:\n \n  Instant.ofEpochSecond(3, 1);\n  Instant.ofEpochSecond(4,\
+              \ -999_999_999);\n  Instant.ofEpochSecond(2, 1000_000_001);"
           - name: parse
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: text
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
+              notes: the text to parse, not null
             return:
               type:
                 basic: Instant
                 full: java.time.Instant
-          javaType: class
-          extends: Object
+              notes: the parsed instant, not null
+            notes: "Obtains an instance of Instant from a text string such as\n 2007-12-03T10:15:30.00Z.\n\
+              \ \n The string must represent a valid instant in UTC and is parsed\
+              \ using\n DateTimeFormatter.ISO_INSTANT."
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
+            return:
+              type:
+                basic: Instant
+                full: java.time.Instant

@@ -1,0 +1,220 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.lang:
+        RuntimePermission:
+          extends: java.security.BasicPermission
+          modifiers:
+          - public
+          - final
+          notes: "This class is for runtime permissions. A RuntimePermission\n contains\
+            \ a name (also referred to as a \"target name\") but no actions\n list;\
+            \ you either have the named permission or you don't.\n \n The target name\
+            \ is the name of the runtime permission (see below). The\n naming convention\
+            \ follows the  hierarchical property naming convention.\n Also, an asterisk\
+            \ may appear at the end of the name, following a \".\",\n or by itself,\
+            \ to signify a wildcard match. For example: \"loadLibrary.*\"\n and \"\
+            *\" signify a wildcard match, while \"*loadLibrary\" and \"a*b\" do not.\n\
+            \ \n The following table lists the standard RuntimePermission\n target\
+            \ names, and for each provides a description of what the permission\n\
+            \ allows and a discussion of the risks of granting code the permission.\n\
+            \n \n permission target name,\n  what the target allows, and associated\
+            \ risks\n \n \n Permission Target Name\n What the Permission Allows\n\
+            \ Risks of Allowing this Permission\n \n \n \n\n \n   createClassLoader\n\
+            \   Creation of a class loader\n   This is an extremely dangerous permission\
+            \ to grant.\n Malicious applications that can instantiate their own class\n\
+            \ loaders could then load their own rogue classes into the system.\n These\
+            \ newly loaded classes could be placed into any protection\n domain by\
+            \ the class loader, thereby automatically granting the\n classes the permissions\
+            \ for that domain.\n \n\n \n   getClassLoader\n   Retrieval of a class\
+            \ loader (e.g., the class loader for the calling\n class)\n   This would\
+            \ grant an attacker permission to get the\n class loader for a particular\
+            \ class. This is dangerous because\n having access to a class's class\
+            \ loader allows the attacker to\n load other classes available to that\
+            \ class loader. The attacker\n would typically otherwise not have access\
+            \ to those classes.\n \n\n \n   setContextClassLoader\n   Setting of the\
+            \ context class loader used by a thread\n   The context class loader is\
+            \ used by system code and extensions\n when they need to lookup resources\
+            \ that might not exist in the system\n class loader. Granting setContextClassLoader\
+            \ permission would allow\n code to change which context class loader is\
+            \ used\n for a particular thread, including system threads.\n \n\n \n\
+            \   enableContextClassLoaderOverride\n   Subclass implementation of the\
+            \ thread context class loader methods\n   The context class loader is\
+            \ used by system code and extensions\n when they need to lookup resources\
+            \ that might not exist in the system\n class loader. Granting enableContextClassLoaderOverride\
+            \ permission would allow\n a subclass of Thread to override the methods\
+            \ that are used\n to get or set the context class loader for a particular\
+            \ thread.\n \n\n \n   closeClassLoader\n   Closing of a ClassLoader\n\
+            \   Granting this permission allows code to close any URLClassLoader\n\
+            \ that it has a reference to.\n \n\n \n   setSecurityManager\n   Setting\
+            \ of the security manager (possibly replacing an existing one)\n \n  \
+            \ The security manager is a class that allows\n applications to implement\
+            \ a security policy. Granting the setSecurityManager\n permission would\
+            \ allow code to change which security manager is used by\n installing\
+            \ a different, possibly less restrictive security manager,\n thereby bypassing\
+            \ checks that would have been enforced by the original\n security manager.\n\
+            \ \n\n \n   createSecurityManager\n   Creation of a new security manager\n\
+            \   This gives code access to protected, sensitive methods that may\n\
+            \ disclose information about other classes or the execution stack.\n \n\
+            \n \n   getenv.{variable name}\n   Reading of the value of the specified\
+            \ environment variable\n   This would allow code to read the value, or\
+            \ determine the\n       existence, of a particular environment variable.\
+            \  This is\n       dangerous if the variable contains confidential data.\n\
+            \ \n\n \n   exitVM.{exit status}\n   Halting of the Java Virtual Machine\
+            \ with the specified exit status\n   This allows an attacker to mount\
+            \ a denial-of-service attack\n by automatically forcing the virtual machine\
+            \ to halt.\n Note: The \"exitVM.*\" permission is automatically granted\
+            \ to all code\n loaded from the application class path, thus enabling\
+            \ applications\n to terminate themselves. Also, the \"exitVM\" permission\
+            \ is equivalent to\n \"exitVM.*\".\n \n\n \n   shutdownHooks\n   Registration\
+            \ and cancellation of virtual-machine shutdown hooks\n   This allows an\
+            \ attacker to register a malicious shutdown\n hook that interferes with\
+            \ the clean shutdown of the virtual machine.\n \n\n \n   setFactory\n\
+            \   Setting of the socket factory used by ServerSocket or Socket,\n or\
+            \ of the stream handler factory used by URL\n   This allows code to set\
+            \ the actual implementation\n for the socket, server socket, stream handler,\
+            \ or RMI socket factory.\n An attacker may set a faulty implementation\
+            \ which mangles the data\n stream.\n \n\n \n   setIO\n   Setting of System.out,\
+            \ System.in, and System.err\n   This allows changing the value of the\
+            \ standard system streams.\n An attacker may change System.in to monitor\
+            \ and\n steal user input, or may set System.err to a \"null\" OutputStream,\n\
+            \ which would hide any error messages sent to System.err. \n \n\n \n \
+            \  modifyThread\n   Modification of threads, e.g., via calls to Thread\n\
+            \ interrupt, stop, suspend, resume, setDaemon, setPriority,\n setName\
+            \ and setUncaughtExceptionHandler\n methods\n This allows an attacker\
+            \ to modify the behaviour of\n any thread in the system.\n \n\n \n   stopThread\n\
+            \   Stopping of threads via calls to the Thread stop\n method\n   This\
+            \ allows code to stop any thread in the system provided that it is\n already\
+            \ granted permission to access that thread.\n This poses as a threat,\
+            \ because that code may corrupt the system by\n killing existing threads.\n\
+            \ \n\n \n   modifyThreadGroup\n   modification of thread groups, e.g.,\
+            \ via calls to ThreadGroup\n destroy, getParent, resume,\n setDaemon,\
+            \ setMaxPriority, stop,\n and suspend methods\n   This allows an attacker\
+            \ to create thread groups and\n set their run priority.\n \n\n \n   getProtectionDomain\n\
+            \   Retrieval of the ProtectionDomain for a class\n   This allows code\
+            \ to obtain policy information\n for a particular code source. While obtaining\
+            \ policy information\n does not compromise the security of the system,\
+            \ it does give\n attackers additional information, such as local file\
+            \ names for\n example, to better aim an attack.\n \n\n \n   getFileSystemAttributes\n\
+            \   Retrieval of file system attributes\n   This allows code to obtain\
+            \ file system information such as disk usage\n       or disk space available\
+            \ to the caller.  This is potentially dangerous\n       because it discloses\
+            \ information about the system hardware\n       configuration and some\
+            \ information about the caller's privilege to\n       write files.\n \n\
+            \n \n   readFileDescriptor\n   Reading of file descriptors\n   This would\
+            \ allow code to read the particular file associated\n       with the file\
+            \ descriptor read. This is dangerous if the file\n       contains confidential\
+            \ data.\n \n\n \n   writeFileDescriptor\n   Writing to file descriptors\n\
+            \   This allows code to write to a particular file associated\n      \
+            \ with the descriptor. This is dangerous because it may allow\n      \
+            \ malicious code to plant viruses or at the very least, fill up\n    \
+            \   your entire disk.\n \n\n \n   loadLibrary.{library name}\n   Dynamic\
+            \ linking of the specified library\n   It is dangerous to allow an applet\
+            \ permission to load native code\n libraries, because the Java security\
+            \ architecture is not designed to and\n does not prevent malicious behavior\
+            \ at the level of native code.\n \n\n \n   accessClassInPackage.{package\
+            \ name}\n   Access to the specified package via a class loader's\n loadClass\
+            \ method when that class loader calls\n the SecurityManager checkPackageAccess\
+            \ method\n   This gives code access to classes in packages\n to which\
+            \ it normally does not have access. Malicious code\n may use these classes\
+            \ to help in its attempt to compromise\n security in the system.\n \n\n\
+            \ \n   defineClassInPackage.{package name}\n   Definition of classes in\
+            \ the specified package, via a class\n loader's defineClass method when\
+            \ that class loader calls\n the SecurityManager checkPackageDefinition\
+            \ method.\n   This grants code permission to define a class\n in a particular\
+            \ package. This is dangerous because malicious\n code with this permission\
+            \ may define rogue classes in\n trusted packages like java.security or\
+            \ java.lang,\n for example.\n \n\n \n   defineClass\n   Define a class\
+            \ with\n Lookup.defineClass.\n   This grants code with a suitably privileged\
+            \ Lookup object\n permission to define classes in the same package as\
+            \ the Lookup's\n lookup class. \n \n\n \n   accessDeclaredMembers\n  \
+            \ Access to the declared members of a class\n   This grants code permission\
+            \ to query a class for its public,\n protected, default (package) access,\
+            \ and private fields and/or\n methods. Although the code would have\n\
+            \ access to the private and protected field and method names, it would\
+            \ not\n have access to the private/protected field data and would not\
+            \ be able\n to invoke any private methods. Nevertheless, malicious code\n\
+            \ may use this information to better aim an attack.\n Additionally, it\
+            \ may invoke any public methods and/or access public fields\n in the class.\
+            \  This could be dangerous if\n the code would normally not be able to\
+            \ invoke those methods and/or\n access the fields  because\n it can't\
+            \ cast the object to the class/interface with those methods\n and fields.\n\
+            \ \n \n   queuePrintJob\n   Initiation of a print job request\n   This\
+            \ could print sensitive information to a printer,\n or simply waste paper.\n\
+            \ \n\n \n   getStackTrace\n   Retrieval of the stack trace information\
+            \ of another thread.\n   This allows retrieval of the stack trace information\
+            \ of\n another thread.  This might allow malicious code to monitor the\n\
+            \ execution of threads and discover vulnerabilities in applications.\n\
+            \ \n\n \n   getStackWalkerWithClassReference\n   Get a stack walker that\
+            \ can retrieve stack frames with class reference.\n   This allows retrieval\
+            \ of Class objects from stack walking.\n   This might allow malicious\
+            \ code to access Class objects on the stack\n   outside its own context.\n\
+            \ \n\n \n   setDefaultUncaughtExceptionHandler\n   Setting the default\
+            \ handler to be used when a thread\n   terminates abruptly due to an uncaught\
+            \ exception\n   This allows an attacker to register a malicious\n   uncaught\
+            \ exception handler that could interfere with termination\n   of a thread\n\
+            \ \n\n \n   preferences\n   Represents the permission required to get\
+            \ access to the\n   java.util.prefs.Preferences implementations user or\
+            \ system root\n   which in turn allows retrieval or update operations\
+            \ within the\n   Preferences persistent backing store.) \n   This permission\
+            \ allows the user to read from or write to the\n   preferences backing\
+            \ store if the user running the code has\n   sufficient OS privileges\
+            \ to read/write to that backing store.\n   The actual backing store may\
+            \ reside within a traditional filesystem\n   directory or within a registry\
+            \ depending on the platform OS\n \n\n \n   manageProcess\n   Native process\
+            \ termination and information about processes\n       ProcessHandle.\n\
+            \   Allows code to identify and terminate processes that it did not create.\n\
+            \ \n\n \n   localeServiceProvider\n   This RuntimePermission is required\
+            \ to be granted to\n   classes which subclass and implement\n   java.util.spi.LocaleServiceProvider.\
+            \ The permission is\n   checked during invocation of the abstract base\
+            \ class constructor.\n   This permission ensures trust in classes which\
+            \ implement this\n   security-sensitive provider mechanism. \n   See \n\
+            \   java.util.spi.LocaleServiceProvider for more\n   information.\n \n\
+            \n \n   loggerFinder\n   This RuntimePermission is required to be granted\
+            \ to\n   classes which subclass or call methods on\n   java.lang.System.LoggerFinder.\
+            \ The permission is\n   checked during invocation of the abstract base\
+            \ class constructor, as\n   well as on the invocation of its public methods.\n\
+            \   This permission ensures trust in classes which provide loggers\n \
+            \  to system classes.\n   See java.lang.System.LoggerFinder\n   for more\
+            \ information.\n \n\n \n   accessSystemModules\n   Access system modules\
+            \ in the runtime image.\n   This grants the permission to access resources\
+            \ in the\n   system modules in the runtime image."
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the RuntimePermission.
+            notes: "Creates a new RuntimePermission with the specified name.\n The\
+              \ name is the symbolic name of the RuntimePermission, such as\n \"exit\"\
+              , \"setFactory\", etc. An asterisk\n may appear at the end of the name,\
+              \ following a \".\", or by itself, to\n signify a wildcard match."
+          - modifiers:
+            - public
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the name of the RuntimePermission.
+            - name: actions
+              type:
+                basic: String
+                full: java.lang.String
+              notes: should be null.
+            notes: "Creates a new RuntimePermission object with the specified name.\n\
+              \ The name is the symbolic name of the RuntimePermission, and the\n\
+              \ actions String is currently unused and should be null."

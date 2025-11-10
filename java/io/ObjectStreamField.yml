@@ -4,20 +4,108 @@ languages:
     packages:
       java.io:
         ObjectStreamField:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "A description of a Serializable field from a Serializable class.\
+            \  An array\n of ObjectStreamFields is used to declare the Serializable\
+            \ fields of a class."
+          fields:
+            field:
+              name: field
+              modifiers:
+              - private
+              type:
+                basic: Field
+                full: java.lang.reflect.Field
+            name:
+              name: name
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            offset:
+              name: offset
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            signature:
+              name: signature
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            type:
+              name: type
+              modifiers:
+              - private
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            typeSignature:
+              name: typeSignature
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+            unshared:
+              name: unshared
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the name of the serializable field
+            - name: type
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
+              notes: the Class object of the serializable field
+            notes: "Create a Serializable field with the specified type.  This field\
+              \ should\n be documented with a serialField tag."
           - modifiers:
             - public
+            parameters:
+            - name: name
+              type:
+                basic: String
+                full: java.lang.String
+              notes: field name
+            - name: type
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: field type
+            - name: unshared
+              type:
+                basic: boolean
+                full: boolean
+              notes: "if false, write/read field values in the same manner\n     \
+                \     as writeObject/readObject; if true, write/read in the same\n\
+                \          manner as writeUnshared/readUnshared"
+            notes: "Creates an ObjectStreamField representing a serializable field\
+              \ with the\n given name and type.  If unshared is false, values of the\
+              \ represented\n field are serialized and deserialized in the default\
+              \ manner--if the\n field is non-primitive, object values are serialized\
+              \ and deserialized as\n if they had been written and read by calls to\
+              \ writeObject and\n readObject.  If unshared is true, values of the\
+              \ represented field are\n serialized and deserialized as if they had\
+              \ been written and read by\n calls to writeUnshared and readUnshared."
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -25,44 +113,54 @@ languages:
                 full: java.lang.String
             - name: arg1
               type:
-                basic: Class<?>
-                full: java.lang.Class<?>
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Field
+                full: java.lang.reflect.Field
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
             - name: arg2
               type:
                 basic: boolean
                 full: boolean
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to be compared.
             return:
               type:
                 basic: int
                 full: int
-          - name: compareTo
+              notes: "a negative integer, zero, or a positive integer as this object\n\
+                \          is less than, equal to, or greater than the specified object."
+            notes: "Compare this field with another ObjectStreamField.  Return\n -1\
+              \ if this is smaller, 0 if equal, 1 if greater.  Types that are\n primitives\
+              \ are \"smaller\" than object types.  If equal, the field names\n are\
+              \ compared."
+          - name: getField
             modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
+            - package
             return:
               type:
-                basic: int
-                full: int
+                basic: Field
+                full: java.lang.reflect.Field
           - name: getName
             modifiers:
             - public
@@ -70,6 +168,9 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "a String representing the name of the serializable\n       \
+                \   field"
+            notes: Get the name of this field.
           - name: getOffset
             modifiers:
             - public
@@ -77,13 +178,28 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the offset of this field
+            notes: Offset of field within instance data.
+          - name: getSignature
+            modifiers:
+            - package
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: getType
             modifiers:
             - public
             return:
               type:
-                basic: Class<?>
+                basic: Class
                 full: java.lang.Class<?>
+              notes: "a Class object representing the type of the\n          serializable\
+                \ field"
+            notes: "Get the type of the field.  If the type is non-primitive and this\n\
+              \ ObjectStreamField was obtained from a deserialized ObjectStreamClass\
+              \ instance, then Object.class is returned.\n Otherwise, the Class object\
+              \ for the type of the field is\n returned."
           - name: getTypeCode
             modifiers:
             - public
@@ -91,6 +207,12 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: the typecode of the serializable field
+            notes: "Returns character encoding of field type.  The encoding is as\
+              \ follows:\n \n B            byte\n C            char\n D          \
+              \  double\n F            float\n I            int\n J            long\n\
+              \ L            class or interface\n S            short\n Z         \
+              \   boolean\n [            array"
           - name: getTypeString
             modifiers:
             - public
@@ -98,6 +220,8 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: null if this field has a primitive type.
+            notes: Return the JVM type signature.
           - name: isPrimitive
             modifiers:
             - public
@@ -105,6 +229,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if and only if this field corresponds to a primitive type
+            notes: Return true if this field has a primitive type.
           - name: isUnshared
             modifiers:
             - public
@@ -112,5 +238,71 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: true if this field is unshared
+            notes: "Returns boolean value indicating whether or not the serializable\
+              \ field\n represented by this ObjectStreamField instance is unshared."
+          - name: setOffset
+            modifiers:
+            - protected
+            parameters:
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset of the field
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Offset within instance data.
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          staticMethods:
+          - name: appendClassSignature
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+            - name: arg1
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: StringBuilder
+                full: java.lang.StringBuilder
+          - name: getClassSignature
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: getPrimitiveSignature
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: String
+                full: java.lang.String

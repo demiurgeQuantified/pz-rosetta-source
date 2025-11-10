@@ -4,25 +4,82 @@ languages:
     packages:
       java.nio.charset.spi:
         CharsetProvider:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Charset service-provider class.\n\n  A charset provider is a concrete\
+            \ subclass of this class that has a\n zero-argument constructor and some\
+            \ number of associated charset\n implementation classes.  Charset providers\
+            \ may be installed in an instance\n of the Java platform as extensions.\
+            \  Providers may also be made available by\n adding them to the applet\
+            \ or application class path or by some other\n platform-specific means.\
+            \  Charset providers are looked up via the current\n thread's context\
+            \ class\n loader.\n\n  A charset provider identifies itself with a provider-configuration\
+            \ file\n named java.nio.charset.spi.CharsetProvider in the resource\n\
+            \ directory META-INF/services.  The file should contain a list of\n fully-qualified\
+            \ concrete charset-provider class names, one per line.  A line\n is terminated\
+            \ by any one of a line feed ('\\n'), a carriage return\n ('\\r'), or a\
+            \ carriage return followed immediately by a line feed.\n Space and tab\
+            \ characters surrounding each name, as well as blank lines, are\n ignored.\
+            \  The comment character is '#' ('&#92;u0023'); on\n each line all characters\
+            \ following the first comment character are ignored.\n The file must be\
+            \ encoded in UTF-8.\n\n  If a particular concrete charset provider class\
+            \ is named in more than\n one configuration file, or is named in the same\
+            \ configuration file more than\n once, then the duplicates will be ignored.\
+            \  The configuration file naming a\n particular provider need not be in\
+            \ the same jar file or other distribution\n unit as the provider itself.\
+            \  The provider must be accessible from the same\n class loader that was\
+            \ initially queried to locate the configuration file;\n this is not necessarily\
+            \ the class loader that loaded the file."
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Void
+                full: java.lang.Void
+          - modifiers:
+            - protected
+            notes: Initializes a new charset provider.
           methods:
           - name: charsetForName
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: charsetName
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The name of the requested charset; may be either\n         a\
+                \ canonical name or an alias"
             return:
               type:
                 basic: Charset
                 full: java.nio.charset.Charset
+              notes: "A charset object for the named charset,\n          or null if\
+                \ the named charset\n          is not supported by this provider"
+            notes: Retrieves a charset for the given charset name.
           - name: charsets
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Iterator<Charset>
+                basic: Iterator
                 full: java.util.Iterator<java.nio.charset.Charset>
-          javaType: class
-          extends: Object
+              notes: The new iterator
+            notes: "Creates an iterator that iterates over the charsets supported\
+              \ by this\n provider.  This method is used in the implementation of\
+              \ the Charset.availableCharsets\n method."
+          staticMethods:
+          - name: checkPermission
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: Void
+                full: java.lang.Void

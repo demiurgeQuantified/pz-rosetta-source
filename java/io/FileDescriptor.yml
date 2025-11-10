@@ -4,44 +4,213 @@ languages:
     packages:
       java.io:
         FileDescriptor:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "Instances of the file descriptor class serve as an opaque handle\n\
+            \ to the underlying machine-specific structure representing an open\n\
+            \ file, an open socket, or another source or sink of bytes.\n The main\
+            \ practical use for a file descriptor is to create a\n FileInputStream\
+            \ or FileOutputStream to contain it.\n \n Applications should not create\
+            \ their own file descriptors."
+          fields:
+            append:
+              name: append
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            cleanup:
+              name: cleanup
+              modifiers:
+              - private
+              type:
+                basic: PhantomCleanable
+                full: jdk.internal.ref.PhantomCleanable<java.io.FileDescriptor>
+            closed:
+              name: closed
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            fd:
+              name: fd
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            handle:
+              name: handle
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+            otherParents:
+              name: otherParents
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List<java.io.Closeable>
+            parent:
+              name: parent
+              modifiers:
+              - private
+              type:
+                basic: Closeable
+                full: java.io.Closeable
           staticFields:
             err:
               name: err
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: FileDescriptor
                 full: java.io.FileDescriptor
-                nullable: true
+              notes: "A handle to the standard error stream. Usually, this file\n\
+                \ descriptor is not used directly, but rather via the output stream\n\
+                \ known as System.err."
             in:
               name: in
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: FileDescriptor
                 full: java.io.FileDescriptor
-                nullable: true
+              notes: "A handle to the standard input stream. Usually, this file\n\
+                \ descriptor is not used directly, but rather via the input stream\n\
+                \ known as System.in."
             out:
               name: out
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: FileDescriptor
                 full: java.io.FileDescriptor
-                nullable: true
+              notes: "A handle to the standard output stream. Usually, this file\n\
+                \ descriptor is not used directly, but rather via the output stream\n\
+                \ known as System.out."
           constructors:
           - modifiers:
             - public
+            notes: "Constructs an (invalid) FileDescriptor object.\n The fd or handle\
+              \ is set later."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
           methods:
+          - name: attach
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Closeable
+                full: java.io.Closeable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: close
+            modifiers:
+            - package
+            return:
+              type:
+                basic: void
+                full: void
+          - name: close0
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: closeAll
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Closeable
+                full: java.io.Closeable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: registerCleanup
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: PhantomCleanable
+                full: jdk.internal.ref.PhantomCleanable<java.io.FileDescriptor>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: set
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setHandle
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
           - name: sync
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Force all system buffers to synchronize with the underlying\n\
+              \ device.  This method returns after all modified data and\n attributes\
+              \ of this FileDescriptor have been written to the\n relevant device(s).\
+              \  In particular, if this FileDescriptor\n refers to a physical storage\
+              \ medium, such as a file in a file\n system, sync will not return until\
+              \ all in-memory modified copies\n of buffers associated with this FileDescriptor\
+              \ have been\n written to the physical medium.\n\n sync is meant to be\
+              \ used by code that requires physical\n storage (such as a file) to\
+              \ be in a known state  For\n example, a class that provided a simple\
+              \ transaction facility\n might use sync to ensure that all changes to\
+              \ a file caused\n by a given transaction were recorded on a storage\
+              \ medium.\n\n sync only affects buffers downstream of this FileDescriptor.\
+              \  If\n any in-memory buffering is being done by the application (for\n\
+              \ example, by a BufferedOutputStream object), those buffers must\n be\
+              \ flushed into the FileDescriptor (for example, by invoking\n OutputStream.flush)\
+              \ before that data will be affected by sync."
+          - name: unregisterCleanup
+            modifiers:
+            - package
             return:
               type:
                 basic: void
@@ -53,5 +222,42 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Object
+              notes: "true if the file descriptor object represents a\n          valid,\
+                \ open file, socket, or other active I/O connection;\n          false\
+                \ otherwise."
+            notes: Tests if this file descriptor object is valid.
+          staticMethods:
+          - name: getAppend
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: getHandle
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: long
+                full: long
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

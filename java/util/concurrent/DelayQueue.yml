@@ -1,0 +1,440 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent:
+        DelayQueue:
+          extends: java.util.AbstractQueue<E>
+          modifiers:
+          - public
+          notes: "An unbounded blocking queue of\n Delayed elements, in which an element\
+            \ can only be taken\n when its delay has expired.  The head of the queue\
+            \ is that\n Delayed element whose delay expired furthest in the\n past.\
+            \  If no delay has expired there is no head and poll\n will return null.\
+            \ Expiration occurs when an element's\n getDelay(TimeUnit.NANOSECONDS)\
+            \ method returns a value less\n than or equal to zero.  Even though unexpired\
+            \ elements cannot be\n removed using take or poll, they are otherwise\n\
+            \ treated as normal elements. For example, the size method\n returns the\
+            \ count of both expired and unexpired elements.\n This queue does not\
+            \ permit null elements.\n\n This class and its iterator implement all\
+            \ of the optional\n methods of the Collection and Iterator interfaces.\n\
+            \ The Iterator provided in method iterator() is not\n guaranteed to traverse\
+            \ the elements of the DelayQueue in any\n particular order.\n\n This class\
+            \ is a member of the\n \n Java Collections Framework."
+          fields:
+            available:
+              name: available
+              modifiers:
+              - private
+              type:
+                basic: Condition
+                full: java.util.concurrent.locks.Condition
+            leader:
+              name: leader
+              modifiers:
+              - private
+              type:
+                basic: Thread
+                full: java.lang.Thread
+            lock:
+              name: lock
+              modifiers:
+              - private
+              type:
+                basic: ReentrantLock
+                full: java.util.concurrent.locks.ReentrantLock
+            q:
+              name: q
+              modifiers:
+              - private
+              type:
+                basic: PriorityQueue
+                full: java.util.PriorityQueue<E>
+          constructors:
+          - modifiers:
+            - public
+            notes: Creates a new DelayQueue that is initially empty.
+          - modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends E>
+              notes: the collection of elements to initially contain
+            notes: "Creates a DelayQueue initially containing the elements of the\n\
+              \ given collection of Delayed instances."
+          methods:
+          - name: add
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true (as specified by Collection.add(E))
+            notes: Inserts the specified element into this delay queue.
+          - name: add
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: clear
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Atomically removes all of the elements from this delay queue.\n\
+              \ The queue will be empty after this call returns.\n Elements with an\
+              \ unexpired delay are not waited for; they are\n simply discarded from\
+              \ the queue."
+          - name: drainTo
+            modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: Collection
+                full: java.util.Collection<? super E>
+              notes: the collection to transfer elements into
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of elements transferred
+            notes: 'Description copied from interface: BlockingQueue'
+          - name: drainTo
+            modifiers:
+            - public
+            parameters:
+            - name: c
+              type:
+                basic: Collection
+                full: java.util.Collection<? super E>
+              notes: the collection to transfer elements into
+            - name: maxElements
+              type:
+                basic: int
+                full: int
+              notes: the maximum number of elements to transfer
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of elements transferred
+            notes: 'Description copied from interface: BlockingQueue'
+          - name: iterator
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Iterator
+                full: java.util.Iterator<E>
+              notes: an iterator over the elements in this queue
+            notes: "Returns an iterator over all the elements (both expired and\n\
+              \ unexpired) in this queue. The iterator does not return the\n elements\
+              \ in any particular order.\n\n The returned iterator is\n weakly consistent."
+          - name: offer
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: 'true'
+            notes: Inserts the specified element into this delay queue.
+          - name: offer
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: This parameter is ignored as the method never blocks
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: This parameter is ignored as the method never blocks
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: 'true'
+            notes: "Inserts the specified element into this delay queue. As the queue\
+              \ is\n unbounded this method will never block."
+          - name: offer
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: offer
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: peek
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: "the head of this queue, or null if this\n         queue is empty"
+            notes: "Retrieves, but does not remove, the head of this queue, or\n returns\
+              \ null if this queue is empty.  Unlike\n poll, if no expired elements\
+              \ are available in the queue,\n this method returns the element that\
+              \ will expire next,\n if one exists."
+          - name: peek
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: poll
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: "the head of this queue, or null if this\n         queue has\
+                \ no elements with an expired delay"
+            notes: "Retrieves and removes the head of this queue, or returns null\n\
+              \ if this queue has no elements with an expired delay."
+          - name: poll
+            modifiers:
+            - public
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: "how long to wait before giving up, in units of\n        unit"
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
+            return:
+              type:
+                basic: E
+                full: E
+              notes: "the head of this queue, or null if the\n         specified waiting\
+                \ time elapses before an element with\n         an expired delay becomes\
+                \ available"
+            notes: "Retrieves and removes the head of this queue, waiting if necessary\n\
+              \ until an element with an expired delay is available on this queue,\n\
+              \ or the specified wait time expires."
+          - name: poll
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: poll
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: e
+              type:
+                basic: E
+                full: E
+              notes: the element to add
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Inserts the specified element into this delay queue. As the queue\
+              \ is\n unbounded this method will never block."
+          - name: put
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: void
+                full: void
+          - name: remainingCapacity
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: Integer.MAX_VALUE
+            notes: "Always returns Integer.MAX_VALUE because\n a DelayQueue is not\
+              \ capacity constrained."
+          - name: remove
+            modifiers:
+            - public
+            parameters:
+            - name: o
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: element to be removed from this collection, if present
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if an element was removed as a result of this call
+            notes: "Removes a single instance of the specified element from this\n\
+              \ queue, if it is present, whether or not it has expired."
+          - name: removeEQ
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: void
+                full: void
+          - name: size
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of elements in this collection
+            notes: 'Description copied from interface: Collection'
+          - name: take
+            modifiers:
+            - public
+            return:
+              type:
+                basic: E
+                full: E
+              notes: the head of this queue
+            notes: "Retrieves and removes the head of this queue, waiting if necessary\n\
+              \ until an element with an expired delay is available on this queue."
+          - name: take
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: toArray
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object[]
+              notes: an array containing all of the elements in this queue
+            notes: "Returns an array containing all of the elements in this queue.\n\
+              \ The returned array elements are in no particular order.\n\n The returned\
+              \ array will be \"safe\" in that no references to it are\n maintained\
+              \ by this queue.  (In other words, this method must allocate\n a new\
+              \ array).  The caller is thus free to modify the returned array.\n\n\
+              \ This method acts as bridge between array-based and collection-based\n\
+              \ APIs."
+          - name: toArray
+            modifiers:
+            - public
+            parameters:
+            - name: a
+              type:
+                basic: T
+                full: T[]
+              notes: "the array into which the elements of the queue are to\n    \
+                \      be stored, if it is big enough; otherwise, a new array of the\n\
+                \          same runtime type is allocated for this purpose"
+            return:
+              type:
+                basic: T
+                full: T[]
+              notes: an array containing all of the elements in this queue
+            notes: "Returns an array containing all of the elements in this queue;\
+              \ the\n runtime type of the returned array is that of the specified\
+              \ array.\n The returned array elements are in no particular order.\n\
+              \ If the queue fits in the specified array, it is returned therein.\n\
+              \ Otherwise, a new array is allocated with the runtime type of the\n\
+              \ specified array and the size of this queue.\n\n If this queue fits\
+              \ in the specified array with room to spare\n (i.e., the array has more\
+              \ elements than this queue), the element in\n the array immediately\
+              \ following the end of the queue is set to\n null.\n\n Like the toArray()\
+              \ method, this method acts as bridge between\n array-based and collection-based\
+              \ APIs.  Further, this method allows\n precise control over the runtime\
+              \ type of the output array, and may,\n under certain circumstances,\
+              \ be used to save allocation costs.\n\n The following code can be used\
+              \ to dump a delay queue into a newly\n allocated array of Delayed:\n\
+              \n  <code>Delayed[] a = q.toArray(new Delayed[0]);</code>\n\n Note that\
+              \ toArray(new Object[0]) is identical in function to\n toArray()."

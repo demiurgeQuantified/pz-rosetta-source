@@ -4,141 +4,418 @@ languages:
     packages:
       java.lang:
         StringBuffer:
+          extends: java.lang.AbstractStringBuilder
+          modifiers:
+          - public
+          - final
+          notes: "A thread-safe, mutable sequence of characters.\n A string buffer\
+            \ is like a String, but can be modified. At any\n point in time it contains\
+            \ some particular sequence of characters, but\n the length and content\
+            \ of the sequence can be changed through certain\n method calls.\n \n\
+            \ String buffers are safe for use by multiple threads. The methods\n are\
+            \ synchronized where necessary so that all the operations on any\n particular\
+            \ instance behave as if they occur in some serial order\n that is consistent\
+            \ with the order of the method calls made by each of\n the individual\
+            \ threads involved.\n \n The principal operations on a StringBuffer are\
+            \ the\n append and insert methods, which are\n overloaded so as to accept\
+            \ data of any type. Each effectively\n converts a given datum to a string\
+            \ and then appends or inserts the\n characters of that string to the string\
+            \ buffer. The\n append method always adds these characters at the end\n\
+            \ of the buffer; the insert method adds the characters at\n a specified\
+            \ point.\n \n For example, if z refers to a string buffer object\n whose\
+            \ current contents are \"start\", then\n the method call z.append(\"le\"\
+            ) would cause the string\n buffer to contain \"startle\", whereas\n z.insert(4,\
+            \ \"le\") would alter the string buffer to\n contain \"starlet\".\n \n\
+            \ In general, if sb refers to an instance of a StringBuffer,\n then sb.append(x)\
+            \ has the same effect as\n sb.insert(sb.length(), x).\n \n Whenever an\
+            \ operation occurs involving a source sequence (such as\n appending or\
+            \ inserting from a source sequence), this class synchronizes\n only on\
+            \ the string buffer performing the operation, not on the source.\n Note\
+            \ that while StringBuffer is designed to be safe to use\n concurrently\
+            \ from multiple threads, if the constructor or the\n append or insert\
+            \ operation is passed a source sequence\n that is shared across threads,\
+            \ the calling code must ensure\n that the operation has a consistent and\
+            \ unchanging view of the source\n sequence for the duration of the operation.\n\
+            \ This could be satisfied by the caller holding a lock during the\n operation's\
+            \ call, by using an immutable source sequence, or by not\n sharing the\
+            \ source sequence across threads.\n \n Every string buffer has a capacity.\
+            \ As long as the length of the\n character sequence contained in the string\
+            \ buffer does not exceed\n the capacity, it is not necessary to allocate\
+            \ a new internal\n buffer array. If the internal buffer overflows, it\
+            \ is\n automatically made larger.\n \n Unless otherwise noted, passing\
+            \ a null argument to a constructor\n or method in this class will cause\
+            \ a NullPointerException to be\n thrown.\n \n As of  release JDK 5, this\
+            \ class has been supplemented with an equivalent\n class designed for\
+            \ use by a single thread, StringBuilder.  The\n StringBuilder class should\
+            \ generally be used in preference to\n this one, as it supports all of\
+            \ the same operations but it is faster, as\n it performs no synchronization."
+          fields:
+            toStringCache:
+              name: toStringCache
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - package
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: "Constructs a string buffer with no characters in it and an\n initial\
+              \ capacity of 16 characters."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: capacity
               type:
                 basic: int
                 full: int
+              notes: the initial capacity.
+            notes: "Constructs a string buffer with no characters in it and\n the\
+              \ specified initial capacity."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: the initial contents of the buffer.
+            notes: "Constructs a string buffer initialized to the contents of the\n\
+              \ specified string. The initial capacity of the string buffer is\n 16\
+              \ plus the length of the string argument."
+          - modifiers:
+            - public
+            parameters:
+            - name: seq
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the sequence to copy.
+            notes: "Constructs a string buffer that contains the same characters\n\
+              \ as the specified CharSequence. The initial capacity of\n the string\
+              \ buffer is 16 plus the length of the\n CharSequence argument."
           methods:
-          - name: __toString__
+          - name: append
             modifiers:
             - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: an Object.
             return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the Object argument.\n \n\
+              \ The overall effect is exactly as if the argument were converted\n\
+              \ to a string by the method String.valueOf(Object),\n and the characters\
+              \ of that string were then\n appended to this character sequence."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
-          - name: __toString__
-            modifiers:
-            - public
+              notes: a string.
             return:
               type:
-                basic: String
-                full: java.lang.String
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the specified string to this character sequence.\n \n\
+              \ The characters of the String argument are appended, in\n order, increasing\
+              \ the length of this sequence by the length of the\n argument. If str\
+              \ is null, then the four\n characters \"null\" are appended.\n \n Let\
+              \ n be the length of this character sequence just prior to\n execution\
+              \ of the append method. Then the character at\n index k in the new character\
+              \ sequence is equal to the character\n at index k in the old character\
+              \ sequence, if k is less\n than n; otherwise, it is equal to the character\
+              \ at index\n k-n in the argument str."
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: sb
               type:
-                basic: char[]
-                full: char[]
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: the StringBuffer to append.
             return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the specified StringBuffer to this sequence.\n \n The\
+              \ characters of the StringBuffer argument are appended,\n in order,\
+              \ to the contents of this StringBuffer, increasing the\n length of this\
+              \ StringBuffer by the length of the argument.\n If sb is null, then\
+              \ the four characters\n \"null\" are appended to this StringBuffer.\n\
+              \ \n Let n be the length of the old character sequence, the one\n contained\
+              \ in the StringBuffer just prior to execution of the\n append method.\
+              \ Then the character at index k in\n the new character sequence is equal\
+              \ to the character at index k\n in the old character sequence, if k\
+              \ is less than n;\n otherwise, it is equal to the character at index\
+              \ k-n in the\n argument sb.\n \n This method synchronizes on this, the\
+              \ destination\n object, but does not synchronize on the source (sb)."
+          - name: append
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
               type:
                 basic: AbstractStringBuilder
                 full: java.lang.AbstractStringBuilder
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: s
               type:
-                basic: char[]
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the CharSequence to append.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the specified CharSequence to this\n sequence.\n \n The\
+              \ characters of the CharSequence argument are appended,\n in order,\
+              \ increasing the length of this sequence by the length of the\n argument.\n\
+              \n The result of this method is exactly the same as if it were an\n\
+              \ invocation of this.append(s, 0, s.length());\n\n This method synchronizes\
+              \ on this, the destination\n object, but does not synchronize on the\
+              \ source (s).\n\n If s is null, then the four characters\n \"null\"\
+              \ are appended."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: s
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the sequence to append.
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: the starting index of the subsequence to be appended.
+            - name: end
+              type:
+                basic: int
+                full: int
+              notes: the end index of the subsequence to be appended.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends a subsequence of the specified CharSequence to this\n\
+              \ sequence.\n \n Characters of the argument s, starting at\n index start,\
+              \ are appended, in order, to the contents of\n this sequence up to the\
+              \ (exclusive) index end. The length\n of this sequence is increased\
+              \ by the value of end - start.\n \n Let n be the length of this character\
+              \ sequence just prior to\n execution of the append method. Then the\
+              \ character at\n index k in this character sequence becomes equal to\
+              \ the\n character at index k in this sequence, if k is less than\n n;\
+              \ otherwise, it is equal to the character at index\n k+start-n in the\
+              \ argument s.\n \n If s is null, then this method appends\n characters\
+              \ as if the s parameter was a sequence containing the four\n characters\
+              \ \"null\"."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: str
+              type:
+                basic: char
                 full: char[]
+              notes: the characters to be appended.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the char array\n argument\
+              \ to this sequence.\n \n The characters of the array argument are appended,\
+              \ in order, to\n the contents of this sequence. The length of this sequence\n\
+              \ increases by the length of the argument.\n \n The overall effect is\
+              \ exactly as if the argument were converted\n to a string by the method\
+              \ String.valueOf(char[]),\n and the characters of that string were then\n\
+              \ appended to this character sequence."
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
+              type:
+                basic: char
+                full: char[]
+              notes: the characters to be appended.
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the index of the first char to append.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of chars to append.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of a subarray of the\n char\
+              \ array argument to this sequence.\n \n Characters of the char array\
+              \ str, starting at\n index offset, are appended, in order, to the contents\n\
+              \ of this sequence. The length of this sequence increases\n by the value\
+              \ of len.\n \n The overall effect is exactly as if the arguments were\
+              \ converted\n to a string by the method String.valueOf(char[],int,int),\n\
+              \ and the characters of that string were then\n appended to this character\
+              \ sequence."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: b
               type:
                 basic: boolean
                 full: boolean
+              notes: a boolean.
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the boolean\n argument to\
+              \ the sequence.\n \n The overall effect is exactly as if the argument\
+              \ were converted\n to a string by the method String.valueOf(boolean),\n\
+              \ and the characters of that string were then\n appended to this character\
+              \ sequence."
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: char
                 full: char
+              notes: a char.
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the char\n argument to this\
+              \ sequence.\n \n The argument is appended to the contents of this sequence.\n\
+              \ The length of this sequence increases by 1.\n \n The overall effect\
+              \ is exactly as if the argument were converted\n to a string by the\
+              \ method String.valueOf(char),\n and the character in that string were\
+              \ then\n appended to this character sequence."
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: i
               type:
-                basic: char
-                full: char
+                basic: int
+                full: int
+              notes: an int.
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the int\n argument to this\
+              \ sequence.\n \n The overall effect is exactly as if the argument were\
+              \ converted\n to a string by the method String.valueOf(int),\n and the\
+              \ characters of that string were then\n appended to this character sequence."
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: lng
               type:
-                basic: char
-                full: char
+                basic: long
+                full: long
+              notes: a long.
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the long\n argument to this\
+              \ sequence.\n \n The overall effect is exactly as if the argument were\
+              \ converted\n to a string by the method String.valueOf(long),\n and\
+              \ the characters of that string were then\n appended to this character\
+              \ sequence."
           - name: append
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: f
+              type:
+                basic: float
+                full: float
+              notes: a float.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the float\n argument to this\
+              \ sequence.\n \n The overall effect is exactly as if the argument were\
+              \ converted\n to a string by the method String.valueOf(float),\n and\
+              \ the characters of that string were then\n appended to this character\
+              \ sequence."
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: d
               type:
                 basic: double
                 full: double
+              notes: a double.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the double\n argument to\
+              \ this sequence.\n \n The overall effect is exactly as if the argument\
+              \ were converted\n to a string by the method String.valueOf(double),\n\
+              \ and the characters of that string were then\n appended to this character\
+              \ sequence."
           - name: append
             modifiers:
             - public
@@ -161,20 +438,20 @@ languages:
                 full: float
             return:
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
           - name: append
             modifiers:
             - public
             parameters:
             - name: arg0
               type:
-                basic: float
-                full: float
+                basic: long
+                full: long
             return:
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
           - name: append
             modifiers:
             - public
@@ -185,76 +462,116 @@ languages:
                 full: int
             return:
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
           - name: append
             modifiers:
             - public
             parameters:
             - name: arg0
+              type:
+                basic: char
+                full: char
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: char
+                full: char[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
               type:
                 basic: int
                 full: int
             return:
               type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: char
+                full: char[]
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: append
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
             return:
               type:
                 basic: AbstractStringBuilder
@@ -277,8 +594,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: String
-                full: java.lang.String
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: AbstractStringBuilder
@@ -289,104 +606,8 @@ languages:
             parameters:
             - name: arg0
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char[]
-                full: char[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: char[]
-                full: char[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
-          - name: append
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+                basic: char
+                full: char
             return:
               type:
                 basic: Appendable
@@ -419,14 +640,6 @@ languages:
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
             return:
               type:
                 basic: Appendable
@@ -435,14 +648,22 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: codePoint
               type:
                 basic: int
                 full: int
+              notes: a Unicode code point
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Appends the string representation of the codePoint\n argument\
+              \ to this sequence.\n\n  The argument is appended to the contents of\
+              \ this sequence.\n The length of this sequence increases by\n Character.charCount(codePoint).\n\
+              \n  The overall effect is exactly as if the argument were\n converted\
+              \ to a char array by the method\n Character.toChars(int) and the character\
+              \ in that array\n were then appended to this character\n sequence."
           - name: appendCodePoint
             modifiers:
             - public
@@ -462,30 +683,30 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the current capacity
+            notes: "Returns the current capacity. The capacity is the number of characters\n\
+              \ that can be stored (including already written characters), beyond\
+              \ which\n an allocation will occur."
           - name: charAt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the index of the desired char value.
             return:
               type:
                 basic: char
                 full: char
-          - name: charAt
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: char
-                full: char
+              notes: the char value at the specified index.
+            notes: "Returns the char value in this sequence at the specified index.\n\
+              \ The first char value is at index 0, the next at index\n 1, and so\
+              \ on, as in array indexing.\n \n The index argument must be greater\
+              \ than or equal to\n 0, and less than the length of this sequence.\n\
+              \n If the char value specified by the index is a\n surrogate, the surrogate\n\
+              \ value is returned."
           - name: chars
             modifiers:
             - public
@@ -493,53 +714,83 @@ languages:
               type:
                 basic: IntStream
                 full: java.util.stream.IntStream
-          - name: chars
-            modifiers:
-            - public
-            return:
-              type:
-                basic: IntStream
-                full: java.util.stream.IntStream
+              notes: an IntStream of char values from this sequence
+            notes: "Returns a stream of int zero-extending the char values\n from\
+              \ this sequence.  Any char which maps to a surrogate code\n point is\
+              \ passed through uninterpreted.\n\n The stream binds to this sequence\
+              \ when the terminal stream operation\n commences (specifically, for\
+              \ mutable sequences the spliterator for the\n stream is late-binding).\n\
+              \ If the sequence is modified during that operation then the result\
+              \ is\n undefined."
           - name: codePointAt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the index to the char values
             return:
               type:
                 basic: int
                 full: int
+              notes: "the code point value of the character at the\n             index"
+            notes: "Returns the character (Unicode code point) at the specified\n\
+              \ index. The index refers to char values\n (Unicode code units) and\
+              \ ranges from 0 to\n CharSequence.length() - 1.\n\n  If the char value\
+              \ specified at the given index\n is in the high-surrogate range, the\
+              \ following index is less\n than the length of this sequence, and the\n\
+              \ char value at the following index is in the\n low-surrogate range,\
+              \ then the supplementary code point\n corresponding to this surrogate\
+              \ pair is returned. Otherwise,\n the char value at the given index is\
+              \ returned."
           - name: codePointBefore
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the index following the code point that should be returned
             return:
               type:
                 basic: int
                 full: int
+              notes: the Unicode code point value before the given index.
+            notes: "Returns the character (Unicode code point) before the specified\n\
+              \ index. The index refers to char values\n (Unicode code units) and\
+              \ ranges from 1 to CharSequence.length().\n\n  If the char value at\
+              \ (index - 1)\n is in the low-surrogate range, (index - 2) is not\n\
+              \ negative, and the char value at (index -\n 2) is in the high-surrogate\
+              \ range, then the\n supplementary code point value of the surrogate\
+              \ pair is\n returned. If the char value at index -\n 1 is an unpaired\
+              \ low-surrogate or a high-surrogate, the\n surrogate value is returned."
           - name: codePointCount
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the index to the first char of\n the text range."
+            - name: endIndex
               type:
                 basic: int
                 full: int
+              notes: "the index after the last char of\n the text range."
             return:
               type:
                 basic: int
                 full: int
+              notes: "the number of Unicode code points in the specified text\n range"
+            notes: "Returns the number of Unicode code points in the specified text\n\
+              \ range of this sequence. The text range begins at the specified\n beginIndex\
+              \ and extends to the char at\n index endIndex - 1. Thus the length (in\n\
+              \ chars) of the text range is\n endIndex-beginIndex. Unpaired surrogates\
+              \ within\n this sequence count as one code point each."
           - name: codePoints
             modifiers:
             - public
@@ -547,45 +798,47 @@ languages:
               type:
                 basic: IntStream
                 full: java.util.stream.IntStream
-          - name: codePoints
-            modifiers:
-            - public
-            return:
-              type:
-                basic: IntStream
-                full: java.util.stream.IntStream
+              notes: an IntStream of Unicode code points from this sequence
+            notes: "Returns a stream of code point values from this sequence.  Any\
+              \ surrogate\n pairs encountered in the sequence are combined as if by\
+              \ Character.toCodePoint and the result is passed\n to the stream. Any\
+              \ other code units, including ordinary BMP characters,\n unpaired surrogates,\
+              \ and undefined code units, are zero-extended to\n int values which\
+              \ are then passed to the stream.\n\n The stream binds to this sequence\
+              \ when the terminal stream operation\n commences (specifically, for\
+              \ mutable sequences the spliterator for the\n stream is late-binding).\n\
+              \ If the sequence is modified during that operation then the result\
+              \ is\n undefined."
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: another
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: the StringBuffer to be compared with
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the value 0 if this StringBuffer contains the same\n character\
+                \ sequence as that of the argument StringBuffer; a negative integer\n\
+                \ if this StringBuffer is lexicographically less than the\n StringBuffer\
+                \ argument; or a positive integer if this StringBuffer\n is lexicographically\
+                \ greater than the StringBuffer argument."
+            notes: "Compares two StringBuffer instances lexicographically. This method\n\
+              \ follows the same rules for lexicographical comparison as defined in\
+              \ the\n CharSequence.compare(this, another) method.\n\n \n For finer-grained,\
+              \ locale-sensitive String comparison, refer to\n Collator."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -594,18 +847,25 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The beginning index, inclusive.
+            - name: end
               type:
                 basic: int
                 full: int
+              notes: The ending index, exclusive.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: This object.
+            notes: "Removes the characters in a substring of this sequence.\n The\
+              \ substring begins at the specified start and extends to\n the character\
+              \ at index end - 1 or to the end of the\n sequence if no such character\
+              \ exists. If\n start is equal to end, no changes are made."
           - name: delete
             modifiers:
             - public
@@ -626,14 +886,23 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: Index of char to remove
             return:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: This object.
+            notes: "Removes the char at the specified position in this\n sequence.\
+              \ This sequence is shortened by one char.\n\n Note: If the character\
+              \ at the given index is a supplementary\n character, this method does\
+              \ not remove the entire character. If\n correct handling of supplementary\
+              \ characters is required,\n determine the number of chars to remove\
+              \ by calling\n Character.charCount(thisSequence.codePointAt(index)),\n\
+              \ where thisSequence is this sequence."
           - name: deleteCharAt
             modifiers:
             - public
@@ -644,16 +913,45 @@ languages:
                 full: int
             return:
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
           - name: ensureCapacity
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: minimumCapacity
               type:
                 basic: int
                 full: int
+              notes: the minimum desired capacity.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Ensures that the capacity is at least equal to the specified minimum.\n\
+              \ If the current capacity is less than the argument, then a new internal\n\
+              \ array is allocated with greater capacity. The new capacity is the\n\
+              \ larger of:\n \n The minimumCapacity argument.\n Twice the old capacity,\
+              \ plus 2.\n \n If the minimumCapacity argument is nonpositive, this\n\
+              \ method takes no action and simply returns.\n Note that subsequent\
+              \ operations on this object can reduce the\n actual capacity below that\
+              \ requested here."
+          - name: getBytes
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: byte
+                full: byte[]
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: byte
+                full: byte
             return:
               type:
                 basic: void
@@ -662,166 +960,434 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: srcBegin
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: start copying at this offset.
+            - name: srcEnd
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: stop copying at this offset.
+            - name: dst
               type:
-                basic: char[]
+                basic: char
                 full: char[]
-            - name: arg3
+              notes: the array to copy the data into.
+            - name: dstBegin
               type:
                 basic: int
                 full: int
+              notes: offset into dst.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Characters are copied from this sequence into the\n destination\
+              \ character array dst. The first character to\n be copied is at index\
+              \ srcBegin; the last character to\n be copied is at index srcEnd-1.\
+              \ The total number of\n characters to be copied is srcEnd-srcBegin.\
+              \ The\n characters are copied into the subarray of dst starting\n at\
+              \ index dstBegin and ending at index:\n <code>\n dstbegin + (srcEnd-srcBegin)\
+              \ - 1\n </code>"
           - name: indexOf
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: the substring to search for.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the index of the first occurrence of the specified substring,\n\
+                \          or -1 if there is no such occurrence."
+            notes: "Returns the index within this string of the first occurrence of\
+              \ the\n specified substring.\n\n The returned index is the smallest\
+              \ value k for which:\n <code>\n this.toString().startsWith(str, k)\n\
+              \ </code>\n If no such value of k exists, then -1 is returned."
           - name: indexOf
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the substring to search for.
+            - name: fromIndex
               type:
                 basic: int
                 full: int
+              notes: the index from which to start the search.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the index of the first occurrence of the specified substring,\n\
+                \          starting at the specified index,\n          or -1 if there\
+                \ is no such occurrence."
+            notes: "Returns the index within this string of the first occurrence of\
+              \ the\n specified substring, starting at the specified index.\n\n The\
+              \ returned index is the smallest value k for which:\n <code>\n     k\
+              \ >= Math.min(fromIndex, this.length()) &&\n                   this.toString().startsWith(str,\
+              \ k)\n </code>\n If no such value of k exists, then -1 is returned."
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: position at which to insert subarray.
+            - name: str
               type:
-                basic: char[]
+                basic: char
                 full: char[]
+              notes: A char array.
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: "the index of the first char in subarray to\n             be\
+                \ inserted."
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: "the number of chars in the subarray to\n             be inserted."
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: This object
+            notes: "Inserts the string representation of a subarray of the str\n array\
+              \ argument into this sequence. The subarray begins at the\n specified\
+              \ offset and extends len chars.\n The characters of the subarray are\
+              \ inserted into this sequence at\n the position indicated by index.\
+              \ The length of this\n sequence increases by len chars."
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the offset.
+            - name: obj
               type:
-                basic: char[]
+                basic: Object
+                full: java.lang.Object
+              notes: an Object.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the Object\n argument into\
+              \ this character sequence.\n \n The overall effect is exactly as if\
+              \ the second argument were\n converted to a string by the method String.valueOf(Object),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset.
+            - name: str
+              type:
+                basic: String
+                full: java.lang.String
+              notes: a string.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string into this character sequence.\n \n The characters\
+              \ of the String argument are inserted, in\n order, into this sequence\
+              \ at the indicated offset, moving up any\n characters originally above\
+              \ that position and increasing the length\n of this sequence by the\
+              \ length of the argument. If\n str is null, then the four characters\n\
+              \ \"null\" are inserted into this sequence.\n \n The character at index\
+              \ k in the new character sequence is\n equal to:\n \n the character\
+              \ at index k in the old character sequence, if\n k is less than offset\n\
+              \ the character at index k-offset in the\n argument str, if k is not\
+              \ less than\n offset but is less than offset+str.length()\n the character\
+              \ at index k-str.length() in the\n old character sequence, if k is not\
+              \ less than\n offset+str.length()\n \n The offset argument must be greater\
+              \ than or equal to\n 0, and less than or equal to the length\n of this\
+              \ sequence."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset.
+            - name: str
+              type:
+                basic: char
                 full: char[]
+              notes: a character array.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the char array\n argument\
+              \ into this sequence.\n \n The characters of the array argument are\
+              \ inserted into the\n contents of this sequence at the position indicated\
+              \ by\n offset. The length of this sequence increases by\n the length\
+              \ of the argument.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(char[]),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dstOffset
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the offset.
+            - name: s
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the sequence to be inserted
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the specified CharSequence into this sequence.\n \n The\
+              \ characters of the CharSequence argument are inserted,\n in order,\
+              \ into this sequence at the indicated offset, moving up\n any characters\
+              \ originally above that position and increasing the length\n of this\
+              \ sequence by the length of the argument s.\n \n The result of this\
+              \ method is exactly the same as if it were an\n invocation of this object's\n\
+              \ insert(dstOffset, s, 0, s.length())\n method.\n\n If s is null, then\
+              \ the four characters\n \"null\" are inserted into this sequence."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: dstOffset
+              type:
+                basic: int
+                full: int
+              notes: the offset in this sequence.
+            - name: s
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+              notes: the sequence to be inserted.
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: the starting index of the subsequence to be inserted.
+            - name: end
+              type:
+                basic: int
+                full: int
+              notes: the end index of the subsequence to be inserted.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts a subsequence of the specified CharSequence into\n this\
+              \ sequence.\n \n The subsequence of the argument s specified by\n start\
+              \ and end are inserted,\n in order, into this sequence at the specified\
+              \ destination offset, moving\n up any characters originally above that\
+              \ position. The length of this\n sequence is increased by end - start.\n\
+              \ \n The character at index k in this sequence becomes equal to:\n \n\
+              \ the character at index k in this sequence, if\n k is less than dstOffset\n\
+              \ the character at index k+start-dstOffset in\n the argument s, if k\
+              \ is greater than or equal to\n dstOffset but is less than dstOffset+end-start\n\
+              \ the character at index k-(end-start) in this\n sequence, if k is greater\
+              \ than or equal to\n dstOffset+end-start\n \n The dstOffset argument\
+              \ must be greater than or equal to\n 0, and less than or equal to the\
+              \ length\n of this sequence.\n The start argument must be nonnegative,\
+              \ and not greater than\n end.\n The end argument must be greater than\
+              \ or equal to\n start, and less than or equal to the length of s.\n\n\
+              \ If s is null, then this method inserts\n characters as if the s parameter\
+              \ was a sequence containing the four\n characters \"null\"."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset.
+            - name: b
               type:
                 basic: boolean
                 full: boolean
+              notes: a boolean.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the boolean\n argument into\
+              \ this sequence.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(boolean),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg1
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
+              notes: the offset.
+            - name: c
               type:
                 basic: char
                 full: char
+              notes: a char.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the char\n argument into\
+              \ this sequence.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(char),\n\
+              \ and the character in that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the offset.
+            - name: i
               type:
-                basic: char
-                full: char
+                basic: int
+                full: int
+              notes: an int.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the second int\n argument\
+              \ into this sequence.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(int),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
           - name: insert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the offset.
+            - name: l
+              type:
+                basic: long
+                full: long
+              notes: a long.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the long\n argument into\
+              \ this sequence.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(long),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset.
+            - name: f
+              type:
+                basic: float
+                full: float
+              notes: a float.
+            return:
+              type:
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the float\n argument into\
+              \ this sequence.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(float),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset.
+            - name: d
               type:
                 basic: double
                 full: double
+              notes: a double.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Inserts the string representation of the double\n argument into\
+              \ this sequence.\n \n The overall effect is exactly as if the second\
+              \ argument were\n converted to a string by the method String.valueOf(double),\n\
+              \ and the characters of that string were then\n inserted into this character\n\
+              \ sequence at the indicated offset.\n \n The offset argument must be\
+              \ greater than or equal to\n 0, and less than or equal to the length\n\
+              \ of this sequence."
           - name: insert
             modifiers:
             - public
@@ -864,150 +1430,6 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: float
-                full: float
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
                 basic: long
                 full: long
             return:
@@ -1024,30 +1446,6 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: char[]
-                full: char[]
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
                 basic: int
                 full: int
             return:
@@ -1064,16 +1462,8 @@ languages:
                 full: int
             - name: arg1
               type:
-                basic: char[]
-                full: char[]
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
+                basic: char
+                full: char
             return:
               type:
                 basic: AbstractStringBuilder
@@ -1087,80 +1477,172 @@ languages:
                 basic: int
                 full: int
             - name: arg1
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: insert
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
-          - name: isEmpty
-            modifiers:
-            - public
-            return:
               type:
                 basic: boolean
                 full: boolean
-          - name: lastIndexOf
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: insert
             modifiers:
             - public
             parameters:
             - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
               type:
                 basic: int
                 full: int
-          - name: lastIndexOf
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
             - name: arg1
               type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
                 basic: int
                 full: int
             return:
               type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
                 basic: int
                 full: int
+            - name: arg1
+              type:
+                basic: CharSequence
+                full: java.lang.CharSequence
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: char
+                full: char[]
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: insert
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: char
+                full: char[]
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
+          - name: lastIndexOf
+            modifiers:
+            - public
+            parameters:
+            - name: str
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the substring to search for.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the index of the last occurrence of the specified substring,\n\
+                \          or -1 if there is no such occurrence."
+            notes: "Returns the index within this string of the last occurrence of\
+              \ the\n specified substring.  The last occurrence of the empty string\
+              \ \"\" is\n considered to occur at the index value this.length().\n\n\
+              \ The returned index is the largest value k for which:\n <code>\n this.toString().startsWith(str,\
+              \ k)\n </code>\n If no such value of k exists, then -1 is returned."
+          - name: lastIndexOf
+            modifiers:
+            - public
+            parameters:
+            - name: str
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the substring to search for.
+            - name: fromIndex
+              type:
+                basic: int
+                full: int
+              notes: the index to start the search from.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the index of the last occurrence of the specified substring,\n\
+                \          searching backward from the specified index,\n        \
+                \  or -1 if there is no such occurrence."
+            notes: "Returns the index within this string of the last occurrence of\
+              \ the\n specified substring, searching backward starting at the specified\
+              \ index.\n\n The returned index is the largest value k for which:\n\
+              \ <code>\n     k <= Math.min(fromIndex, this.length()) &&\n        \
+              \           this.toString().startsWith(str, k)\n </code>\n If no such\
+              \ value of k exists, then -1 is returned."
           - name: length
             modifiers:
             - public
@@ -1168,49 +1650,75 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: length
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the length of the sequence of characters currently\n       \
+                \   represented by this object"
+            notes: Returns the length (character count).
           - name: offsetByCodePoints
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index to be offset
+            - name: codePointOffset
               type:
                 basic: int
                 full: int
+              notes: the offset in code points
             return:
               type:
                 basic: int
                 full: int
+              notes: the index within this sequence
+            notes: "Returns the index within this sequence that is offset from the\n\
+              \ given index by codePointOffset code\n points. Unpaired surrogates\
+              \ within the text range given by\n index and codePointOffset count as\n\
+              \ one code point each."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
           - name: replace
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The beginning index, inclusive.
+            - name: end
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The ending index, exclusive.
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: String that will replace previous contents.
             return:
               type:
-                basic: AbstractStringBuilder
-                full: java.lang.AbstractStringBuilder
+                basic: StringBuffer
+                full: java.lang.StringBuffer
+              notes: This object.
+            notes: "Replaces the characters in a substring of this sequence\n with\
+              \ characters in the specified String. The substring\n begins at the\
+              \ specified start and extends to the character\n at index end - 1 or\
+              \ to the end of the\n sequence if no such character exists. First the\n\
+              \ characters in the substring are removed and then the specified\n String\
+              \ is inserted at start. (This\n sequence will be lengthened to accommodate\
+              \ the\n specified String if necessary.)"
           - name: replace
             modifiers:
             - public
@@ -1238,97 +1746,141 @@ languages:
               type:
                 basic: StringBuffer
                 full: java.lang.StringBuffer
+              notes: a reference to this object.
+            notes: "Causes this character sequence to be replaced by the reverse of\n\
+              \ the sequence. If there are any surrogate pairs included in the\n sequence,\
+              \ these are treated as single characters for the\n reverse operation.\
+              \ Thus, the order of the high-low surrogates\n is never reversed.\n\n\
+              \ Let n be the character length of this character sequence\n (not the\
+              \ length in char values) just prior to\n execution of the reverse method.\
+              \ Then the\n character at index k in the new character sequence is\n\
+              \ equal to the character at index n-k-1 in the old\n character sequence.\n\
+              \n Note that the reverse operation may result in producing\n surrogate\
+              \ pairs that were unpaired low-surrogates and\n high-surrogates before\
+              \ the operation. For example, reversing\n \"\\uDC00\\uD800\" produces\
+              \ \"\\uD800\\uDC00\" which is\n a valid surrogate pair."
           - name: reverse
             modifiers:
             - public
             return:
               type:
-                basic: StringBuffer
-                full: java.lang.StringBuffer
+                basic: AbstractStringBuilder
+                full: java.lang.AbstractStringBuilder
           - name: setCharAt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index of the character to modify.
+            - name: ch
               type:
                 basic: char
                 full: char
+              notes: the new character.
             return:
               type:
                 basic: void
                 full: void
+            notes: "The character at the specified index is set to ch. This\n sequence\
+              \ is altered to represent a new character sequence that is\n identical\
+              \ to the old character sequence, except that it contains the\n character\
+              \ ch at position index.\n \n The index argument must be greater than\
+              \ or equal to\n 0, and less than the length of this sequence."
           - name: setLength
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: newLength
               type:
                 basic: int
                 full: int
+              notes: the new length
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the length of the character sequence.\n The sequence is changed\
+              \ to a new character sequence\n whose length is specified by the argument.\
+              \ For every nonnegative\n index k less than newLength, the character\
+              \ at\n index k in the new character sequence is the same as the\n character\
+              \ at index k in the old sequence if k is less\n than the length of the\
+              \ old character sequence; otherwise, it is the\n null character '\\\
+              u0000'.\n\n In other words, if the newLength argument is less than\n\
+              \ the current length, the length is changed to the specified length.\n\
+              \ \n If the newLength argument is greater than or equal\n to the current\
+              \ length, sufficient null characters\n ('\\u0000') are appended so that\n\
+              \ length becomes the newLength argument.\n \n The newLength argument\
+              \ must be greater than or equal\n to 0."
           - name: subSequence
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the start index, inclusive.
+            - name: end
               type:
                 basic: int
                 full: int
+              notes: the end index, exclusive.
             return:
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
-          - name: subSequence
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
+              notes: the specified subsequence.
+            notes: "Returns a new character sequence that is a subsequence of this\
+              \ sequence.\n\n  An invocation of this method of the form\n\n <code>\n\
+              \ sb.subSequence(begin, end)</code>\n\n behaves in exactly the same\
+              \ way as the invocation\n\n <code>\n sb.substring(begin, end)</code>\n\
+              \n This method is provided so that this class can\n implement the CharSequence\
+              \ interface."
           - name: substring
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: start
               type:
                 basic: int
                 full: int
+              notes: The beginning index, inclusive.
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The new string.
+            notes: "Returns a new String that contains a subsequence of\n characters\
+              \ currently contained in this character sequence. The\n substring begins\
+              \ at the specified index and extends to the end of\n this sequence."
           - name: substring
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The beginning index, inclusive.
+            - name: end
               type:
                 basic: int
                 full: int
+              notes: The ending index, exclusive.
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: The new string.
+            notes: "Returns a new String that contains a subsequence of\n characters\
+              \ currently contained in this sequence. The\n substring begins at the\
+              \ specified start and\n extends to the character at index end - 1."
+          - name: toString
+            modifiers:
+            - public
             return:
               type:
                 basic: String
@@ -1340,23 +1892,20 @@ languages:
               type:
                 basic: void
                 full: void
-          staticMethods:
-          - name: compare
+            notes: "Attempts to reduce storage used for the character sequence.\n\
+              \ If the buffer is larger than necessary to hold its current sequence\
+              \ of\n characters, then it may be resized to become more space efficient.\n\
+              \ Calling this method may, but is not required to, affect the value\n\
+              \ returned by a subsequent call to the capacity() method."
+          - name: writeObject
             modifiers:
-            - public
-            - static
+            - private
             parameters:
             - name: arg0
               type:
-                basic: CharSequence
-                full: java.lang.CharSequence
-            - name: arg1
-              type:
-                basic: CharSequence
-                full: java.lang.CharSequence
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
             return:
               type:
-                basic: int
-                full: int
-          javaType: class
-          extends: AbstractStringBuilder
+                basic: void
+                full: void

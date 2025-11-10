@@ -4,49 +4,132 @@ languages:
     packages:
       java.io:
         DataInputStream:
+          extends: java.io.FilterInputStream
+          modifiers:
+          - public
+          notes: "A data input stream lets an application read primitive Java data\n\
+            \ types from an underlying input stream in a machine-independent\n way.\
+            \ An application uses a data output stream to write data that\n can later\
+            \ be read by a data input stream.\n \n A DataInputStream is not safe for\
+            \ use by multiple concurrent\n threads. If a DataInputStream is to be\
+            \ used by more than one\n thread then access to the data input stream\
+            \ should be controlled\n by appropriate synchronization."
+          fields:
+            bytearr:
+              name: bytearr
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            chararr:
+              name: chararr
+              modifiers:
+              - private
+              type:
+                basic: char
+                full: char[]
+            lineBuffer:
+              name: lineBuffer
+              modifiers:
+              - private
+              type:
+                basic: char
+                full: char[]
+            readBuffer:
+              name: readBuffer
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: InputStream
                 full: java.io.InputStream
+              notes: the specified input stream
+            notes: "Creates a DataInputStream that uses the specified\n underlying\
+              \ InputStream."
           methods:
           - name: read
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the buffer into which the data is read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end\n             of\
+                \ the stream has been reached."
+            notes: "Reads some number of bytes from the contained input stream and\n\
+              \ stores them into the buffer array b. The number of\n bytes actually\
+              \ read is returned as an integer. This method blocks\n until input data\
+              \ is available, end of file is detected, or an\n exception is thrown.\n\
+              \n If b is null, a NullPointerException is\n thrown. If the length of\
+              \ b is zero, then no bytes are\n read and 0 is returned; otherwise,\
+              \ there is an attempt\n to read at least one byte. If no byte is available\
+              \ because the\n stream is at end of file, the value -1 is returned;\n\
+              \ otherwise, at least one byte is read and stored into b.\n\n The first\
+              \ byte read is stored into element b[0], the\n next one into b[1], and\
+              \ so on. The number of bytes read\n is, at most, equal to the length\
+              \ of b. Let k\n be the number of bytes actually read; these bytes will\
+              \ be stored in\n elements b[0] through b[k-1], leaving\n elements b[k]\
+              \ through b[b.length-1]\n unaffected.\n\n The read(b) method has the\
+              \ same effect as:\n \n read(b, 0, b.length)"
           - name: read
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the buffer into which the data is read.
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset in the destination array b
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the maximum number of bytes read.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the total number of bytes read into the buffer, or\n       \
+                \      -1 if there is no more data because the end\n             of\
+                \ the stream has been reached."
+            notes: "Reads up to len bytes of data from the contained\n input stream\
+              \ into an array of bytes.  An attempt is made to read\n as many as len\
+              \ bytes, but a smaller number may be read,\n possibly zero. The number\
+              \ of bytes actually read is returned as an\n integer.\n\n  This method\
+              \ blocks until input data is available, end of file is\n detected, or\
+              \ an exception is thrown.\n\n  If len is zero, then no bytes are read\
+              \ and\n 0 is returned; otherwise, there is an attempt to read at\n least\
+              \ one byte. If no byte is available because the stream is at end of\n\
+              \ file, the value -1 is returned; otherwise, at least one\n byte is\
+              \ read and stored into b.\n\n  The first byte read is stored into element\
+              \ b[off], the\n next one into b[off+1], and so on. The number of bytes\
+              \ read\n is, at most, equal to len. Let k be the number of\n bytes actually\
+              \ read; these bytes will be stored in elements\n b[off] through b[off+k-1],\n\
+              \ leaving elements b[off+k] through\n b[off+len-1] unaffected.\n\n \
+              \ In every case, elements b[0] through\n b[off] and elements b[off+len]\
+              \ through\n b[b.length-1] are unaffected."
           - name: readBoolean
             modifiers:
             - public
@@ -55,14 +138,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          - name: readBoolean
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: the boolean value read.
+            notes: "See the general contract of the readBoolean\n method of DataInput.\n\
+              \ \n Bytes for this operation are read from the contained\n input stream."
           - name: readByte
             modifiers:
             - public
@@ -71,130 +149,94 @@ languages:
               type:
                 basic: byte
                 full: byte
-          - name: readByte
+              notes: "the next byte of this input stream as a signed 8-bit\n     \
+                \        byte."
+            notes: "See the general contract of the readByte\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
+          - name: readChar
             modifiers:
             - public
             - final
             return:
+              type:
+                basic: char
+                full: char
+              notes: "the next two bytes of this input stream, interpreted as a\n\
+                \             char."
+            notes: "See the general contract of the readChar\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
+          - name: readDouble
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: double
+                full: double
+              notes: "the next eight bytes of this input stream, interpreted as a\n\
+                \             double."
+            notes: "See the general contract of the readDouble\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
+          - name: readFloat
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: float
+                full: float
+              notes: "the next four bytes of this input stream, interpreted as a\n\
+                \             float."
+            notes: "See the general contract of the readFloat\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
+          - name: readFully
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: b
               type:
                 basic: byte
-                full: byte
-          - name: readChar
-            modifiers:
-            - public
-            - final
+                full: byte[]
+              notes: the buffer into which the data is read.
             return:
               type:
-                basic: char
-                full: char
-          - name: readChar
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: char
-                full: char
-          - name: readDouble
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: double
-                full: double
-          - name: readDouble
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: double
-                full: double
-          - name: readFloat
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: float
-                full: float
-          - name: readFloat
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: float
-                full: float
+                basic: void
+                full: void
+            notes: "See the general contract of the readFully\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readFully
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the buffer into which the data is read.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset in the data array b.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes to read.
             return:
               type:
                 basic: void
                 full: void
-          - name: readFully
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: readFully
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: readFully
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "See the general contract of the readFully\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readInt
             modifiers:
             - public
@@ -203,14 +245,11 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readInt
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the next four bytes of this input stream, interpreted as an\n\
+                \             int."
+            notes: "See the general contract of the readInt\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readLine
             modifiers:
             - public
@@ -219,16 +258,10 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-            deprecated: true
-          - name: readLine
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: String
-                full: java.lang.String
-            deprecated: true
+              notes: the next line of text from this input stream.
+            notes: "See the general contract of the readLine\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readLong
             modifiers:
             - public
@@ -237,14 +270,11 @@ languages:
               type:
                 basic: long
                 full: long
-          - name: readLong
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: long
-                full: long
+              notes: "the next eight bytes of this input stream, interpreted as a\n\
+                \             long."
+            notes: "See the general contract of the readLong\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readShort
             modifiers:
             - public
@@ -253,14 +283,11 @@ languages:
               type:
                 basic: short
                 full: short
-          - name: readShort
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: short
-                full: short
+              notes: "the next two bytes of this input stream, interpreted as a\n\
+                \             signed 16-bit number."
+            notes: "See the general contract of the readShort\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readUTF
             modifiers:
             - public
@@ -269,14 +296,10 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
-          - name: readUTF
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: String
-                full: java.lang.String
+              notes: a Unicode string.
+            notes: "See the general contract of the readUTF\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readUnsignedByte
             modifiers:
             - public
@@ -285,14 +308,11 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readUnsignedByte
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the next byte of this input stream, interpreted as an\n    \
+                \         unsigned 8-bit number."
+            notes: "See the general contract of the readUnsignedByte\n method of DataInput.\n\
+              \ \n Bytes\n for this operation are read from the contained\n input\
+              \ stream."
           - name: readUnsignedShort
             modifiers:
             - public
@@ -301,54 +321,47 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: readUnsignedShort
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the next two bytes of this input stream, interpreted as an\n\
+                \             unsigned 16-bit integer."
+            notes: "See the general contract of the readUnsignedShort\n method of\
+              \ DataInput.\n \n Bytes\n for this operation are read from the contained\n\
+              \ input stream."
           - name: skipBytes
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: int
                 full: int
+              notes: the number of bytes to be skipped.
             return:
               type:
                 basic: int
                 full: int
-          - name: skipBytes
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: int
-                full: int
+              notes: the actual number of bytes skipped.
+            notes: "See the general contract of the skipBytes\n method of DataInput.\n\
+              \ \n Bytes for this operation are read from the contained\n input stream."
           staticMethods:
           - name: readUTF
             modifiers:
             - public
-            - static
             - final
+            - static
             parameters:
-            - name: arg0
+            - name: in
               type:
                 basic: DataInput
                 full: java.io.DataInput
+              notes: a data input stream.
             return:
               type:
                 basic: String
                 full: java.lang.String
-          javaType: class
-          extends: FilterInputStream
+              notes: a Unicode string.
+            notes: "Reads from the\n stream in a representation\n of a Unicode  character\
+              \ string encoded in\n modified UTF-8 format;\n this string of characters\
+              \ is then returned as a String.\n The details of the modified UTF-8\
+              \ representation\n are  exactly the same as for the readUTF\n method\
+              \ of DataInput."

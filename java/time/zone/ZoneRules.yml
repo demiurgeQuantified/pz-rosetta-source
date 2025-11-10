@@ -4,196 +4,134 @@ languages:
     packages:
       java.time.zone:
         ZoneRules:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "The rules defining how the zone offset varies for a single time-zone.\n\
+            \ \n The rules model all the historic and future transitions for a time-zone.\n\
+            \ ZoneOffsetTransition is used for known transitions, typically historic.\n\
+            \ ZoneOffsetTransitionRule is used for future transitions that are based\n\
+            \ on the result of an algorithm.\n \n The rules are loaded via ZoneRulesProvider\
+            \ using a ZoneId.\n The same rules may be shared internally between multiple\
+            \ zone IDs.\n \n Serializing an instance of ZoneRules will store the entire\
+            \ set of rules.\n It does not store the zone ID as it is not part of the\
+            \ state of this object.\n \n A rule implementation may or may not store\
+            \ full information about historic\n and future transitions, and the information\
+            \ stored is only as accurate as\n that supplied to the implementation\
+            \ by the rules provider.\n Applications should treat the data provided\
+            \ as representing the best information\n available to the implementation\
+            \ of this rule."
+          fields:
+            lastRules:
+              name: lastRules
+              modifiers:
+              - private
               type:
-                basic: String
-                full: java.lang.String
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: ZoneOffsetTransitionRule
+                full: java.time.zone.ZoneOffsetTransitionRule[]
+            lastRulesCache:
+              name: lastRulesCache
+              modifiers:
+              - private
               type:
-                basic: Object
-                full: java.lang.Object
-            return:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.lang.Integer, java.time.zone.ZoneOffsetTransition[]>
+            savingsInstantTransitions:
+              name: savingsInstantTransitions
+              modifiers:
+              - private
               type:
-                basic: boolean
-                full: boolean
-          - name: getDaylightSavings
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Instant
-                full: java.time.Instant
-            return:
-              type:
-                basic: Duration
-                full: java.time.Duration
-          - name: getOffset
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Instant
-                full: java.time.Instant
-            return:
-              type:
-                basic: ZoneOffset
-                full: java.time.ZoneOffset
-          - name: getOffset
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: long
+                full: long[]
+            savingsLocalTransitions:
+              name: savingsLocalTransitions
+              modifiers:
+              - private
               type:
                 basic: LocalDateTime
-                full: java.time.LocalDateTime
-            return:
+                full: java.time.LocalDateTime[]
+            standardOffsets:
+              name: standardOffsets
+              modifiers:
+              - private
               type:
                 basic: ZoneOffset
-                full: java.time.ZoneOffset
-          - name: getStandardOffset
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                full: java.time.ZoneOffset[]
+            standardTransitions:
+              name: standardTransitions
+              modifiers:
+              - private
               type:
-                basic: Instant
-                full: java.time.Instant
-            return:
+                basic: long
+                full: long[]
+            wallOffsets:
+              name: wallOffsets
+              modifiers:
+              - private
               type:
                 basic: ZoneOffset
-                full: java.time.ZoneOffset
-          - name: getTransition
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                full: java.time.ZoneOffset[]
+          staticFields:
+            DAYS_0000_TO_1970:
+              name: DAYS_0000_TO_1970
+              modifiers:
+              - private
+              - static
               type:
-                basic: LocalDateTime
-                full: java.time.LocalDateTime
-            return:
-              type:
-                basic: ZoneOffsetTransition
-                full: java.time.zone.ZoneOffsetTransition
-          - name: getTransitionRules
-            modifiers:
-            - public
-            return:
-              type:
-                basic: List<ZoneOffsetTransitionRule>
-                full: java.util.List<java.time.zone.ZoneOffsetTransitionRule>
-          - name: getTransitions
-            modifiers:
-            - public
-            return:
-              type:
-                basic: List<ZoneOffsetTransition>
-                full: java.util.List<java.time.zone.ZoneOffsetTransition>
-          - name: getValidOffsets
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: LocalDateTime
-                full: java.time.LocalDateTime
-            return:
-              type:
-                basic: List<ZoneOffset>
-                full: java.util.List<java.time.ZoneOffset>
-          - name: hashCode
-            modifiers:
-            - public
-            return:
+                basic: long
+                full: long
+            DAYS_PER_CYCLE:
+              name: DAYS_PER_CYCLE
+              modifiers:
+              - private
+              - static
               type:
                 basic: int
                 full: int
-          - name: isDaylightSavings
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            EMPTY_LASTRULES:
+              name: EMPTY_LASTRULES
+              modifiers:
+              - private
+              - static
               type:
-                basic: Instant
-                full: java.time.Instant
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isFixedOffset
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isValidOffset
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: ZoneOffsetTransitionRule
+                full: java.time.zone.ZoneOffsetTransitionRule[]
+            EMPTY_LDT_ARRAY:
+              name: EMPTY_LDT_ARRAY
+              modifiers:
+              - private
+              - static
               type:
                 basic: LocalDateTime
-                full: java.time.LocalDateTime
-            - name: arg1
+                full: java.time.LocalDateTime[]
+            EMPTY_LONG_ARRAY:
+              name: EMPTY_LONG_ARRAY
+              modifiers:
+              - private
+              - static
               type:
-                basic: ZoneOffset
-                full: java.time.ZoneOffset
-            return:
+                basic: long
+                full: long[]
+            LAST_CACHED_YEAR:
+              name: LAST_CACHED_YEAR
+              modifiers:
+              - private
+              - static
               type:
-                basic: boolean
-                full: boolean
-          - name: nextTransition
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
               type:
-                basic: Instant
-                full: java.time.Instant
-            return:
-              type:
-                basic: ZoneOffsetTransition
-                full: java.time.zone.ZoneOffsetTransition
-          - name: previousTransition
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Instant
-                full: java.time.Instant
-            return:
-              type:
-                basic: ZoneOffsetTransition
-                full: java.time.zone.ZoneOffsetTransition
-          staticMethods:
-          - name: of
-            modifiers:
-            - public
-            - static
-            parameters:
-            - name: arg0
-              type:
-                basic: ZoneOffset
-                full: java.time.ZoneOffset
-            return:
-              type:
-                basic: ZoneRules
-                full: java.time.zone.ZoneRules
-          - name: of
-            modifiers:
-            - public
-            - static
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -205,19 +143,548 @@ languages:
                 full: java.time.ZoneOffset
             - name: arg2
               type:
-                basic: List<ZoneOffsetTransition>
+                basic: List
                 full: java.util.List<java.time.zone.ZoneOffsetTransition>
             - name: arg3
               type:
-                basic: List<ZoneOffsetTransition>
+                basic: List
                 full: java.util.List<java.time.zone.ZoneOffsetTransition>
             - name: arg4
               type:
-                basic: List<ZoneOffsetTransitionRule>
+                basic: List
                 full: java.util.List<java.time.zone.ZoneOffsetTransitionRule>
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long[]
+            - name: arg1
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset[]
+            - name: arg2
+              type:
+                basic: long
+                full: long[]
+            - name: arg3
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset[]
+            - name: arg4
+              type:
+                basic: ZoneOffsetTransitionRule
+                full: java.time.zone.ZoneOffsetTransitionRule[]
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+          methods:
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: otherRules
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the other rules, null returns false
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this rules is the same as that specified
+            notes: "Checks if this set of rules equals another.\n \n Two rule sets\
+              \ are equal if they will always result in the same output\n for any\
+              \ given input instant or local date-time.\n Rules from two different\
+              \ groups may return false even if they are in fact the same.\n \n This\
+              \ definition should result in implementations comparing their entire\
+              \ state."
+          - name: findOffsetInfo
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+            - name: arg1
+              type:
+                basic: ZoneOffsetTransition
+                full: java.time.zone.ZoneOffsetTransition
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: findTransitionArray
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: ZoneOffsetTransition
+                full: java.time.zone.ZoneOffsetTransition[]
+          - name: findYear
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getDaylightSavings
+            modifiers:
+            - public
+            parameters:
+            - name: instant
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: "the instant to find the daylight savings for, not null, but\
+                \ null\n  may be ignored if the rules have a single offset for all\
+                \ instants"
+            return:
+              type:
+                basic: Duration
+                full: java.time.Duration
+              notes: the difference between the standard and actual offset, not null
+            notes: "Gets the amount of daylight savings in use for the specified instant\
+              \ in this zone.\n \n This provides access to historic information on\
+              \ how the amount of daylight\n savings has changed over time.\n This\
+              \ is the difference between the standard offset and the actual offset.\n\
+              \ Typically the amount is zero during winter and one hour during summer.\n\
+              \ Time-zones are second-based, so the nanosecond part of the duration\
+              \ will be zero.\n \n This default implementation calculates the duration\
+              \ from the\n actual and\n standard offsets."
+          - name: getOffset
+            modifiers:
+            - public
+            parameters:
+            - name: instant
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: "the instant to find the offset for, not null, but null\n  may\
+                \ be ignored if the rules have a single offset for all instants"
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset, not null
+            notes: "Gets the offset applicable at the specified instant in these rules.\n\
+              \ \n The mapping from an instant to an offset is simple, there is only\n\
+              \ one valid offset for each instant.\n This method returns that offset."
+          - name: getOffset
+            modifiers:
+            - public
+            parameters:
+            - name: localDateTime
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+              notes: "the local date-time to query, not null, but null\n  may be ignored\
+                \ if the rules have a single offset for all instants"
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the best available offset for the local date-time, not null
+            notes: "Gets a suitable offset for the specified local date-time in these\
+              \ rules.\n \n The mapping from a local date-time to an offset is not\
+              \ straightforward.\n There are three cases:\n \n Normal, with one valid\
+              \ offset. For the vast majority of the year, the normal\n  case applies,\
+              \ where there is a single valid offset for the local date-time.\n Gap,\
+              \ with zero valid offsets. This is when clocks jump forward typically\n\
+              \  due to the spring daylight savings change from \"winter\" to \"summer\"\
+              .\n  In a gap there are local date-time values with no valid offset.\n\
+              \ Overlap, with two valid offsets. This is when clocks are set back\
+              \ typically\n  due to the autumn daylight savings change from \"summer\"\
+              \ to \"winter\".\n  In an overlap there are local date-time values with\
+              \ two valid offsets.\n \n Thus, for any given local date-time there\
+              \ can be zero, one or two valid offsets.\n This method returns the single\
+              \ offset in the Normal case, and in the Gap or Overlap\n case it returns\
+              \ the offset before the transition.\n \n Since, in the case of Gap and\
+              \ Overlap, the offset returned is a \"best\" value, rather\n than the\
+              \ \"correct\" value, it should be treated with care. Applications that\
+              \ care\n about the correct offset should use a combination of this method,\n\
+              \ getValidOffsets(LocalDateTime) and getTransition(LocalDateTime)."
+          - name: getOffsetInfo
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          - name: getStandardOffset
+            modifiers:
+            - public
+            parameters:
+            - name: instant
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: "the instant to find the offset information for, not null, but\
+                \ null\n  may be ignored if the rules have a single offset for all\
+                \ instants"
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the standard offset, not null
+            notes: "Gets the standard offset for the specified instant in this zone.\n\
+              \ \n This provides access to historic information on how the standard\
+              \ offset\n has changed over time.\n The standard offset is the offset\
+              \ before any daylight saving time is applied.\n This is typically the\
+              \ offset applicable during winter."
+          - name: getTransition
+            modifiers:
+            - public
+            parameters:
+            - name: localDateTime
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+              notes: "the local date-time to query for offset transition, not null,\
+                \ but null\n  may be ignored if the rules have a single offset for\
+                \ all instants"
+            return:
+              type:
+                basic: ZoneOffsetTransition
+                full: java.time.zone.ZoneOffsetTransition
+              notes: the offset transition, null if the local date-time is not in
+                transition
+            notes: "Gets the offset transition applicable at the specified local date-time\
+              \ in these rules.\n \n The mapping from a local date-time to an offset\
+              \ is not straightforward.\n There are three cases:\n \n Normal, with\
+              \ one valid offset. For the vast majority of the year, the normal\n\
+              \  case applies, where there is a single valid offset for the local\
+              \ date-time.\n Gap, with zero valid offsets. This is when clocks jump\
+              \ forward typically\n  due to the spring daylight savings change from\
+              \ \"winter\" to \"summer\".\n  In a gap there are local date-time values\
+              \ with no valid offset.\n Overlap, with two valid offsets. This is when\
+              \ clocks are set back typically\n  due to the autumn daylight savings\
+              \ change from \"summer\" to \"winter\".\n  In an overlap there are local\
+              \ date-time values with two valid offsets.\n \n A transition is used\
+              \ to model the cases of a Gap or Overlap.\n The Normal case will return\
+              \ null.\n \n There are various ways to handle the conversion from a\
+              \ LocalDateTime.\n One technique, using this method, would be:\n \n\
+              \  ZoneOffsetTransition trans = rules.getTransition(localDT);\n  if\
+              \ (trans != null) {\n    // Gap or Overlap: determine what to do from\
+              \ transition\n  } else {\n    // Normal case: only one valid offset\n\
+              \    zoneOffset = rule.getOffset(localDT);\n  }"
+          - name: getTransitionRules
+            modifiers:
+            - public
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.time.zone.ZoneOffsetTransitionRule>
+              notes: an immutable list of transition rules, not null
+            notes: "Gets the list of transition rules for years beyond those defined\
+              \ in the transition list.\n \n The complete set of transitions for this\
+              \ rules instance is defined by this method\n and getTransitions(). This\
+              \ method returns instances of ZoneOffsetTransitionRule\n that define\
+              \ an algorithm for when transitions will occur.\n \n For any given ZoneRules,\
+              \ this list contains the transition rules for years\n beyond those years\
+              \ that have been fully defined. These rules typically refer to future\n\
+              \ daylight saving time rule changes.\n \n If the zone defines daylight\
+              \ savings into the future, then the list will normally\n be of size\
+              \ two and hold information about entering and exiting daylight savings.\n\
+              \ If the zone does not have daylight savings, or information about future\
+              \ changes\n is uncertain, then the list will be empty.\n \n The list\
+              \ will be empty for fixed offset rules and for any time-zone where there\
+              \ is no\n daylight saving time. The list will also be empty if the transition\
+              \ rules are unknown."
+          - name: getTransitions
+            modifiers:
+            - public
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.time.zone.ZoneOffsetTransition>
+              notes: an immutable list of fully defined transitions, not null
+            notes: "Gets the complete list of fully defined transitions.\n \n The\
+              \ complete set of transitions for this rules instance is defined by\
+              \ this method\n and getTransitionRules(). This method returns those\
+              \ transitions that have\n been fully defined. These are typically historical,\
+              \ but may be in the future.\n \n The list will be empty for fixed offset\
+              \ rules and for any time-zone where there has\n only ever been a single\
+              \ offset. The list will also be empty if the transition rules are unknown."
+          - name: getValidOffsets
+            modifiers:
+            - public
+            parameters:
+            - name: localDateTime
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+              notes: "the local date-time to query for valid offsets, not null, but\
+                \ null\n  may be ignored if the rules have a single offset for all\
+                \ instants"
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.time.ZoneOffset>
+              notes: the list of valid offsets, may be immutable, not null
+            notes: "Gets the offset applicable at the specified local date-time in\
+              \ these rules.\n \n The mapping from a local date-time to an offset\
+              \ is not straightforward.\n There are three cases:\n \n Normal, with\
+              \ one valid offset. For the vast majority of the year, the normal\n\
+              \  case applies, where there is a single valid offset for the local\
+              \ date-time.\n Gap, with zero valid offsets. This is when clocks jump\
+              \ forward typically\n  due to the spring daylight savings change from\
+              \ \"winter\" to \"summer\".\n  In a gap there are local date-time values\
+              \ with no valid offset.\n Overlap, with two valid offsets. This is when\
+              \ clocks are set back typically\n  due to the autumn daylight savings\
+              \ change from \"summer\" to \"winter\".\n  In an overlap there are local\
+              \ date-time values with two valid offsets.\n \n Thus, for any given\
+              \ local date-time there can be zero, one or two valid offsets.\n This\
+              \ method returns that list of valid offsets, which is a list of size\
+              \ 0, 1 or 2.\n In the case where there are two offsets, the earlier\
+              \ offset is returned at index 0\n and the later offset at index 1.\n\
+              \ \n There are various ways to handle the conversion from a LocalDateTime.\n\
+              \ One technique, using this method, would be:\n \n  List<ZoneOffset>\
+              \ validOffsets = rules.getValidOffsets(localDT);\n  if (validOffsets.size()\
+              \ == 1) {\n    // Normal case: only one valid offset\n    zoneOffset\
+              \ = validOffsets.get(0);\n  } else {\n    // Gap or Overlap: determine\
+              \ what to do from transition (which will be non-null)\n    ZoneOffsetTransition\
+              \ trans = rules.getTransition(localDT);\n  }\n \n \n In theory, it is\
+              \ possible for there to be more than two valid offsets.\n This would\
+              \ happen if clocks to be put back more than once in quick succession.\n\
+              \ This has never happened in the history of time-zones and thus has\
+              \ no special handling.\n However, if it were to happen, then the list\
+              \ would return more than 2 entries."
+          - name: hashCode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the hash code
+            notes: 'Returns a suitable hash code given the definition of #equals.'
+          - name: isDaylightSavings
+            modifiers:
+            - public
+            parameters:
+            - name: instant
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: "the instant to find the offset information for, not null, but\
+                \ null\n  may be ignored if the rules have a single offset for all\
+                \ instants"
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: the standard offset, not null
+            notes: "Checks if the specified instant is in daylight savings.\n \n This\
+              \ checks if the standard offset and the actual offset are the same\n\
+              \ for the specified instant.\n If they are not, it is assumed that daylight\
+              \ savings is in operation.\n \n This default implementation compares\
+              \ the actual\n and standard offsets."
+          - name: isFixedOffset
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the time-zone is fixed and the offset never changes
+            notes: Checks of the zone rules are fixed, such that the offset never
+              varies.
+          - name: isValidOffset
+            modifiers:
+            - public
+            parameters:
+            - name: localDateTime
+              type:
+                basic: LocalDateTime
+                full: java.time.LocalDateTime
+              notes: "the date-time to check, not null, but null\n  may be ignored\
+                \ if the rules have a single offset for all instants"
+            - name: offset
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset to check, null returns false
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if the offset date-time is valid for these rules
+            notes: "Checks if the offset date-time is valid for these rules.\n \n\
+              \ To be valid, the local date-time must not be in a gap and the offset\n\
+              \ must match one of the valid offsets.\n \n This default implementation\
+              \ checks if getValidOffsets(java.time.LocalDateTime)\n contains the\
+              \ specified offset."
+          - name: nextTransition
+            modifiers:
+            - public
+            parameters:
+            - name: instant
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: "the instant to get the next transition after, not null, but\
+                \ null\n  may be ignored if the rules have a single offset for all\
+                \ instants"
+            return:
+              type:
+                basic: ZoneOffsetTransition
+                full: java.time.zone.ZoneOffsetTransition
+              notes: the next transition after the specified instant, null if this
+                is after the last transition
+            notes: "Gets the next transition after the specified instant.\n \n This\
+              \ returns details of the next transition after the specified instant.\n\
+              \ For example, if the instant represents a point where \"Summer\" daylight\
+              \ savings time\n applies, then the method will return the transition\
+              \ to the next \"Winter\" time."
+          - name: previousTransition
+            modifiers:
+            - public
+            parameters:
+            - name: instant
+              type:
+                basic: Instant
+                full: java.time.Instant
+              notes: "the instant to get the previous transition after, not null,\
+                \ but null\n  may be ignored if the rules have a single offset for\
+                \ all instants"
+            return:
+              type:
+                basic: ZoneOffsetTransition
+                full: java.time.zone.ZoneOffsetTransition
+              notes: the previous transition before the specified instant, null if
+                this is before the first transition
+            notes: "Gets the previous transition before the specified instant.\n \n\
+              \ This returns details of the previous transition before the specified\
+              \ instant.\n For example, if the instant represents a point where \"\
+              summer\" daylight saving time\n applies, then the method will return\
+              \ the transition from the previous \"winter\" time."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeExternal
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          staticMethods:
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: baseStandardOffset
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the standard offset to use before legal rules were set, not null
+            - name: baseWallOffset
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the wall offset to use before legal rules were set, not null
+            - name: standardOffsetTransitionList
+              type:
+                basic: List
+                full: java.util.List<java.time.zone.ZoneOffsetTransition>
+              notes: the list of changes to the standard offset, not null
+            - name: transitionList
+              type:
+                basic: List
+                full: java.util.List<java.time.zone.ZoneOffsetTransition>
+              notes: the list of transitions, not null
+            - name: lastRules
+              type:
+                basic: List
+                full: java.util.List<java.time.zone.ZoneOffsetTransitionRule>
+              notes: the recurring last rules, size 16 or less, not null
             return:
               type:
                 basic: ZoneRules
                 full: java.time.zone.ZoneRules
-          javaType: class
-          extends: Object
+              notes: the zone rules, not null
+            notes: Obtains an instance of a ZoneRules.
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: offset
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset this fixed zone rules is based on, not null
+            return:
+              type:
+                basic: ZoneRules
+                full: java.time.zone.ZoneRules
+              notes: the zone rules, not null
+            notes: Obtains an instance of ZoneRules that has fixed zone rules.
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
+            return:
+              type:
+                basic: ZoneRules
+                full: java.time.zone.ZoneRules

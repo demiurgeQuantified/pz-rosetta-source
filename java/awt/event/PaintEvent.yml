@@ -4,63 +4,94 @@ languages:
     packages:
       java.awt.event:
         PaintEvent:
+          extends: java.awt.event.ComponentEvent
+          modifiers:
+          - public
+          notes: "The component-level paint event.\n This event is a special type\
+            \ which is used to ensure that\n paint/update method calls are serialized\
+            \ along with the other\n events delivered from the event queue.  This\
+            \ event is not\n designed to be used with the Event Listener model; programs\n\
+            \ should continue to override paint/update methods in order\n render themselves\
+            \ properly.\n \n An unspecified behavior will be caused if the id parameter\n\
+            \ of any particular PaintEvent instance is not\n in the range from PAINT_FIRST\
+            \ to PAINT_LAST."
+          fields:
+            updateRect:
+              name: updateRect
+              modifiers:
+              - package
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
           staticFields:
             PAINT:
               name: PAINT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The paint event type.
             PAINT_FIRST:
               name: PAINT_FIRST
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Marks the first integer id for the range of paint event ids.
             PAINT_LAST:
               name: PAINT_LAST
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Marks the last integer id for the range of paint event ids.
             UPDATE:
               name: UPDATE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: The update event type.
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: Component
                 full: java.awt.Component
-            - name: arg1
+              notes: The object where the event originated
+            - name: id
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "The integer that identifies the event type.\n              \
+                \       For information on allowable values, see\n               \
+                \      the class description for PaintEvent"
+            - name: updateRect
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: The rectangle area which needs to be repainted
+            notes: "Constructs a PaintEvent object with the specified\n source component\
+              \ and type.\n  This method throws an\n IllegalArgumentException if source\n\
+              \ is null."
           methods:
           - name: getUpdateRect
             modifiers:
@@ -69,6 +100,10 @@ languages:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: "the rectangle representing the area which needs to be\n repainted\
+                \ in response to this event"
+            notes: "Returns the rectangle representing the area which needs to be\n\
+              \ repainted in response to this event."
           - name: paramString
             modifiers:
             - public
@@ -80,13 +115,14 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: updateRect
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: the rectangle area which needs to be repainted
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: ComponentEvent
+            notes: "Sets the rectangle representing the area which needs to be\n repainted\
+              \ in response to this event."

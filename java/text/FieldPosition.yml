@@ -4,52 +4,113 @@ languages:
     packages:
       java.text:
         FieldPosition:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "FieldPosition is a simple class used by Format\n and its subclasses\
+            \ to identify fields in formatted output. Fields can\n be identified in\
+            \ two ways:\n \n  By an integer constant, whose names typically end with\n\
+            \      _FIELD. The constants are defined in the various\n      subclasses\
+            \ of Format.\n  By a Format.Field constant, see ERA_FIELD\n      and its\
+            \ friends in DateFormat for an example.\n \n \n FieldPosition keeps track\
+            \ of the position of the\n field within the formatted output with two\
+            \ indices: the index\n of the first character of the field and the index\
+            \ of the last\n character of the field.\n\n \n One version of the format\
+            \ method in the various\n Format classes requires a FieldPosition\n object\
+            \ as an argument. You use this format method\n to perform partial formatting\
+            \ or to get information about the\n formatted output (such as the position\
+            \ of a field).\n\n \n If you are interested in the positions of all attributes\
+            \ in the\n formatted string use the Format method\n formatToCharacterIterator."
+          fields:
+            attribute:
+              name: attribute
+              modifiers:
+              - private
+              type:
+                basic: Format.Field
+                full: java.text.Format$Field
+            beginIndex:
+              name: beginIndex
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            endIndex:
+              name: endIndex
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+            field:
+              name: field
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: field
               type:
                 basic: int
                 full: int
+              notes: the field identifier
+            notes: "Creates a FieldPosition object for the given field.  Fields are\n\
+              \ identified by constants, whose names typically end with _FIELD,\n\
+              \ in the various subclasses of Format."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: attribute
               type:
-                basic: Field
+                basic: Format.Field
                 full: java.text.Format$Field
+              notes: Format.Field constant identifying a field
+            notes: "Creates a FieldPosition object for the given field constant. Fields\
+              \ are\n identified by constants defined in the various Format\n subclasses.\
+              \ This is equivalent to calling\n new FieldPosition(attribute, -1)."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: attribute
               type:
-                basic: Field
+                basic: Format.Field
                 full: java.text.Format$Field
-            - name: arg1
+              notes: Format.Field constant identifying a field
+            - name: fieldID
               type:
                 basic: int
                 full: int
+              notes: integer constant identifying a field
+            notes: "Creates a FieldPosition object for the given field.\n The field\
+              \ is identified by an attribute constant from one of the\n Field subclasses\
+              \ as well as an integer field ID\n defined by the Format subclasses.\
+              \ Format\n subclasses that are aware of Field should give precedence\n\
+              \ to attribute and ignore fieldID if\n attribute is not null. However,\
+              \ older Format\n subclasses may not be aware of Field and rely on\n\
+              \ fieldID. If the field has no corresponding integer\n constant, fieldID\
+              \ should be -1."
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the reference object with which to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this object is the same as the obj\n          argument;\
+                \ false otherwise."
+            notes: Overrides equals
           - name: getBeginIndex
             modifiers:
             - public
@@ -57,6 +118,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the begin index
+            notes: Retrieves the index of the first character in the requested field.
           - name: getEndIndex
             modifiers:
             - public
@@ -64,6 +127,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the end index
+            notes: "Retrieves the index of the character following the last character\
+              \ in the\n requested field."
           - name: getField
             modifiers:
             - public
@@ -71,13 +137,26 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the field identifier
+            notes: Retrieves the field identifier.
           - name: getFieldAttribute
             modifiers:
             - public
             return:
               type:
-                basic: Field
+                basic: Format.Field
                 full: java.text.Format$Field
+              notes: Identifier for the field
+            notes: "Returns the field identifier as an attribute constant\n from one\
+              \ of the Field subclasses. May return null if\n the field is specified\
+              \ only by an integer field ID."
+          - name: getFieldDelegate
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Format.FieldDelegate
+                full: java.text.Format$FieldDelegate
           - name: hashCode
             modifiers:
             - public
@@ -85,29 +164,68 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this object
+            notes: Returns a hash code for this FieldPosition.
+          - name: matchesField
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Format.Field
+                full: java.text.Format$Field
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: matchesField
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Format.Field
+                full: java.text.Format$Field
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: setBeginIndex
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bi
               type:
                 basic: int
                 full: int
+              notes: the begin index
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the begin index.  For use by subclasses of Format.
           - name: setEndIndex
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ei
               type:
                 basic: int
                 full: int
+              notes: the end index
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: Sets the end index.  For use by subclasses of Format.
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

@@ -4,21 +4,235 @@ languages:
     packages:
       java.nio:
         Buffer:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "A container for data of a specific primitive type.\n\n  A buffer\
+            \ is a linear, finite sequence of elements of a specific\n primitive type.\
+            \  Aside from its content, the essential properties of a\n buffer are\
+            \ its capacity, limit, and position: \n\n \n\n    A buffer's capacity\
+            \ is the number of elements it contains.  The\n   capacity of a buffer\
+            \ is never negative and never changes.  \n\n    A buffer's limit is the\
+            \ index of the first element that should\n   not be read or written. \
+            \ A buffer's limit is never negative and is never\n   greater than its\
+            \ capacity.  \n\n    A buffer's position is the index of the next element\
+            \ to be\n   read or written.  A buffer's position is never negative and\
+            \ is never\n   greater than its limit.  \n\n \n\n  There is one subclass\
+            \ of this class for each non-boolean primitive type.\n\n\n  Transferring\
+            \ data \n\n  Each subclass of this class defines two categories of get\
+            \ and\n put operations: \n\n \n\n    Relative operations read or write\
+            \ one or more elements starting\n   at the current position and then increment\
+            \ the position by the number of\n   elements transferred.  If the requested\
+            \ transfer exceeds the limit then a\n   relative get operation throws\
+            \ a BufferUnderflowException\n   and a relative put operation throws a\
+            \ BufferOverflowException; in either case, no data is transferred.  \n\
+            \n    Absolute operations take an explicit element index and do not\n\
+            \   affect the position.  Absolute get and put operations throw\n   an\
+            \ IndexOutOfBoundsException if the index argument exceeds the\n   limit.\
+            \  \n\n \n\n  Data may also, of course, be transferred in to or out of\
+            \ a buffer by the\n I/O operations of an appropriate channel, which are\
+            \ always relative to the\n current position.\n\n\n  Marking and resetting\
+            \ \n\n  A buffer's mark is the index to which its position will be reset\n\
+            \ when the reset method is invoked.  The mark is not always\n defined,\
+            \ but when it is defined it is never negative and is never greater\n than\
+            \ the position.  If the mark is defined then it is discarded when the\n\
+            \ position or the limit is adjusted to a value smaller than the mark.\
+            \  If the\n mark is not defined then invoking the reset method causes\
+            \ an\n InvalidMarkException to be thrown.\n\n\n  Invariants \n\n  The\
+            \ following invariant holds for the mark, position, limit, and\n capacity\
+            \ values:\n\n \n     0 <=\n     mark <=\n     position <=\n     limit\
+            \ <=\n     capacity\n \n\n  A newly-created buffer always has a position\
+            \ of zero and a mark that is\n undefined.  The initial limit may be zero,\
+            \ or it may be some other value\n that depends upon the type of the buffer\
+            \ and the manner in which it is\n constructed.  Each element of a newly-allocated\
+            \ buffer is initialized\n to zero.\n\n\n  Additional operations \n\n \
+            \ In addition to methods for accessing the position, limit, and capacity\n\
+            \ values and for marking and resetting, this class also defines the following\n\
+            \ operations upon buffers:\n\n \n\n    clear() makes a buffer ready for\
+            \ a new sequence of\n   channel-read or relative put operations: It sets\
+            \ the limit to the\n   capacity and the position to zero.  \n\n    flip()\
+            \ makes a buffer ready for a new sequence of\n   channel-write or relative\
+            \ get operations: It sets the limit to the\n   current position and then\
+            \ sets the position to zero.  \n\n    rewind() makes a buffer ready for\
+            \ re-reading the data that\n   it already contains: It leaves the limit\
+            \ unchanged and sets the position\n   to zero.  \n\n    The slice() and\
+            \ slice(index,length)\n   methods create a subsequence of a buffer: They\
+            \ leave the limit and the\n   position unchanged. \n\n    duplicate()\
+            \ creates a shallow copy of a buffer: It leaves\n   the limit and the\
+            \ position unchanged. \n\n \n\n\n  Read-only buffers \n\n  Every buffer\
+            \ is readable, but not every buffer is writable.  The\n mutation methods\
+            \ of each buffer class are specified as optional\n operations that will\
+            \ throw a ReadOnlyBufferException when\n invoked upon a read-only buffer.\
+            \  A read-only buffer does not allow its\n content to be changed, but\
+            \ its mark, position, and limit values are mutable.\n Whether or not a\
+            \ buffer is read-only may be determined by invoking its\n isReadOnly method.\n\
+            \n\n  Thread safety \n\n  Buffers are not safe for use by multiple concurrent\
+            \ threads.  If a\n buffer is to be used by more than one thread then access\
+            \ to the buffer\n should be controlled by appropriate synchronization.\n\
+            \n\n  Invocation chaining \n\n  Methods in this class that do not otherwise\
+            \ have a value to return are\n specified to return the buffer upon which\
+            \ they are invoked.  This allows\n method invocations to be chained; for\
+            \ example, the sequence of statements\n\n \n b.flip();\n b.position(23);\n\
+            \ b.limit(42);\n\n can be replaced by the single, more compact statement\n\
+            \n \n b.flip().position(23).limit(42);"
+          fields:
+            address:
+              name: address
+              modifiers:
+              - package
+              type:
+                basic: long
+                full: long
+            capacity:
+              name: capacity
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            limit:
+              name: limit
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            mark:
+              name: mark
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            position:
+              name: position
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            segment:
+              name: segment
+              modifiers:
+              - package
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            SCOPED_MEMORY_ACCESS:
+              name: SCOPED_MEMORY_ACCESS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: ScopedMemoryAccess
+                full: jdk.internal.misc.ScopedMemoryAccess
+            SPLITERATOR_CHARACTERISTICS:
+              name: SPLITERATOR_CHARACTERISTICS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            UNSAFE:
+              name: UNSAFE
+              modifiers:
+              - package
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+          constructors:
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: long
+                full: long
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
+          - modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            - name: arg2
+              type:
+                basic: int
+                full: int
+            - name: arg3
+              type:
+                basic: int
+                full: int
+            - name: arg4
+              type:
+                basic: MemorySegmentProxy
+                full: jdk.internal.access.foreign.MemorySegmentProxy
           methods:
           - name: array
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: The array that backs this buffer
+            notes: "Returns the array that backs this\n buffer  (optional operation).\n\
+              \n  This method is intended to allow array-backed buffers to be\n passed\
+              \ to native code more efficiently. Concrete subclasses\n provide more\
+              \ strongly-typed return values for this method.\n\n  Modifications to\
+              \ this buffer's content will cause the returned\n array's content to\
+              \ be modified, and vice versa.\n\n  Invoke the hasArray method before\
+              \ invoking this\n method in order to ensure that this buffer has an\
+              \ accessible backing\n array."
           - name: arrayOffset
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: "The offset within this buffer's array\n          of the first\
+                \ element of the buffer"
+            notes: "Returns the offset within this buffer's backing array of the first\n\
+              \ element of the buffer  (optional operation).\n\n  If this buffer is\
+              \ backed by an array then buffer position p\n corresponds to array index\
+              \ p + arrayOffset().\n\n  Invoke the hasArray method before invoking\
+              \ this\n method in order to ensure that this buffer has an accessible\
+              \ backing\n array."
+          - name: base
+            modifiers:
+            - package
+            - abstract
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
           - name: capacity
             modifiers:
             - public
@@ -27,66 +241,12 @@ languages:
               type:
                 basic: int
                 full: int
-          - name: clear
+              notes: The capacity of this buffer
+            notes: Returns this buffer's capacity.
+          - name: checkIndex
             modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: duplicate
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: flip
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: hasArray
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: hasRemaining
-            modifiers:
-            - public
+            - package
             - final
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isDirect
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: isReadOnly
-            modifiers:
-            - public
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: limit
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: limit
-            modifiers:
-            - public
             parameters:
             - name: arg0
               type:
@@ -94,67 +254,12 @@ languages:
                 full: int
             return:
               type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: mark
+                basic: int
+                full: int
+          - name: checkIndex
             modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: position
-            modifiers:
-            - public
+            - package
             - final
-            return:
-              type:
-                basic: int
-                full: int
-          - name: position
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: remaining
-            modifiers:
-            - public
-            - final
-            return:
-              type:
-                basic: int
-                full: int
-          - name: reset
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: rewind
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: slice
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Buffer
-                full: java.nio.Buffer
-          - name: slice
-            modifiers:
-            - public
             parameters:
             - name: arg0
               type:
@@ -166,7 +271,371 @@ languages:
                 full: int
             return:
               type:
+                basic: int
+                full: int
+          - name: checkScope
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: clear
+            modifiers:
+            - public
+            return:
+              type:
                 basic: Buffer
                 full: java.nio.Buffer
-          javaType: class
-          extends: Object
+              notes: This buffer
+            notes: "Clears this buffer.  The position is set to zero, the limit is\
+              \ set to\n the capacity, and the mark is discarded.\n\n  Invoke this\
+              \ method before using a sequence of channel-read or\n put operations\
+              \ to fill this buffer.  For example:\n\n \n buf.clear();     // Prepare\
+              \ buffer for reading\n in.read(buf);    // Read data\n\n  This method\
+              \ does not actually erase the data in the buffer, but it\n is named\
+              \ as if it did because it will most often be used in situations\n in\
+              \ which that might as well be the case."
+          - name: createLimitException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: IllegalArgumentException
+                full: java.lang.IllegalArgumentException
+          - name: createPositionException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: IllegalArgumentException
+                full: java.lang.IllegalArgumentException
+          - name: discardMark
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+          - name: duplicate
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: The new buffer
+            notes: "Creates a new buffer that shares this buffer's content.\n\n  The\
+              \ content of the new buffer will be that of this buffer.  Changes\n\
+              \ to this buffer's content will be visible in the new buffer, and vice\n\
+              \ versa; the two buffers' position, limit, and mark values will be\n\
+              \ independent.\n\n  The new buffer's capacity, limit, position and mark\
+              \ values will be\n identical to those of this buffer. The new buffer\
+              \ will be direct if, and\n only if, this buffer is direct, and it will\
+              \ be read-only if, and only if,\n this buffer is read-only."
+          - name: flip
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: This buffer
+            notes: "Flips this buffer.  The limit is set to the current position and\
+              \ then\n the position is set to zero.  If the mark is defined then it\
+              \ is\n discarded.\n\n  After a sequence of channel-read or put operations,\
+              \ invoke\n this method to prepare for a sequence of channel-write or\
+              \ relative\n get operations.  For example:\n\n \n buf.put(magic);  \
+              \  // Prepend header\n in.read(buf);      // Read data into rest of\
+              \ buffer\n buf.flip();        // Flip buffer\n out.write(buf);    //\
+              \ Write header + data to channel\n\n  This method is often used in conjunction\
+              \ with the compact method when transferring data from\n one place to\
+              \ another."
+          - name: hasArray
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if, and only if, this buffer\n          is backed by an\
+                \ array and is not read-only"
+            notes: "Tells whether or not this buffer is backed by an accessible\n\
+              \ array.\n\n  If this method returns true then the array\n and arrayOffset\
+              \ methods may safely be invoked."
+          - name: hasRemaining
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if, and only if, there is at least one element\n      \
+                \    remaining in this buffer"
+            notes: "Tells whether there are any elements between the current position\
+              \ and\n the limit."
+          - name: isDirect
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if, and only if, this buffer is direct
+            notes: "Tells whether or not this buffer is\n direct."
+          - name: isReadOnly
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if, and only if, this buffer is read-only
+            notes: Tells whether or not this buffer is read-only.
+          - name: limit
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: The limit of this buffer
+            notes: Returns this buffer's limit.
+          - name: limit
+            modifiers:
+            - public
+            parameters:
+            - name: newLimit
+              type:
+                basic: int
+                full: int
+              notes: "The new limit value; must be non-negative\n         and no larger\
+                \ than this buffer's capacity"
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: This buffer
+            notes: "Sets this buffer's limit.  If the position is larger than the\
+              \ new limit\n then it is set to the new limit.  If the mark is defined\
+              \ and larger than\n the new limit then it is discarded."
+          - name: mark
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: This buffer
+            notes: Sets this buffer's mark at its position.
+          - name: markValue
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+          - name: nextGetIndex
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+          - name: nextGetIndex
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: nextPutIndex
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+          - name: nextPutIndex
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: position
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: The position of this buffer
+            notes: Returns this buffer's position.
+          - name: position
+            modifiers:
+            - public
+            parameters:
+            - name: newPosition
+              type:
+                basic: int
+                full: int
+              notes: "The new position value; must be non-negative\n         and no\
+                \ larger than the current limit"
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: This buffer
+            notes: "Sets this buffer's position.  If the mark is defined and larger\
+              \ than the\n new position then it is discarded."
+          - name: remaining
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+              notes: The number of elements remaining in this buffer
+            notes: "Returns the number of elements between the current position and\
+              \ the\n limit."
+          - name: reset
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: This buffer
+            notes: "Resets this buffer's position to the previously-marked position.\n\
+              \n  Invoking this method neither changes nor discards the mark's\n value."
+          - name: rewind
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: This buffer
+            notes: "Rewinds this buffer.  The position is set to zero and the mark\
+              \ is\n discarded.\n\n  Invoke this method before a sequence of channel-write\
+              \ or get\n operations, assuming that the limit has already been set\n\
+              \ appropriately.  For example:\n\n \n out.write(buf);    // Write remaining\
+              \ data\n buf.rewind();      // Rewind buffer\n buf.get(array);    //\
+              \ Copy data into array"
+          - name: scope
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: ScopedMemoryAccess.Scope
+                full: jdk.internal.misc.ScopedMemoryAccess$Scope
+          - name: slice
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: The new buffer
+            notes: "Creates a new buffer whose content is a shared subsequence of\n\
+              \ this buffer's content.\n\n  The content of the new buffer will start\
+              \ at this buffer's current\n position.  Changes to this buffer's content\
+              \ will be visible in the new\n buffer, and vice versa; the two buffers'\
+              \ position, limit, and mark\n values will be independent.\n\n  The new\
+              \ buffer's position will be zero, its capacity and its limit\n will\
+              \ be the number of elements remaining in this buffer, its mark will\
+              \ be\n undefined. The new buffer will be direct if, and only if, this\
+              \ buffer is\n direct, and it will be read-only if, and only if, this\
+              \ buffer is\n read-only."
+          - name: slice
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: index
+              type:
+                basic: int
+                full: int
+              notes: "The position in this buffer at which the content of the new\n\
+                \          buffer will start; must be non-negative and no larger than\n\
+                \          limit()"
+            - name: length
+              type:
+                basic: int
+                full: int
+              notes: "The number of elements the new buffer will contain; must be\n\
+                \          non-negative and no larger than limit()"
+            return:
+              type:
+                basic: Buffer
+                full: java.nio.Buffer
+              notes: The new buffer
+            notes: "Creates a new buffer whose content is a shared subsequence of\n\
+              \ this buffer's content.\n\n  The content of the new buffer will start\
+              \ at position index\n in this buffer, and will contain length elements.\
+              \ Changes to\n this buffer's content will be visible in the new buffer,\
+              \ and vice versa;\n the two buffers' position, limit, and mark values\
+              \ will be independent.\n\n  The new buffer's position will be zero,\
+              \ its capacity and its limit\n will be length, its mark will be undefined.\
+              \ The new buffer will\n be direct if, and only if, this buffer is direct,\
+              \ and it will be\n read-only if, and only if, this buffer is read-only."
+          staticMethods:
+          - name: createCapacityException
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: IllegalArgumentException
+                full: java.lang.IllegalArgumentException
+          - name: createSameBufferException
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: IllegalArgumentException
+                full: java.lang.IllegalArgumentException

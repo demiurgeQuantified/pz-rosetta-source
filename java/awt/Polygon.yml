@@ -4,7 +4,30 @@ languages:
     packages:
       java.awt:
         Polygon:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "The Polygon class encapsulates a description of a\n closed, two-dimensional\
+            \ region within a coordinate space. This\n region is bounded by an arbitrary\
+            \ number of line segments, each of\n which is one side of the polygon.\
+            \ Internally, a polygon\n comprises of a list of (x,y)\n coordinate pairs,\
+            \ where each pair defines a vertex of the\n polygon, and two successive\
+            \ pairs are the endpoints of a\n line that is a side of the polygon. The\
+            \ first and final\n pairs of (x,y) points are joined by a line segment\n\
+            \ that closes the polygon.  This Polygon is defined with\n an even-odd\
+            \ winding rule.  See\n WIND_EVEN_ODD\n for a definition of the even-odd\
+            \ winding rule.\n This class's hit-testing methods, which include the\n\
+            \ contains, intersects and inside\n methods, use the insideness definition\
+            \ described in the\n Shape class comments."
           fields:
+            bounds:
+              name: bounds
+              modifiers:
+              - protected
+              type:
+                basic: Rectangle
+                full: java.awt.Rectangle
+              notes: "The bounds of this Polygon.\n This value can be null."
             npoints:
               name: npoints
               modifiers:
@@ -12,51 +35,111 @@ languages:
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "The total number of points.  The value of npoints\n represents\
+                \ the number of valid points in this Polygon\n and might be less than\
+                \ the number of elements in\n xpoints or ypoints.\n This value can\
+                \ be 0."
             xpoints:
               name: xpoints
               modifiers:
               - public
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-                nullable: true
+              notes: "The array of X coordinates.  The number of elements in\n this\
+                \ array might be more than the number of X coordinates\n in this Polygon.\
+                \  The extra elements allow new points\n to be added to this Polygon\
+                \ without re-creating this\n array.  The value of npoints is equal\
+                \ to the\n number of valid points in this Polygon."
             ypoints:
               name: ypoints
               modifiers:
               - public
               type:
-                basic: int[]
+                basic: int
                 full: int[]
-                nullable: true
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int[]
-                full: int[]
-            - name: arg1
-              type:
-                basic: int[]
-                full: int[]
-            - name: arg2
+              notes: "The array of Y coordinates.  The number of elements in\n this\
+                \ array might be more than the number of Y coordinates\n in this Polygon.\
+                \  The extra elements allow new points\n to be added to this Polygon\
+                \ without re-creating this\n array.  The value of npoints is equal\
+                \ to the\n number of valid points in this Polygon."
+          staticFields:
+            MIN_LENGTH:
+              name: MIN_LENGTH
+              modifiers:
+              - private
+              - static
               type:
                 basic: int
                 full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: Creates an empty polygon.
+          - modifiers:
+            - public
+            parameters:
+            - name: xpoints
+              type:
+                basic: int
+                full: int[]
+              notes: an array of X coordinates
+            - name: ypoints
+              type:
+                basic: int
+                full: int[]
+              notes: an array of Y coordinates
+            - name: npoints
+              type:
+                basic: int
+                full: int
+              notes: "the total number of points in the\n                        \
+                \  Polygon"
+            notes: "Constructs and initializes a Polygon from the specified\n parameters."
           methods:
           - name: addPoint
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
+              notes: the specified X coordinate
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: the specified Y coordinate
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Appends the specified coordinates to this Polygon.\n \n If an\
+              \ operation that calculates the bounding box of this\n Polygon has already\
+              \ been performed, such as\n getBounds or contains, then this\n method\
+              \ updates the bounding box."
+          - name: calculateBounds
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int[]
             - name: arg1
+              type:
+                basic: int
+                full: int[]
+            - name: arg2
               type:
                 basic: int
                 full: int
@@ -68,158 +151,154 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: p
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the specified Point to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the Polygon contains the\n                  Point; false\
+                \ otherwise."
+            notes: "Determines whether the specified Point is inside this\n Polygon."
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: Point2D
-                full: java.awt.geom.Point2D
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Point2D
-                full: java.awt.geom.Point2D
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Rectangle2D
-                full: java.awt.geom.Rectangle2D
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Rectangle2D
-                full: java.awt.geom.Rectangle2D
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: contains
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified X coordinate to be tested
+            - name: y
               type:
                 basic: int
                 full: int
+              notes: the specified Y coordinate to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this Polygon contains\n         the specified coordinates\
+                \ (x,y);\n         false otherwise."
+            notes: "Determines whether the specified coordinates are inside this\n\
+              \ Polygon."
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the specified X coordinate to be tested
+            - name: y
               type:
                 basic: double
                 full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
-            - name: arg3
-              type:
-                basic: double
-                full: double
+              notes: the specified Y coordinate to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified coordinates are inside\n         the Shape\
+                \ boundary; false\n         otherwise."
+            notes: "Tests if the specified coordinates are inside the boundary of\
+              \ the\n Shape, as described by the\n \n definition of insideness."
           - name: contains
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: p
               type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: double
-                full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
-            - name: arg3
-              type:
-                basic: double
-                full: double
+                basic: Point2D
+                full: java.awt.geom.Point2D
+              notes: the specified Point2D to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified Point2D is\n          inside the boundary\
+                \ of the Shape;\n          false otherwise."
+            notes: "Tests if a specified Point2D is inside the boundary\n of the Shape,\
+              \ as described by the\n \n definition of insideness."
+          - name: contains
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: double
+                full: double
+              notes: "the X coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: y
+              type:
+                basic: double
+                full: double
+              notes: "the Y coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: w
+              type:
+                basic: double
+                full: double
+              notes: the width of the specified rectangular area
+            - name: h
+              type:
+                basic: double
+                full: double
+              notes: the height of the specified rectangular area
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the interior of the Shape\n          entirely contains\
+                \ the specified rectangular area;\n          false otherwise or, if\
+                \ the Shape\n          contains the rectangular area and the\n   \
+                \       intersects method returns true\n          and the containment\
+                \ calculations would be too expensive to\n          perform."
+            notes: "Tests if the interior of the Shape entirely contains\n the specified\
+              \ rectangular area.  All coordinates that lie inside\n the rectangular\
+              \ area must lie within the Shape for the\n entire rectangular area to\
+              \ be considered contained within the\n Shape.\n \n The Shape.contains()\
+              \ method allows a Shape\n implementation to conservatively return false\
+              \ when:\n \n \n the intersect method returns true and\n \n the calculations\
+              \ to determine whether or not the\n Shape entirely contains the rectangular\
+              \ area are\n prohibitively expensive.\n \n This means that for some\
+              \ Shapes this method might\n return false even though the Shape contains\n\
+              \ the rectangular area.\n The Area class performs\n more accurate geometric\
+              \ computations than most\n Shape objects and therefore can be used if\
+              \ a more precise\n answer is required."
+          - name: contains
+            modifiers:
+            - public
+            parameters:
+            - name: r
+              type:
+                basic: Rectangle2D
+                full: java.awt.geom.Rectangle2D
+              notes: The specified Rectangle2D
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the interior of the Shape\n          entirely contains\
+                \ the Rectangle2D;\n          false otherwise or, if the Shape\n \
+                \         contains the Rectangle2D and the\n          intersects method\
+                \ returns true\n          and the containment calculations would be\
+                \ too expensive to\n          perform."
+            notes: "Tests if the interior of the Shape entirely contains the\n specified\
+              \ Rectangle2D.\n The Shape.contains() method allows a Shape\n implementation\
+              \ to conservatively return false when:\n \n \n the intersect method\
+              \ returns true and\n \n the calculations to determine whether or not\
+              \ the\n Shape entirely contains the Rectangle2D\n are prohibitively\
+              \ expensive.\n \n This means that for some Shapes this method might\n\
+              \ return false even though the Shape contains\n the Rectangle2D.\n The\
+              \ Area class performs\n more accurate geometric computations than most\n\
+              \ Shape objects and therefore can be used if a more precise\n answer\
+              \ is required."
           - name: getBoundingBox
             modifiers:
             - public
@@ -227,7 +306,8 @@ languages:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
-            deprecated: true
+              notes: the bounds of this Polygon.
+            notes: Returns the bounds of this Polygon.
           - name: getBounds
             modifiers:
             - public
@@ -235,13 +315,10 @@ languages:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
-          - name: getBounds
-            modifiers:
-            - public
-            return:
-              type:
-                basic: Rectangle
-                full: java.awt.Rectangle
+              notes: "a Rectangle that defines the bounds of this\n Polygon."
+            notes: "Gets the bounding box of this Polygon.\n The bounding box is the\
+              \ smallest Rectangle whose\n sides are parallel to the x and y axes\
+              \ of the\n coordinate space, and can completely contain the Polygon."
           - name: getBounds2D
             modifiers:
             - public
@@ -249,158 +326,201 @@ languages:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
-          - name: getBounds2D
+              notes: "an instance of Rectangle2D that is a\n                 high-precision\
+                \ bounding box of the Shape."
+            notes: "Returns a high precision and more accurate bounding box of\n the\
+              \ Shape than the getBounds method.\n Note that there is no guarantee\
+              \ that the returned\n Rectangle2D is the smallest bounding box that\
+              \ encloses\n the Shape, only that the Shape lies\n entirely within the\
+              \ indicated Rectangle2D.  The\n bounding box returned by this method\
+              \ is usually tighter than that\n returned by the getBounds method and\
+              \ never fails due\n to overflow problems since the return value can\
+              \ be an instance of\n the Rectangle2D that uses double precision values\
+              \ to\n store the dimensions.\n\n \n Note that the\n \n definition of\
+              \ insideness can lead to situations where points\n on the defining outline\
+              \ of the shape may not be considered\n contained in the returned bounds\
+              \ object, but only in cases\n where those points are also not considered\
+              \ contained in the original\n shape.\n \n \n If a point is inside the\
+              \ shape according to the\n contains(point) method, then it must\n be\
+              \ inside the returned Rectangle2D bounds object according\n to the contains(point)\
+              \ method of the\n bounds. Specifically:\n \n \n  shape.contains(p) requires\
+              \ bounds.contains(p)\n \n \n If a point is not inside the shape, then\
+              \ it might\n still be contained in the bounds object:\n \n \n  bounds.contains(p)\
+              \ does not imply shape.contains(p)"
+          - name: getCrossings
             modifiers:
-            - public
-            return:
-              type:
-                basic: Rectangle2D
-                full: java.awt.geom.Rectangle2D
-          - name: getPathIterator
-            modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
-            return:
-              type:
-                basic: PathIterator
-                full: java.awt.geom.PathIterator
-          - name: getPathIterator
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
-            return:
-              type:
-                basic: PathIterator
-                full: java.awt.geom.PathIterator
-          - name: getPathIterator
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: AffineTransform
-                full: java.awt.geom.AffineTransform
+                basic: double
+                full: double
             - name: arg1
+              type:
+                basic: double
+                full: double
+            - name: arg2
+              type:
+                basic: double
+                full: double
+            - name: arg3
               type:
                 basic: double
                 full: double
             return:
               type:
-                basic: PathIterator
-                full: java.awt.geom.PathIterator
+                basic: Crossings
+                full: sun.awt.geom.Crossings
           - name: getPathIterator
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: at
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
-            - name: arg1
-              type:
-                basic: double
-                full: double
+              notes: "an optional AffineTransform to be applied to the\n         \
+                \ coordinates as they are returned in the iteration, or\n        \
+                \  null if untransformed coordinates are desired"
             return:
               type:
                 basic: PathIterator
                 full: java.awt.geom.PathIterator
+              notes: "a PathIterator object that provides access to the\n        \
+                \  geometry of this Polygon."
+            notes: "Returns an iterator object that iterates along the boundary of\
+              \ this\n Polygon and provides access to the geometry\n of the outline\
+              \ of this Polygon.  An optional\n AffineTransform can be specified so\
+              \ that the coordinates\n returned in the iteration are transformed accordingly."
+          - name: getPathIterator
+            modifiers:
+            - public
+            parameters:
+            - name: at
+              type:
+                basic: AffineTransform
+                full: java.awt.geom.AffineTransform
+              notes: "an optional AffineTransform to be applied to the\n         \
+                \ coordinates as they are returned in the iteration, or\n        \
+                \  null if untransformed coordinates are desired"
+            - name: flatness
+              type:
+                basic: double
+                full: double
+              notes: "the maximum amount that the control points\n          for a\
+                \ given curve can vary from collinear before a subdivided\n      \
+                \    curve is replaced by a straight line connecting the\n       \
+                \   endpoints.  Since polygons are already flat the\n          flatness\
+                \ parameter is ignored."
+            return:
+              type:
+                basic: PathIterator
+                full: java.awt.geom.PathIterator
+              notes: "a PathIterator object that provides access to the\n        \
+                \  Shape object's geometry."
+            notes: "Returns an iterator object that iterates along the boundary of\n\
+              \ the Shape and provides access to the geometry of the\n outline of\
+              \ the Shape.  Only SEG_MOVETO, SEG_LINETO, and\n SEG_CLOSE point types\
+              \ are returned by the iterator.\n Since polygons are already flat, the\
+              \ flatness parameter\n is ignored.  An optional AffineTransform can\
+              \ be specified\n in which case the coordinates returned in the iteration\
+              \ are transformed\n accordingly."
           - name: inside
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the specified X coordinate to be tested
+            - name: y
               type:
                 basic: int
                 full: int
+              notes: the specified Y coordinate to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: "true if this Polygon contains\n         the specified coordinates\
+                \ (x,y);\n         false otherwise."
+            notes: "Determines whether the specified coordinates are contained in\
+              \ this\n Polygon."
           - name: intersects
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
+              type:
+                basic: double
+                full: double
+              notes: "the X coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: y
+              type:
+                basic: double
+                full: double
+              notes: "the Y coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: w
+              type:
+                basic: double
+                full: double
+              notes: the width of the specified rectangular area
+            - name: h
+              type:
+                basic: double
+                full: double
+              notes: the height of the specified rectangular area
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the interior of the Shape and\n          the interior\
+                \ of the rectangular area intersect, or are\n          both highly\
+                \ likely to intersect and intersection calculations\n          would\
+                \ be too expensive to perform; false otherwise."
+            notes: "Tests if the interior of the Shape intersects the\n interior of\
+              \ a specified rectangular area.\n The rectangular area is considered\
+              \ to intersect the Shape\n if any point is contained in both the interior\
+              \ of the\n Shape and the specified rectangular area.\n \n The Shape.intersects()\
+              \ method allows a Shape\n implementation to conservatively return true\
+              \ when:\n \n \n there is a high probability that the rectangular area\
+              \ and the\n Shape intersect, but\n \n the calculations to accurately\
+              \ determine this intersection\n are prohibitively expensive.\n \n This\
+              \ means that for some Shapes this method might\n return true even though\
+              \ the rectangular area does not\n intersect the Shape.\n The Area class\
+              \ performs\n more accurate computations of geometric intersection than\
+              \ most\n Shape objects and therefore can be used if a more precise\n\
+              \ answer is required."
+          - name: intersects
+            modifiers:
+            - public
+            parameters:
+            - name: r
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: the specified Rectangle2D
             return:
               type:
                 basic: boolean
                 full: boolean
-          - name: intersects
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Rectangle2D
-                full: java.awt.geom.Rectangle2D
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: intersects
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: double
-                full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
-            - name: arg3
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: intersects
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            - name: arg1
-              type:
-                basic: double
-                full: double
-            - name: arg2
-              type:
-                basic: double
-                full: double
-            - name: arg3
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: boolean
-                full: boolean
+              notes: "true if the interior of the Shape and\n          the interior\
+                \ of the specified Rectangle2D\n          intersect, or are both highly\
+                \ likely to intersect and intersection\n          calculations would\
+                \ be too expensive to perform; false\n          otherwise."
+            notes: "Tests if the interior of the Shape intersects the\n interior of\
+              \ a specified Rectangle2D.\n The Shape.intersects() method allows a\
+              \ Shape\n implementation to conservatively return true when:\n \n \n\
+              \ there is a high probability that the Rectangle2D and the\n Shape intersect,\
+              \ but\n \n the calculations to accurately determine this intersection\n\
+              \ are prohibitively expensive.\n \n This means that for some Shapes\
+              \ this method might\n return true even though the Rectangle2D does not\n\
+              \ intersect the Shape.\n The Area class performs\n more accurate computations\
+              \ of geometric intersection than most\n Shape objects and therefore\
+              \ can be used if a more precise\n answer is required."
           - name: invalidate
             modifiers:
             - public
@@ -408,6 +528,12 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Invalidates or flushes any internally-cached data that depends\n\
+              \ on the vertex coordinates of this Polygon.\n This method should be\
+              \ called after any direct manipulation\n of the coordinates in the xpoints\
+              \ or\n ypoints arrays to avoid inconsistent results\n from methods such\
+              \ as getBounds or contains\n that might cache data from earlier computations\
+              \ relating to\n the vertex coordinates."
           - name: reset
             modifiers:
             - public
@@ -415,9 +541,39 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Resets this Polygon object to an empty polygon.\n The coordinate\
+              \ arrays and the data in them are left untouched\n but the number of\
+              \ points is reset to zero to mark the old\n vertex data as invalid and\
+              \ to start accumulating new vertex\n data at the beginning.\n All internally-cached\
+              \ data relating to the old vertices\n are discarded.\n Note that since\
+              \ the coordinate arrays from before the reset\n are reused, creating\
+              \ a new empty Polygon might\n be more memory efficient than resetting\
+              \ the current one if\n the number of vertices in the new polygon data\
+              \ is significantly\n smaller than the number of vertices in the data\
+              \ from before the\n reset."
           - name: translate
             modifiers:
             - public
+            parameters:
+            - name: deltaX
+              type:
+                basic: int
+                full: int
+              notes: the amount to translate along the X axis
+            - name: deltaY
+              type:
+                basic: int
+                full: int
+              notes: the amount to translate along the Y axis
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Translates the vertices of the Polygon by\n deltaX along the x\
+              \ axis and by\n deltaY along the y axis."
+          - name: updateBounds
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -431,5 +587,3 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object

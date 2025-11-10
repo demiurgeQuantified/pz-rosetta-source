@@ -1,0 +1,439 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.text:
+        Collator:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "The Collator class performs locale-sensitive\n String comparison.\
+            \ You use this class to build\n searching and sorting routines for natural\
+            \ language text.\n\n \n Collator is an abstract base class. Subclasses\n\
+            \ implement specific collation strategies. One subclass,\n RuleBasedCollator,\
+            \ is currently provided with\n the Java Platform and is applicable to\
+            \ a wide set of languages. Other\n subclasses may be created to handle\
+            \ more specialized needs.\n\n \n Like other locale-sensitive classes,\
+            \ you can use the static\n factory method, getInstance, to obtain the\
+            \ appropriate\n Collator object for a given locale. You will only need\n\
+            \ to look at the subclasses of Collator if you need\n to understand the\
+            \ details of a particular collation strategy or\n if you need to modify\
+            \ that strategy.\n\n \n The following example shows how to compare two\
+            \ strings using\n the Collator for the default locale.\n \n <code>\n //\
+            \ Compare two strings in the default locale\n Collator myCollator = Collator.getInstance();\n\
+            \ if( myCollator.compare(\"abc\", \"ABC\") < 0 )\n     System.out.println(\"\
+            abc is less than ABC\");\n else\n     System.out.println(\"abc is greater\
+            \ than or equal to ABC\");\n </code>\n \n\n \n You can set a Collator's\
+            \ strength property\n to determine the level of difference considered\
+            \ significant in\n comparisons. Four strengths are provided: PRIMARY,\n\
+            \ SECONDARY, TERTIARY, and IDENTICAL.\n The exact assignment of strengths\
+            \ to language features is\n locale dependent.  For example, in Czech,\
+            \ \"e\" and \"f\" are considered\n primary differences, while \"e\" and\
+            \ \"&#283;\" are secondary differences,\n \"e\" and \"E\" are tertiary\
+            \ differences and \"e\" and \"e\" are identical.\n The following shows\
+            \ how both case and accents could be ignored for\n US English.\n \n \n\
+            \ //Get the Collator for US English and set its strength to PRIMARY\n\
+            \ Collator usCollator = Collator.getInstance(Locale.US);\n usCollator.setStrength(Collator.PRIMARY);\n\
+            \ if( usCollator.compare(\"abc\", \"ABC\") == 0 ) {\n     System.out.println(\"\
+            Strings are equivalent\");\n }\n \n \n \n For comparing Strings exactly\
+            \ once, the compare\n method provides the best performance. When sorting\
+            \ a list of\n Strings however, it is generally necessary to compare each\n\
+            \ String multiple times. In this case, CollationKeys\n provide better\
+            \ performance. The CollationKey class converts\n a String to a series\
+            \ of bits that can be compared bitwise\n against other CollationKeys.\
+            \ A CollationKey is\n created by a Collator object for a given String.\n\
+            \ \n Note: CollationKeys from different\n Collators can not be compared.\
+            \ See the class description\n for CollationKey\n for an example using\
+            \ CollationKeys."
+          fields:
+            decmp:
+              name: decmp
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            strength:
+              name: strength
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            CANONICAL_DECOMPOSITION:
+              name: CANONICAL_DECOMPOSITION
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Decomposition mode value. With CANONICAL_DECOMPOSITION\n set,\
+                \ characters that are canonical variants according to Unicode\n standard\
+                \ will be decomposed for collation. This should be used to get\n correct\
+                \ collation of accented characters.\n \n CANONICAL_DECOMPOSITION corresponds\
+                \ to Normalization Form D as\n described in\n Unicode\n Standard Annex\
+                \ #15: Unicode Normalization Forms."
+            EQUAL:
+              name: EQUAL
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            FULL_DECOMPOSITION:
+              name: FULL_DECOMPOSITION
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Decomposition mode value. With FULL_DECOMPOSITION\n set, both\
+                \ Unicode canonical variants and Unicode compatibility variants\n\
+                \ will be decomposed for collation.  This causes not only accented\n\
+                \ characters to be collated, but also characters that have special\
+                \ formats\n to be collated with their norminal form. For example,\
+                \ the half-width and\n full-width ASCII and Katakana characters are\
+                \ then collated together.\n FULL_DECOMPOSITION is the most complete\
+                \ and therefore the slowest\n decomposition mode.\n \n FULL_DECOMPOSITION\
+                \ corresponds to Normalization Form KD as\n described in\n Unicode\n\
+                \ Standard Annex #15: Unicode Normalization Forms."
+            GREATER:
+              name: GREATER
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            IDENTICAL:
+              name: IDENTICAL
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Collator strength value.  When set, all differences are\n considered\
+                \ significant during comparison. The assignment of strengths\n to\
+                \ language features is locale dependent. A common example is for control\n\
+                \ characters (\"\\u0001\" vs \"\\u0002\") to be considered equal at\
+                \ the\n PRIMARY, SECONDARY, and TERTIARY levels but different at the\
+                \ IDENTICAL\n level.  Additionally, differences between pre-composed\
+                \ accents such as\n \"\\u00C0\" (A-grave) and combining accents such\
+                \ as \"A\\u0300\"\n (A, combining-grave) will be considered significant\
+                \ at the IDENTICAL\n level if decomposition is set to NO_DECOMPOSITION."
+            LESS:
+              name: LESS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: int
+                full: int
+            NO_DECOMPOSITION:
+              name: NO_DECOMPOSITION
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Decomposition mode value. With NO_DECOMPOSITION\n set, accented\
+                \ characters will not be decomposed for collation. This\n is the default\
+                \ setting and provides the fastest collation but\n will only produce\
+                \ correct results for languages that do not use accents."
+            PRIMARY:
+              name: PRIMARY
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Collator strength value.  When set, only PRIMARY differences\
+                \ are\n considered significant during comparison. The assignment of\
+                \ strengths\n to language features is locale dependent. A common example\
+                \ is for\n different base letters (\"a\" vs \"b\") to be considered\
+                \ a PRIMARY difference."
+            SECONDARY:
+              name: SECONDARY
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Collator strength value.  When set, only SECONDARY and above\
+                \ differences are\n considered significant during comparison. The\
+                \ assignment of strengths\n to language features is locale dependent.\
+                \ A common example is for\n different accented forms of the same base\
+                \ letter (\"a\" vs \"\xE4\") to be\n considered a SECONDARY difference."
+            TERTIARY:
+              name: TERTIARY
+              modifiers:
+              - public
+              - static
+              type:
+                basic: int
+                full: int
+              notes: "Collator strength value.  When set, only TERTIARY and above\
+                \ differences are\n considered significant during comparison. The\
+                \ assignment of strengths\n to language features is locale dependent.\
+                \ A common example is for\n case differences (\"a\" vs \"A\") to be\
+                \ considered a TERTIARY difference."
+            cache:
+              name: cache
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentMap
+                full: java.util.concurrent.ConcurrentMap<java.util.Locale, java.lang.ref.SoftReference<java.text.Collator>>
+          constructors:
+          - modifiers:
+            - protected
+            notes: "Default constructor.  This constructor is\n protected so subclasses\
+              \ can get access to it. Users typically create\n a Collator sub-class\
+              \ by calling the factory method getInstance."
+          methods:
+          - name: clone
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: a clone of this instance.
+            notes: Overrides Cloneable
+          - name: compare
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the source string.
+            - name: target
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the target string.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "Returns an integer value. Value is less than zero if source\
+                \ is less than\n target, value is zero if source and target are equal,\
+                \ value is greater than zero\n if source is greater than target."
+            notes: "Compares the source string to the target string according to the\n\
+              \ collation rules for this Collator.  Returns an integer less than,\n\
+              \ equal to or greater than zero depending on whether the source String\
+              \ is\n less than, equal to or greater than the target string.  See the\
+              \ Collator\n class description for an example of use.\n \n For a one\
+              \ time comparison, this method has the best performance. If a\n given\
+              \ String will be involved in multiple comparisons, CollationKey.compareTo\n\
+              \ has the best performance. See the Collator class description for an\
+              \ example\n using CollationKeys."
+          - name: compare
+            modifiers:
+            - public
+            parameters:
+            - name: o1
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the first object to be compared.
+            - name: o2
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the second object to be compared.
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "a negative integer, zero, or a positive integer as the\n   \
+                \      first argument is less than, equal to, or greater than the\n\
+                \         second."
+            notes: "Compares its two arguments for order.  Returns a negative integer,\n\
+              \ zero, or a positive integer as the first argument is less than, equal\n\
+              \ to, or greater than the second.\n \n This implementation merely returns\n\
+              \   compare((String)o1, (String)o2) ."
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the source string to be compared with.
+            - name: target
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the target string to be compared with.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the strings are equal according to the collation\n rules.\
+                \  false, otherwise."
+            notes: "Convenience method for comparing the equality of two strings based\
+              \ on\n this Collator's collation rules."
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: that
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the Collator to be compared with this.
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this Collator is the same as that Collator;\n false\
+                \ otherwise."
+            notes: Compares the equality of two Collators.
+          - name: getCollationKey
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: source
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the string to be transformed into a collation key.
+            return:
+              type:
+                basic: CollationKey
+                full: java.text.CollationKey
+              notes: "the CollationKey for the given String based on this Collator's\
+                \ collation\n rules. If the source String is null, a null CollationKey\
+                \ is returned."
+            notes: "Transforms the String into a series of bits that can be compared\
+              \ bitwise\n to other CollationKeys. CollationKeys provide better performance\
+              \ than\n Collator.compare when Strings are involved in multiple comparisons.\n\
+              \ See the Collator class description for an example using CollationKeys."
+          - name: getDecomposition
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the decomposition mode
+            notes: "Get the decomposition mode of this Collator. Decomposition mode\n\
+              \ determines how Unicode composed characters are handled. Adjusting\n\
+              \ decomposition mode allows the user to select between faster and more\n\
+              \ complete collation behavior.\n The three values for decomposition\
+              \ mode are:\n \n NO_DECOMPOSITION,\n CANONICAL_DECOMPOSITION\n FULL_DECOMPOSITION.\n\
+              \ \n See the documentation for these three constants for a description\n\
+              \ of their meaning."
+          - name: getStrength
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: this Collator's current strength property.
+            notes: "Returns this Collator's strength property.  The strength property\
+              \ determines\n the minimum level of difference considered significant\
+              \ during comparison.\n See the Collator class description for an example\
+              \ of use."
+          - name: hashCode
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: int
+                full: int
+              notes: a hash code value for this object.
+            notes: Generates the hash code for this Collator.
+          - name: setDecomposition
+            modifiers:
+            - public
+            parameters:
+            - name: decompositionMode
+              type:
+                basic: int
+                full: int
+              notes: the new decomposition mode.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Set the decomposition mode of this Collator. See getDecomposition\n\
+              \ for a description of decomposition mode."
+          - name: setStrength
+            modifiers:
+            - public
+            parameters:
+            - name: newStrength
+              type:
+                basic: int
+                full: int
+              notes: the new strength value.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets this Collator's strength property.  The strength property\
+              \ determines\n the minimum level of difference considered significant\
+              \ during comparison.\n See the Collator class description for an example\
+              \ of use."
+          staticMethods:
+          - name: getAvailableLocales
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Locale
+                full: java.util.Locale[]
+              notes: "An array of locales for which localized\n         Collator instances\
+                \ are available."
+            notes: "Returns an array of all locales for which the\n getInstance methods\
+              \ of this class can return\n localized instances.\n The returned array\
+              \ represents the union of locales supported\n by the Java runtime and\
+              \ by installed\n CollatorProvider implementations.\n It must contain\
+              \ at least a Locale instance equal to\n Locale.US."
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: Collator
+                full: java.text.Collator
+              notes: the Collator for the default locale.(for example, en_US)
+            notes: "Gets the Collator for the current default locale.\n The default\
+              \ locale is determined by java.util.Locale.getDefault."
+          - name: getInstance
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: desiredLocale
+              type:
+                basic: Locale
+                full: java.util.Locale
+              notes: the desired locale.
+            return:
+              type:
+                basic: Collator
+                full: java.text.Collator
+              notes: the Collator for the desired locale.
+            notes: Gets the Collator for the desired locale.

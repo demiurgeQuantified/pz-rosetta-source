@@ -4,122 +4,209 @@ languages:
     packages:
       java.util.concurrent.atomic:
         AtomicLong:
-          constructors:
-          - modifiers:
-            - public
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+          extends: java.lang.Number
+          modifiers:
+          - public
+          notes: "A long value that may be updated atomically.  See the\n VarHandle\
+            \ specification for descriptions of the properties\n of atomic accesses.\
+            \ An AtomicLong is used in applications\n such as atomically incremented\
+            \ sequence numbers, and cannot be used\n as a replacement for a Long.\
+            \ However, this class\n does extend Number to allow uniform access by\
+            \ tools and\n utilities that deal with numerically-based classes."
+          fields:
+            value:
+              name: value
+              modifiers:
+              - private
               type:
                 basic: long
                 full: long
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          staticFields:
+            U:
+              name: U
+              modifiers:
+              - private
+              - static
               type:
-                basic: String
-                full: java.lang.String
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            VALUE:
+              name: VALUE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            VM_SUPPORTS_LONG_CAS:
+              name: VM_SUPPORTS_LONG_CAS
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: initialValue
+              type:
+                basic: long
+                full: long
+              notes: the initial value
+            notes: Creates a new AtomicLong with the given initial value.
+          - modifiers:
+            - public
+            notes: Creates a new AtomicLong with initial value 0.
+          methods:
           - name: accumulateAndGet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the update value
+            - name: accumulatorFunction
               type:
                 basic: LongBinaryOperator
                 full: java.util.function.LongBinaryOperator
+              notes: a side-effect-free function of two arguments
             return:
               type:
                 basic: long
                 full: long
+              notes: the updated value
+            notes: "Atomically updates (with memory effects as specified by VarHandle.compareAndSet(java.lang.Object...))\
+              \ the current value with the results of\n applying the given function\
+              \ to the current and given values,\n returning the updated value. The\
+              \ function should be\n side-effect-free, since it may be re-applied\
+              \ when attempted\n updates fail due to contention among threads.  The\
+              \ function is\n applied with the current value as its first argument,\
+              \ and the\n given update as the second argument."
           - name: addAndGet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: delta
               type:
                 basic: long
                 full: long
+              notes: the value to add
             return:
               type:
                 basic: long
                 full: long
+              notes: the updated value
+            notes: "Atomically adds the given value to the current value,\n with memory\
+              \ effects as specified by VarHandle.getAndAdd(java.lang.Object...)."
           - name: compareAndExchange
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: long
                 full: long
+              notes: "the witness value, which will be the same as the\n expected\
+                \ value if successful"
+            notes: "Atomically sets the value to newValue if the current value,\n\
+              \ referred to as the witness value, == expectedValue,\n with memory\
+              \ effects as specified by\n VarHandle.compareAndExchange(java.lang.Object...)."
           - name: compareAndExchangeAcquire
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: long
                 full: long
+              notes: "the witness value, which will be the same as the\n expected\
+                \ value if successful"
+            notes: "Atomically sets the value to newValue if the current value,\n\
+              \ referred to as the witness value, == expectedValue,\n with memory\
+              \ effects as specified by\n VarHandle.compareAndExchangeAcquire(java.lang.Object...)."
           - name: compareAndExchangeRelease
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: long
                 full: long
+              notes: "the witness value, which will be the same as the\n expected\
+                \ value if successful"
+            notes: "Atomically sets the value to newValue if the current value,\n\
+              \ referred to as the witness value, == expectedValue,\n with memory\
+              \ effects as specified by\n VarHandle.compareAndExchangeRelease(java.lang.Object...)."
           - name: compareAndSet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if successful. False return indicates that\n the actual\
+                \ value was not equal to the expected value."
+            notes: "Atomically sets the value to newValue\n if the current value ==\
+              \ expectedValue,\n with memory effects as specified by VarHandle.compareAndSet(java.lang.Object...)."
           - name: decrementAndGet
             modifiers:
             - public
@@ -128,6 +215,10 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the updated value
+            notes: "Atomically decrements the current value,\n with memory effects\
+              \ as specified by VarHandle.getAndAdd(java.lang.Object...).\n\n Equivalent\
+              \ to addAndGet(-1)."
           - name: doubleValue
             modifiers:
             - public
@@ -135,6 +226,11 @@ languages:
               type:
                 basic: double
                 full: double
+              notes: "the numeric value represented by this object after conversion\n\
+                \          to type double."
+            notes: "Returns the current value of this AtomicLong as a double\n after\
+              \ a widening primitive conversion,\n with memory effects as specified\
+              \ by VarHandle.getVolatile(java.lang.Object...)."
           - name: floatValue
             modifiers:
             - public
@@ -142,6 +238,11 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: "the numeric value represented by this object after conversion\n\
+                \          to type float."
+            notes: "Returns the current value of this AtomicLong as a float\n after\
+              \ a widening primitive conversion,\n with memory effects as specified\
+              \ by VarHandle.getVolatile(java.lang.Object...)."
           - name: get
             modifiers:
             - public
@@ -150,6 +251,9 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the current value
+            notes: "Returns the current value,\n with memory effects as specified\
+              \ by VarHandle.getVolatile(java.lang.Object...)."
           - name: getAcquire
             modifiers:
             - public
@@ -158,36 +262,53 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the value
+            notes: "Returns the current value,\n with memory effects as specified\
+              \ by VarHandle.getAcquire(java.lang.Object...)."
           - name: getAndAccumulate
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the update value
+            - name: accumulatorFunction
               type:
                 basic: LongBinaryOperator
                 full: java.util.function.LongBinaryOperator
+              notes: a side-effect-free function of two arguments
             return:
               type:
                 basic: long
                 full: long
+              notes: the previous value
+            notes: "Atomically updates (with memory effects as specified by VarHandle.compareAndSet(java.lang.Object...))\
+              \ the current value with the results of\n applying the given function\
+              \ to the current and given values,\n returning the previous value. The\
+              \ function should be\n side-effect-free, since it may be re-applied\
+              \ when attempted\n updates fail due to contention among threads.  The\
+              \ function is\n applied with the current value as its first argument,\
+              \ and the\n given update as the second argument."
           - name: getAndAdd
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: delta
               type:
                 basic: long
                 full: long
+              notes: the value to add
             return:
               type:
                 basic: long
                 full: long
+              notes: the previous value
+            notes: "Atomically adds the given value to the current value,\n with memory\
+              \ effects as specified by VarHandle.getAndAdd(java.lang.Object...)."
           - name: getAndDecrement
             modifiers:
             - public
@@ -196,6 +317,10 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the previous value
+            notes: "Atomically decrements the current value,\n with memory effects\
+              \ as specified by VarHandle.getAndAdd(java.lang.Object...).\n\n Equivalent\
+              \ to getAndAdd(-1)."
           - name: getAndIncrement
             modifiers:
             - public
@@ -204,32 +329,47 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the previous value
+            notes: "Atomically increments the current value,\n with memory effects\
+              \ as specified by VarHandle.getAndAdd(java.lang.Object...).\n\n Equivalent\
+              \ to getAndAdd(1)."
           - name: getAndSet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: long
                 full: long
+              notes: the previous value
+            notes: "Atomically sets the value to newValue and returns the old value,\n\
+              \ with memory effects as specified by VarHandle.getAndSet(java.lang.Object...)."
           - name: getAndUpdate
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: updateFunction
               type:
                 basic: LongUnaryOperator
                 full: java.util.function.LongUnaryOperator
+              notes: a side-effect-free function
             return:
               type:
                 basic: long
                 full: long
+              notes: the previous value
+            notes: "Atomically updates (with memory effects as specified by VarHandle.compareAndSet(java.lang.Object...))\
+              \ the current value with the results of\n applying the given function,\
+              \ returning the previous value. The\n function should be side-effect-free,\
+              \ since it may be re-applied\n when attempted updates fail due to contention\
+              \ among threads."
           - name: getOpaque
             modifiers:
             - public
@@ -238,6 +378,9 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the value
+            notes: "Returns the current value,\n with memory effects as specified\
+              \ by VarHandle.getOpaque(java.lang.Object...)."
           - name: getPlain
             modifiers:
             - public
@@ -246,6 +389,9 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the value
+            notes: "Returns the current value, with memory semantics of reading as\
+              \ if the\n variable was declared non-volatile."
           - name: incrementAndGet
             modifiers:
             - public
@@ -254,6 +400,10 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the updated value
+            notes: "Atomically increments the current value,\n with memory effects\
+              \ as specified by VarHandle.getAndAdd(java.lang.Object...).\n\n Equivalent\
+              \ to addAndGet(1)."
           - name: intValue
             modifiers:
             - public
@@ -261,19 +411,27 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the numeric value represented by this object after conversion\n\
+                \          to type int."
+            notes: "Returns the current value of this AtomicLong as an int\n after\
+              \ a narrowing primitive conversion,\n with memory effects as specified\
+              \ by VarHandle.getVolatile(java.lang.Object...)."
           - name: lazySet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setRelease(java.lang.Object...)."
           - name: longValue
             modifiers:
             - public
@@ -281,156 +439,218 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: "the numeric value represented by this object after conversion\n\
+                \          to type long."
+            notes: "Returns the current value of this AtomicLong as a long,\n with\
+              \ memory effects as specified by VarHandle.getVolatile(java.lang.Object...).\n\
+              \ Equivalent to get()."
           - name: set
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setVolatile(java.lang.Object...)."
           - name: setOpaque
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setOpaque(java.lang.Object...)."
           - name: setPlain
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue, with memory semantics\n of setting\
+              \ as if the variable was declared non-volatile\n and non-final."
           - name: setRelease
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the value to newValue,\n with memory effects as specified\
+              \ by VarHandle.setRelease(java.lang.Object...)."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: updateAndGet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: updateFunction
               type:
                 basic: LongUnaryOperator
                 full: java.util.function.LongUnaryOperator
+              notes: a side-effect-free function
             return:
               type:
                 basic: long
                 full: long
+              notes: the updated value
+            notes: "Atomically updates (with memory effects as specified by VarHandle.compareAndSet(java.lang.Object...))\
+              \ the current value with the results of\n applying the given function,\
+              \ returning the updated value. The\n function should be side-effect-free,\
+              \ since it may be re-applied\n when attempted updates fail due to contention\
+              \ among threads."
           - name: weakCompareAndSet
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
-            deprecated: true
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by VarHandle.weakCompareAndSetPlain(java.lang.Object...)."
           - name: weakCompareAndSetAcquire
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by\n VarHandle.weakCompareAndSetAcquire(java.lang.Object...)."
           - name: weakCompareAndSetPlain
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by VarHandle.weakCompareAndSetPlain(java.lang.Object...)."
           - name: weakCompareAndSetRelease
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by\n VarHandle.weakCompareAndSetRelease(java.lang.Object...)."
           - name: weakCompareAndSetVolatile
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: expectedValue
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the expected value
+            - name: newValue
               type:
                 basic: long
                 full: long
+              notes: the new value
             return:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: Number
+              notes: true if successful
+            notes: "Possibly atomically sets the value to newValue\n if the current\
+              \ value == expectedValue,\n with memory effects as specified by\n VarHandle.weakCompareAndSet(java.lang.Object...)."
+          staticMethods:
+          - name: VMSupportsCS8
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean

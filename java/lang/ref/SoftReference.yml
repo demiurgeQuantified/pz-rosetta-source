@@ -4,25 +4,78 @@ languages:
     packages:
       java.lang.ref:
         SoftReference:
+          extends: java.lang.ref.Reference<T>
+          modifiers:
+          - public
+          notes: "Soft reference objects, which are cleared at the discretion of the\
+            \ garbage\n collector in response to memory demand.  Soft references are\
+            \ most often used\n to implement memory-sensitive caches.\n\n  Suppose\
+            \ that the garbage collector determines at a certain point in time\n that\
+            \ an object is softly\n reachable.  At that time it may choose to clear\
+            \ atomically all soft\n references to that object and all soft references\
+            \ to any other\n softly-reachable objects from which that object is reachable\
+            \ through a chain\n of strong references.  At the same time or at some\
+            \ later time it will\n enqueue those newly-cleared soft references that\
+            \ are registered with\n reference queues.\n\n  All soft references to\
+            \ softly-reachable objects are guaranteed to have\n been cleared before\
+            \ the virtual machine throws an\n OutOfMemoryError.  Otherwise no constraints\
+            \ are placed upon the\n time at which a soft reference will be cleared\
+            \ or the order in which a set\n of such references to different objects\
+            \ will be cleared.  Virtual machine\n implementations are, however, encouraged\
+            \ to bias against clearing\n recently-created or recently-used soft references.\n\
+            \n  Direct instances of this class may be used to implement simple caches;\n\
+            \ this class or derived subclasses may also be used in larger data structures\n\
+            \ to implement more sophisticated caches.  As long as the referent of\
+            \ a soft\n reference is strongly reachable, that is, is actually in use,\
+            \ the soft\n reference will not be cleared.  Thus a sophisticated cache\
+            \ can, for example,\n prevent its most recently used entries from being\
+            \ discarded by keeping\n strong referents to those entries, leaving the\
+            \ remaining entries to be\n discarded at the discretion of the garbage\
+            \ collector."
+          fields:
+            timestamp:
+              name: timestamp
+              modifiers:
+              - private
+              type:
+                basic: long
+                full: long
+          staticFields:
+            clock:
+              name: clock
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: referent
               type:
                 basic: T
                 full: T
+              notes: object the new soft reference will refer to
+            notes: "Creates a new soft reference that refers to the given object.\
+              \  The new\n reference is not registered with any queue."
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: referent
               type:
                 basic: T
                 full: T
-            - name: arg1
+              notes: object the new soft reference will refer to
+            - name: q
               type:
-                basic: ReferenceQueue<? super T>
+                basic: ReferenceQueue
                 full: java.lang.ref.ReferenceQueue<? super T>
+              notes: "the queue with which the reference is to be registered,\n  \
+                \        or null if registration is not required"
+            notes: "Creates a new soft reference that refers to the given object and\
+              \ is\n registered with the given queue."
           methods:
           - name: get
             modifiers:
@@ -31,5 +84,8 @@ languages:
               type:
                 basic: T
                 full: T
-          javaType: class
-          extends: Reference<T>
+              notes: "The object to which this reference refers, or\n           null\
+                \ if this reference object has been cleared"
+            notes: "Returns this reference object's referent.  If this reference object\
+              \ has\n been cleared, either by the program or by the garbage collector,\
+              \ then\n this method returns null."

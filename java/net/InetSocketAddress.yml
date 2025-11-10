@@ -4,57 +4,144 @@ languages:
     packages:
       java.net:
         InetSocketAddress:
+          extends: java.net.SocketAddress
+          modifiers:
+          - public
+          notes: "This class implements an IP Socket Address (IP address + port number)\n\
+            \ It can also be a pair (hostname + port number), in which case an attempt\n\
+            \ will be made to resolve the hostname. If resolution fails then the address\n\
+            \ is said to be unresolved but can still be used on some circumstances\n\
+            \ like connecting through a proxy.\n \n It provides an immutable object\
+            \ used by sockets for binding, connecting, or\n as returned values.\n\
+            \ \n The wildcard is a special local IP address. It usually means \"any\"\
+            \n and can only be used for bind operations."
+          fields:
+            holder:
+              name: holder
+              modifiers:
+              - private
+              type:
+                basic: InetSocketAddress.InetSocketAddressHolder
+                full: java.net.InetSocketAddress$InetSocketAddressHolder
+          staticFields:
+            FIELDS_OFFSET:
+              name: FIELDS_OFFSET
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+            UNSAFE:
+              name: UNSAFE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Unsafe
+                full: jdk.internal.misc.Unsafe
+            serialPersistentFields:
+              name: serialPersistentFields
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectStreamField
+                full: java.io.ObjectStreamField[]
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: port
               type:
                 basic: int
                 full: int
+              notes: The port number
+            notes: "Creates a socket address where the IP address is the wildcard\
+              \ address\n and the port number a specified value.\n \n A valid port\
+              \ value is between 0 and 65535.\n A port number of zero will let the\
+              \ system pick up an\n ephemeral port in a bind operation."
           - modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
-          - modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: addr
               type:
                 basic: InetAddress
                 full: java.net.InetAddress
-            - name: arg1
+              notes: The IP address
+            - name: port
               type:
                 basic: int
                 full: int
-          methods:
-          - name: __toString__
-            modifiers:
+              notes: The port number
+            notes: "Creates a socket address from an IP address and a port number.\n\
+              \ \n A valid port value is between 0 and 65535.\n A port number of zero\
+              \ will let the system pick up an\n ephemeral port in a bind operation.\n\
+              \ \n A null address will assign the wildcard address."
+          - modifiers:
             - public
-            return:
+            parameters:
+            - name: hostname
               type:
                 basic: String
                 full: java.lang.String
+              notes: the Host name
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: The port number
+            notes: "Creates a socket address from a hostname and a port number.\n\
+              \ \n An attempt will be made to resolve the hostname into an InetAddress.\n\
+              \ If that attempt fails, the address will be flagged as unresolved.\n\
+              \ \n If there is a security manager, its checkConnect method\n is called\
+              \ with the host name as its argument to check the permission\n to resolve\
+              \ it. This could result in a SecurityException.\n \n A valid port value\
+              \ is between 0 and 65535.\n A port number of zero will let the system\
+              \ pick up an\n ephemeral port in a bind operation."
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+          methods:
           - name: equals
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to compare against.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the objects are the same;\n          false otherwise."
+            notes: "Compares this object against the specified object.\n The result\
+              \ is true if and only if the argument is\n not null and it represents\
+              \ the same address as\n this object.\n \n Two instances of InetSocketAddress\
+              \ represent the same\n address if both the InetAddresses (or hostnames\
+              \ if it is unresolved) and port\n numbers are equal.\n If both addresses\
+              \ are unresolved, then the hostname and the port number\n are compared.\n\
+              \n Note: Hostnames are case insensitive. e.g. \"FooBar\" and \"foobar\"\
+              \ are\n considered equal."
           - name: getAddress
             modifiers:
             - public
@@ -63,6 +150,8 @@ languages:
               type:
                 basic: InetAddress
                 full: java.net.InetAddress
+              notes: the InetAddress or null if it is unresolved.
+            notes: Gets the InetAddress.
           - name: getHostName
             modifiers:
             - public
@@ -71,6 +160,9 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the hostname part of the address.
+            notes: "Gets the hostname.\n Note: This method may trigger a name service\
+              \ reverse lookup if the\n address was created with a literal IP address."
           - name: getHostString
             modifiers:
             - public
@@ -79,6 +171,10 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the hostname, or String representation of the address.
+            notes: "Returns the hostname, or the String form of the address if it\n\
+              \ doesn't have a hostname (it was created using a literal).\n This has\
+              \ the benefit of not attempting a reverse lookup."
           - name: getPort
             modifiers:
             - public
@@ -87,6 +183,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the port number.
+            notes: Gets the port number.
           - name: hashCode
             modifiers:
             - public
@@ -95,6 +193,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a hash code value for this socket address.
+            notes: Returns a hashcode for this socket address.
           - name: isUnresolved
             modifiers:
             - public
@@ -103,23 +203,97 @@ languages:
               type:
                 basic: boolean
                 full: boolean
-          staticMethods:
-          - name: createUnresolved
+              notes: "true if the hostname couldn't be resolved into\n          an\
+                \ InetAddress."
+            notes: Checks whether the address has been resolved or not.
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: readObjectNoData
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
             modifiers:
             - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: checkHost
+            modifiers:
+            - private
             - static
             parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: checkPort
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
               type:
                 basic: int
                 full: int
             return:
               type:
+                basic: int
+                full: int
+          - name: createUnresolved
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the Host name
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: The port number
+            return:
+              type:
                 basic: InetSocketAddress
                 full: java.net.InetSocketAddress
-          javaType: class
-          extends: SocketAddress
+              notes: "an InetSocketAddress representing the unresolved\n         \
+                \ socket address"
+            notes: "Creates an unresolved socket address from a hostname and a port\
+              \ number.\n \n No attempt will be made to resolve the hostname into\
+              \ an InetAddress.\n The address will be flagged as unresolved.\n \n\
+              \ A valid port value is between 0 and 65535.\n A port number of zero\
+              \ will let the system pick up an\n ephemeral port in a bind operation."

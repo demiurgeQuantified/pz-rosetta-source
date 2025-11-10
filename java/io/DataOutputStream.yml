@@ -4,18 +4,70 @@ languages:
     packages:
       java.io:
         DataOutputStream:
+          extends: java.io.FilterOutputStream
+          modifiers:
+          - public
+          notes: "A data output stream lets an application write primitive Java data\n\
+            \ types to an output stream in a portable way. An application can\n then\
+            \ use a data input stream to read the data back in.\n \n A DataOutputStream\
+            \ is not safe for use by multiple concurrent\n threads. If a DataOutputStream\
+            \ is to be used by more than one\n thread then access to the data output\
+            \ stream should be controlled\n by appropriate synchronization."
+          fields:
+            bytearr:
+              name: bytearr
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            writeBuffer:
+              name: writeBuffer
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            written:
+              name: written
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "The number of bytes written to the data output stream so far.\n\
+                \ If this counter overflows, it will be wrapped to Integer.MAX_VALUE."
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
+              notes: "the underlying output stream, to be saved for later\n      \
+                \          use."
+            notes: "Creates a new data output stream to write data to the specified\n\
+              \ underlying output stream. The counter written is\n set to zero."
           methods:
           - name: flush
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Flushes this data output stream. This forces any buffered output\n\
+              \ bytes to be written out to the stream.\n \n The flush method of DataOutputStream\n\
+              \ calls the flush method of its underlying output stream."
+          - name: incCount
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: void
@@ -28,367 +80,285 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the value of the written field.
+            notes: "Returns the current value of the counter written,\n the number\
+              \ of bytes written to this data output stream so far.\n If the counter\
+              \ overflows, it will be wrapped to Integer.MAX_VALUE."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: b
               type:
-                basic: byte[]
+                basic: int
+                full: int
+              notes: the byte to be written.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes the specified byte (the low eight bits of the argument\n\
+              \ b) to the underlying output stream. If no exception\n is thrown, the\
+              \ counter written is incremented by\n 1.\n \n Implements the write method\
+              \ of OutputStream."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: b
+              type:
+                basic: byte
                 full: byte[]
+              notes: the data.
+            - name: off
+              type:
+                basic: int
+                full: int
+              notes: the start offset in the data.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes to write.
             return:
               type:
                 basic: void
                 full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes len bytes from the specified byte array\n starting at offset\
+              \ off to the underlying output stream.\n If no exception is thrown,\
+              \ the counter written is\n incremented by len."
           - name: writeBoolean
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: boolean
                 full: boolean
+              notes: a boolean value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeBoolean
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: boolean
-                full: boolean
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a boolean to the underlying output stream as\n a 1-byte\
+              \ value. The value true is written out as the\n value (byte)1; the value\
+              \ false is\n written out as the value (byte)0. If no exception is\n\
+              \ thrown, the counter written is incremented by\n 1."
           - name: writeByte
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: a byte value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeByte
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes out a byte to the underlying output stream as\n a 1-byte\
+              \ value. If no exception is thrown, the counter\n written is incremented\
+              \ by 1."
           - name: writeBytes
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: String
                 full: java.lang.String
+              notes: a string of bytes to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeBytes
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes out the string to the underlying output stream as a\n sequence\
+              \ of bytes. Each character in the string is written out, in\n sequence,\
+              \ by discarding its high eight bits. If no exception is\n thrown, the\
+              \ counter written is incremented by the\n length of s."
           - name: writeChar
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: a char value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeChar
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a char to the underlying output stream as a\n 2-byte value,\
+              \ high byte first. If no exception is thrown, the\n counter written\
+              \ is incremented by 2."
           - name: writeChars
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: s
               type:
                 basic: String
                 full: java.lang.String
+              notes: a String value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeChars
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a string to the underlying output stream as a sequence\
+              \ of\n characters. Each character is written to the data output stream\
+              \ as\n if by the writeChar method. If no exception is\n thrown, the\
+              \ counter written is incremented by twice\n the length of s."
           - name: writeDouble
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: double
                 full: double
+              notes: a double value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeDouble
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: double
-                full: double
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Converts the double argument to a long using the\n doubleToLongBits\
+              \ method in class Double,\n and then writes that long value to the underlying\n\
+              \ output stream as an 8-byte quantity, high byte first. If no\n exception\
+              \ is thrown, the counter written is\n incremented by 8."
           - name: writeFloat
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: float
                 full: float
+              notes: a float value to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeFloat
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: float
-                full: float
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Converts the float argument to an int using the\n floatToIntBits\
+              \ method in class Float,\n and then writes that int value to the underlying\n\
+              \ output stream as a 4-byte quantity, high byte first. If no\n exception\
+              \ is thrown, the counter written is\n incremented by 4."
           - name: writeInt
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: an int to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeInt
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes an int to the underlying output stream as four\n bytes,\
+              \ high byte first. If no exception is thrown, the counter\n written\
+              \ is incremented by 4."
           - name: writeLong
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: long
                 full: long
+              notes: a long to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeLong
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: long
-                full: long
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a long to the underlying output stream as eight\n bytes,\
+              \ high byte first. In no exception is thrown, the counter\n written\
+              \ is incremented by 8."
           - name: writeShort
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: v
               type:
                 basic: int
                 full: int
+              notes: a short to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeShort
-            modifiers:
-            - public
-            - final
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Writes a short to the underlying output stream as two\n bytes,\
+              \ high byte first. If no exception is thrown, the counter\n written\
+              \ is incremented by 2."
           - name: writeUTF
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: a string to be written.
             return:
               type:
                 basic: void
                 full: void
-          - name: writeUTF
+            notes: "Writes a string to the underlying output stream using\n modified\
+              \ UTF-8\n encoding in a machine-independent manner.\n \n First, two\
+              \ bytes are written to the output stream as if by the\n writeShort method\
+              \ giving the number of bytes to\n follow. This value is the number of\
+              \ bytes actually written out,\n not the length of the string. Following\
+              \ the length, each character\n of the string is output, in sequence,\
+              \ using the modified UTF-8 encoding\n for the character. If no exception\
+              \ is thrown, the counter\n written is incremented by the total number\
+              \ of\n bytes written to the output stream. This will be at least two\n\
+              \ plus the length of str, and at most two plus\n thrice the length of\
+              \ str."
+          staticMethods:
+          - name: tooLongMsg
             modifiers:
-            - public
-            - final
+            - private
+            - static
             parameters:
             - name: arg0
               type:
                 basic: String
                 full: java.lang.String
+            - name: arg1
+              type:
+                basic: int
+                full: int
             return:
               type:
-                basic: void
-                full: void
-          javaType: class
-          extends: FilterOutputStream
+                basic: String
+                full: java.lang.String
+          - name: writeUTF
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: int
+                full: int

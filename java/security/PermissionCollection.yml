@@ -4,55 +4,128 @@ languages:
     packages:
       java.security:
         PermissionCollection:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract class representing a collection of Permission objects.\n\
+            \n With a PermissionCollection, you can:\n \n  add a permission to the\
+            \ collection using the add method.\n  check to see if a particular permission\
+            \ is implied in the\n      collection, using the implies method.\n  enumerate\
+            \ all the permissions, using the elements method.\n \n\n When it is desirable\
+            \ to group together a number of Permission objects\n of the same type,\
+            \ the newPermissionCollection method on that\n particular type of Permission\
+            \ object should first be called. The default\n behavior (from the Permission\
+            \ class) is to simply return null.\n Subclasses of class Permission override\
+            \ the method if they need to store\n their permissions in a particular\
+            \ PermissionCollection object in order\n to provide the correct semantics\
+            \ when the\n PermissionCollection.implies method is called.\n If a non-null\
+            \ value is returned, that PermissionCollection must be used.\n If null\
+            \ is returned, then the caller of newPermissionCollection\n is free to\
+            \ store permissions of the\n given type in any PermissionCollection they\
+            \ choose\n (one that uses a Hashtable, one that uses a Vector, etc).\n\
+            \n The PermissionCollection returned by the\n Permission.newPermissionCollection\n\
+            \ method is a homogeneous collection, which stores only Permission objects\n\
+            \ for a given Permission type.  A PermissionCollection may also be\n heterogeneous.\
+            \  For example, Permissions is a PermissionCollection\n subclass that\
+            \ represents a collection of PermissionCollections.\n That is, its members\
+            \ are each a homogeneous PermissionCollection.\n For example, a Permissions\
+            \ object might have a FilePermissionCollection\n for all the FilePermission\
+            \ objects, a SocketPermissionCollection for all the\n SocketPermission\
+            \ objects, and so on. Its add method adds a\n permission to the appropriate\
+            \ collection.\n\n Whenever a permission is added to a heterogeneous PermissionCollection\n\
+            \ such as Permissions, and the PermissionCollection doesn't yet contain\
+            \ a\n PermissionCollection of the specified permission's type, the\n PermissionCollection\
+            \ should call\n the newPermissionCollection method on the permission's\
+            \ class\n to see if it requires a special PermissionCollection. If\n newPermissionCollection\n\
+            \ returns null, the PermissionCollection\n is free to store the permission\
+            \ in any type of PermissionCollection it\n desires (one using a Hashtable,\
+            \ one using a Vector, etc.). For example,\n the Permissions object uses\
+            \ a default PermissionCollection implementation\n that stores the permission\
+            \ objects in a Hashtable.\n\n  Subclass implementations of PermissionCollection\
+            \ should assume\n that they may be called simultaneously from multiple\
+            \ threads,\n and therefore should be synchronized properly.  Furthermore,\n\
+            \ Enumerations returned via the elements method are\n not fail-fast. \
+            \ Modifications to a collection should not be\n performed while enumerating\
+            \ over that collection."
+          fields:
+            readOnly:
+              name: readOnly
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
+            notes: Constructor for subclasses to call.
           methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
-              type:
-                basic: String
-                full: java.lang.String
           - name: add
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: permission
               type:
                 basic: Permission
                 full: java.security.Permission
+              notes: the Permission object to add.
             return:
               type:
                 basic: void
                 full: void
+            notes: Adds a permission object to the current collection of permission
+              objects.
           - name: elements
             modifiers:
             - public
+            - abstract
             return:
               type:
-                basic: Enumeration<Permission>
+                basic: Enumeration
                 full: java.util.Enumeration<java.security.Permission>
+              notes: an enumeration of all the Permissions.
+            notes: Returns an enumeration of all the Permission objects in the collection.
           - name: elementsAsStream
             modifiers:
             - public
             return:
               type:
-                basic: Stream<Permission>
+                basic: Stream
                 full: java.util.stream.Stream<java.security.Permission>
+              notes: a stream of all the Permissions.
+            notes: "Returns a stream of all the Permission objects in the collection.\n\
+              \n  The collection should not be modified (see add(java.security.Permission))\
+              \ during the\n execution of the terminal stream operation. Otherwise,\
+              \ the result of the\n terminal stream operation is undefined."
           - name: implies
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: permission
               type:
                 basic: Permission
                 full: java.security.Permission
+              notes: the Permission object to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if \"permission\" is implied by the  permissions in\n the\
+                \ collection, false if not."
+            notes: "Checks to see if the specified permission is implied by\n the\
+              \ collection of Permission objects held in this PermissionCollection."
           - name: isReadOnly
             modifiers:
             - public
@@ -60,6 +133,12 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this PermissionCollection object is marked as readonly,\n\
+                \ false otherwise."
+            notes: "Returns true if this PermissionCollection object is marked as\
+              \ readonly.\n If it is readonly, no new Permission objects can be added\
+              \ to it\n using add.\n\n By default, the object is not readonly. It\
+              \ can be set to\n readonly by a call to setReadOnly."
           - name: setReadOnly
             modifiers:
             - public
@@ -67,5 +146,13 @@ languages:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Marks this PermissionCollection object as \"readonly\". After\n\
+              \ a PermissionCollection object\n is marked as readonly, no new Permission\
+              \ objects can be added to it\n using add."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

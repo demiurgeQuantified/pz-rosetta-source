@@ -4,67 +4,108 @@ languages:
     packages:
       java.awt:
         Image:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "The abstract class Image is the superclass of all\n classes that\
+            \ represent graphical images. The image must be\n obtained in a platform-specific\
+            \ manner."
+          fields:
+            accelerationPriority:
+              name: accelerationPriority
+              modifiers:
+              - protected
+              type:
+                basic: float
+                full: float
+              notes: "Priority for accelerating this image.  Subclasses are free to\n\
+                \ set different default priorities and applications are free to\n\
+                \ set the priority for specific images via the\n setAccelerationPriority(float)\
+                \ method."
+            surfaceManager:
+              name: surfaceManager
+              modifiers:
+              - package
+              type:
+                basic: SurfaceManager
+                full: sun.awt.image.SurfaceManager
           staticFields:
             SCALE_AREA_AVERAGING:
               name: SCALE_AREA_AVERAGING
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Use the Area Averaging image scaling algorithm.  The\n image\
+                \ object is free to substitute a different filter that\n performs\
+                \ the same algorithm yet integrates more efficiently\n into the image\
+                \ infrastructure supplied by the toolkit."
             SCALE_DEFAULT:
               name: SCALE_DEFAULT
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: Use the default image-scaling algorithm.
             SCALE_FAST:
               name: SCALE_FAST
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Choose an image-scaling algorithm that gives higher priority\n\
+                \ to scaling speed than smoothness of the scaled image."
             SCALE_REPLICATE:
               name: SCALE_REPLICATE
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Use the image scaling algorithm embodied in the\n ReplicateScaleFilter\
+                \ class.\n The Image object is free to substitute a different filter\n\
+                \ that performs the same algorithm yet integrates more efficiently\n\
+                \ into the imaging infrastructure supplied by the toolkit."
             SCALE_SMOOTH:
               name: SCALE_SMOOTH
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: int
                 full: int
-                nullable: true
+              notes: "Choose an image-scaling algorithm that gives higher priority\n\
+                \ to image smoothness than scaling speed."
             UndefinedProperty:
               name: UndefinedProperty
               modifiers:
               - public
               - static
-              - final
               type:
                 basic: Object
                 full: java.lang.Object
-                nullable: true
+              notes: "The UndefinedProperty object should be returned whenever a\n\
+                \ property which was not defined for a particular image is fetched."
+            defaultImageCaps:
+              name: defaultImageCaps
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ImageCapabilities
+                full: java.awt.ImageCapabilities
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructor for subclasses to call.
           methods:
           - name: flush
             modifiers:
@@ -73,6 +114,29 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Flushes all reconstructable resources being used by this Image\
+              \ object.\n This includes any pixel data that is being cached for rendering\
+              \ to\n the screen as well as any system resources that are being used\n\
+              \ to store data or pixels for the image if they can be recreated.\n\
+              \ The image is reset to a state similar to when it was first created\n\
+              \ so that if it is again rendered, the image data will have to be\n\
+              \ recreated or fetched again from its source.\n \n Examples of how this\
+              \ method affects specific types of Image object:\n \n \n BufferedImage\
+              \ objects leave the primary Raster which stores their\n pixels untouched,\
+              \ but flush any information cached about those\n pixels such as copies\
+              \ uploaded to the display hardware for\n accelerated blits.\n \n Image\
+              \ objects created by the Component methods which take a\n width and\
+              \ height leave their primary buffer of pixels untouched,\n but have\
+              \ all cached information released much like is done for\n BufferedImage\
+              \ objects.\n \n VolatileImage objects release all of their pixel resources\n\
+              \ including their primary copy which is typically stored on\n the display\
+              \ hardware where resources are scarce.\n These objects can later be\
+              \ restored using their\n validate\n method.\n \n Image objects created\
+              \ by the Toolkit and Component classes which are\n loaded from files,\
+              \ URLs or produced by an ImageProducer\n are unloaded and all local\
+              \ resources are released.\n These objects can later be reloaded from\
+              \ their original source\n as needed when they are rendered, just as\
+              \ when they were first\n created."
           - name: getAccelerationPriority
             modifiers:
             - public
@@ -80,103 +144,178 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: "value between 0 and 1, inclusive, which represents the current\n\
+                \ priority value"
+            notes: Returns the current value of the acceleration priority hint.
           - name: getCapabilities
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: gc
               type:
                 basic: GraphicsConfiguration
                 full: java.awt.GraphicsConfiguration
+              notes: "a GraphicsConfiguration object.  A value of null\n for this\
+                \ parameter will result in getting the image capabilities\n for the\
+                \ default GraphicsConfiguration."
             return:
               type:
                 basic: ImageCapabilities
                 full: java.awt.ImageCapabilities
+              notes: "an ImageCapabilities object that contains\n the capabilities\
+                \ of this Image on the specified\n GraphicsConfiguration."
+            notes: "Returns an ImageCapabilities object which can be\n inquired as\
+              \ to the capabilities of this\n Image on the specified GraphicsConfiguration.\n\
+              \ This allows programmers to find\n out more runtime information on\
+              \ the specific Image\n object that they have created.  For example,\
+              \ the user\n might create a BufferedImage but the system may have\n\
+              \ no video memory left for creating an image of that\n size on the given\
+              \ GraphicsConfiguration, so although the object\n may be acceleratable\
+              \ in general, it\n does not have that capability on this GraphicsConfiguration."
           - name: getGraphics
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: a graphics context to draw to the off-screen image.
+            notes: "Creates a graphics context for drawing to an off-screen image.\n\
+              \ This method can only be called for off-screen images."
           - name: getHeight
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: observer
               type:
                 basic: ImageObserver
                 full: java.awt.image.ImageObserver
+              notes: an object waiting for the image to be loaded.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the height of this image, or -1\n                   if the height\
+                \ is not yet known."
+            notes: "Determines the height of the image. If the height is not yet known,\n\
+              \ this method returns -1 and the specified\n ImageObserver object is\
+              \ notified later."
           - name: getProperty
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: a property name.
+            - name: observer
               type:
                 basic: ImageObserver
                 full: java.awt.image.ImageObserver
+              notes: an object waiting for this image to be loaded.
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the value of the named property.
+            notes: "Gets a property of this image by name.\n \n Individual property\
+              \ names are defined by the various image\n formats. If a property is\
+              \ not defined for a particular image, this\n method returns the UndefinedProperty\
+              \ object.\n \n If the properties for this image are not yet known, this\
+              \ method\n returns null, and the ImageObserver\n object is notified\
+              \ later.\n \n The property name \"comment\" should be used to store\n\
+              \ an optional comment which can be presented to the application as a\n\
+              \ description of the image, its source, or its author."
           - name: getScaledInstance
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: width
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the width to which to scale the image.
+            - name: height
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the height to which to scale the image.
+            - name: hints
               type:
                 basic: int
                 full: int
+              notes: "flags to indicate the type of algorithm to use\n for image resampling."
             return:
               type:
                 basic: Image
                 full: java.awt.Image
+              notes: a scaled version of the image.
+            notes: "Creates a scaled version of this image.\n A new Image object is\
+              \ returned which will render\n the image at the specified width and\n\
+              \ height by default.  The new Image object\n may be loaded asynchronously\
+              \ even if the original source image\n has already been loaded completely.\n\
+              \n \n\n If either width\n or height is a negative number then a value\
+              \ is\n substituted to maintain the aspect ratio of the original image\n\
+              \ dimensions. If both width and height\n are negative, then the original\
+              \ image dimensions are used."
           - name: getSource
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: ImageProducer
                 full: java.awt.image.ImageProducer
+              notes: "the image producer that produces the pixels\n              \
+                \                    for this image."
+            notes: "Gets the object that produces the pixels for the image.\n This\
+              \ method is called by the image filtering classes and by\n methods that\
+              \ perform image conversion and scaling."
           - name: getWidth
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: observer
               type:
                 basic: ImageObserver
                 full: java.awt.image.ImageObserver
+              notes: an object waiting for the image to be loaded.
             return:
               type:
                 basic: int
                 full: int
+              notes: "the width of this image, or -1\n                   if the width\
+                \ is not yet known."
+            notes: "Determines the width of the image. If the width is not yet known,\n\
+              \ this method returns -1 and the specified\n ImageObserver object is\
+              \ notified later."
           - name: setAccelerationPriority
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: priority
               type:
                 basic: float
                 full: float
+              notes: "a value between 0 and 1, inclusive, where higher\n values indicate\
+                \ more importance for acceleration.  A value of 0\n means that this\
+                \ Image should never be accelerated.  Other values\n are used simply\
+                \ to determine acceleration priority relative to other\n Images."
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Sets a hint for this image about how important acceleration is.\n\
+              \ This priority hint is used to compare to the priorities of other\n\
+              \ Image objects when determining how to use scarce acceleration\n resources\
+              \ such as video memory.  When and if it is possible to\n accelerate\
+              \ this Image, if there are not enough resources available\n to provide\
+              \ that acceleration but enough can be freed up by\n de-accelerating\
+              \ some other image of lower priority, then that other\n Image may be\
+              \ de-accelerated in deference to this one.  Images\n that have the same\
+              \ priority take up resources on a first-come,\n first-served basis."

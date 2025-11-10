@@ -1,0 +1,208 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent.atomic:
+        AtomicMarkableReference:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          notes: "An AtomicMarkableReference maintains an object reference\n along\
+            \ with a mark bit, that can be updated atomically.\n\n Implementation\
+            \ note: This implementation maintains markable\n references by creating\
+            \ internal objects representing \"boxed\"\n [reference, boolean] pairs."
+          fields:
+            pair:
+              name: pair
+              modifiers:
+              - private
+              type:
+                basic: AtomicMarkableReference.Pair
+                full: java.util.concurrent.atomic.AtomicMarkableReference$Pair<V>
+          staticFields:
+            PAIR:
+              name: PAIR
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+          constructors:
+          - modifiers:
+            - public
+            parameters:
+            - name: initialRef
+              type:
+                basic: V
+                full: V
+              notes: the initial reference
+            - name: initialMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the initial mark
+            notes: "Creates a new AtomicMarkableReference with the given\n initial\
+              \ values."
+          methods:
+          - name: attemptMark
+            modifiers:
+            - public
+            parameters:
+            - name: expectedReference
+              type:
+                basic: V
+                full: V
+              notes: the expected value of the reference
+            - name: newMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value for the mark
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if successful
+            notes: "Atomically sets the value of the mark to the given update value\n\
+              \ if the current reference is == to the expected\n reference.  Any given\
+              \ invocation of this operation may fail\n (return false) spuriously,\
+              \ but repeated invocation\n when the current value holds the expected\
+              \ value and no other\n thread is also attempting to set the value will\
+              \ eventually\n succeed."
+          - name: casPair
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: AtomicMarkableReference.Pair
+                full: java.util.concurrent.atomic.AtomicMarkableReference$Pair<V>
+            - name: arg1
+              type:
+                basic: AtomicMarkableReference.Pair
+                full: java.util.concurrent.atomic.AtomicMarkableReference$Pair<V>
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: compareAndSet
+            modifiers:
+            - public
+            parameters:
+            - name: expectedReference
+              type:
+                basic: V
+                full: V
+              notes: the expected value of the reference
+            - name: newReference
+              type:
+                basic: V
+                full: V
+              notes: the new value for the reference
+            - name: expectedMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the expected value of the mark
+            - name: newMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value for the mark
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if successful
+            notes: "Atomically sets the value of both the reference and mark\n to\
+              \ the given update values if the\n current reference is == to the expected\
+              \ reference\n and the current mark is equal to the expected mark."
+          - name: get
+            modifiers:
+            - public
+            parameters:
+            - name: markHolder
+              type:
+                basic: boolean
+                full: boolean[]
+              notes: "an array of size of at least one. On return,\n markHolder[0]\
+                \ will hold the value of the mark."
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the current value of the reference
+            notes: "Returns the current values of both the reference and the mark.\n\
+              \ Typical usage is boolean[1] holder; ref = v.get(holder); ."
+          - name: getReference
+            modifiers:
+            - public
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the current value of the reference
+            notes: Returns the current value of the reference.
+          - name: isMarked
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: the current value of the mark
+            notes: Returns the current value of the mark.
+          - name: set
+            modifiers:
+            - public
+            parameters:
+            - name: newReference
+              type:
+                basic: V
+                full: V
+              notes: the new value for the reference
+            - name: newMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value for the mark
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Unconditionally sets the value of both the reference and mark.
+          - name: weakCompareAndSet
+            modifiers:
+            - public
+            parameters:
+            - name: expectedReference
+              type:
+                basic: V
+                full: V
+              notes: the expected value of the reference
+            - name: newReference
+              type:
+                basic: V
+                full: V
+              notes: the new value for the reference
+            - name: expectedMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the expected value of the mark
+            - name: newMark
+              type:
+                basic: boolean
+                full: boolean
+              notes: the new value for the mark
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if successful
+            notes: "Atomically sets the value of both the reference and mark to the\n\
+              \ given update values if the current reference is == to\n the expected\
+              \ reference and the current mark is equal to the\n expected mark. This\
+              \ operation may fail spuriously and does not\n provide ordering guarantees,\
+              \ so is only rarely an\n appropriate alternative to compareAndSet."

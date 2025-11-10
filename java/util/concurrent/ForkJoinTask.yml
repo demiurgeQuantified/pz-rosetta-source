@@ -1,0 +1,1159 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent:
+        ForkJoinTask:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Abstract base class for tasks that run within a ForkJoinPool.\n\
+            \ A ForkJoinTask is a thread-like entity that is much\n lighter weight\
+            \ than a normal thread.  Huge numbers of tasks and\n subtasks may be hosted\
+            \ by a small number of actual threads in a\n ForkJoinPool, at the price\
+            \ of some usage limitations.\n\n A \"main\" ForkJoinTask begins execution\
+            \ when it is\n explicitly submitted to a ForkJoinPool, or, if not already\n\
+            \ engaged in a ForkJoin computation, commenced in the ForkJoinPool.commonPool()\
+            \ via fork(), invoke(), or\n related methods.  Once started, it will usually\
+            \ in turn start other\n subtasks.  As indicated by the name of this class,\
+            \ many programs\n using ForkJoinTask employ only methods fork() and\n\
+            \ join(), or derivatives such as invokeAll.  However, this class also\n\
+            \ provides a number of other methods that can come into play in\n advanced\
+            \ usages, as well as extension mechanics that allow support\n of new forms\
+            \ of fork/join processing.\n\n A ForkJoinTask is a lightweight form of\
+            \ Future.\n The efficiency of ForkJoinTasks stems from a set of\n restrictions\
+            \ (that are only partially statically enforceable)\n reflecting their\
+            \ main use as computational tasks calculating pure\n functions or operating\
+            \ on purely isolated objects.  The primary\n coordination mechanisms are\
+            \ fork(), that arranges\n asynchronous execution, and join(), that doesn't\
+            \ proceed\n until the task's result has been computed.  Computations should\n\
+            \ ideally avoid synchronized methods or blocks, and should\n minimize\
+            \ other blocking synchronization apart from joining other\n tasks or using\
+            \ synchronizers such as Phasers that are advertised to\n cooperate with\
+            \ fork/join scheduling. Subdividable tasks should also\n not perform blocking\
+            \ I/O, and should ideally access variables that\n are completely independent\
+            \ of those accessed by other running\n tasks. These guidelines are loosely\
+            \ enforced by not permitting\n checked exceptions such as IOExceptions\
+            \ to be\n thrown. However, computations may still encounter unchecked\n\
+            \ exceptions, that are rethrown to callers attempting to join\n them.\
+            \ These exceptions may additionally include RejectedExecutionException\
+            \ stemming from internal resource\n exhaustion, such as failure to allocate\
+            \ internal task\n queues. Rethrown exceptions behave in the same way as\
+            \ regular\n exceptions, but, when possible, contain stack traces (as displayed\n\
+            \ for example using ex.printStackTrace()) of both the thread\n that initiated\
+            \ the computation as well as the thread actually\n encountering the exception;\
+            \ minimally only the latter.\n\n It is possible to define and use ForkJoinTasks\
+            \ that may block,\n but doing so requires three further considerations:\
+            \ (1) Completion\n of few if any other tasks should be dependent on a\
+            \ task\n that blocks on external synchronization or I/O. Event-style async\n\
+            \ tasks that are never joined (for example, those subclassing CountedCompleter)\
+            \ often fall into this category.  (2) To minimize\n resource impact, tasks\
+            \ should be small; ideally performing only the\n (possibly) blocking action.\
+            \ (3) Unless the ForkJoinPool.ManagedBlocker API is used, or the number\
+            \ of possibly\n blocked tasks is known to be less than the pool's ForkJoinPool.getParallelism()\
+            \ level, the pool cannot guarantee that\n enough threads will be available\
+            \ to ensure progress or good\n performance.\n\n The primary method for\
+            \ awaiting completion and extracting\n results of a task is join(), but\
+            \ there are several variants:\n The Future.get() methods support interruptible\
+            \ and/or timed\n waits for completion and report results using Future\n\
+            \ conventions. Method invoke() is semantically\n equivalent to fork();\
+            \ join() but always attempts to begin\n execution in the current thread.\
+            \ The \"quiet\" forms of\n these methods do not extract results or report\
+            \ exceptions. These\n may be useful when a set of tasks are being executed,\
+            \ and you need\n to delay processing of results or exceptions until all\
+            \ complete.\n Method invokeAll (available in multiple versions)\n performs\
+            \ the most common form of parallel invocation: forking a set\n of tasks\
+            \ and joining them all.\n\n In the most typical usages, a fork-join pair\
+            \ act like a call\n (fork) and return (join) from a parallel recursive\
+            \ function. As is\n the case with other forms of recursive calls, returns\
+            \ (joins)\n should be performed innermost-first. For example, a.fork();\n\
+            \ b.fork(); b.join(); a.join(); is likely to be substantially more\n efficient\
+            \ than joining a before b.\n\n The execution status of tasks may be queried\
+            \ at several levels\n of detail: isDone() is true if a task completed\
+            \ in any way\n (including the case where a task was cancelled without\
+            \ executing);\n isCompletedNormally() is true if a task completed without\n\
+            \ cancellation or encountering an exception; isCancelled() is\n true if\
+            \ the task was cancelled (in which case getException(int)\n returns a\
+            \ CancellationException); and\n isCompletedAbnormally() is true if a task\
+            \ was either\n cancelled or encountered an exception, in which case getException(int)\
+            \ will return either the encountered exception or\n CancellationException.\n\
+            \n The ForkJoinTask class is not usually directly subclassed.\n Instead,\
+            \ you subclass one of the abstract classes that support a\n particular\
+            \ style of fork/join processing, typically RecursiveAction for most computations\
+            \ that do not return results,\n RecursiveTask for those that do, and CountedCompleter\
+            \ for those in which completed actions trigger\n other actions.  Normally,\
+            \ a concrete ForkJoinTask subclass declares\n fields comprising its parameters,\
+            \ established in a constructor, and\n then defines a compute method that\
+            \ somehow uses the control\n methods supplied by this base class.\n\n\
+            \ Method join() and its variants are appropriate for use\n only when completion\
+            \ dependencies are acyclic; that is, the\n parallel computation can be\
+            \ described as a directed acyclic graph\n (DAG). Otherwise, executions\
+            \ may encounter a form of deadlock as\n tasks cyclically wait for each\
+            \ other.  However, this framework\n supports other methods and techniques\
+            \ (for example the use of\n Phaser, helpQuiesce(), and complete(V)) that\n\
+            \ may be of use in constructing custom subclasses for problems that\n\
+            \ are not statically structured as DAGs. To support such usages, a\n ForkJoinTask\
+            \ may be atomically tagged with a short\n value using setForkJoinTaskTag(short)\
+            \ or compareAndSetForkJoinTaskTag(short, short) and checked using getForkJoinTaskTag().\
+            \ The ForkJoinTask implementation does not use\n these protected methods\
+            \ or tags for any purpose, but they\n may be of use in the construction\
+            \ of specialized subclasses.  For\n example, parallel graph traversals\
+            \ can use the supplied methods to\n avoid revisiting nodes/tasks that\
+            \ have already been processed.\n (Method names for tagging are bulky in\
+            \ part to encourage definition\n of methods that reflect their usage patterns.)\n\
+            \n Most base support methods are final, to prevent\n overriding of implementations\
+            \ that are intrinsically tied to the\n underlying lightweight task scheduling\
+            \ framework.  Developers\n creating new basic styles of fork/join processing\
+            \ should minimally\n implement protected methods exec(), setRawResult(V),\
+            \ and getRawResult(), while also introducing\n an abstract computational\
+            \ method that can be implemented in its\n subclasses, possibly relying\
+            \ on other protected methods\n provided by this class.\n\n ForkJoinTasks\
+            \ should perform relatively small amounts of\n computation. Large tasks\
+            \ should be split into smaller subtasks,\n usually via recursive decomposition.\
+            \ As a very rough rule of thumb,\n a task should perform more than 100\
+            \ and less than 10000 basic\n computational steps, and should avoid indefinite\
+            \ looping. If tasks\n are too big, then parallelism cannot improve throughput.\
+            \ If too\n small, then memory and internal task maintenance overhead may\n\
+            \ overwhelm processing.\n\n This class provides adapt methods for Runnable\n\
+            \ and Callable, that may be of use when mixing execution of\n ForkJoinTasks\
+            \ with other kinds of tasks. When all tasks are\n of this form, consider\
+            \ using a pool constructed in asyncMode.\n\n ForkJoinTasks are Serializable,\
+            \ which enables them to be\n used in extensions such as remote execution\
+            \ frameworks. It is\n sensible to serialize tasks only before or after,\
+            \ but not during,\n execution. Serialization is not relied on during execution\
+            \ itself."
+          fields:
+            aux:
+              name: aux
+              modifiers:
+              - private
+              type:
+                basic: ForkJoinTask.Aux
+                full: java.util.concurrent.ForkJoinTask$Aux
+            status:
+              name: status
+              modifiers:
+              - package
+              type:
+                basic: int
+                full: int
+          staticFields:
+            ABNORMAL:
+              name: ABNORMAL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            AUX:
+              name: AUX
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            DONE:
+              name: DONE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            SMASK:
+              name: SMASK
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            STATUS:
+              name: STATUS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: VarHandle
+                full: java.lang.invoke.VarHandle
+            THROWN:
+              name: THROWN
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            UNCOMPENSATE:
+              name: UNCOMPENSATE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - public
+            notes: Constructor for subclasses to call.
+          methods:
+          - name: awaitDone
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg4
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: int
+                full: int
+          - name: awaitPoolInvoke
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            return:
+              type:
+                basic: void
+                full: void
+          - name: awaitPoolInvoke
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: cancel
+            modifiers:
+            - public
+            parameters:
+            - name: mayInterruptIfRunning
+              type:
+                basic: boolean
+                full: boolean
+              notes: "this value has no effect in the\n default implementation because\
+                \ interrupts are not used to\n control cancellation."
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this task is now cancelled
+            notes: "Attempts to cancel execution of this task. This attempt will\n\
+              \ fail if the task has already completed or could not be\n cancelled\
+              \ for some other reason. If successful, and this task\n has not started\
+              \ when cancel is called, execution of\n this task is suppressed. After\
+              \ this method returns\n successfully, unless there is an intervening\
+              \ call to reinitialize(), subsequent calls to isCancelled(),\n isDone(),\
+              \ and cancel will return true\n and calls to join() and related methods\
+              \ will result in\n CancellationException.\n\n This method may be overridden\
+              \ in subclasses, but if so, must\n still ensure that these properties\
+              \ hold. In particular, the\n cancel method itself must not throw exceptions.\n\
+              \n This method is designed to be invoked by other\n tasks. To terminate\
+              \ the current task, you can just return or\n throw an unchecked exception\
+              \ from its computation method, or\n invoke completeExceptionally(Throwable)."
+          - name: casAux
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinTask.Aux
+                full: java.util.concurrent.ForkJoinTask$Aux
+            - name: arg1
+              type:
+                basic: ForkJoinTask.Aux
+                full: java.util.concurrent.ForkJoinTask$Aux
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: casStatus
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: compareAndSetForkJoinTaskTag
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: expect
+              type:
+                basic: short
+                full: short
+              notes: the expected tag value
+            - name: update
+              type:
+                basic: short
+                full: short
+              notes: the new tag value
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if successful; i.e., the current value was\n equal to expect\
+                \ and was changed to update."
+            notes: "Atomically conditionally sets the tag value for this task.\n Among\
+              \ other applications, tags can be used as visit markers\n in tasks operating\
+              \ on graphs, as in methods that check: \n if (task.compareAndSetForkJoinTaskTag((short)0,\
+              \ (short)1))\n before processing, otherwise exiting because the node\
+              \ has\n already been visited."
+          - name: complete
+            modifiers:
+            - public
+            parameters:
+            - name: value
+              type:
+                basic: V
+                full: V
+              notes: the result value for this task
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Completes this task, and if not already aborted or cancelled,\n\
+              \ returning the given value as the result of subsequent\n invocations\
+              \ of join and related operations. This method\n may be used to provide\
+              \ results for asynchronous tasks, or to\n provide alternative handling\
+              \ for tasks that would not otherwise\n complete normally. Its use in\
+              \ other situations is\n discouraged. This method is overridable, but\
+              \ overridden\n versions must invoke super implementation to maintain\n\
+              \ guarantees."
+          - name: completeExceptionally
+            modifiers:
+            - public
+            parameters:
+            - name: ex
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: "the exception to throw. If this exception is not a\n RuntimeException\
+                \ or Error, the actual exception\n thrown will be a RuntimeException\
+                \ with cause ex."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Completes this task abnormally, and if not already aborted or\n\
+              \ cancelled, causes it to throw the given exception upon\n join and\
+              \ related operations. This method may be used\n to induce exceptions\
+              \ in asynchronous tasks, or to force\n completion of tasks that would\
+              \ not otherwise complete.  Its use\n in other situations is discouraged.\
+              \  This method is\n overridable, but overridden versions must invoke\
+              \ super\n implementation to maintain guarantees."
+          - name: doExec
+            modifiers:
+            - package
+            - final
+            return:
+              type:
+                basic: int
+                full: int
+          - name: exec
+            modifiers:
+            - protected
+            - abstract
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this task is known to have completed normally
+            notes: "Immediately performs the base action of this task and returns\n\
+              \ true if, upon return from this method, this task is guaranteed\n to\
+              \ have completed. This method may return false otherwise, to\n indicate\
+              \ that this task is not necessarily complete (or is not\n known to be\
+              \ complete), for example in asynchronous actions that\n require explicit\
+              \ invocations of completion methods. This method\n may also throw an\
+              \ (unchecked) exception to indicate abnormal\n exit. This method is\
+              \ designed to support extensions, and should\n not in general be called\
+              \ otherwise."
+          - name: fork
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<V>
+              notes: this, to simplify usage
+            notes: "Arranges to asynchronously execute this task in the pool the\n\
+              \ current task is running in, if applicable, or using the ForkJoinPool.commonPool()\
+              \ if not inForkJoinPool().  While\n it is not necessarily enforced,\
+              \ it is a usage error to fork a\n task more than once unless it has\
+              \ completed and been\n reinitialized.  Subsequent modifications to the\
+              \ state of this\n task or any data it operates on are not necessarily\n\
+              \ consistently observable by any thread other than the one\n executing\
+              \ it unless preceded by a call to join() or\n related methods, or a\
+              \ call to isDone() returning \n true."
+          - name: get
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the computed result
+            notes: "Waits if necessary for the computation to complete, and then\n\
+              \ retrieves its result."
+          - name: get
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the computed result
+            notes: "Waits if necessary for at most the given time for the computation\n\
+              \ to complete, and then retrieves its result, if available."
+          - name: getAndBitwiseOrStatus
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: int
+                full: int
+          - name: getException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+          - name: getException
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+              notes: the exception, or null if none
+            notes: "Returns the exception thrown by the base computation, or a\n CancellationException\
+              \ if cancelled, or null if\n none or if the method has not yet completed."
+          - name: getForPoolInvoke
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            return:
+              type:
+                basic: V
+                full: V
+          - name: getForPoolInvoke
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: V
+                full: V
+          - name: getForkJoinTaskTag
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: short
+                full: short
+              notes: the tag for this task
+            notes: Returns the tag for this task.
+          - name: getRawResult
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the result, or null if not completed
+            notes: "Returns the result that would be returned by join(), even\n if\
+              \ this task completed abnormally, or null if this task\n is not known\
+              \ to have been completed.  This method is designed\n to aid debugging,\
+              \ as well as to support extensions. Its use in\n any other context is\
+              \ discouraged."
+          - name: getThrowableException
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+          - name: invoke
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the computed result
+            notes: "Commences performing this task, awaits its completion if\n necessary,\
+              \ and returns its result, or throws an (unchecked)\n RuntimeException\
+              \ or Error if the underlying\n computation did so."
+          - name: isCancelled
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this task was cancelled before it completed
+            notes: 'Description copied from interface: Future'
+          - name: isCompletedAbnormally
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this task threw an exception or was cancelled
+            notes: Returns true if this task threw an exception or was cancelled.
+          - name: isCompletedNormally
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if this task completed without throwing an\n exception\
+                \ and was not cancelled"
+            notes: "Returns true if this task completed without throwing an\n exception\
+              \ and was not cancelled."
+          - name: isDone
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this task completed
+            notes: 'Description copied from interface: Future'
+          - name: join
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: V
+                full: V
+              notes: the computed result
+            notes: "Returns the result of the computation when it\n is done.\n This\
+              \ method differs from get() in that abnormal\n completion results in\
+              \ RuntimeException or Error,\n not ExecutionException, and that interrupts\
+              \ of the\n calling thread do not cause the method to abruptly\n return\
+              \ by throwing InterruptedException."
+          - name: joinForPoolInvoke
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+            return:
+              type:
+                basic: V
+                full: V
+          - name: quietlyComplete
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Completes this task normally without setting a value. The most\n\
+              \ recent value established by setRawResult(V) (or \n null by default)\
+              \ will be returned as the result of subsequent\n invocations of join\
+              \ and related operations."
+          - name: quietlyInvoke
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Commences performing this task and awaits its completion if\n\
+              \ necessary, without returning its result or throwing its\n exception."
+          - name: quietlyJoin
+            modifiers:
+            - public
+            - final
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Joins this task, without returning its result or throwing its\n\
+              \ exception. This method may be useful when processing\n collections\
+              \ of tasks when some have been cancelled or otherwise\n known to have\
+              \ aborted."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: reinitialize
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Resets the internal bookkeeping state of this task, allowing a\n\
+              \ subsequent fork. This method allows repeated reuse of\n this task,\
+              \ but only if reuse occurs when this task has either\n never been forked,\
+              \ or has been forked, then completed and all\n outstanding joins of\
+              \ this task have also completed. Effects\n under any other usage conditions\
+              \ are not guaranteed.\n This method may be useful when executing\n pre-constructed\
+              \ trees of subtasks in loops.\n\n Upon completion of this method, isDone()\
+              \ reports\n false, and getException() reports \n null. However, the\
+              \ value returned by getRawResult is\n unaffected. To clear this value,\
+              \ you can invoke \n setRawResult(null)."
+          - name: reportException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: reportExecutionException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setDone
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
+          - name: setForkJoinTaskTag
+            modifiers:
+            - public
+            - final
+            parameters:
+            - name: newValue
+              type:
+                basic: short
+                full: short
+              notes: the new tag value
+            return:
+              type:
+                basic: short
+                full: short
+              notes: the previous value of the tag
+            notes: Atomically sets the tag value for this task and returns the old
+              value.
+          - name: setRawResult
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: value
+              type:
+                basic: V
+                full: V
+              notes: the value
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Forces the given value to be returned as a result.  This method\n\
+              \ is designed to support extensions, and should not in general be\n\
+              \ called otherwise."
+          - name: signalWaiters
+            modifiers:
+            - private
+            return:
+              type:
+                basic: void
+                full: void
+          - name: trySetCancelled
+            modifiers:
+            - private
+            return:
+              type:
+                basic: int
+                full: int
+          - name: trySetException
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: int
+                full: int
+          - name: trySetThrown
+            modifiers:
+            - package
+            - final
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: int
+                full: int
+          - name: tryUnfork
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if unforked
+            notes: "Tries to unschedule this task for execution. This method will\n\
+              \ typically (but is not guaranteed to) succeed if this task is\n the\
+              \ most recently forked task by the current thread, and has\n not commenced\
+              \ executing in another thread.  This method may be\n useful when arranging\
+              \ alternative local processing of tasks\n that could have been, but\
+              \ were not, stolen."
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void
+          staticMethods:
+          - name: adapt
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the runnable action
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the task
+            notes: "Returns a new ForkJoinTask that performs the run\n method of the\
+              \ given Runnable as its action, and returns\n a null result upon join()."
+          - name: adapt
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the runnable action
+            - name: result
+              type:
+                basic: T
+                full: T
+              notes: the result upon completion
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: the task
+            notes: "Returns a new ForkJoinTask that performs the run\n method of the\
+              \ given Runnable as its action, and returns\n the given result upon\
+              \ join()."
+          - name: adapt
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: callable
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable<? extends T>
+              notes: the callable action
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+              notes: the task
+            notes: "Returns a new ForkJoinTask that performs the call\n method of\
+              \ the given Callable as its action, and returns\n its result upon join(),\
+              \ translating any checked exceptions\n encountered into RuntimeException."
+          - name: adaptInterruptible
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable<? extends T>
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<T>
+          - name: cancelIgnoringExceptions
+            modifiers:
+            - package
+            - final
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Future
+                full: java.util.concurrent.Future<?>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: getPool
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: ForkJoinPool
+                full: java.util.concurrent.ForkJoinPool
+              notes: the pool, or null if none
+            notes: "Returns the pool hosting the current thread, or null\n if the\
+              \ current thread is executing outside of any ForkJoinPool.\n\n This\
+              \ method returns null if and only if inForkJoinPool() returns false."
+          - name: getQueuedTaskCount
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the number of tasks
+            notes: "Returns an estimate of the number of tasks that have been\n forked\
+              \ by the current worker thread but not yet executed. This\n value may\
+              \ be useful for heuristic decisions about whether to\n fork other tasks."
+          - name: getSurplusQueuedTaskCount
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the surplus number of tasks, which may be negative
+            notes: "Returns an estimate of how many more locally queued tasks are\n\
+              \ held by the current worker thread than there are other worker\n threads\
+              \ that might steal them, or zero if this thread is not\n operating in\
+              \ a ForkJoinPool. This value may be useful for\n heuristic decisions\
+              \ about whether to fork other tasks. In many\n usages of ForkJoinTasks,\
+              \ at steady state, each worker should\n aim to maintain a small constant\
+              \ surplus (for example, 3) of\n tasks, and to process computations locally\
+              \ if this threshold is\n exceeded."
+          - name: helpQuiesce
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Possibly executes tasks until the pool hosting the current task\n\
+              \ is quiescent.  This\n method may be of use in designs in which many\
+              \ tasks are forked,\n but none are explicitly joined, instead executing\
+              \ them until\n all are processed."
+          - name: inForkJoinPool
+            modifiers:
+            - public
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the current thread is a ForkJoinWorkerThread executing\
+                \ as a ForkJoinPool computation,\n or false otherwise"
+            notes: Returns true if the current thread is a ForkJoinWorkerThread executing
+              as a ForkJoinPool computation.
+          - name: invokeAll
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: t1
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the first task
+            - name: t2
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the second task
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Forks the given tasks, returning when isDone holds for\n each\
+              \ task or an (unchecked) exception is encountered, in which\n case the\
+              \ exception is rethrown. If more than one task\n encounters an exception,\
+              \ then this method throws any one of\n these exceptions. If any task\
+              \ encounters an exception, the\n other may be cancelled. However, the\
+              \ execution status of\n individual tasks is not guaranteed upon exceptional\
+              \ return. The\n status of each task may be obtained using getException()\
+              \ and related methods to check if they have been\n cancelled, completed\
+              \ normally or exceptionally, or left\n unprocessed."
+          - name: invokeAll
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>[]
+            return:
+              type:
+                basic: void
+                full: void
+          - name: invokeAll
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: tasks
+              type:
+                basic: Collection
+                full: java.util.Collection<T>
+              notes: the collection of tasks
+            return:
+              type:
+                basic: Collection
+                full: java.util.Collection<T>
+              notes: the tasks argument, to simplify usage
+            notes: "Forks all tasks in the specified collection, returning when\n\
+              \ isDone holds for each task or an (unchecked) exception\n is encountered,\
+              \ in which case the exception is rethrown. If\n more than one task encounters\
+              \ an exception, then this method\n throws any one of these exceptions.\
+              \ If any task encounters an\n exception, others may be cancelled. However,\
+              \ the execution\n status of individual tasks is not guaranteed upon\
+              \ exceptional\n return. The status of each task may be obtained using\
+              \ getException() and related methods to check if they have been\n cancelled,\
+              \ completed normally or exceptionally, or left\n unprocessed."
+          - name: isExceptionalStatus
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: peekNextLocalTask
+            modifiers:
+            - protected
+            - static
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the next task, or null if none are available
+            notes: "Returns, but does not unschedule or execute, a task queued by\n\
+              \ the current thread but not yet executed, if one is immediately\n available.\
+              \ There is no guarantee that this task will actually\n be polled or\
+              \ executed next. Conversely, this method may return\n null even if a\
+              \ task exists but cannot be accessed without\n contention with other\
+              \ threads.  This method is designed\n primarily to support extensions,\
+              \ and is unlikely to be useful\n otherwise."
+          - name: pollNextLocalTask
+            modifiers:
+            - protected
+            - static
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: the next task, or null if none are available
+            notes: "Unschedules and returns, without executing, the next task\n queued\
+              \ by the current thread but not yet executed, if the\n current thread\
+              \ is operating in a ForkJoinPool.  This method is\n designed primarily\
+              \ to support extensions, and is unlikely to be\n useful otherwise."
+          - name: pollSubmission
+            modifiers:
+            - protected
+            - static
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: a task, or null if none are available
+            notes: "If the current thread is operating in a ForkJoinPool,\n unschedules\
+              \ and returns, without executing, a task externally\n submitted to the\
+              \ pool, if one is available. Availability may be\n transient, so a null\
+              \ result does not necessarily imply\n quiescence of the pool.  This\
+              \ method is designed primarily to\n support extensions, and is unlikely\
+              \ to be useful otherwise."
+          - name: pollTask
+            modifiers:
+            - protected
+            - static
+            return:
+              type:
+                basic: ForkJoinTask
+                full: java.util.concurrent.ForkJoinTask<?>
+              notes: a task, or null if none are available
+            notes: "If the current thread is operating in a ForkJoinPool,\n unschedules\
+              \ and returns, without executing, the next task\n queued by the current\
+              \ thread but not yet executed, if one is\n available, or if not available,\
+              \ a task that was forked by some\n other thread, if available. Availability\
+              \ may be transient, so a\n null result does not necessarily imply quiescence\
+              \ of\n the pool this task is operating in.  This method is designed\n\
+              \ primarily to support extensions, and is unlikely to be useful\n otherwise."
+          - name: rethrow
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: uncheckedThrow
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Throwable
+                full: java.lang.Throwable
+            return:
+              type:
+                basic: void
+                full: void

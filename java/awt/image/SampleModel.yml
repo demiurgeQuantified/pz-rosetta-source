@@ -4,118 +4,264 @@ languages:
     packages:
       java.awt.image:
         SampleModel:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This abstract class defines an interface for extracting samples\
+            \ of pixels\n  in an image.  All image data is expressed as a collection\
+            \ of pixels.\n  Each pixel consists of a number of samples. A sample is\
+            \ a datum\n  for one band of an image and a band consists of all samples\
+            \ of a\n  particular type in an image.  For example, a pixel might contain\n\
+            \  three samples representing its red, green and blue components.\n  There\
+            \ are three bands in the image containing this pixel.  One band\n  consists\
+            \ of all the red samples from all pixels in the\n  image.  The second\
+            \ band consists of all the green samples and\n  the remaining band consists\
+            \ of all of the blue samples.  The pixel\n  can be stored in various formats.\
+            \  For example, all samples from\n  a particular band can be stored contiguously\
+            \ or all samples from a\n  single pixel can be stored contiguously.\n\
+            \  \n  Subclasses of SampleModel specify the types of samples they can\n\
+            \  represent (e.g. unsigned 8-bit byte, signed 16-bit short, etc.)\n \
+            \ and may specify how the samples are organized in memory.\n  In the Java\
+            \ 2D(tm) API, built-in image processing operators may\n  not operate on\
+            \ all possible sample types, but generally will work\n  for unsigned integral\
+            \ samples of 16 bits or less.  Some operators\n  support a wider variety\
+            \ of sample types.\n  \n  A collection of pixels is represented as a Raster,\
+            \ which consists of\n  a DataBuffer and a SampleModel.  The SampleModel\
+            \ allows access to\n  samples in the DataBuffer and may provide low-level\
+            \ information that\n  a programmer can use to directly manipulate samples\
+            \ and pixels in the\n  DataBuffer.\n  \n  This class is generally a fall\
+            \ back method for dealing with\n  images.  More efficient code will cast\
+            \ the SampleModel to the\n  appropriate subclass and extract the information\
+            \ needed to directly\n  manipulate pixels in the DataBuffer."
+          fields:
+            dataType:
+              name: dataType
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: Data type of the DataBuffer storing the pixel data.
+            height:
+              name: height
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "Height in pixels of the region of image data that this SampleModel\n\
+                \  describes."
+            numBands:
+              name: numBands
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: Number of bands of the image data that this SampleModel describes.
+            width:
+              name: width
+              modifiers:
+              - protected
+              type:
+                basic: int
+                full: int
+              notes: "Width in pixels of the region of image data that this SampleModel\n\
+                \  describes."
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dataType
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The data type of the DataBuffer storing the pixel data.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The width (in pixels) of the region of image data.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The height (in pixels) of the region of image data.
+            - name: numBands
               type:
                 basic: int
                 full: int
+              notes: The number of bands of the image data.
+            notes: Constructs a SampleModel with the specified parameters.
           methods:
           - name: createCompatibleSampleModel
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the width of the image data
+            - name: h
               type:
                 basic: int
                 full: int
+              notes: the height of the image data
             return:
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
+              notes: "a SampleModel describing the same image\n          data as this\
+                \ SampleModel, but with a\n          different size."
+            notes: "Creates a SampleModel which describes data in this SampleModel's\n\
+              \  format, but with a different width and height."
           - name: createDataBuffer
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: "a DataBuffer corresponding to this\n         SampleModel."
+            notes: "Creates a DataBuffer that corresponds to this SampleModel.\n The\
+              \ DataBuffer's width and height will match this SampleModel's."
           - name: createSubsetSampleModel
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: bands
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: the subset of bands of this SampleModel
             return:
               type:
                 basic: SampleModel
                 full: java.awt.image.SampleModel
+              notes: "a SampleModel with a subset of bands of this\n         SampleModel."
+            notes: "Creates a new SampleModel\n with a subset of the bands of this\n\
+              \ SampleModel."
           - name: getDataElements
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg3
+              notes: "If non-null, a primitive array in which to return\n        \
+                \          the pixel data."
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the data elements for the specified pixel.
+            notes: "Returns data for a single pixel in a primitive array of type\n\
+              \ TransferType.  For image data supported by the Java 2D API, this\n\
+              \ will be one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT,\n DataBuffer.TYPE_INT,\
+              \ DataBuffer.TYPE_SHORT, DataBuffer.TYPE_FLOAT,\n or DataBuffer.TYPE_DOUBLE.\
+              \  Data may be returned in a packed format,\n thus increasing efficiency\
+              \ for data transfers. Generally, obj\n should be passed in as null,\
+              \ so that the Object will be created\n automatically and will be of\
+              \ the right primitive data type.\n \n The following code illustrates\
+              \ transferring data for one pixel from\n DataBuffer db1, whose storage\
+              \ layout is described by\n SampleModel sm1, to DataBuffer db2, whose\n\
+              \ storage layout is described by SampleModel sm2.\n The transfer will\
+              \ generally be more efficient than using\n getPixel/setPixel.\n \n \
+              \      SampleModel sm1, sm2;\n       DataBuffer db1, db2;\n       sm2.setDataElements(x,\
+              \ y, sm1.getDataElements(x, y, null, db1), db2);\n \n Using getDataElements/setDataElements\
+              \ to transfer between two\n DataBuffer/SampleModel pairs is legitimate\
+              \ if the SampleModels have\n the same number of bands, corresponding\
+              \ bands have the same number of\n bits per sample, and the TransferTypes\
+              \ are the same.\n \n If obj is non-null, it should be a primitive array\
+              \ of type TransferType.\n Otherwise, a ClassCastException is thrown.\
+              \  An\n ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds, or if obj is non-null and is not large enough\
+              \ to hold\n the pixel data."
           - name: getDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The minimum X coordinate of the pixel rectangle.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The minimum Y coordinate of the pixel rectangle.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The width of the pixel rectangle.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The height of the pixel rectangle.
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg5
+              notes: "If non-null, a primitive array in which to return\n        \
+                \          the pixel data."
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the data elements for the specified region of pixels.
+            notes: "Returns the pixel data for the specified rectangle of pixels in\
+              \ a\n primitive array of type TransferType.\n For image data supported\
+              \ by the Java 2D API, this\n will be one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT,\n\
+              \ DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT, DataBuffer.TYPE_FLOAT,\n\
+              \ or DataBuffer.TYPE_DOUBLE.  Data may be returned in a packed format,\n\
+              \ thus increasing efficiency for data transfers. Generally, obj\n should\
+              \ be passed in as null, so that the Object will be created\n automatically\
+              \ and will be of the right primitive data type.\n \n The following code\
+              \ illustrates transferring data for a rectangular\n region of pixels\
+              \ from\n DataBuffer db1, whose storage layout is described by\n SampleModel\
+              \ sm1, to DataBuffer db2, whose\n storage layout is described by SampleModel\
+              \ sm2.\n The transfer will generally be more efficient than using\n\
+              \ getPixels/setPixels.\n \n       SampleModel sm1, sm2;\n       DataBuffer\
+              \ db1, db2;\n       sm2.setDataElements(x, y, w, h, sm1.getDataElements(x,\
+              \ y, w,\n                           h, null, db1), db2);\n \n Using\
+              \ getDataElements/setDataElements to transfer between two\n DataBuffer/SampleModel\
+              \ pairs is legitimate if the SampleModels have\n the same number of\
+              \ bands, corresponding bands have the same number of\n bits per sample,\
+              \ and the TransferTypes are the same.\n \n If obj is non-null, it should\
+              \ be a primitive array of type TransferType.\n Otherwise, a ClassCastException\
+              \ is thrown.  An\n ArrayIndexOutOfBoundsException may be thrown if the\
+              \ coordinates are\n not in bounds, or if obj is non-null and is not\
+              \ large enough to hold\n the pixel data."
           - name: getDataType
             modifiers:
             - public
@@ -124,6 +270,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the data type.
+            notes: Returns the data type of the DataBuffer storing the pixel data.
           - name: getHeight
             modifiers:
             - public
@@ -132,6 +280,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the height in pixels of the region of image data\n         \
+                \ that this SampleModel describes."
+            notes: Returns the height in pixels.
           - name: getNumBands
             modifiers:
             - public
@@ -140,380 +291,515 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the number of bands of image data that this\n          SampleModel\
+                \ describes."
+            notes: Returns the total number of bands of image data.
           - name: getNumDataElements
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of data elements.
+            notes: "Returns the number of data elements needed to transfer a pixel\n\
+              \  via the getDataElements and setDataElements methods.  When pixels\n\
+              \  are transferred via these methods, they may be transferred in a\n\
+              \  packed or unpacked format, depending on the implementation of the\n\
+              \  SampleModel.  Using these methods, pixels are transferred as an\n\
+              \  array of getNumDataElements() elements of a primitive type given\n\
+              \  by getTransferType().  The TransferType may or may not be the same\n\
+              \  as the storage DataType."
           - name: getPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location
+            - name: iArray
               type:
-                basic: double[]
-                full: double[]
-            - name: arg3
+                basic: int
+                full: int[]
+              notes: If non-null, returns the samples in this array
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data
             return:
               type:
-                basic: double[]
-                full: double[]
+                basic: int
+                full: int[]
+              notes: the samples for the specified pixel.
+            notes: "Returns the samples for a specified pixel in an int array,\n one\
+              \ sample per array element.\n ArrayIndexOutOfBoundsException may be\
+              \ thrown if the coordinates are\n not in bounds."
           - name: getPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: fArray
               type:
-                basic: float[]
+                basic: float
                 full: float[]
-            - name: arg3
+              notes: If non-null, returns the samples in this array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
-                basic: float[]
+                basic: float
                 full: float[]
+              notes: the samples for the specified pixel.
+            notes: "Returns the samples for the specified pixel in an array of float.\n\
+              \ ArrayIndexOutOfBoundsException may be thrown if the coordinates are\n\
+              \ not in bounds."
           - name: getPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: dArray
               type:
-                basic: int[]
-                full: int[]
-            - name: arg3
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: int[]
-                full: int[]
-          - name: getPixels
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: double[]
+                basic: double
                 full: double[]
-            - name: arg5
+              notes: If non-null, returns the samples in this array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
-                basic: double[]
+                basic: double
                 full: double[]
+              notes: the samples for the specified pixel.
+            notes: "Returns the samples for the specified pixel in an array of double.\n\
+              \ ArrayIndexOutOfBoundsException may be thrown if the coordinates are\n\
+              \ not in bounds."
           - name: getPixels
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The width of the pixel rectangle.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The height of the pixel rectangle.
+            - name: iArray
               type:
-                basic: float[]
-                full: float[]
-            - name: arg5
+                basic: int
+                full: int[]
+              notes: If non-null, returns the samples in this array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
-                basic: float[]
-                full: float[]
+                basic: int
+                full: int[]
+              notes: the samples for the specified region of pixels.
+            notes: "Returns all samples for a rectangle of pixels in an\n int array,\
+              \ one sample per array element.\n ArrayIndexOutOfBoundsException may\
+              \ be thrown if the coordinates are\n not in bounds."
           - name: getPixels
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The width of the pixel rectangle.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The height of the pixel rectangle.
+            - name: fArray
               type:
-                basic: int[]
-                full: int[]
-            - name: arg5
+                basic: float
+                full: float[]
+              notes: If non-null, returns the samples in this array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
-                basic: int[]
-                full: int[]
+                basic: float
+                full: float[]
+              notes: the samples for the specified region of pixels.
+            notes: "Returns all samples for a rectangle of pixels in a float\n array,\
+              \ one sample per array element.\n ArrayIndexOutOfBoundsException may\
+              \ be thrown if the coordinates are\n not in bounds."
+          - name: getPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: If non-null, returns the samples in this array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: double
+                full: double[]
+              notes: the samples for the specified region of pixels.
+            notes: "Returns all samples for a rectangle of pixels in a double\n array,\
+              \ one sample per array element.\n ArrayIndexOutOfBoundsException may\
+              \ be thrown if the coordinates are\n not in bounds."
           - name: getSample
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to return.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: int
                 full: int
+              notes: the sample in a specified band for the specified pixel.
+            notes: "Returns the sample in a specified band for the pixel located\n\
+              \ at (x,y) as an int.\n ArrayIndexOutOfBoundsException may be thrown\
+              \ if the coordinates are\n not in bounds."
           - name: getSampleDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to return.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: double
                 full: double
+              notes: the sample in a specified band for the specified pixel.
+            notes: "Returns the sample in a specified band\n for a pixel located at\
+              \ (x,y) as a double.\n ArrayIndexOutOfBoundsException may be thrown\
+              \ if the coordinates are\n not in bounds."
           - name: getSampleFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to return.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: float
                 full: float
+              notes: the sample in a specified band for the specified pixel.
+            notes: "Returns the sample in a specified band\n for the pixel located\
+              \ at (x,y) as a float.\n ArrayIndexOutOfBoundsException may be thrown\
+              \ if the coordinates are\n not in bounds."
           - name: getSampleSize
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: int
-                full: int
+                full: int[]
+              notes: the size of samples for all bands.
+            notes: Returns the size in bits of samples for all bands.
           - name: getSampleSize
             modifiers:
             - public
+            - abstract
             parameters:
-            - name: arg0
+            - name: band
               type:
                 basic: int
                 full: int
+              notes: the specified band
             return:
               type:
                 basic: int
                 full: int
+              notes: the size of the samples of the specified band.
+            notes: Returns the size in bits of samples for the specified band.
           - name: getSamples
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The width of the pixel rectangle.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The height of the pixel rectangle.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg5
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg6
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: double[]
-                full: double[]
-          - name: getSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: The band to return.
+            - name: iArray
               type:
                 basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg6
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: float[]
-                full: float[]
-          - name: getSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: int[]
                 full: int[]
-            - name: arg6
+              notes: If non-null, returns the samples in this array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "the samples for the specified band for the specified region\n\
+                \         of pixels."
+            notes: "Returns the samples for a specified band for the specified rectangle\n\
+              \ of pixels in an int array, one sample per array element.\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds."
+          - name: getSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to return.
+            - name: fArray
+              type:
+                basic: float
+                full: float[]
+              notes: If non-null, returns the samples in this array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: float
+                full: float[]
+              notes: "the samples for the specified band for the specified region\n\
+                \         of pixels."
+            notes: "Returns the samples for a specified band for the specified rectangle\n\
+              \ of pixels in a float array, one sample per array element.\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds."
+          - name: getSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to return.
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: If non-null, returns the samples in this array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: double
+                full: double[]
+              notes: "the samples for the specified band for the specified region\n\
+                \         of pixels."
+            notes: "Returns the samples for a specified band for a specified rectangle\n\
+              \ of pixels in a double array, one sample per array element.\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds."
           - name: getTransferType
             modifiers:
             - public
@@ -521,6 +807,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the transfer type.
+            notes: "Returns the TransferType used to transfer pixels via the\n  getDataElements\
+              \ and setDataElements methods.  When pixels\n  are transferred via these\
+              \ methods, they may be transferred in a\n  packed or unpacked format,\
+              \ depending on the implementation of the\n  SampleModel.  Using these\
+              \ methods, pixels are transferred as an\n  array of getNumDataElements()\
+              \ elements of a primitive type given\n  by getTransferType().  The TransferType\
+              \ may or may not be the same\n  as the storage DataType.  The TransferType\
+              \ will be one of the types\n  defined in DataBuffer."
           - name: getWidth
             modifiers:
             - public
@@ -529,421 +824,594 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the width in pixels of the region of image data\n          that\
+                \ this SampleModel describes."
+            notes: Returns the width in pixels.
+          - name: setDataElements
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the pixel location.
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: A primitive array containing pixel data.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the data for a single pixel in the specified DataBuffer from\
+              \ a\n primitive array of type TransferType.  For image data supported\
+              \ by\n the Java 2D API, this will be one of DataBuffer.TYPE_BYTE,\n\
+              \ DataBuffer.TYPE_USHORT, DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT,\n\
+              \ DataBuffer.TYPE_FLOAT, or DataBuffer.TYPE_DOUBLE.  Data in the array\n\
+              \ may be in a packed format, thus increasing efficiency for data\n transfers.\n\
+              \ \n The following code illustrates transferring data for one pixel\
+              \ from\n DataBuffer db1, whose storage layout is described by\n SampleModel\
+              \ sm1, to DataBuffer db2, whose\n storage layout is described by SampleModel\
+              \ sm2.\n The transfer will generally be more efficient than using\n\
+              \ getPixel/setPixel.\n \n       SampleModel sm1, sm2;\n       DataBuffer\
+              \ db1, db2;\n       sm2.setDataElements(x, y, sm1.getDataElements(x,\
+              \ y, null, db1),\n                           db2);\n \n Using getDataElements/setDataElements\
+              \ to transfer between two\n DataBuffer/SampleModel pairs is legitimate\
+              \ if the SampleModels have\n the same number of bands, corresponding\
+              \ bands have the same number of\n bits per sample, and the TransferTypes\
+              \ are the same.\n \n obj must be a primitive array of type TransferType.\
+              \  Otherwise,\n a ClassCastException is thrown.  An\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds, or if obj is\
+              \ not large enough to hold the pixel data."
           - name: setDataElements
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The minimum X coordinate of the pixel rectangle.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The minimum Y coordinate of the pixel rectangle.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg3
+              notes: A primitive array containing pixel data.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
-          - name: setDataElements
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: Object
-                full: java.lang.Object
-            - name: arg5
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Sets the data for a rectangle of pixels in the specified DataBuffer\n\
+              \ from a primitive array of type TransferType.  For image data supported\n\
+              \ by the Java 2D API, this will be one of DataBuffer.TYPE_BYTE,\n DataBuffer.TYPE_USHORT,\
+              \ DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT,\n DataBuffer.TYPE_FLOAT,\
+              \ or DataBuffer.TYPE_DOUBLE.  Data in the array\n may be in a packed\
+              \ format, thus increasing efficiency for data\n transfers.\n \n The\
+              \ following code illustrates transferring data for a rectangular\n region\
+              \ of pixels from\n DataBuffer db1, whose storage layout is described\
+              \ by\n SampleModel sm1, to DataBuffer db2, whose\n storage layout is\
+              \ described by SampleModel sm2.\n The transfer will generally be more\
+              \ efficient than using\n getPixels/setPixels.\n \n       SampleModel\
+              \ sm1, sm2;\n       DataBuffer db1, db2;\n       sm2.setDataElements(x,\
+              \ y, w, h, sm1.getDataElements(x, y, w, h,\n                       \
+              \    null, db1), db2);\n \n Using getDataElements/setDataElements to\
+              \ transfer between two\n DataBuffer/SampleModel pairs is legitimate\
+              \ if the SampleModels have\n the same number of bands, corresponding\
+              \ bands have the same number of\n bits per sample, and the TransferTypes\
+              \ are the same.\n \n obj must be a primitive array of type TransferType.\
+              \  Otherwise,\n a ClassCastException is thrown.  An\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds, or if obj is\
+              \ not large enough to hold the pixel data."
           - name: setPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg3
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setPixel
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: The Y coordinate of the pixel location.
+            - name: iArray
               type:
                 basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg3
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setPixel
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int[]
                 full: int[]
-            - name: arg3
+              notes: The input samples in an int array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
-          - name: setPixels
+            notes: "Sets a pixel in  the DataBuffer using an int array of samples\
+              \ for input.\n ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds."
+          - name: setPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: fArray
               type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg5
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setPixels
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: float[]
+                basic: float
                 full: float[]
-            - name: arg5
+              notes: The input samples in a float array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
-          - name: setPixels
+            notes: "Sets a pixel in the DataBuffer using a float array of samples\
+              \ for input.\n ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds."
+          - name: setPixel
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int[]
-                full: int[]
-            - name: arg5
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setSample
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
+              notes: The Y coordinate of the pixel location.
+            - name: dArray
               type:
                 basic: double
-                full: double
-            - name: arg4
+                full: double[]
+              notes: The input samples in a double array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a pixel in the DataBuffer using a double array of samples\n\
+              \ for input."
+          - name: setPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: iArray
+              type:
+                basic: int
+                full: int[]
+              notes: The input samples in an int array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets all samples for a rectangle of pixels from an int array containing\n\
+              \ one sample per array element.\n ArrayIndexOutOfBoundsException may\
+              \ be thrown if the coordinates are\n not in bounds."
+          - name: setPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: fArray
+              type:
+                basic: float
+                full: float[]
+              notes: The input samples in a float array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets all samples for a rectangle of pixels from a float array\
+              \ containing\n one sample per array element.\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds."
+          - name: setPixels
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: The input samples in a double array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets all samples for a rectangle of pixels from a double array\n\
+              \ containing one sample per array element.\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds."
+          - name: setSample
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the pixel location.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to set.
+            - name: s
+              type:
+                basic: int
+                full: int
+              notes: The input sample as an int.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets a sample in the specified band for the pixel located at (x,y)\n\
+              \ in the DataBuffer using an int for input.\n ArrayIndexOutOfBoundsException\
+              \ may be thrown if the coordinates are\n not in bounds."
           - name: setSample
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to set.
+            - name: s
               type:
                 basic: float
                 full: float
-            - name: arg4
+              notes: The input sample as a float.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a sample in the specified band for the pixel located at (x,y)\n\
+              \ in the DataBuffer using a float for input.\n The default implementation\
+              \ of this method casts the input\n float sample to an int and then calls\
+              \ the\n setSample(int, int, int, DataBuffer) method using\n that int\
+              \ value.\n ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds."
           - name: setSample
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the pixel location.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The band to set.
+            - name: s
               type:
-                basic: int
-                full: int
-            - name: arg4
+                basic: double
+                full: double
+              notes: The input sample as a double.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a sample in the specified band for the pixel located at (x,y)\n\
+              \ in the DataBuffer using a double for input.\n The default implementation\
+              \ of this method casts the input\n double sample to an int and then\
+              \ calls the\n setSample(int, int, int, DataBuffer) method using\n that\
+              \ int value.\n ArrayIndexOutOfBoundsException may be thrown if the coordinates\
+              \ are\n not in bounds."
           - name: setSamples
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: The width of the pixel rectangle.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: The height of the pixel rectangle.
+            - name: b
               type:
                 basic: int
                 full: int
-            - name: arg5
-              type:
-                basic: double[]
-                full: double[]
-            - name: arg6
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+              notes: The band to set.
+            - name: iArray
               type:
                 basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: float[]
-                full: float[]
-            - name: arg6
-              type:
-                basic: DataBuffer
-                full: java.awt.image.DataBuffer
-            return:
-              type:
-                basic: void
-                full: void
-          - name: setSamples
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: int
-                full: int
-            - name: arg4
-              type:
-                basic: int
-                full: int
-            - name: arg5
-              type:
-                basic: int[]
                 full: int[]
-            - name: arg6
+              notes: The input samples in an int array.
+            - name: data
               type:
                 basic: DataBuffer
                 full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: Object
+            notes: "Sets the samples in the specified band for the specified rectangle\n\
+              \ of pixels from an int array containing one sample per array element.\n\
+              \ ArrayIndexOutOfBoundsException may be thrown if the coordinates are\n\
+              \ not in bounds."
+          - name: setSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to set.
+            - name: fArray
+              type:
+                basic: float
+                full: float[]
+              notes: The input samples in a float array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the samples in the specified band for the specified rectangle\n\
+              \ of pixels from a float array containing one sample per array element.\n\
+              \ ArrayIndexOutOfBoundsException may be thrown if the coordinates are\n\
+              \ not in bounds."
+          - name: setSamples
+            modifiers:
+            - public
+            parameters:
+            - name: x
+              type:
+                basic: int
+                full: int
+              notes: The X coordinate of the upper left pixel location.
+            - name: y
+              type:
+                basic: int
+                full: int
+              notes: The Y coordinate of the upper left pixel location.
+            - name: w
+              type:
+                basic: int
+                full: int
+              notes: The width of the pixel rectangle.
+            - name: h
+              type:
+                basic: int
+                full: int
+              notes: The height of the pixel rectangle.
+            - name: b
+              type:
+                basic: int
+                full: int
+              notes: The band to set.
+            - name: dArray
+              type:
+                basic: double
+                full: double[]
+              notes: The input samples in a double array.
+            - name: data
+              type:
+                basic: DataBuffer
+                full: java.awt.image.DataBuffer
+              notes: The DataBuffer containing the image data.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the samples in the specified band for the specified rectangle\n\
+              \ of pixels from a double array containing one sample per array element.\n\
+              \ ArrayIndexOutOfBoundsException may be thrown if the coordinates are\n\
+              \ not in bounds."
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

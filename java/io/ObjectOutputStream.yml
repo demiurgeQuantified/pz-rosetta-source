@@ -4,319 +4,263 @@ languages:
     packages:
       java.io:
         ObjectOutputStream:
+          extends: java.io.OutputStream
+          modifiers:
+          - public
+          notes: "An ObjectOutputStream writes primitive data types and graphs of\
+            \ Java objects\n to an OutputStream.  The objects can be read (reconstituted)\
+            \ using an\n ObjectInputStream.  Persistent storage of objects can be\
+            \ accomplished by\n using a file for the stream.  If the stream is a network\
+            \ socket stream, the\n objects can be reconstituted on another host or\
+            \ in another process.\n\n Only objects that support the java.io.Serializable\
+            \ interface can be\n written to streams.  The class of each serializable\
+            \ object is encoded\n including the class name and signature of the class,\
+            \ the values of the\n object's fields and arrays, and the closure of any\
+            \ other objects referenced\n from the initial objects.\n\n The method\
+            \ writeObject is used to write an object to the stream.  Any\n object,\
+            \ including Strings and arrays, is written with writeObject. Multiple\n\
+            \ objects or primitives can be written to the stream.  The objects must\
+            \ be\n read back from the corresponding ObjectInputstream with the same\
+            \ types and\n in the same order as they were written.\n\n Primitive data\
+            \ types can also be written to the stream using the\n appropriate methods\
+            \ from DataOutput. Strings can also be written using the\n writeUTF method.\n\
+            \n The default serialization mechanism for an object writes the class\
+            \ of the\n object, the class signature, and the values of all non-transient\
+            \ and\n non-static fields.  References to other objects (except in transient\
+            \ or\n static fields) cause those objects to be written also. Multiple\
+            \ references\n to a single object are encoded using a reference sharing\
+            \ mechanism so that\n graphs of objects can be restored to the same shape\
+            \ as when the original was\n written.\n\n For example to write an object\
+            \ that can be read by the example in\n ObjectInputStream:\n \n \n    \
+            \  FileOutputStream fos = new FileOutputStream(\"t.tmp\");\n      ObjectOutputStream\
+            \ oos = new ObjectOutputStream(fos);\n\n      oos.writeInt(12345);\n \
+            \     oos.writeObject(\"Today\");\n      oos.writeObject(new Date());\n\
+            \n      oos.close();\n \n\n Classes that require special handling during\
+            \ the serialization and\n deserialization process must implement special\
+            \ methods with these exact\n signatures:\n \n \n private void readObject(java.io.ObjectInputStream\
+            \ stream)\n     throws IOException, ClassNotFoundException;\n private\
+            \ void writeObject(java.io.ObjectOutputStream stream)\n     throws IOException\n\
+            \ private void readObjectNoData()\n     throws ObjectStreamException;\n\
+            \ \n\n The writeObject method is responsible for writing the state of\
+            \ the object\n for its particular class so that the corresponding readObject\
+            \ method can\n restore it.  The method does not need to concern itself\
+            \ with the state\n belonging to the object's superclasses or subclasses.\
+            \  State is saved by\n writing the individual fields to the ObjectOutputStream\
+            \ using the\n writeObject method or by using the methods for primitive\
+            \ data types\n supported by DataOutput.\n\n Serialization does not write\
+            \ out the fields of any object that does not\n implement the java.io.Serializable\
+            \ interface.  Subclasses of Objects that\n are not serializable can be\
+            \ serializable. In this case the non-serializable\n class must have a\
+            \ no-arg constructor to allow its fields to be initialized.\n In this\
+            \ case it is the responsibility of the subclass to save and restore\n\
+            \ the state of the non-serializable class. It is frequently the case that\
+            \ the\n fields of that class are accessible (public, package, or protected)\
+            \ or that\n there are get and set methods that can be used to restore\
+            \ the state.\n\n Serialization of an object can be prevented by implementing\
+            \ writeObject\n and readObject methods that throw the NotSerializableException.\
+            \  The\n exception will be caught by the ObjectOutputStream and abort\
+            \ the\n serialization process.\n\n Implementing the Externalizable interface\
+            \ allows the object to assume\n complete control over the contents and\
+            \ format of the object's serialized\n form.  The methods of the Externalizable\
+            \ interface, writeExternal and\n readExternal, are called to save and\
+            \ restore the objects state.  When\n implemented by a class they can write\
+            \ and read their own state using all of\n the methods of ObjectOutput\
+            \ and ObjectInput.  It is the responsibility of\n the objects to handle\
+            \ any versioning that occurs.\n\n Enum constants are serialized differently\
+            \ than ordinary serializable or\n externalizable objects.  The serialized\
+            \ form of an enum constant consists\n solely of its name; field values\
+            \ of the constant are not transmitted.  To\n serialize an enum constant,\
+            \ ObjectOutputStream writes the string returned by\n the constant's name\
+            \ method.  Like other serializable or externalizable\n objects, enum constants\
+            \ can function as the targets of back references\n appearing subsequently\
+            \ in the serialization stream.  The process by which\n enum constants\
+            \ are serialized cannot be customized; any class-specific\n writeObject\
+            \ and writeReplace methods defined by enum types are ignored\n during\
+            \ serialization.  Similarly, any serialPersistentFields or\n serialVersionUID\
+            \ field declarations are also ignored--all enum types have a\n fixed serialVersionUID\
+            \ of 0L.\n\n Primitive data, excluding serializable fields and externalizable\
+            \ data, is\n written to the ObjectOutputStream in block-data records.\
+            \ A block data record\n is composed of a header and data. The block data\
+            \ header consists of a marker\n and the number of bytes to follow the\
+            \ header.  Consecutive primitive data\n writes are merged into one block-data\
+            \ record.  The blocking factor used for\n a block-data record will be\
+            \ 1024 bytes.  Each block-data record will be\n filled up to 1024 bytes,\
+            \ or be written whenever there is a termination of\n block-data mode.\
+            \  Calls to the ObjectOutputStream methods writeObject,\n defaultWriteObject\
+            \ and writeFields initially terminate any existing\n block-data record.\n\
+            \n Records are serialized differently than ordinary serializable or externalizable\n\
+            \ objects, see record serialization."
+          fields:
+            bout:
+              name: bout
+              modifiers:
+              - private
+              type:
+                basic: ObjectOutputStream.BlockDataOutputStream
+                full: java.io.ObjectOutputStream$BlockDataOutputStream
+            curContext:
+              name: curContext
+              modifiers:
+              - private
+              type:
+                basic: SerialCallbackContext
+                full: java.io.SerialCallbackContext
+            curPut:
+              name: curPut
+              modifiers:
+              - private
+              type:
+                basic: ObjectOutputStream.PutFieldImpl
+                full: java.io.ObjectOutputStream$PutFieldImpl
+            debugInfoStack:
+              name: debugInfoStack
+              modifiers:
+              - private
+              type:
+                basic: ObjectOutputStream.DebugTraceInfoStack
+                full: java.io.ObjectOutputStream$DebugTraceInfoStack
+            depth:
+              name: depth
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            enableOverride:
+              name: enableOverride
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            enableReplace:
+              name: enableReplace
+              modifiers:
+              - private
+              type:
+                basic: boolean
+                full: boolean
+            handles:
+              name: handles
+              modifiers:
+              - private
+              type:
+                basic: ObjectOutputStream.HandleTable
+                full: java.io.ObjectOutputStream$HandleTable
+            primVals:
+              name: primVals
+              modifiers:
+              - private
+              type:
+                basic: byte
+                full: byte[]
+            protocol:
+              name: protocol
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            subs:
+              name: subs
+              modifiers:
+              - private
+              type:
+                basic: ObjectOutputStream.ReplaceTable
+                full: java.io.ObjectOutputStream$ReplaceTable
           staticFields:
-            PROTOCOL_VERSION_1:
-              name: PROTOCOL_VERSION_1
+            $assertionsDisabled:
+              name: $assertionsDisabled
               modifiers:
-              - public
+              - package
               - static
-              - final
               type:
-                basic: int
-                full: int
-                nullable: true
-            PROTOCOL_VERSION_2:
-              name: PROTOCOL_VERSION_2
+                basic: boolean
+                full: boolean
+            extendedDebugInfo:
+              name: extendedDebugInfo
               modifiers:
-              - public
+              - private
               - static
-              - final
               type:
-                basic: int
-                full: int
-                nullable: true
-            SC_BLOCK_DATA:
-              name: SC_BLOCK_DATA
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            SC_ENUM:
-              name: SC_ENUM
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            SC_EXTERNALIZABLE:
-              name: SC_EXTERNALIZABLE
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            SC_SERIALIZABLE:
-              name: SC_SERIALIZABLE
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            SC_WRITE_METHOD:
-              name: SC_WRITE_METHOD
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            SERIAL_FILTER_PERMISSION:
-              name: SERIAL_FILTER_PERMISSION
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: SerializablePermission
-                full: java.io.SerializablePermission
-                nullable: true
-            STREAM_MAGIC:
-              name: STREAM_MAGIC
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: short
-                full: short
-                nullable: true
-            STREAM_VERSION:
-              name: STREAM_VERSION
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: short
-                full: short
-                nullable: true
-            SUBCLASS_IMPLEMENTATION_PERMISSION:
-              name: SUBCLASS_IMPLEMENTATION_PERMISSION
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: SerializablePermission
-                full: java.io.SerializablePermission
-                nullable: true
-            SUBSTITUTION_PERMISSION:
-              name: SUBSTITUTION_PERMISSION
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: SerializablePermission
-                full: java.io.SerializablePermission
-                nullable: true
-            TC_ARRAY:
-              name: TC_ARRAY
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_BASE:
-              name: TC_BASE
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_BLOCKDATA:
-              name: TC_BLOCKDATA
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_BLOCKDATALONG:
-              name: TC_BLOCKDATALONG
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_CLASS:
-              name: TC_CLASS
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_CLASSDESC:
-              name: TC_CLASSDESC
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_ENDBLOCKDATA:
-              name: TC_ENDBLOCKDATA
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_ENUM:
-              name: TC_ENUM
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_EXCEPTION:
-              name: TC_EXCEPTION
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_LONGSTRING:
-              name: TC_LONGSTRING
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_MAX:
-              name: TC_MAX
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_NULL:
-              name: TC_NULL
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_OBJECT:
-              name: TC_OBJECT
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_PROXYCLASSDESC:
-              name: TC_PROXYCLASSDESC
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_REFERENCE:
-              name: TC_REFERENCE
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_RESET:
-              name: TC_RESET
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            TC_STRING:
-              name: TC_STRING
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: byte
-                full: byte
-                nullable: true
-            baseWireHandle:
-              name: baseWireHandle
-              modifiers:
-              - public
-              - static
-              - final
-              type:
-                basic: int
-                full: int
-                nullable: true
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: out
               type:
                 basic: OutputStream
                 full: java.io.OutputStream
+              notes: output stream to write to
+            notes: "Creates an ObjectOutputStream that writes to the specified OutputStream.\n\
+              \ This constructor writes the serialization stream header to the\n underlying\
+              \ stream; callers may wish to flush the stream immediately to\n ensure\
+              \ that constructors for receiving ObjectInputStreams will not block\n\
+              \ when reading the header.\n\n If a security manager is installed, this\
+              \ constructor will check for\n the \"enableSubclassImplementation\"\
+              \ SerializablePermission when invoked\n directly or indirectly by the\
+              \ constructor of a subclass which overrides\n the ObjectOutputStream.putFields\
+              \ or ObjectOutputStream.writeUnshared\n methods."
+          - modifiers:
+            - protected
+            notes: "Provide a way for subclasses that are completely reimplementing\n\
+              \ ObjectOutputStream to not have to allocate private data just used\
+              \ by\n this implementation of ObjectOutputStream.\n\n If there is a\
+              \ security manager installed, this method first calls the\n security\
+              \ manager's checkPermission method with a\n SerializablePermission(\"\
+              enableSubclassImplementation\")\n permission to ensure it's ok to enable\
+              \ subclassing."
           methods:
-          - name: close
+          - name: annotateClass
             modifiers:
-            - public
+            - protected
+            parameters:
+            - name: cl
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: the class to annotate custom data for
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Subclasses may implement this method to allow class data to be\
+              \ stored in\n the stream. By default this method does nothing.  The\
+              \ corresponding\n method in ObjectInputStream is resolveClass.  This\
+              \ method is called\n exactly once for each unique class in the stream.\
+              \  The class name and\n signature will have already been written to\
+              \ the stream.  This method may\n make free use of the ObjectOutputStream\
+              \ to save any representation of\n the class it deems suitable (for example,\
+              \ the bytes of the class file).\n The resolveClass method in the corresponding\
+              \ subclass of\n ObjectInputStream must read and use any data or objects\
+              \ written by\n annotateClass."
+          - name: annotateProxyClass
+            modifiers:
+            - protected
+            parameters:
+            - name: cl
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+              notes: the proxy class to annotate custom data for
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Subclasses may implement this method to store custom data in the\
+              \ stream\n along with descriptors for dynamic proxy classes.\n\n This\
+              \ method is called exactly once for each unique proxy class\n descriptor\
+              \ in the stream.  The default implementation of this method in\n ObjectOutputStream\
+              \ does nothing.\n\n The corresponding method in ObjectInputStream is\n\
+              \ resolveProxyClass.  For a given subclass of\n ObjectOutputStream that\
+              \ overrides this method, the\n resolveProxyClass method in the corresponding\
+              \ subclass of\n ObjectInputStream must read any data or objects written\
+              \ by\n annotateProxyClass."
+          - name: clear
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -324,6 +268,24 @@ languages:
           - name: close
             modifiers:
             - public
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Closes the stream. This method must be called to release any resources\n\
+              \ associated with the stream."
+          - name: defaultWriteFields
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
             return:
               type:
                 basic: void
@@ -335,6 +297,42 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Write the non-static and non-transient fields of the current class\
+              \ to\n this stream.  This may only be called from the writeObject method\
+              \ of the\n class being serialized. It will throw the NotActiveException\
+              \ if it is\n called otherwise."
+          - name: drain
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Drain any buffered data in ObjectOutputStream.  Similar to flush\
+              \ but\n does not propagate the flush to the underlying stream."
+          - name: enableReplaceObject
+            modifiers:
+            - protected
+            parameters:
+            - name: enable
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true for enabling use of replaceObject for\n          every\
+                \ object being serialized"
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: the previous setting before this method was invoked
+            notes: "Enables the stream to do replacement of objects written to the\
+              \ stream.  When\n enabled, the replaceObject(java.lang.Object) method\
+              \ is called for every object being\n serialized.\n\n If object replacement\
+              \ is currently not enabled, and\n enable is true, and there is a security\
+              \ manager installed,\n this method first calls the security manager's\n\
+              \ checkPermission method with the\n SerializablePermission(\"enableSubstitution\"\
+              ) permission to\n ensure that the caller is permitted to enable the\
+              \ stream to do replacement\n of objects written to the stream."
           - name: flush
             modifiers:
             - public
@@ -342,20 +340,73 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: flush
+            notes: "Flushes the stream. This will write any buffered output bytes\
+              \ and flush\n through to the underlying stream."
+          - name: getProtocolVersion
             modifiers:
-            - public
+            - package
             return:
               type:
-                basic: void
-                full: void
+                basic: int
+                full: int
+          - name: isCustomSubclass
+            modifiers:
+            - private
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: putFields
             modifiers:
             - public
             return:
               type:
-                basic: PutField
+                basic: ObjectOutputStream.PutField
                 full: java.io.ObjectOutputStream$PutField
+              notes: "an instance of the class Putfield that holds the serializable\n\
+                \          fields"
+            notes: "Retrieve the object used to buffer persistent fields to be written\
+              \ to\n the stream.  The fields will be written to the stream when writeFields\n\
+              \ method is called."
+          - name: replaceObject
+            modifiers:
+            - protected
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the object to be replaced
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the alternate object that replaced the specified one
+            notes: "This method will allow trusted subclasses of ObjectOutputStream\
+              \ to\n substitute one object for another during serialization. Replacing\n\
+              \ objects is disabled until enableReplaceObject is called. The\n enableReplaceObject\
+              \ method checks that the stream requesting to do\n replacement can be\
+              \ trusted.  The first occurrence of each object written\n into the serialization\
+              \ stream is passed to replaceObject.  Subsequent\n references to the\
+              \ object are replaced by the object returned by the\n original call\
+              \ to replaceObject.  To ensure that the private state of\n objects is\
+              \ not unintentionally exposed, only trusted streams may use\n replaceObject.\n\
+              \n The ObjectOutputStream.writeObject method takes a parameter of type\n\
+              \ Object (as opposed to type Serializable) to allow for cases where\n\
+              \ non-serializable objects are replaced by serializable ones.\n\n When\
+              \ a subclass is replacing objects it must insure that either a\n complementary\
+              \ substitution must be made during deserialization or that\n the substituted\
+              \ object is compatible with every field where the\n reference will be\
+              \ stored.  Objects whose type is not a subclass of the\n type of the\
+              \ field or array element abort the serialization by raising an\n exception\
+              \ and the object is not be stored.\n\n This method is called only once\
+              \ when each object is first\n encountered.  All subsequent references\
+              \ to the object will be redirected\n to the new object. This method\
+              \ should return the object to be\n substituted or the original object.\n\
+              \n Null can be returned as the object to be substituted, but may cause\n\
+              \ NullReferenceException in classes that contain references to the\n\
+              \ original object since they may be expecting an object instead of\n\
+              \ null."
           - name: reset
             modifiers:
             - public
@@ -363,14 +414,34 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Reset will disregard the state of any objects already written\
+              \ to the\n stream.  The state is reset to be the same as a new ObjectOutputStream.\n\
+              \ The current point in the stream is marked as reset so the corresponding\n\
+              \ ObjectInputStream will be reset at the same point.  Objects previously\n\
+              \ written to the stream will not be referred to as already being in\
+              \ the\n stream.  They will be written to the stream again."
           - name: useProtocolVersion
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: version
               type:
                 basic: int
                 full: int
+              notes: use ProtocolVersion from java.io.ObjectStreamConstants.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Specify stream protocol version to use when writing the stream.\n\
+              \n This routine provides a hook to enable the current version of\n Serialization\
+              \ to write in a format that is backwards compatible to a\n previous\
+              \ version of the stream format.\n\n Every effort will be made to avoid\
+              \ introducing additional\n backwards incompatibilities; however, sometimes\
+              \ there is no\n other alternative."
+          - name: verifySubclass
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -379,86 +450,72 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: int
                 full: int
+              notes: the byte to be written to the stream
             return:
               type:
                 basic: void
                 full: void
+            notes: "Writes a byte. This method will block until the byte is actually\n\
+              \ written."
           - name: write
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: buf
+              type:
+                basic: byte
+                full: byte[]
+              notes: the data to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes an array of bytes. This method will block until the bytes\
+              \ are\n actually written."
+          - name: write
+            modifiers:
+            - public
+            parameters:
+            - name: buf
+              type:
+                basic: byte
+                full: byte[]
+              notes: the data to be written
+            - name: off
               type:
                 basic: int
                 full: int
+              notes: the start offset in the data
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: the number of bytes that are written
             return:
               type:
                 basic: void
                 full: void
-          - name: write
+            notes: Writes a sub array of bytes.
+          - name: writeArray
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: byte[]
-                full: byte[]
+                basic: Object
+                full: java.lang.Object
             - name: arg1
               type:
-                basic: int
-                full: int
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
             - name: arg2
               type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: write
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
@@ -467,7 +524,81 @@ languages:
             modifiers:
             - public
             parameters:
+            - name: val
+              type:
+                basic: boolean
+                full: boolean
+              notes: the boolean to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a boolean.
+          - name: writeByte
+            modifiers:
+            - public
+            parameters:
+            - name: val
+              type:
+                basic: int
+                full: int
+              notes: the byte value to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes an 8 bit byte.
+          - name: writeBytes
+            modifiers:
+            - public
+            parameters:
+            - name: str
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the String of bytes to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a String as a sequence of bytes.
+          - name: writeChar
+            modifiers:
+            - public
+            parameters:
+            - name: val
+              type:
+                basic: int
+                full: int
+              notes: the char value to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a 16 bit char.
+          - name: writeChars
+            modifiers:
+            - public
+            parameters:
+            - name: str
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the String of chars to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a String as a sequence of chars.
+          - name: writeClass
+            modifiers:
+            - private
+            parameters:
             - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            - name: arg1
               type:
                 basic: boolean
                 full: boolean
@@ -475,62 +606,103 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: writeByte
+          - name: writeClassDesc
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: int
-                full: int
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
                 full: void
-          - name: writeBytes
+          - name: writeClassDescriptor
             modifiers:
-            - public
+            - protected
             parameters:
-            - name: arg0
+            - name: desc
               type:
-                basic: String
-                full: java.lang.String
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+              notes: class descriptor to write to the stream
             return:
               type:
                 basic: void
                 full: void
-          - name: writeChar
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
-          - name: writeChars
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Write the specified class descriptor to the ObjectOutputStream.\
+              \  Class\n descriptors are used to identify the classes of objects written\
+              \ to the\n stream.  Subclasses of ObjectOutputStream may override this\
+              \ method to\n customize the way in which class descriptors are written\
+              \ to the\n serialization stream.  The corresponding method in ObjectInputStream,\n\
+              \ readClassDescriptor, should then be overridden to\n reconstitute the\
+              \ class descriptor from its custom stream representation.\n By default,\
+              \ this method writes class descriptors according to the format\n defined\
+              \ in the Object Serialization specification.\n\n Note that this method\
+              \ will only be called if the ObjectOutputStream\n is not using the old\
+              \ serialization stream format (set by calling\n ObjectOutputStream's\
+              \ useProtocolVersion method).  If this\n serialization stream is using\
+              \ the old format\n (PROTOCOL_VERSION_1), the class descriptor will be\
+              \ written\n internally in a manner that cannot be overridden or customized."
           - name: writeDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: double
                 full: double
+              notes: the double value to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a 64 bit double.
+          - name: writeEnum
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Enum
+                full: java.lang.Enum<?>
+            - name: arg1
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeExternalData
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Externalizable
+                full: java.io.Externalizable
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeFatalException
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: IOException
+                full: java.io.IOException
             return:
               type:
                 basic: void
@@ -542,14 +714,29 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: Write the buffered fields to the stream.
           - name: writeFloat
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: float
                 full: float
+              notes: the float value to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a 32 bit float.
+          - name: writeHandle
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: int
+                full: int
             return:
               type:
                 basic: void
@@ -558,22 +745,49 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: int
                 full: int
+              notes: the integer value to be written
             return:
               type:
                 basic: void
                 full: void
+            notes: Writes a 32 bit int.
           - name: writeLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: long
                 full: long
+              notes: the long value to be written
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Writes a 64 bit long.
+          - name: writeNonProxyDesc
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeNull
+            modifiers:
+            - private
             return:
               type:
                 basic: void
@@ -583,23 +797,124 @@ languages:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to be written
             return:
               type:
                 basic: void
                 full: void
-          - name: writeObject
+            notes: "Write the specified object to the ObjectOutputStream.  The class\
+              \ of the\n object, the signature of the class, and the values of the\
+              \ non-transient\n and non-static fields of the class and all of its\
+              \ supertypes are\n written.  Default serialization for a class can be\
+              \ overridden using the\n writeObject and the readObject methods.  Objects\
+              \ referenced by this\n object are written transitively so that a complete\
+              \ equivalent graph of\n objects can be reconstructed by an ObjectInputStream.\n\
+              \n Exceptions are thrown for problems with the OutputStream and for\n\
+              \ classes that should not be serialized.  All exceptions are fatal to\
+              \ the\n OutputStream, which is left in an indeterminate state, and it\
+              \ is up to\n the caller to ignore or recover the stream state."
+          - name: writeObject0
             modifiers:
-            - public
-            - final
+            - private
             parameters:
             - name: arg0
               type:
                 basic: Object
                 full: java.lang.Object
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeObjectOverride
+            modifiers:
+            - protected
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: object to be written to the underlying stream
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Method used by subclasses to override the default writeObject\
+              \ method.\n This method is called by trusted subclasses of ObjectOutputStream\
+              \ that\n constructed ObjectOutputStream using the protected no-arg constructor.\n\
+              \ The subclass is expected to provide an override method with the modifier\n\
+              \ \"final\"."
+          - name: writeOrdinaryObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+            - name: arg2
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeProxyDesc
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeRecordData
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeSerialData
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            - name: arg1
+              type:
+                basic: ObjectStreamClass
+                full: java.io.ObjectStreamClass
             return:
               type:
                 basic: void
@@ -608,17 +923,45 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: val
               type:
                 basic: int
                 full: int
+              notes: the short value to be written
             return:
               type:
                 basic: void
                 full: void
-          - name: writeUTF
+            notes: Writes a 16 bit short.
+          - name: writeStreamHeader
             modifiers:
-            - public
+            - protected
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "The writeStreamHeader method is provided so subclasses can append\
+              \ or\n prepend their own header to the stream.  It writes the magic\
+              \ number and\n version to the stream."
+          - name: writeString
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeTypeString
+            modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -628,17 +971,73 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: writeUnshared
+          - name: writeUTF
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
-                basic: Object
-                full: java.lang.Object
+                basic: String
+                full: java.lang.String
+              notes: the String to be written
             return:
               type:
                 basic: void
                 full: void
-          javaType: class
-          extends: OutputStream
+            notes: "Primitive data write of this String in\n modified UTF-8\n format.\
+              \  Note that there is a\n significant difference between writing a String\
+              \ into the stream as\n primitive data or as an Object. A String instance\
+              \ written by writeObject\n is written into the stream as a String initially.\
+              \ Future writeObject()\n calls write references to the string into the\
+              \ stream."
+          - name: writeUnshared
+            modifiers:
+            - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: object to write to stream
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Writes an \"unshared\" object to the ObjectOutputStream.  This\
+              \ method is\n identical to writeObject, except that it always writes\
+              \ the given object\n as a new, unique object in the stream (as opposed\
+              \ to a back-reference\n pointing to a previously serialized instance).\
+              \  Specifically:\n \n   An object written via writeUnshared is always\
+              \ serialized in the\n       same manner as a newly appearing object\
+              \ (an object that has not\n       been written to the stream yet), regardless\
+              \ of whether or not the\n       object has been written previously.\n\
+              \n   If writeObject is used to write an object that has been previously\n\
+              \       written with writeUnshared, the previous writeUnshared operation\n\
+              \       is treated as if it were a write of a separate object.  In other\n\
+              \       words, ObjectOutputStream will never generate back-references\
+              \ to\n       object data written by calls to writeUnshared.\n \n While\
+              \ writing an object via writeUnshared does not in itself guarantee a\n\
+              \ unique reference to the object when it is deserialized, it allows\
+              \ a\n single object to be defined multiple times in a stream, so that\
+              \ multiple\n calls to readUnshared by the receiver will not conflict.\
+              \  Note that the\n rules described above only apply to the base-level\
+              \ object written with\n writeUnshared, and not to any transitively referenced\
+              \ sub-objects in the\n object graph to be serialized.\n\n ObjectOutputStream\
+              \ subclasses which override this method can only be\n constructed in\
+              \ security contexts possessing the\n \"enableSubclassImplementation\"\
+              \ SerializablePermission; any attempt to\n instantiate such a subclass\
+              \ without this permission will cause a\n SecurityException to be thrown."
+          staticMethods:
+          - name: auditSubclass
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Class
+                full: java.lang.Class<?>
+            return:
+              type:
+                basic: Boolean
+                full: java.lang.Boolean

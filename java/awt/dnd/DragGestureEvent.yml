@@ -4,26 +4,91 @@ languages:
     packages:
       java.awt.dnd:
         DragGestureEvent:
+          extends: java.util.EventObject
+          modifiers:
+          - public
+          notes: "A DragGestureEvent is passed\n to DragGestureListener's\n dragGestureRecognized()\
+            \ method\n when a particular DragGestureRecognizer detects that a\n platform\
+            \ dependent drag initiating gesture has occurred\n on the Component that\
+            \ it is tracking.\n\n The action field of any DragGestureEvent instance\
+            \ should take one of the following\n values:\n \n  DnDConstants.ACTION_COPY\n\
+            \  DnDConstants.ACTION_MOVE\n  DnDConstants.ACTION_LINK\n \n Assigning\
+            \ the value different from listed above will cause an unspecified behavior."
+          fields:
+            action:
+              name: action
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+            component:
+              name: component
+              modifiers:
+              - private
+              type:
+                basic: Component
+                full: java.awt.Component
+            dragSource:
+              name: dragSource
+              modifiers:
+              - private
+              type:
+                basic: DragSource
+                full: java.awt.dnd.DragSource
+            events:
+              name: events
+              modifiers:
+              - private
+              type:
+                basic: List
+                full: java.util.List
+            origin:
+              name: origin
+              modifiers:
+              - private
+              type:
+                basic: Point
+                full: java.awt.Point
+          staticFields:
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
           constructors:
           - modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dgr
               type:
                 basic: DragGestureRecognizer
                 full: java.awt.dnd.DragGestureRecognizer
-            - name: arg1
+              notes: The DragGestureRecognizer firing this event
+            - name: act
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "The user's preferred action.\n            For information on\
+                \ allowable values, see\n            the class description for DragGestureEvent"
+            - name: ori
               type:
                 basic: Point
                 full: java.awt.Point
-            - name: arg3
+              notes: The origin of the drag
+            - name: evs
               type:
-                basic: List<? extends InputEvent>
+                basic: List
                 full: java.util.List<? extends java.awt.event.InputEvent>
+              notes: The List of events that comprise the gesture
+            notes: "Constructs a DragGestureEvent object given by the\n DragGestureRecognizer\
+              \ instance firing this event,\n an act parameter representing\n the\
+              \ user's preferred action, an ori parameter\n indicating the origin\
+              \ of the drag, and a List of\n events that comprise the gesture(evs\
+              \ parameter)."
           methods:
           - name: getComponent
             modifiers:
@@ -32,6 +97,8 @@ languages:
               type:
                 basic: Component
                 full: java.awt.Component
+              notes: the Component
+            notes: "Returns the Component associated\n with this DragGestureEvent."
           - name: getDragAction
             modifiers:
             - public
@@ -39,6 +106,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the action selected by the user
+            notes: "Returns an int representing the\n action selected by the user."
           - name: getDragOrigin
             modifiers:
             - public
@@ -46,6 +115,9 @@ languages:
               type:
                 basic: Point
                 full: java.awt.Point
+              notes: the Point where the drag originated in Component coords.
+            notes: "Returns a Point in the coordinates\n of the Component over which\
+              \ the drag originated."
           - name: getDragSource
             modifiers:
             - public
@@ -53,6 +125,8 @@ languages:
               type:
                 basic: DragSource
                 full: java.awt.dnd.DragSource
+              notes: the DragSource
+            notes: Returns the DragSource.
           - name: getSourceAsDragGestureRecognizer
             modifiers:
             - public
@@ -60,6 +134,8 @@ languages:
               type:
                 basic: DragGestureRecognizer
                 full: java.awt.dnd.DragGestureRecognizer
+              notes: the source as a DragGestureRecognizer
+            notes: Returns the source as a DragGestureRecognizer.
           - name: getTriggerEvent
             modifiers:
             - public
@@ -67,25 +143,25 @@ languages:
               type:
                 basic: InputEvent
                 full: java.awt.event.InputEvent
+              notes: the first "triggering" event in the sequence of the gesture
+            notes: Returns the initial event that triggered the gesture.
           - name: iterator
             modifiers:
             - public
             return:
               type:
-                basic: Iterator<InputEvent>
+                basic: Iterator
                 full: java.util.Iterator<java.awt.event.InputEvent>
-          - name: startDrag
+              notes: an Iterator for the events comprising the gesture
+            notes: "Returns an Iterator for the events\n comprising the gesture."
+          - name: readObject
             modifiers:
-            - public
+            - private
             parameters:
             - name: arg0
               type:
-                basic: Cursor
-                full: java.awt.Cursor
-            - name: arg1
-              type:
-                basic: Transferable
-                full: java.awt.datatransfer.Transferable
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
             return:
               type:
                 basic: void
@@ -94,68 +170,132 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dragCursor
               type:
                 basic: Cursor
                 full: java.awt.Cursor
-            - name: arg1
+              notes: "The initial Cursor for this drag operation\n               \
+                \        or null for the default cursor handling;\n              \
+                \         see\n                       DragSourceContext\n        \
+                \               for more details on the cursor handling mechanism\n\
+                \                       during drag and drop"
+            - name: transferable
               type:
                 basic: Transferable
                 full: java.awt.datatransfer.Transferable
-            - name: arg2
+              notes: "The Transferable representing the source\n                 \
+                \    data for this drag operation."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Starts the drag operation given the Cursor for this drag\n operation\
+              \ and the Transferable representing the source data\n for this drag\
+              \ operation.\n \n If a null Cursor is specified no exception will\n\
+              \ be thrown and default drag cursors will be used instead.\n \n If a\
+              \ null Transferable is specified\n NullPointerException will be thrown."
+          - name: startDrag
+            modifiers:
+            - public
+            parameters:
+            - name: dragCursor
+              type:
+                basic: Cursor
+                full: java.awt.Cursor
+              notes: "The initial Cursor for this drag operation\n               \
+                \        or null for the default cursor handling;\n              \
+                \         see\n                       DragSourceContext\n        \
+                \               for more details on the cursor handling mechanism\n\
+                \                       during drag and drop"
+            - name: transferable
+              type:
+                basic: Transferable
+                full: java.awt.datatransfer.Transferable
+              notes: The source's Transferable
+            - name: dsl
               type:
                 basic: DragSourceListener
                 full: java.awt.dnd.DragSourceListener
+              notes: The source's DragSourceListener
             return:
               type:
                 basic: void
                 full: void
+            notes: "Starts the drag given the initial Cursor to display,\n the Transferable\
+              \ object,\n and the DragSourceListener to use."
           - name: startDrag
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: dragCursor
               type:
                 basic: Cursor
                 full: java.awt.Cursor
-            - name: arg1
+              notes: "The initial Cursor for this drag operation\n               \
+                \        or null for the default cursor handling;\n              \
+                \         see\n                       DragSourceContext\n        \
+                \               for more details on the cursor handling mechanism\n\
+                \                       during drag and drop"
+            - name: dragImage
               type:
                 basic: Image
                 full: java.awt.Image
-            - name: arg2
+              notes: The source's dragImage
+            - name: imageOffset
               type:
                 basic: Point
                 full: java.awt.Point
-            - name: arg3
+              notes: The dragImage's offset
+            - name: transferable
               type:
                 basic: Transferable
                 full: java.awt.datatransfer.Transferable
-            - name: arg4
+              notes: The source's Transferable
+            - name: dsl
               type:
                 basic: DragSourceListener
                 full: java.awt.dnd.DragSourceListener
+              notes: The source's DragSourceListener
             return:
               type:
                 basic: void
                 full: void
+            notes: "Start the drag given the initial Cursor to display,\n a drag Image,\
+              \ the offset of\n the Image,\n the Transferable object, and\n the DragSourceListener\
+              \ to use."
           - name: toArray
             modifiers:
             - public
             return:
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
+              notes: an array of the events comprising the gesture
+            notes: "Returns an Object array of the\n events comprising the drag gesture."
           - name: toArray
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: array
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
+              notes: the array of EventObject sub(types)
             return:
               type:
-                basic: Object[]
+                basic: Object
                 full: java.lang.Object[]
-          javaType: class
-          extends: EventObject
+              notes: an array of the events comprising the gesture
+            notes: Returns an array of the events comprising the drag gesture.
+          - name: writeObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectOutputStream
+                full: java.io.ObjectOutputStream
+            return:
+              type:
+                basic: void
+                full: void

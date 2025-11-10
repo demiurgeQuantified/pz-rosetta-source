@@ -4,78 +4,197 @@ languages:
     packages:
       java.awt:
         FontMetrics:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "The FontMetrics class defines a font metrics object, which\n encapsulates\
+            \ information about the rendering of a particular font on a\n particular\
+            \ screen.\n \n Note to subclassers: Since many of these methods form closed,\n\
+            \ mutually recursive loops, you must take care that you implement\n at\
+            \ least one of the methods in each such loop to prevent\n infinite recursion\
+            \ when your subclass is used.\n In particular, the following is the minimal\
+            \ suggested set of methods\n to override in order to ensure correctness\
+            \ and prevent infinite\n recursion (though other subsets are equally feasible):\n\
+            \ \n getAscent()\n getLeading()\n getMaxAdvance()\n charWidth(char)\n\
+            \ charsWidth(char[], int, int)\n \n \n \n Note that the implementations\
+            \ of these methods are\n inefficient, so they are usually overridden with\
+            \ more efficient\n toolkit-specific implementations.\n \n When an application\
+            \ asks to place a character at the position\n (x, y), the character is\
+            \ placed so that its\n reference point (shown as the dot in the accompanying\
+            \ image) is\n put at that position. The reference point specifies a horizontal\n\
+            \ line called the baseline of the character. In normal\n printing, the\
+            \ baselines of characters should align.\n \n In addition, every character\
+            \ in a font has an ascent, a\n descent, and an advance width. The ascent\
+            \ is the\n amount by which the character ascends above the baseline. The\n\
+            \ descent is the amount by which the character descends below the\n baseline.\
+            \ The advance width indicates the position at which AWT\n should place\
+            \ the next character.\n \n An array of characters or a string can also\
+            \ have an ascent, a\n descent, and an advance width. The ascent of the\
+            \ array is the\n maximum ascent of any character in the array. The descent\
+            \ is the\n maximum descent of any character in the array. The advance\
+            \ width\n is the sum of the advance widths of each of the characters in\
+            \ the\n character array.  The advance of a String is the\n distance along\
+            \ the baseline of the String.  This\n distance is the width that should\
+            \ be used for centering or\n right-aligning the String.\n Note that the\
+            \ advance of a String is not necessarily\n the sum of the advances of\
+            \ its characters measured in isolation\n because the width of a character\
+            \ can vary depending on its context.\n For example, in Arabic text, the\
+            \ shape of a character can change\n in order to connect to other characters.\
+            \  Also, in some scripts,\n certain character sequences can be represented\
+            \ by a single shape,\n called a ligature.  Measuring characters individually\
+            \ does\n not account for these transformations.\n Font metrics are baseline-relative,\
+            \ meaning that they are\n generally independent of the rotation applied\
+            \ to the font (modulo\n possible grid hinting effects).  See Font."
+          fields:
+            font:
+              name: font
+              modifiers:
+              - protected
               type:
-                basic: String
-                full: java.lang.String
+                basic: Font
+                full: java.awt.Font
+              notes: "The actual Font from which the font metrics are\n created.\n\
+                \ This cannot be null."
+          staticFields:
+            DEFAULT_FRC:
+              name: DEFAULT_FRC
+              modifiers:
+              - private
+              - static
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: font
+              type:
+                basic: Font
+                full: java.awt.Font
+              notes: the Font
+            notes: "Creates a new FontMetrics object for finding out\n height and\
+              \ width information about the specified Font\n and specific character\
+              \ glyphs in that Font."
+          methods:
           - name: bytesWidth
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: data
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: the array of bytes to be measured
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset of the bytes in the array
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the number of bytes to be measured from the array
             return:
               type:
                 basic: int
                 full: int
+              notes: "the advance width of the subarray of the specified\n       \
+                \        byte array in the Font\n                  described by\n\
+                \               this FontMetrics object."
+            notes: "Returns the total advance width for showing the specified array\n\
+              \ of bytes in this Font.  The advance is the\n distance from the leftmost\
+              \ point to the rightmost point on the\n string's baseline.  The advance\
+              \ of a String\n is not necessarily the sum of the advances of its characters.\n\
+              \ This is equivalent to measuring a String of the\n characters in the\
+              \ specified range."
           - name: charWidth
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: codePoint
+              type:
+                basic: int
+                full: int
+              notes: the character (Unicode code point) to be measured
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "the advance width of the specified character\n            in\
+                \ the Font described by this\n            FontMetrics object."
+            notes: "Returns the advance width of the specified character in this\n\
+              \ Font.  The advance is the\n distance from the leftmost point to the\
+              \ rightmost point on the\n character's baseline.  Note that the advance\
+              \ of a\n String is not necessarily the sum of the advances\n of its\
+              \ characters.\n\n This method doesn't validate the specified character\
+              \ to be a\n valid Unicode code point. The caller must validate the\n\
+              \ character value using Character.isValidCodePoint if necessary."
+          - name: charWidth
+            modifiers:
+            - public
+            parameters:
+            - name: ch
               type:
                 basic: char
                 full: char
+              notes: the character to be measured
             return:
               type:
                 basic: int
                 full: int
-          - name: charWidth
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: int
-                full: int
+              notes: "the advance width of the specified character\n             \
+                \     in the Font described by this\n                  FontMetrics\
+                \ object."
+            notes: "Returns the advance width of the specified character in this\n\
+              \ Font.  The advance is the\n distance from the leftmost point to the\
+              \ rightmost point on the\n character's baseline.  Note that the advance\
+              \ of a\n String is not necessarily the sum of the advances\n of its\
+              \ characters.\n\n Note: This method cannot handle \n supplementary characters.\n\
+              \ To support all Unicode characters, including\n supplementary characters,\
+              \ use the charWidth(int) method."
           - name: charsWidth
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: data
               type:
-                basic: char[]
+                basic: char
                 full: char[]
-            - name: arg1
+              notes: the array of characters to be measured
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the start offset of the characters in the array
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: the number of characters to be measured from the array
             return:
               type:
                 basic: int
                 full: int
+              notes: "the advance width of the subarray of the specified\n       \
+                \        char array in the font described by\n               this\
+                \ FontMetrics object."
+            notes: "Returns the total advance width for showing the specified array\n\
+              \ of characters in this Font.  The advance is the\n distance from the\
+              \ leftmost point to the rightmost point on the\n string's baseline.\
+              \  The advance of a String\n is not necessarily the sum of the advances\
+              \ of its characters.\n This is equivalent to measuring a String of the\n\
+              \ characters in the specified range."
           - name: getAscent
             modifiers:
             - public
@@ -83,6 +202,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the font ascent of the Font.
+            notes: "Determines the font ascent of the Font\n described by this FontMetrics\
+              \ object. The font ascent\n is the distance from the font's baseline\
+              \ to the top of most\n alphanumeric characters. Some characters in the\
+              \ Font\n might extend above the font ascent line."
           - name: getDescent
             modifiers:
             - public
@@ -90,6 +214,12 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the font descent of the Font.
+            notes: "Determines the font descent of the Font\n described by this\n\
+              \ FontMetrics object. The font descent is the distance\n from the font's\
+              \ baseline to the bottom of most alphanumeric\n characters with descenders.\
+              \ Some characters in the\n Font might extend\n below the font descent\
+              \ line."
           - name: getFont
             modifiers:
             - public
@@ -97,6 +227,8 @@ languages:
               type:
                 basic: Font
                 full: java.awt.Font
+              notes: "the Font described by this\n FontMetrics object."
+            notes: "Gets the Font described by this\n FontMetrics object."
           - name: getFontRenderContext
             modifiers:
             - public
@@ -104,6 +236,11 @@ languages:
               type:
                 basic: FontRenderContext
                 full: java.awt.font.FontRenderContext
+              notes: "the FontRenderContext used by this\n FontMetrics object."
+            notes: "Gets the FontRenderContext used by this\n FontMetrics object to\
+              \ measure text.\n \n Note that methods in this class which take a Graphics\n\
+              \ parameter measure text using the FontRenderContext\n of that Graphics\
+              \ object, and not this\n FontRenderContext"
           - name: getHeight
             modifiers:
             - public
@@ -111,6 +248,14 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the standard height of the font.
+            notes: "Gets the standard height of a line of text in this font.  This\n\
+              \ is the distance between the baseline of adjacent lines of text.\n\
+              \ It is the sum of the leading + ascent + descent. Due to rounding\n\
+              \ this may not be the same as getAscent() + getDescent() + getLeading().\n\
+              \ There is no guarantee that lines of text spaced at this distance are\n\
+              \ disjoint; such lines may overlap if some characters overshoot\n either\
+              \ the standard ascent or the standard descent metric."
           - name: getLeading
             modifiers:
             - public
@@ -118,94 +263,129 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the standard leading of the Font.
+            notes: "Determines the standard leading of the\n Font described by this\
+              \ FontMetrics\n object.  The standard leading, or\n interline spacing,\
+              \ is the logical amount of space to be reserved\n between the descent\
+              \ of one line of text and the ascent of the next\n line. The height\
+              \ metric is calculated to include this extra space."
           - name: getLineMetrics
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the specified String
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: LineMetrics
                 full: java.awt.font.LineMetrics
+              notes: "a LineMetrics object created with the\n specified String and\
+                \ Graphics context."
+            notes: "Returns the LineMetrics object for the specified\n String in the\
+              \ specified Graphics context."
           - name: getLineMetrics
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
-                basic: char[]
+                basic: String
+                full: java.lang.String
+              notes: the specified String
+            - name: beginIndex
+              type:
+                basic: int
+                full: int
+              notes: the initial offset of str
+            - name: limit
+              type:
+                basic: int
+                full: int
+              notes: the end offset of str
+            - name: context
+              type:
+                basic: Graphics
+                full: java.awt.Graphics
+              notes: the specified Graphics context
+            return:
+              type:
+                basic: LineMetrics
+                full: java.awt.font.LineMetrics
+              notes: "a LineMetrics object created with the\n specified String and\
+                \ Graphics context."
+            notes: "Returns the LineMetrics object for the specified\n String in the\
+              \ specified Graphics context."
+          - name: getLineMetrics
+            modifiers:
+            - public
+            parameters:
+            - name: chars
+              type:
+                basic: char
                 full: char[]
-            - name: arg1
+              notes: the specified character array
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the initial offset of chars
+            - name: limit
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the end offset of chars
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: LineMetrics
                 full: java.awt.font.LineMetrics
+              notes: "a LineMetrics object created with the\n specified character\
+                \ array and Graphics context."
+            notes: "Returns the LineMetrics object for the specified\n character array\
+              \ in the specified Graphics context."
           - name: getLineMetrics
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: Graphics
-                full: java.awt.Graphics
-            return:
-              type:
-                basic: LineMetrics
-                full: java.awt.font.LineMetrics
-          - name: getLineMetrics
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: ci
               type:
                 basic: CharacterIterator
                 full: java.text.CharacterIterator
-            - name: arg1
+              notes: the specified CharacterIterator
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the initial offset in ci
+            - name: limit
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the end index of ci
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: LineMetrics
                 full: java.awt.font.LineMetrics
+              notes: "a LineMetrics object created with the\n specified arguments."
+            notes: "Returns the LineMetrics object for the specified\n CharacterIterator\
+              \ in the specified Graphics\n context."
           - name: getMaxAdvance
             modifiers:
             - public
@@ -213,6 +393,50 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "an estimate of the maximum advance width of any character\n\
+                \            in the Font, or -1 if the\n            maximum advance\
+                \ width is not known."
+            notes: "Returns an estimate of the maximum advance width of any character\n\
+              \ in the Font described by this FontMetrics object,\n with important\
+              \ caveats, enumerated below.\n \n The advance is the distance from the\
+              \ leftmost point used to position\n the character to the rightmost point\
+              \ along the baseline.\n This is not the same thing as the visible width\
+              \ of the glyph image\n representing the character.\n \n The advance\
+              \ of a String is not necessarily the sum of the\n advances of its characters.\
+              \ It may differ substantially if\n complex text layout is required for\
+              \ proper rendering.\n \n Some of the caveats of the reported value include\n\
+              \ \n  The returned value is relying upon information from some\n underlying\
+              \ system font, and the correctness of that information\n is outside\
+              \ of AWT's control.\n  When specific characters are mapped into glyphs\n\
+              \ in some rendering context, instructions in the font itself\n together\
+              \ with the rasterization process may cause some glyph\n to have a wider\
+              \ advance than reported.\n  When a font is requested in some style,\
+              \ eg Font.BOLD,\n for which no exact match is available, then techniques\
+              \ to satisfy\n the requested rendering may similarly result in glyphs\
+              \ that are\n wider than the reported maximum.\n  Depending on the implementation,\
+              \ an AWT logical font or\n physical font may need to locate some characters\
+              \ from one or more\n \"fall back\" fonts, when the primary underlying\
+              \ physical font does not\n support the character. These fonts may not\
+              \ all be known or considered\n in the calculation of the reported maximum\
+              \ advance. It is common\n for the design center of such fall back fonts\
+              \ to be for a different\n script than the design center of the primary\
+              \ font, so their\n advances can be quite different. This can also lead\
+              \ to the\n unexpected result that a font such as Font.MONOSPACED can\n\
+              \ render glyphs that are not all the same width.\n \n None of these\
+              \ caveats are exposed as they are all implementation details,\n and\
+              \ there is no practical way to determine when these are in effect.\n\
+              \ An application which needs a better estimate of the maximum advance,\n\
+              \ and knows the subset of characters it expects to display can query\n\
+              \ the advance of each such character to find the widest, however,\n\
+              \ as discussed above, since the displayed width of a String\n is not\
+              \ necessarily the sum of the advances the value still needs\n to be\
+              \ used with caution.\n \n In summary, this method makes no absolute\
+              \ guarantee, nor can\n it even make a guarantee to be correct within\
+              \ some margin of error.\n So it should be used at most only for estimating\
+              \ the total space\n sufficient to display some number of as yet unknown\
+              \ characters from\n the font. And that might be either an overestimate,\
+              \ or an\n underestimate depending on the specific text and rendering\
+              \ conext."
           - name: getMaxAscent
             modifiers:
             - public
@@ -220,18 +444,27 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the maximum ascent of any character in the\n Font."
+            notes: "Determines the maximum ascent of the Font\n described by this\
+              \ FontMetrics object.  No character\n extends further above the font's\
+              \ baseline than this height."
           - name: getMaxCharBounds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the\n bounding box for the character with\
+                \ the maximum bounds."
+            notes: "Returns the bounds for the character with the maximum bounds\n\
+              \ in the specified Graphics context."
           - name: getMaxDecent
             modifiers:
             - public
@@ -239,7 +472,8 @@ languages:
               type:
                 basic: int
                 full: int
-            deprecated: true
+              notes: "the maximum descent of any character in the\n Font."
+            notes: For backward compatibility only.
           - name: getMaxDescent
             modifiers:
             - public
@@ -247,101 +481,150 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the maximum descent of any character in the\n Font."
+            notes: "Determines the maximum descent of the Font\n described by this\
+              \ FontMetrics object.  No character\n extends further below the font's\
+              \ baseline than this height."
           - name: getStringBounds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the specified String
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the bounding box of the\n specified String\
+                \ in the specified\n Graphics context."
+            notes: "Returns the bounds of the specified String in the\n specified\
+              \ Graphics context.  The bounds is used\n to layout the String.\n Note:\
+              \ The returned bounds is in baseline-relative coordinates\n (see class\
+              \ notes)."
           - name: getStringBounds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
-                basic: char[]
+                basic: String
+                full: java.lang.String
+              notes: the specified String
+            - name: beginIndex
+              type:
+                basic: int
+                full: int
+              notes: the offset of the beginning of str
+            - name: limit
+              type:
+                basic: int
+                full: int
+              notes: the end offset of str
+            - name: context
+              type:
+                basic: Graphics
+                full: java.awt.Graphics
+              notes: the specified Graphics context
+            return:
+              type:
+                basic: Rectangle2D
+                full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the bounding box of the\n specified String\
+                \ in the specified\n Graphics context."
+            notes: "Returns the bounds of the specified String in the\n specified\
+              \ Graphics context.  The bounds is used\n to layout the String.\n Note:\
+              \ The returned bounds is in baseline-relative coordinates\n (see class\
+              \ notes)."
+          - name: getStringBounds
+            modifiers:
+            - public
+            parameters:
+            - name: chars
+              type:
+                basic: char
                 full: char[]
-            - name: arg1
+              notes: an array of characters
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the initial offset of the array of\n characters"
+            - name: limit
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the end offset of the array of characters
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the bounding box of the\n specified character\
+                \ array in the specified\n Graphics context."
+            notes: "Returns the bounds of the specified array of characters\n in the\
+              \ specified Graphics context.\n The bounds is used to layout the String\n\
+              \ created with the specified array of characters,\n beginIndex and limit.\n\
+              \ Note: The returned bounds is in baseline-relative coordinates\n (see\
+              \ class notes)."
           - name: getStringBounds
             modifiers:
             - public
             parameters:
-            - name: arg0
-              type:
-                basic: String
-                full: java.lang.String
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            - name: arg3
-              type:
-                basic: Graphics
-                full: java.awt.Graphics
-            return:
-              type:
-                basic: Rectangle2D
-                full: java.awt.geom.Rectangle2D
-          - name: getStringBounds
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
+            - name: ci
               type:
                 basic: CharacterIterator
                 full: java.text.CharacterIterator
-            - name: arg1
+              notes: the specified CharacterIterator
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the initial offset in ci
+            - name: limit
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the end index of ci
+            - name: context
               type:
                 basic: Graphics
                 full: java.awt.Graphics
+              notes: the specified Graphics context
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "a Rectangle2D that is the bounding box of the\n characters indexed\
+                \ in the specified CharacterIterator\n in the specified Graphics context."
+            notes: "Returns the bounds of the characters indexed in the specified\n\
+              \ CharacterIterator in the\n specified Graphics context.\n Note: The\
+              \ returned bounds is in baseline-relative coordinates\n (see class notes)."
           - name: getWidths
             modifiers:
             - public
             return:
               type:
-                basic: int[]
+                basic: int
                 full: int[]
+              notes: "an array storing the advance widths of the\n               \
+                \  characters in the Font\n                 described by this FontMetrics\
+                \ object."
+            notes: "Gets the advance widths of the first 256 characters in the\n Font.\
+              \  The advance is the\n distance from the leftmost point to the rightmost\
+              \ point on the\n character's baseline.  Note that the advance of a\n\
+              \ String is not necessarily the sum of the advances\n of its characters."
           - name: hasUniformLineMetrics
             modifiers:
             - public
@@ -349,17 +632,58 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the font has uniform line metrics;\n false otherwise."
+            notes: "Checks to see if the Font has uniform line metrics.  A\n composite\
+              \ font may consist of several different fonts to cover\n various character\
+              \ sets.  In such cases, the\n FontLineMetrics objects are not uniform.\n\
+              \ Different fonts may have a different ascent, descent, metrics and\n\
+              \ so on.  This information is sometimes necessary for line\n measuring\
+              \ and line breaking."
+          - name: myFRC
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Graphics
+                full: java.awt.Graphics
+            return:
+              type:
+                basic: FontRenderContext
+                full: java.awt.font.FontRenderContext
           - name: stringWidth
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: str
               type:
                 basic: String
                 full: java.lang.String
+              notes: the String to be measured
             return:
               type:
                 basic: int
                 full: int
-          javaType: class
-          extends: Object
+              notes: "the advance width of the specified String\n                \
+                \  in the Font described by this\n                  FontMetrics."
+            notes: "Returns the total advance width for showing the specified\n String\
+              \ in this Font.  The advance\n is the distance from the leftmost point\
+              \ to the rightmost point\n on the string's baseline.\n \n Note that\
+              \ the advance of a String is\n not necessarily the sum of the advances\
+              \ of its characters."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          staticMethods:
+          - name: initIDs
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: void
+                full: void

@@ -4,46 +4,124 @@ languages:
     packages:
       java.lang.module:
         ModuleDescriptor.Requires:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: A dependence upon a module.
+          fields:
+            compiledVersion:
+              name: compiledVersion
+              modifiers:
+              - private
+              type:
+                basic: ModuleDescriptor.Version
+                full: java.lang.module.ModuleDescriptor$Version
+            mods:
+              name: mods
+              modifiers:
+              - private
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.module.ModuleDescriptor$Requires$Modifier>
+            name:
+              name: name
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            rawCompiledVersion:
+              name: rawCompiledVersion
+              modifiers:
+              - private
+              type:
+                basic: String
+                full: java.lang.String
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+          constructors:
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.module.ModuleDescriptor$Requires$Modifier>
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: ModuleDescriptor.Version
+                full: java.lang.module.ModuleDescriptor$Version
+            - name: arg3
+              type:
+                basic: String
+                full: java.lang.String
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Set
+                full: java.util.Set<java.lang.module.ModuleDescriptor$Requires$Modifier>
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: ModuleDescriptor.Version
+                full: java.lang.module.ModuleDescriptor$Version
+            - name: arg3
+              type:
+                basic: boolean
+                full: boolean
+          methods:
           - name: compareTo
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: that
               type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: int
-                full: int
-          - name: compareTo
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Requires
+                basic: ModuleDescriptor.Requires
                 full: java.lang.module.ModuleDescriptor$Requires
+              notes: The module dependence to compare
+            return:
+              type:
+                basic: int
+                full: int
+              notes: "A negative integer, zero, or a positive integer if this module\n\
+                \         dependence is less than, equal to, or greater than the given\n\
+                \         module dependence"
+            notes: "Compares this module dependence to another.\n\n  Two Requires\
+              \ objects are compared by comparing their\n module names lexicographically.\
+              \ Where the module names are equal\n then the sets of modifiers are\
+              \ compared in the same way that\n module modifiers are compared (see\
+              \ ModuleDescriptor.compareTo). Where the module names are equal and\n\
+              \ the set of modifiers are equal then the version of the modules\n recorded\
+              \ at compile-time are compared. When comparing the versions\n recorded\
+              \ at compile-time then a dependence that has a recorded\n version is\
+              \ considered to succeed a dependence that does not have a\n recorded\
+              \ version. If both recorded versions are unparseable then the raw version\
+              \ strings are compared\n lexicographically."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
             return:
               type:
                 basic: int
@@ -53,20 +131,29 @@ languages:
             - public
             return:
               type:
-                basic: Version>
+                basic: Optional
                 full: java.util.Optional<java.lang.module.ModuleDescriptor$Version>
           - name: equals
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: ob
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to which this object is to be compared
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the given object is a module\n       \
+                \   dependence that is equal to this module dependence"
+            notes: "Tests this module dependence for equality with the given object.\n\
+              \n  If the given object is not a Requires then this method\n returns\
+              \ false. Two module dependence objects are equal if\n the module names\
+              \ are equal, set of modifiers are equal, and the\n compiled version\
+              \ of both modules is equal or not recorded for\n both modules. \n\n\
+              \  This method satisfies the general contract of the Object.equals method."
           - name: hashCode
             modifiers:
             - public
@@ -74,12 +161,17 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The hash-code value for this module dependence
+            notes: "Computes a hash code for this module dependence.\n\n  The hash\
+              \ code is based upon the module name, modifiers, and the\n module version\
+              \ if recorded at compile time. It satisfies the general\n contract of\
+              \ the Object.hashCode method."
           - name: modifiers
             modifiers:
             - public
             return:
               type:
-                basic: Modifier>
+                basic: Set
                 full: java.util.Set<java.lang.module.ModuleDescriptor$Requires$Modifier>
           - name: name
             modifiers:
@@ -88,12 +180,24 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: The module name
+            notes: Return the module name.
           - name: rawCompiledVersion
             modifiers:
             - public
             return:
               type:
-                basic: Optional<String>
+                basic: Optional
                 full: java.util.Optional<java.lang.String>
-          javaType: class
-          extends: Object
+              notes: "The string containing the version of the module if recorded\n\
+                \         at compile-time, or an empty Optional if no version\n  \
+                \       was recorded"
+            notes: "Returns the string with the possibly-unparseable version of the\
+              \ module\n if recorded at compile-time."
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String

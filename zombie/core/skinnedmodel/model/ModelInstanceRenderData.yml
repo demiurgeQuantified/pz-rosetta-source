@@ -4,6 +4,7 @@ languages:
     packages:
       zombie.core.skinnedmodel.model:
         ModelInstanceRenderData:
+          extends: zombie.core.skinnedmodel.advancedanimation.AnimatedModel$AnimatedModelInstanceRenderData
           modifiers:
           - public
           - final
@@ -14,79 +15,81 @@ languages:
               - public
               type:
                 basic: float
+                full: float
             hue:
               name: hue
               modifiers:
               - public
               type:
                 basic: float
-            m_muzzleFlash:
-              name: m_muzzleFlash
+                full: float
+            m_debugRenderData:
+              name: m_debugRenderData
               modifiers:
-              - public
+              - protected
               type:
-                basic: boolean
-            matrixPalette:
-              name: matrixPalette
-              modifiers:
-              - public
-              type:
-                basic: FloatBuffer
-            model:
-              name: model
-              modifiers:
-              - public
-              type:
-                basic: Model
-            modelInstance:
-              name: modelInstance
-              modifiers:
-              - public
-              type:
-                basic: ModelInstance
+                basic: ModelInstanceDebugRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceDebugRenderData
             parentBone:
               name: parentBone
               modifiers:
               - public
               type:
                 basic: int
+                full: int
             softwareMesh:
               name: softwareMesh
               modifiers:
               - public
               type:
                 basic: SoftwareModelMeshInstance
-            tex:
-              name: tex
-              modifiers:
-              - public
-              type:
-                basic: Texture
+                full: zombie.core.skinnedmodel.model.SoftwareModelMeshInstance
             tintB:
               name: tintB
               modifiers:
               - public
               type:
                 basic: float
+                full: float
             tintG:
               name: tintG
               modifiers:
               - public
               type:
                 basic: float
+                full: float
             tintR:
               name: tintR
               modifiers:
               - public
               type:
                 basic: float
-            xfrm:
-              name: xfrm
+                full: float
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            INVERT_ATTACHMENT_SELF_TRANSFORM:
+              name: INVERT_ATTACHMENT_SELF_TRANSFORM
               modifiers:
               - public
-              - final
+              - static
               type:
-                basic: Matrix4f
+                basic: boolean
+                full: boolean
+            pool:
+              name: pool
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ObjectPool
+                full: zombie.popman.ObjectPool<zombie.core.skinnedmodel.model.ModelInstanceRenderData>
           constructors:
           - modifiers:
             - public
@@ -98,9 +101,11 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             return:
               type:
                 basic: void
+                full: void
           - name: RenderVehicle
             modifiers:
             - public
@@ -108,35 +113,72 @@ languages:
             - name: slotData
               type:
                 basic: ModelSlotRenderData
+                full: zombie.core.skinnedmodel.model.ModelSlotRenderData
             return:
               type:
                 basic: void
-          - name: init
+                full: void
+          - name: UpdateCharacter
             modifiers:
             - public
             parameters:
-            - name: modelInstance
+            - name: arg0
               type:
-                basic: ModelInstance
+                basic: Shader
+                full: zombie.core.skinnedmodel.shader.Shader
+            return:
+              type:
+                basic: void
+                full: void
+          - name: init
+            modifiers:
+            - public
             return:
               type:
                 basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
+          - name: init
+            modifiers:
+            - public
+            return:
+              type:
+                basic: AnimatedModel.AnimatedModelInstanceRenderData
+                full: zombie.core.skinnedmodel.advancedanimation.AnimatedModel$AnimatedModelInstanceRenderData
+          - name: initModel
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelInstance
+                full: zombie.core.skinnedmodel.model.ModelInstance
+            - name: arg1
+              type:
+                basic: AnimatedModel.AnimatedModelInstanceRenderData
+                full: zombie.core.skinnedmodel.advancedanimation.AnimatedModel$AnimatedModelInstanceRenderData
+            return:
+              type:
+                basic: void
+                full: void
           - name: renderDebug
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: transformToParent
+                full: void
+          - name: testOnBackItem
             modifiers:
-            - public
+            - private
             parameters:
-            - name: parentData
+            - name: arg0
               type:
-                basic: ModelInstanceRenderData
+                basic: ModelInstance
+                full: zombie.core.skinnedmodel.model.ModelInstance
             return:
               type:
-                basic: ModelInstanceRenderData
+                basic: void
+                full: void
           staticMethods:
           - name: alloc
             modifiers:
@@ -145,6 +187,7 @@ languages:
             return:
               type:
                 basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
           - name: applyBoneTransform
             modifiers:
             - public
@@ -153,15 +196,19 @@ languages:
             - name: parentInstance
               type:
                 basic: ModelInstance
+                full: zombie.core.skinnedmodel.model.ModelInstance
             - name: boneName
               type:
                 basic: String
+                full: java.lang.String
             - name: transform
               type:
                 basic: Matrix4f
+                full: org.joml.Matrix4f
             return:
               type:
                 basic: void
+                full: void
           - name: makeAttachmentTransform
             modifiers:
             - public
@@ -170,12 +217,91 @@ languages:
             - name: attachment
               type:
                 basic: ModelAttachment
+                full: zombie.scripting.objects.ModelAttachment
             - name: attachmentXfrm
               type:
                 basic: Matrix4f
+                full: org.joml.Matrix4f
             return:
               type:
                 basic: Matrix4f
+                full: org.joml.Matrix4f
+          - name: makeBoneTransform
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationPlayer
+                full: zombie.core.skinnedmodel.animation.AnimationPlayer
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
+            return:
+              type:
+                basic: void
+                full: void
+          - name: makeBoneTransform2
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: AnimationPlayer
+                full: zombie.core.skinnedmodel.animation.AnimationPlayer
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg2
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
+            return:
+              type:
+                basic: void
+                full: void
+          - name: postMultiplyMeshTransform
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
+            - name: arg1
+              type:
+                basic: ModelMesh
+                full: zombie.core.skinnedmodel.model.ModelMesh
+            return:
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
+          - name: preMultiplyMeshTransform
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
+            - name: arg1
+              type:
+                basic: ModelMesh
+                full: zombie.core.skinnedmodel.model.ModelMesh
+            return:
+              type:
+                basic: Matrix4f
+                full: org.joml.Matrix4f
           - name: release
             modifiers:
             - public
@@ -184,9 +310,21 @@ languages:
             - name: objs
               type:
                 basic: ArrayList
-                full: ArrayList<ModelInstanceRenderData>
+                full: java.util.ArrayList<zombie.core.skinnedmodel.model.ModelInstanceRenderData>
             return:
               type:
                 basic: void
-          javaType: class
-          extends: Object
+                full: void
+          - name: release
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ModelInstanceRenderData
+                full: zombie.core.skinnedmodel.model.ModelInstanceRenderData
+            return:
+              type:
+                basic: boolean
+                full: boolean

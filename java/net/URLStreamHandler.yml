@@ -4,8 +4,333 @@ languages:
     packages:
       java.net:
         URLStreamHandler:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "The abstract class URLStreamHandler is the common\n superclass for\
+            \ all stream protocol handlers. A stream protocol\n handler knows how\
+            \ to make a connection for a particular protocol\n type, such as http\
+            \ or https.\n \n In most cases, an instance of a URLStreamHandler\n subclass\
+            \ is not created directly by an application. Rather, the\n first time\
+            \ a protocol name is encountered when constructing a\n URL, the appropriate\
+            \ stream protocol handler is\n automatically loaded."
           constructors:
           - modifiers:
             - public
-          javaType: class
-          extends: Object
+            notes: Constructor for subclasses to call.
+          methods:
+          - name: equals
+            modifiers:
+            - protected
+            parameters:
+            - name: u1
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: a URL object
+            - name: u2
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: a URL object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if the two urls are\n considered equal, i.e. they refer\
+                \ to the same\n fragment in the same file."
+            notes: "Provides the default equals calculation. May be overridden by\
+              \ handlers\n for other protocols that have different requirements for\
+              \ equals().\n This method requires that none of its arguments is null.\
+              \ This is\n guaranteed by the fact that it is only called by java.net.URL\
+              \ class."
+          - name: getDefaultPort
+            modifiers:
+            - protected
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the default port for a URL parsed by this handler.
+            notes: "Returns the default port for a URL parsed by this handler. This\
+              \ method\n is meant to be overridden by handlers with default port numbers."
+          - name: getHostAddress
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: a URL object
+            return:
+              type:
+                basic: InetAddress
+                full: java.net.InetAddress
+              notes: "an InetAddress representing the host\n IP address."
+            notes: "Get the IP address of our host. An empty host field or a DNS failure\n\
+              \ will result in a null return."
+          - name: hashCode
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: a URL object
+            return:
+              type:
+                basic: int
+                full: int
+              notes: an int suitable for hash table indexing
+            notes: "Provides the default hash calculation. May be overridden by handlers\
+              \ for\n other protocols that have different requirements for hashCode\n\
+              \ calculation."
+          - name: hostsEqual
+            modifiers:
+            - protected
+            parameters:
+            - name: u1
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL of the first host to compare
+            - name: u2
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL of the second host to compare
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: "true if and only if they\n are equal, false otherwise."
+            notes: Compares the host components of two URLs.
+          - name: openConnection
+            modifiers:
+            - protected
+            - abstract
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL that this connects to.
+            return:
+              type:
+                basic: URLConnection
+                full: java.net.URLConnection
+              notes: a URLConnection object for the URL.
+            notes: "Opens a connection to the object referenced by the\n URL argument.\n\
+              \ This method should be overridden by a subclass.\n\n If for the handler's\
+              \ protocol (such as HTTP or JAR), there\n exists a public, specialized\
+              \ URLConnection subclass belonging\n to one of the following packages\
+              \ or one of their subpackages:\n java.lang, java.io, java.util, java.net,\
+              \ the connection\n returned will be of that subclass. For example, for\
+              \ HTTP an\n HttpURLConnection will be returned, and for JAR a\n JarURLConnection\
+              \ will be returned."
+          - name: openConnection
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL that this connects to.
+            - name: p
+              type:
+                basic: Proxy
+                full: java.net.Proxy
+              notes: "the proxy through which the connection will be made.\n     \
+                \            If direct connection is desired, Proxy.NO_PROXY\n   \
+                \              should be specified."
+            return:
+              type:
+                basic: URLConnection
+                full: java.net.URLConnection
+              notes: a URLConnection object for the URL.
+            notes: "Same as openConnection(URL), except that the connection will be\n\
+              \ made through the specified proxy; Protocol handlers that do not\n\
+              \ support proxying will ignore the proxy parameter and make a\n normal\
+              \ connection.\n\n  Calling this method preempts the system's default\n\
+              \ ProxySelector settings."
+          - name: parseURL
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: "the URL to receive the result of parsing\n                 \
+                \ the spec."
+            - name: spec
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the String representing the URL that\n                  must\
+                \ be parsed."
+            - name: start
+              type:
+                basic: int
+                full: int
+              notes: "the character index at which to begin parsing. This is\n   \
+                \               just past the ':' (if there is one) that\n       \
+                \           specifies the determination of the protocol name."
+            - name: limit
+              type:
+                basic: int
+                full: int
+              notes: "the character position to stop parsing at. This is the\n   \
+                \               end of the string or the position of the\n       \
+                \           \"#\" character, if present. All information\n       \
+                \           after the sharp sign indicates an anchor."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Parses the string representation of a URL into a\n URL object.\n\
+              \ \n If there is any inherited context, then it has already been\n copied\
+              \ into the URL argument.\n \n The parseURL method of URLStreamHandler\n\
+              \ parses the string representation as if it were an\n http specification.\
+              \ Most URL protocol families have a\n similar parsing. A stream protocol\
+              \ handler for a protocol that has\n a different syntax must override\
+              \ this routine."
+          - name: sameFile
+            modifiers:
+            - protected
+            parameters:
+            - name: u1
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: a URL object
+            - name: u2
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: a URL object
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if u1 and u2 refer to the same file
+            notes: "Compare two urls to see whether they refer to the same file,\n\
+              \ i.e., having the same protocol, host, port, and path.\n This method\
+              \ requires that none of its arguments is null. This is\n guaranteed\
+              \ by the fact that it is only called indirectly\n by java.net.URL class."
+          - name: setURL
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL to modify.
+            - name: protocol
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the protocol name.
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the remote host value for the URL.
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: the port on the remote machine.
+            - name: authority
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the authority part for the URL.
+            - name: userInfo
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the userInfo part of the URL.
+            - name: path
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the path component of the URL.
+            - name: query
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the query part for the URL.
+            - name: ref
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the reference.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the fields of the URL argument to the indicated values.\n\
+              \ Only classes derived from URLStreamHandler are able\n to use this\
+              \ method to set the values of the URL fields."
+          - name: setURL
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL to modify.
+            - name: protocol
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the protocol name. This value is ignored since 1.2.
+            - name: host
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the remote host value for the URL.
+            - name: port
+              type:
+                basic: int
+                full: int
+              notes: the port on the remote machine.
+            - name: file
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the file.
+            - name: ref
+              type:
+                basic: String
+                full: java.lang.String
+              notes: the reference.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Sets the fields of the URL argument to the indicated values.\n\
+              \ Only classes derived from URLStreamHandler are able\n to use this\
+              \ method to set the values of the URL fields."
+          - name: toExternalForm
+            modifiers:
+            - protected
+            parameters:
+            - name: u
+              type:
+                basic: URL
+                full: java.net.URL
+              notes: the URL.
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+              notes: a string representation of the URL argument.
+            notes: "Converts a URL of a specific protocol to a\n String."

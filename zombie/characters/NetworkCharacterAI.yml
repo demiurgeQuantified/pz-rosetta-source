@@ -4,29 +4,172 @@ languages:
     packages:
       zombie.characters:
         NetworkCharacterAI:
+          extends: java.lang.Object
           modifiers:
           - public
           - abstract
           fields:
-            debugData:
-              name: debugData
+            action:
+              name: action
+              modifiers:
+              - protected
+              type:
+                basic: BaseAction
+                full: zombie.characters.CharacterTimedActions.BaseAction
+            attackRateChecker:
+              name: attackRateChecker
               modifiers:
               - public
-              - final
               type:
-                basic: HashMap
+                basic: AttackRateChecker
+                full: zombie.network.characters.AttackRateChecker
+            character:
+              name: character
+              modifiers:
+              - private
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+            deadCharacterPacket:
+              name: deadCharacterPacket
+              modifiers:
+              - private
+              type:
+                basic: NetworkCharacterAI.PostponedPacket
+                full: zombie.characters.NetworkCharacterAI$PostponedPacket
+            direction:
+              name: direction
+              modifiers:
+              - public
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
+            distance:
+              name: distance
+              modifiers:
+              - public
+              type:
+                basic: Vector2
+                full: zombie.iso.Vector2
+            forcePathFinder:
+              name: forcePathFinder
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean
+            hitReaction:
+              name: hitReaction
+              modifiers:
+              - protected
+              type:
+                basic: HitReactionNetworkAI
+                full: zombie.characters.HitReactionNetworkAI
+            moved:
+              name: moved
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean
+            noCollisionTime:
+              name: noCollisionTime
+              modifiers:
+              - protected
+              type:
+                basic: long
+                full: long
+            ownership:
+              name: ownership
+              modifiers:
+              - private
+              type:
+                basic: Ownership
+                full: zombie.popman.Ownership
+            packet:
+              name: packet
+              modifiers:
+              - private
+              type:
+                basic: AnimalPacket
+                full: zombie.network.packets.character.AnimalPacket
+            performingAction:
+              name: performingAction
+              modifiers:
+              - protected
+              type:
+                basic: String
+                full: java.lang.String
             predictionType:
               name: predictionType
               modifiers:
               - public
               type:
-                basic: PredictionTypes
-            teleportDebug:
-              name: teleportDebug
+                basic: NetworkVariables.PredictionTypes
+                full: zombie.network.NetworkVariables$PredictionTypes
+            speedChecker:
+              name: speedChecker
               modifiers:
               - public
               type:
-                basic: NetworkTeleportDebug
+                basic: NetworkCharacterAI.SpeedChecker
+                full: zombie.characters.NetworkCharacterAI$SpeedChecker
+            state:
+              name: state
+              modifiers:
+              - public
+              type:
+                basic: NetworkState
+                full: zombie.characters.NetworkState
+            switchTime:
+              name: switchTime
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            targetX:
+              name: targetX
+              modifiers:
+              - public
+              type:
+                basic: float
+                full: float
+            targetY:
+              name: targetY
+              modifiers:
+              - public
+              type:
+                basic: float
+                full: float
+            targetZ:
+              name: targetZ
+              modifiers:
+              - public
+              type:
+                basic: int
+                full: int
+            usePathFind:
+              name: usePathFind
+              modifiers:
+              - public
+              type:
+                basic: boolean
+                full: boolean
+            vehicleHitPacket:
+              name: vehicleHitPacket
+              modifiers:
+              - private
+              type:
+                basic: NetworkCharacterAI.PostponedPacket
+                full: zombie.characters.NetworkCharacterAI$PostponedPacket
+            wasLocal:
+              name: wasLocal
+              modifiers:
+              - protected
+              type:
+                basic: boolean
+                full: boolean
           constructors:
           - modifiers:
             - public
@@ -34,123 +177,218 @@ languages:
             - name: character
               type:
                 basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
           methods:
-          - name: addTeleportData
-            modifiers:
-            - public
-            parameters:
-            - name: time
-              type:
-                basic: int
-            - name: prediction
-              type:
-                basic: String
-            return:
-              type:
-                basic: void
-          - name: checkPosition
-            modifiers:
-            - public
-            parameters:
-            - name: connection
-              type:
-                basic: UdpConnection
-            - name: character
-              type:
-                basic: IsoGameCharacter
-            - name: x
-              type:
-                basic: float
-            - name: y
-              type:
-                basic: float
-            return:
-              type:
-                basic: boolean
-          - name: clearTeleportDebug
+          - name: becomeCorpse
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: getAction
             modifiers:
             - public
             return:
               type:
                 basic: BaseAction
+                full: zombie.characters.CharacterTimedActions.BaseAction
+          - name: getAnimalPacket
+            modifiers:
+            - public
+            return:
+              type:
+                basic: AnimalPacket
+                full: zombie.network.packets.character.AnimalPacket
+          - name: getBooleanDebugOptions
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: Multiplayer.DebugFlagsOG.IsoGameCharacterOG
+                full: zombie.debug.options.Multiplayer$DebugFlagsOG$IsoGameCharacterOG
+          - name: getCharacter
+            modifiers:
+            - public
+            return:
+              type:
+                basic: IsoGameCharacter
+                full: zombie.characters.IsoGameCharacter
+          - name: getHutch
+            modifiers:
+            - public
+            return:
+              type:
+                basic: IsoHutch
+                full: zombie.iso.objects.IsoHutch
+          - name: getOnlineID
+            modifiers:
+            - public
+            return:
+              type:
+                basic: short
+                full: short
+          - name: getOwnership
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Ownership
+                full: zombie.popman.Ownership
           - name: getPerformingAction
             modifiers:
             - public
             return:
               type:
                 basic: String
-          - name: getTeleportDebug
+                full: java.lang.String
+          - name: getRelatedPlayer
+            modifiers:
+            - public
+            - abstract
+            return:
+              type:
+                basic: IsoPlayer
+                full: zombie.characters.IsoPlayer
+          - name: getState
             modifiers:
             - public
             return:
               type:
-                basic: NetworkTeleportDebug
+                basic: NetworkState
+                full: zombie.characters.NetworkState
+          - name: getVehile
+            modifiers:
+            - public
+            return:
+              type:
+                basic: BaseVehicle
+                full: zombie.vehicles.BaseVehicle
+          - name: getX
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getY
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: getZ
+            modifiers:
+            - public
+            return:
+              type:
+                basic: float
+                full: float
+          - name: hitByVehicle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: void
+                full: void
           - name: isCollisionEnabled
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isDead
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isDeadBodyTimeout
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: isHitByVehicle
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isNoCollisionTimeout
             modifiers:
             - public
             return:
               type:
                 basic: boolean
-          - name: isSetDeadBody
+                full: boolean
+          - name: isOwnershipOnServer
             modifiers:
             - public
             return:
               type:
                 basic: boolean
-          - name: isSetVehicleHit
+                full: boolean
+          - name: isRemote
             modifiers:
             - public
             return:
               type:
                 basic: boolean
+                full: boolean
+          - name: isValid
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            return:
+              type:
+                basic: boolean
+                full: boolean
           - name: isVehicleHitTimeout
             modifiers:
             - public
             return:
               type:
                 basic: boolean
-          - name: processDeadBody
+                full: boolean
+          - name: postUpdate
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: processVehicleHit
-            modifiers:
-            - public
-            return:
-              type:
-                basic: void
+                full: void
           - name: reset
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: resetSpeedLimiter
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: resetVehicleHitTimeout
+                full: void
+          - name: resetState
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: setAction
             modifiers:
             - public
@@ -158,19 +396,23 @@ languages:
             - name: action
               type:
                 basic: BaseAction
+                full: zombie.characters.CharacterTimedActions.BaseAction
             return:
               type:
                 basic: void
-          - name: setDeadBody
+                full: void
+          - name: setCorpse
             modifiers:
             - public
             parameters:
-            - name: packet
+            - name: arg0
               type:
-                basic: DeadCharacterPacket
+                basic: INetworkPacket
+                full: zombie.network.packets.INetworkPacket
             return:
               type:
                 basic: void
+                full: void
           - name: setLocal
             modifiers:
             - public
@@ -178,9 +420,11 @@ languages:
             - name: wasLocal
               type:
                 basic: boolean
+                full: boolean
             return:
               type:
                 basic: void
+                full: void
           - name: setNoCollision
             modifiers:
             - public
@@ -188,9 +432,11 @@ languages:
             - name: interval
               type:
                 basic: long
+                full: long
             return:
               type:
                 basic: void
+                full: void
           - name: setOverride
             modifiers:
             - public
@@ -198,15 +444,31 @@ languages:
             - name: override
               type:
                 basic: boolean
+                full: boolean
             - name: primaryHandModel
               type:
                 basic: String
+                full: java.lang.String
             - name: secondaryHandModel
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
+                full: void
+          - name: setOwnership
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: UdpConnection
+                full: zombie.core.raknet.UdpConnection
+            return:
+              type:
+                basic: void
+                full: void
           - name: setPerformingAction
             modifiers:
             - public
@@ -214,52 +476,85 @@ languages:
             - name: animation
               type:
                 basic: String
+                full: java.lang.String
             return:
               type:
                 basic: void
-          - name: setTeleportDebug
-            modifiers:
-            - public
-            parameters:
-            - name: teleportDebug
-              type:
-                basic: NetworkTeleportDebug
-            return:
-              type:
-                basic: void
+                full: void
           - name: setVehicleHit
             modifiers:
             - public
             parameters:
-            - name: packet
+            - name: arg0
               type:
-                basic: VehicleHitPacket
+                basic: INetworkPacket
+                full: zombie.network.packets.INetworkPacket
             return:
               type:
                 basic: void
+                full: void
+          - name: setX
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setY
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
+          - name: setZ
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: float
+                full: float
+            return:
+              type:
+                basic: void
+                full: void
           - name: startAction
             modifiers:
             - public
             return:
               type:
                 basic: void
+                full: void
           - name: stopAction
             modifiers:
             - public
             return:
               type:
                 basic: void
-          - name: updateHitVehicle
+                full: void
+          - name: syncDamage
             modifiers:
             - public
+            - abstract
             return:
               type:
                 basic: void
+                full: void
           - name: wasLocal
             modifiers:
             - public
             return:
               type:
                 basic: boolean
-          javaType: class
-          extends: Object
+                full: boolean

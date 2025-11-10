@@ -4,113 +4,99 @@ languages:
     packages:
       java.time.zone:
         ZoneOffsetTransitionRule:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - final
+          notes: "A rule expressing how to create a transition.\n \n This class allows\
+            \ rules for identifying future transitions to be expressed.\n A rule might\
+            \ be written in many forms:\n \n the 16th March\n the Sunday on or after\
+            \ the 16th March\n the Sunday on or before the 16th March\n the last Sunday\
+            \ in February\n \n These different rule types can be expressed and queried."
+          fields:
+            dom:
+              name: dom
+              modifiers:
+              - private
               type:
-                basic: String
-                full: java.lang.String
-          - name: createTransition
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: ZoneOffsetTransition
-                full: java.time.zone.ZoneOffsetTransition
-          - name: equals
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: Object
-                full: java.lang.Object
-            return:
-              type:
-                basic: boolean
-                full: boolean
-          - name: getDayOfMonthIndicator
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: getDayOfWeek
-            modifiers:
-            - public
-            return:
+                basic: byte
+                full: byte
+            dow:
+              name: dow
+              modifiers:
+              - private
               type:
                 basic: DayOfWeek
                 full: java.time.DayOfWeek
-          - name: getLocalTime
-            modifiers:
-            - public
-            return:
-              type:
-                basic: LocalTime
-                full: java.time.LocalTime
-          - name: getMonth
-            modifiers:
-            - public
-            return:
+            month:
+              name: month
+              modifiers:
+              - private
               type:
                 basic: Month
                 full: java.time.Month
-          - name: getOffsetAfter
-            modifiers:
-            - public
-            return:
+            offsetAfter:
+              name: offsetAfter
+              modifiers:
+              - private
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
-          - name: getOffsetBefore
-            modifiers:
-            - public
-            return:
+            offsetBefore:
+              name: offsetBefore
+              modifiers:
+              - private
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
-          - name: getStandardOffset
-            modifiers:
-            - public
-            return:
+            standardOffset:
+              name: standardOffset
+              modifiers:
+              - private
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
-          - name: getTimeDefinition
-            modifiers:
-            - public
-            return:
+            time:
+              name: time
+              modifiers:
+              - private
               type:
-                basic: TimeDefinition
+                basic: LocalTime
+                full: java.time.LocalTime
+            timeDefinition:
+              name: timeDefinition
+              modifiers:
+              - private
+              type:
+                basic: ZoneOffsetTransitionRule.TimeDefinition
                 full: java.time.zone.ZoneOffsetTransitionRule$TimeDefinition
-          - name: hashCode
-            modifiers:
-            - public
-            return:
-              type:
-                basic: int
-                full: int
-          - name: isMidnightEndOfDay
-            modifiers:
-            - public
-            return:
+            timeEndOfDay:
+              name: timeEndOfDay
+              modifiers:
+              - private
               type:
                 basic: boolean
                 full: boolean
-          staticMethods:
-          - name: of
-            modifiers:
-            - public
-            - static
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+            serialVersionUID:
+              name: serialVersionUID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: long
+                full: long
+          constructors:
+          - modifiers:
+            - package
             parameters:
             - name: arg0
               type:
@@ -134,7 +120,7 @@ languages:
                 full: boolean
             - name: arg5
               type:
-                basic: TimeDefinition
+                basic: ZoneOffsetTransitionRule.TimeDefinition
                 full: java.time.zone.ZoneOffsetTransitionRule$TimeDefinition
             - name: arg6
               type:
@@ -148,9 +134,267 @@ languages:
               type:
                 basic: ZoneOffset
                 full: java.time.ZoneOffset
+          methods:
+          - name: createTransition
+            modifiers:
+            - public
+            parameters:
+            - name: year
+              type:
+                basic: int
+                full: int
+              notes: the year to create a transition for, not null
+            return:
+              type:
+                basic: ZoneOffsetTransition
+                full: java.time.zone.ZoneOffsetTransition
+              notes: the transition instance, not null
+            notes: "Creates a transition instance for the specified year.\n \n Calculations\
+              \ are performed using the ISO-8601 chronology."
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: otherRule
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the other object to compare to, null returns false
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if equal
+            notes: "Checks if this object equals another.\n \n The entire state of\
+              \ the object is compared."
+          - name: getDayOfMonthIndicator
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the day-of-month indicator, from -28 to 31 excluding 0
+            notes: "Gets the indicator of the day-of-month of the transition.\n \n\
+              \ If the rule defines an exact date then the day is the month of that\
+              \ date.\n \n If the rule defines a week where the transition might occur,\
+              \ then the day\n defines either the start of the end of the transition\
+              \ week.\n \n If the value is positive, then it represents a normal day-of-month,\
+              \ and is the\n earliest possible date that the transition can be.\n\
+              \ The date may refer to 29th February which should be treated as 1st\
+              \ March in non-leap years.\n \n If the value is negative, then it represents\
+              \ the number of days back from the\n end of the month where -1 is the\
+              \ last day of the month.\n In this case, the day identified is the latest\
+              \ possible date that the transition can be."
+          - name: getDayOfWeek
+            modifiers:
+            - public
+            return:
+              type:
+                basic: DayOfWeek
+                full: java.time.DayOfWeek
+              notes: the day-of-week that the transition occurs, null if the rule
+                defines an exact date
+            notes: "Gets the day-of-week of the transition.\n \n If the rule defines\
+              \ an exact date then this returns null.\n \n If the rule defines a week\
+              \ where the cutover might occur, then this method\n returns the day-of-week\
+              \ that the month-day will be adjusted to.\n If the day is positive then\
+              \ the adjustment is later.\n If the day is negative then the adjustment\
+              \ is earlier."
+          - name: getLocalTime
+            modifiers:
+            - public
+            return:
+              type:
+                basic: LocalTime
+                full: java.time.LocalTime
+              notes: the local time of day of the transition, not null
+            notes: "Gets the local time of day of the transition which must be checked\
+              \ with\n isMidnightEndOfDay().\n \n The time is converted into an instant\
+              \ using the time definition."
+          - name: getMonth
+            modifiers:
+            - public
+            return:
+              type:
+                basic: Month
+                full: java.time.Month
+              notes: the month of the transition, not null
+            notes: "Gets the month of the transition.\n \n If the rule defines an\
+              \ exact date then the month is the month of that date.\n \n If the rule\
+              \ defines a week where the transition might occur, then the month\n\
+              \ if the month of either the earliest or latest possible date of the\
+              \ cutover."
+          - name: getOffsetAfter
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset after, not null
+            notes: Gets the offset after the transition.
+          - name: getOffsetBefore
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset before, not null
+            notes: Gets the offset before the transition.
+          - name: getStandardOffset
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the standard offset, not null
+            notes: Gets the standard offset in force at the transition.
+          - name: getTimeDefinition
+            modifiers:
+            - public
+            return:
+              type:
+                basic: ZoneOffsetTransitionRule.TimeDefinition
+                full: java.time.zone.ZoneOffsetTransitionRule$TimeDefinition
+              notes: the time definition, not null
+            notes: "Gets the time definition, specifying how to convert the time to\
+              \ an instant.\n \n The local time can be converted to an instant using\
+              \ the standard offset,\n the wall offset or UTC."
+          - name: hashCode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the hash code
+            notes: Returns a suitable hash code.
+          - name: isMidnightEndOfDay
+            modifiers:
+            - public
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: whether a local time of midnight is at the start or end of the
+                day
+            notes: "Is the transition local time midnight at the end of day.\n \n\
+              \ The transition may be represented as occurring at 24:00."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeExternal
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - private
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          staticMethods:
+          - name: of
+            modifiers:
+            - public
+            - static
+            parameters:
+            - name: month
+              type:
+                basic: Month
+                full: java.time.Month
+              notes: the month of the month-day of the first day of the cutover week,
+                not null
+            - name: dayOfMonthIndicator
+              type:
+                basic: int
+                full: int
+              notes: "the day of the month-day of the cutover week, positive if the\
+                \ week is that\n  day or later, negative if the week is that day or\
+                \ earlier, counting from the last day of the month,\n  from"
+            - name: dayOfWeek
+              type:
+                basic: DayOfWeek
+                full: java.time.DayOfWeek
+              notes: the required day-of-week, null if the month-day should not be
+                changed
+            - name: time
+              type:
+                basic: LocalTime
+                full: java.time.LocalTime
+              notes: the cutover time in the 'before' offset, not null
+            - name: timeEndOfDay
+              type:
+                basic: boolean
+                full: boolean
+              notes: whether the time is midnight at the end of day
+            - name: timeDefinition
+              type:
+                basic: ZoneOffsetTransitionRule.TimeDefinition
+                full: java.time.zone.ZoneOffsetTransitionRule$TimeDefinition
+              notes: how to interpret the cutover
+            - name: standardOffset
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the standard offset in force at the cutover, not null
+            - name: offsetBefore
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset before the cutover, not null
+            - name: offsetAfter
+              type:
+                basic: ZoneOffset
+                full: java.time.ZoneOffset
+              notes: the offset after the cutover, not null
             return:
               type:
                 basic: ZoneOffsetTransitionRule
                 full: java.time.zone.ZoneOffsetTransitionRule
-          javaType: class
-          extends: Object
+              notes: the rule, not null
+            notes: "Obtains an instance defining the yearly rule to create transitions\
+              \ between two offsets.\n \n Applications should normally obtain an instance\
+              \ from ZoneRules.\n This factory is only intended for use when creating\
+              \ ZoneRules."
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
+            return:
+              type:
+                basic: ZoneOffsetTransitionRule
+                full: java.time.zone.ZoneOffsetTransitionRule

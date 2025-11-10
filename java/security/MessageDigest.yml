@@ -4,14 +4,120 @@ languages:
     packages:
       java.security:
         MessageDigest:
-          methods:
-          - name: __toString__
-            modifiers:
-            - public
-            return:
+          extends: java.security.MessageDigestSpi
+          modifiers:
+          - public
+          - abstract
+          notes: "This MessageDigest class provides applications the functionality\
+            \ of a\n message digest algorithm, such as SHA-1 or SHA-256.\n Message\
+            \ digests are secure one-way hash functions that take arbitrary-sized\n\
+            \ data and output a fixed-length hash value.\n\n A MessageDigest object\
+            \ starts out initialized. The data is\n processed through it using the\
+            \ update\n methods. At any point reset can be called\n to reset the digest.\
+            \ Once all the data to be updated has been\n updated, one of the digest\
+            \ methods should\n be called to complete the hash computation.\n\n The\
+            \ digest method can be called once for a given number\n of updates. After\
+            \ digest has been called, the MessageDigest\n object is reset to its initialized\
+            \ state.\n\n Implementations are free to implement the Cloneable interface.\n\
+            \ Client applications can test cloneability by attempting cloning\n and\
+            \ catching the CloneNotSupportedException:\n\n <code>\n MessageDigest\
+            \ md = MessageDigest.getInstance(\"SHA-256\");\n\n try {\n     md.update(toChapter1);\n\
+            \     MessageDigest tc1 = md.clone();\n     byte[] toChapter1Digest =\
+            \ tc1.digest();\n     md.update(toChapter2);\n     ...etc.\n } catch (CloneNotSupportedException\
+            \ cnse) {\n     throw new DigestException(\"couldn't make digest of partial\
+            \ content\");\n }\n </code>\n\n Note that if a given implementation is\
+            \ not cloneable, it is\n still possible to compute intermediate digests\
+            \ by instantiating\n several instances, if the number of digests is known\
+            \ in advance.\n\n Note that this class is abstract and extends from\n\
+            \ MessageDigestSpi for historical reasons.\n Application developers should\
+            \ only take notice of the methods defined in\n this MessageDigest class;\
+            \ all the methods in\n the superclass are intended for cryptographic service\
+            \ providers who wish to\n supply their own implementations of message\
+            \ digest algorithms.\n\n  Every implementation of the Java platform is\
+            \ required to support\n the following standard MessageDigest algorithms:\n\
+            \ \n SHA-1\n SHA-256\n \n These algorithms are described in the \n MessageDigest\
+            \ section of the\n Java Security Standard Algorithm Names Specification.\n\
+            \ Consult the release documentation for your implementation to see if\
+            \ any\n other algorithms are supported."
+          fields:
+            algorithm:
+              name: algorithm
+              modifiers:
+              - private
               type:
                 basic: String
                 full: java.lang.String
+            provider:
+              name: provider
+              modifiers:
+              - private
+              type:
+                basic: Provider
+                full: java.security.Provider
+            state:
+              name: state
+              modifiers:
+              - private
+              type:
+                basic: int
+                full: int
+          staticFields:
+            INITIAL:
+              name: INITIAL
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            IN_PROGRESS:
+              name: IN_PROGRESS
+              modifiers:
+              - private
+              - static
+              type:
+                basic: int
+                full: int
+            pdebug:
+              name: pdebug
+              modifiers:
+              - private
+              - static
+              type:
+                basic: Debug
+                full: sun.security.util.Debug
+            skipDebug:
+              name: skipDebug
+              modifiers:
+              - private
+              - static
+              type:
+                basic: boolean
+                full: boolean
+          constructors:
+          - modifiers:
+            - protected
+            parameters:
+            - name: algorithm
+              type:
+                basic: String
+                full: java.lang.String
+              notes: "the standard name of the digest algorithm.\n See the MessageDigest\
+                \ section in the \n Java Security Standard Algorithm Names Specification\n\
+                \ for information about standard algorithm names."
+            notes: Creates a message digest with the specified algorithm name.
+          - modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            - name: arg1
+              type:
+                basic: Provider
+                full: java.security.Provider
+          methods:
           - name: clone
             modifiers:
             - public
@@ -19,45 +125,62 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: a clone if the implementation is cloneable.
+            notes: Returns a clone if the implementation is cloneable.
           - name: digest
             modifiers:
             - public
             return:
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-          - name: digest
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            return:
-              type:
-                basic: byte[]
-                full: byte[]
+              notes: the array of bytes for the resulting hash value.
+            notes: "Completes the hash computation by performing final operations\n\
+              \ such as padding. The digest is reset after this call is made."
           - name: digest
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: buf
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: output buffer for the computed digest
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: offset into the output buffer to begin storing the digest
+            - name: len
               type:
                 basic: int
                 full: int
+              notes: number of bytes within buf allotted for the digest
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of bytes placed into buf
+            notes: "Completes the hash computation by performing final operations\n\
+              \ such as padding. The digest is reset after this call is made."
+          - name: digest
+            modifiers:
+            - public
+            parameters:
+            - name: input
+              type:
+                basic: byte
+                full: byte[]
+              notes: "the input to be updated before the digest is\n completed."
+            return:
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of bytes for the resulting hash value.
+            notes: "Performs a final update on the digest using the specified array\n\
+              \ of bytes, then completes the digest computation. That is, this\n method\
+              \ first calls update(input),\n passing the input array to the update\
+              \ method,\n then calls digest()."
           - name: getAlgorithm
             modifiers:
             - public
@@ -66,6 +189,12 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the algorithm
+            notes: "Returns a string that identifies the algorithm, independent of\n\
+              \ implementation details. The name should be a standard\n Java Security\
+              \ name (such as \"SHA-256\").\n See the MessageDigest section in the\
+              \ \n Java Security Standard Algorithm Names Specification\n for information\
+              \ about standard algorithm names."
           - name: getDigestLength
             modifiers:
             - public
@@ -74,6 +203,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the digest length in bytes, or 0 if this operation is not\n\
+                \ supported by the provider and the implementation is not cloneable."
+            notes: "Returns the length of the digest in bytes, or 0 if this operation\
+              \ is\n not supported by the provider and the implementation is not cloneable."
           - name: getProvider
             modifiers:
             - public
@@ -82,6 +215,15 @@ languages:
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: the provider of this message digest object
+            notes: Returns the provider of this message digest object.
+          - name: getProviderName
+            modifiers:
+            - private
+            return:
+              type:
+                basic: String
+                full: java.lang.String
           - name: reset
             modifiers:
             - public
@@ -89,127 +231,188 @@ languages:
               type:
                 basic: void
                 full: void
-          - name: update
+            notes: Resets the digest for further use.
+          - name: toString
             modifiers:
             - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
             return:
               type:
-                basic: void
-                full: void
+                basic: String
+                full: java.lang.String
           - name: update
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: input
               type:
                 basic: byte
                 full: byte
+              notes: the byte with which to update the digest.
             return:
               type:
                 basic: void
                 full: void
+            notes: Updates the digest using the specified byte.
+          - name: update
+            modifiers:
+            - public
+            parameters:
+            - name: input
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of bytes.
+            - name: offset
+              type:
+                basic: int
+                full: int
+              notes: the offset to start from in the array of bytes.
+            - name: len
+              type:
+                basic: int
+                full: int
+              notes: "the number of bytes to use, starting at\n offset."
+            return:
+              type:
+                basic: void
+                full: void
+            notes: "Updates the digest using the specified array of bytes, starting\n\
+              \ at the specified offset."
+          - name: update
+            modifiers:
+            - public
+            parameters:
+            - name: input
+              type:
+                basic: byte
+                full: byte[]
+              notes: the array of bytes.
+            return:
+              type:
+                basic: void
+                full: void
+            notes: Updates the digest using the specified array of bytes.
           - name: update
             modifiers:
             - public
             - final
             parameters:
-            - name: arg0
+            - name: input
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: the ByteBuffer
             return:
               type:
                 basic: void
                 full: void
-          - name: update
-            modifiers:
-            - public
-            parameters:
-            - name: arg0
-              type:
-                basic: byte[]
-                full: byte[]
-            - name: arg1
-              type:
-                basic: int
-                full: int
-            - name: arg2
-              type:
-                basic: int
-                full: int
-            return:
-              type:
-                basic: void
-                full: void
+            notes: "Update the digest using the specified ByteBuffer. The digest is\n\
+              \ updated using the input.remaining() bytes starting\n at input.position().\n\
+              \ Upon return, the buffer's position will be equal to its limit;\n its\
+              \ limit will not have changed."
           staticMethods:
           - name: getInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: algorithm
               type:
                 basic: String
                 full: java.lang.String
+              notes: "the name of the algorithm requested.\n See the MessageDigest\
+                \ section in the \n Java Security Standard Algorithm Names Specification\n\
+                \ for information about standard algorithm names."
             return:
               type:
                 basic: MessageDigest
                 full: java.security.MessageDigest
+              notes: "a MessageDigest object that implements the\n         specified\
+                \ algorithm"
+            notes: "Returns a MessageDigest object that implements the specified digest\n\
+              \ algorithm.\n\n  This method traverses the list of registered security\
+              \ Providers,\n starting with the most preferred Provider.\n A new MessageDigest\
+              \ object encapsulating the\n MessageDigestSpi implementation from the\
+              \ first\n Provider that supports the specified algorithm is returned.\n\
+              \n  Note that the list of registered providers may be retrieved via\n\
+              \ the Security.getProviders() method."
           - name: getInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: algorithm
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the name of the algorithm requested.\n See the MessageDigest\
+                \ section in the \n Java Security Standard Algorithm Names Specification\n\
+                \ for information about standard algorithm names."
+            - name: provider
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the provider.
             return:
               type:
                 basic: MessageDigest
                 full: java.security.MessageDigest
+              notes: "a MessageDigest object that implements the\n         specified\
+                \ algorithm"
+            notes: "Returns a MessageDigest object that implements the specified digest\n\
+              \ algorithm.\n\n  A new MessageDigest object encapsulating the\n MessageDigestSpi\
+              \ implementation from the specified provider\n is returned.  The specified\
+              \ provider must be registered\n in the security provider list.\n\n \
+              \ Note that the list of registered providers may be retrieved via\n\
+              \ the Security.getProviders() method."
           - name: getInstance
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: algorithm
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the name of the algorithm requested.\n See the MessageDigest\
+                \ section in the \n Java Security Standard Algorithm Names Specification\n\
+                \ for information about standard algorithm names."
+            - name: provider
               type:
                 basic: Provider
                 full: java.security.Provider
+              notes: the provider.
             return:
               type:
                 basic: MessageDigest
                 full: java.security.MessageDigest
+              notes: "a MessageDigest object that implements the\n         specified\
+                \ algorithm"
+            notes: "Returns a MessageDigest object that implements the specified digest\n\
+              \ algorithm.\n\n  A new MessageDigest object encapsulating the\n MessageDigestSpi\
+              \ implementation from the specified Provider\n object is returned. \
+              \ Note that the specified Provider object\n does not have to be registered\
+              \ in the provider list."
           - name: isEqual
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: digesta
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
-            - name: arg1
+              notes: one of the digests to compare.
+            - name: digestb
               type:
-                basic: byte[]
+                basic: byte
                 full: byte[]
+              notes: the other digest to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
-          javaType: class
-          extends: MessageDigestSpi
+              notes: true if the digests are equal, false otherwise.
+            notes: "Compares two digests for equality. Two digests are equal if they\
+              \ have\n the same length and all bytes at corresponding positions are\
+              \ equal."

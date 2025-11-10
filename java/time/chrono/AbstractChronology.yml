@@ -1,0 +1,489 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.time.chrono:
+        AbstractChronology:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          staticFields:
+            CHRONOS_BY_ID:
+              name: CHRONOS_BY_ID
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentHashMap
+                full: java.util.concurrent.ConcurrentHashMap<java.lang.String, java.time.chrono.Chronology>
+            CHRONOS_BY_TYPE:
+              name: CHRONOS_BY_TYPE
+              modifiers:
+              - private
+              - static
+              type:
+                basic: ConcurrentHashMap
+                full: java.util.concurrent.ConcurrentHashMap<java.lang.String, java.time.chrono.Chronology>
+          constructors:
+          - modifiers:
+            - protected
+            notes: Creates an instance.
+          methods:
+          - name: addFieldValue
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ChronoField
+                full: java.time.temporal.ChronoField
+            - name: arg2
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: void
+                full: void
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: other
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+              notes: the other chronology to compare to, not null
+            return:
+              type:
+                basic: int
+                full: int
+              notes: the comparator value, negative if less, positive if greater
+            notes: "Compares this chronology to another chronology.\n \n The comparison\
+              \ order first by the chronology ID string, then by any\n additional\
+              \ information specific to the subclass.\n It is \"consistent with equals\"\
+              , as defined by Comparable."
+          - name: compareTo
+            modifiers:
+            - public
+            parameters:
+            - name: arg0
+              type:
+                basic: Object
+                full: java.lang.Object
+            return:
+              type:
+                basic: int
+                full: int
+          - name: equals
+            modifiers:
+            - public
+            parameters:
+            - name: obj
+              type:
+                basic: Object
+                full: java.lang.Object
+              notes: the object to check, null returns false
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true if this is equal to the other chronology
+            notes: "Checks if this chronology is equal to another chronology.\n \n\
+              \ The comparison is based on the entire state of the object."
+          - name: hashCode
+            modifiers:
+            - public
+            return:
+              type:
+                basic: int
+                full: int
+              notes: a suitable hash code
+            notes: "A hash code for this chronology.\n \n The hash code should be\
+              \ based on the entire state of the object."
+          - name: readObject
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: ObjectInputStream
+                full: java.io.ObjectInputStream
+            return:
+              type:
+                basic: void
+                full: void
+          - name: resolveAligned
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+            - name: arg1
+              type:
+                basic: long
+                full: long
+            - name: arg2
+              type:
+                basic: long
+                full: long
+            - name: arg3
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveDate
+            modifiers:
+            - public
+            parameters:
+            - name: fieldValues
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+              notes: the map of fields to values, which can be updated, not null
+            - name: resolverStyle
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+              notes: the requested type of resolve, not null
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+              notes: the resolved date, null if insufficient information to create
+                a date
+            notes: "Resolves parsed ChronoField values into a date during parsing.\n\
+              \ \n Most TemporalField implementations are resolved using the\n resolve\
+              \ method on the field. By contrast, the ChronoField class\n defines\
+              \ fields that only have meaning relative to the chronology.\n As such,\
+              \ ChronoField date fields are resolved here in the\n context of a specific\
+              \ chronology.\n \n ChronoField instances are resolved by this method,\
+              \ which may\n be overridden in subclasses.\n \n EPOCH_DAY - If present,\
+              \ this is converted to a date and\n  all other date fields are then\
+              \ cross-checked against the date.\n PROLEPTIC_MONTH - If present, then\
+              \ it is split into the\n  YEAR and MONTH_OF_YEAR. If the mode is strict\
+              \ or smart\n  then the field is validated.\n YEAR_OF_ERA and ERA - If\
+              \ both are present, then they\n  are combined to form a YEAR. In lenient\
+              \ mode, the YEAR_OF_ERA\n  range is not validated, in smart and strict\
+              \ mode it is. The ERA is\n  validated for range in all three modes.\
+              \ If only the YEAR_OF_ERA is\n  present, and the mode is smart or lenient,\
+              \ then the last available era\n  is assumed. In strict mode, no era\
+              \ is assumed and the YEAR_OF_ERA is\n  left untouched. If only the ERA\
+              \ is present, then it is left untouched.\n YEAR, MONTH_OF_YEAR and DAY_OF_MONTH\
+              \ -\n  If all three are present, then they are combined to form a date.\n\
+              \  In all three modes, the YEAR is validated.\n  If the mode is smart\
+              \ or strict, then the month and day are validated.\n  If the mode is\
+              \ lenient, then the date is combined in a manner equivalent to\n  creating\
+              \ a date on the first day of the first month in the requested year,\n\
+              \  then adding the difference in months, then the difference in days.\n\
+              \  If the mode is smart, and the day-of-month is greater than the maximum\
+              \ for\n  the year-month, then the day-of-month is adjusted to the last\
+              \ day-of-month.\n  If the mode is strict, then the three fields must\
+              \ form a valid date.\n YEAR and DAY_OF_YEAR -\n  If both are present,\
+              \ then they are combined to form a date.\n  In all three modes, the\
+              \ YEAR is validated.\n  If the mode is lenient, then the date is combined\
+              \ in a manner equivalent to\n  creating a date on the first day of the\
+              \ requested year, then adding\n  the difference in days.\n  If the mode\
+              \ is smart or strict, then the two fields must form a valid date.\n\
+              \ YEAR, MONTH_OF_YEAR, ALIGNED_WEEK_OF_MONTH and\n  ALIGNED_DAY_OF_WEEK_IN_MONTH\
+              \ -\n  If all four are present, then they are combined to form a date.\n\
+              \  In all three modes, the YEAR is validated.\n  If the mode is lenient,\
+              \ then the date is combined in a manner equivalent to\n  creating a\
+              \ date on the first day of the first month in the requested year, then\
+              \ adding\n  the difference in months, then the difference in weeks,\
+              \ then in days.\n  If the mode is smart or strict, then the all four\
+              \ fields are validated to\n  their outer ranges. The date is then combined\
+              \ in a manner equivalent to\n  creating a date on the first day of the\
+              \ requested year and month, then adding\n  the amount in weeks and days\
+              \ to reach their values. If the mode is strict,\n  the date is additionally\
+              \ validated to check that the day and week adjustment\n  did not change\
+              \ the month.\n YEAR, MONTH_OF_YEAR, ALIGNED_WEEK_OF_MONTH and\n  DAY_OF_WEEK\
+              \ - If all four are present, then they are combined to\n  form a date.\
+              \ The approach is the same as described above for\n  years, months and\
+              \ weeks in ALIGNED_DAY_OF_WEEK_IN_MONTH.\n  The day-of-week is adjusted\
+              \ as the next or same matching day-of-week once\n  the years, months\
+              \ and weeks have been handled.\n YEAR, ALIGNED_WEEK_OF_YEAR and ALIGNED_DAY_OF_WEEK_IN_YEAR\
+              \ -\n  If all three are present, then they are combined to form a date.\n\
+              \  In all three modes, the YEAR is validated.\n  If the mode is lenient,\
+              \ then the date is combined in a manner equivalent to\n  creating a\
+              \ date on the first day of the requested year, then adding\n  the difference\
+              \ in weeks, then in days.\n  If the mode is smart or strict, then the\
+              \ all three fields are validated to\n  their outer ranges. The date\
+              \ is then combined in a manner equivalent to\n  creating a date on the\
+              \ first day of the requested year, then adding\n  the amount in weeks\
+              \ and days to reach their values. If the mode is strict,\n  the date\
+              \ is additionally validated to check that the day and week adjustment\n\
+              \  did not change the year.\n YEAR, ALIGNED_WEEK_OF_YEAR and DAY_OF_WEEK\
+              \ -\n  If all three are present, then they are combined to form a date.\n\
+              \  The approach is the same as described above for years and weeks in\n\
+              \  ALIGNED_DAY_OF_WEEK_IN_YEAR. The day-of-week is adjusted as the\n\
+              \  next or same matching day-of-week once the years and weeks have been\
+              \ handled.\n \n \n The default implementation is suitable for most calendar\
+              \ systems.\n If ChronoField.YEAR_OF_ERA is found without an ChronoField.ERA\n\
+              \ then the last era in Chronology.eras() is used.\n The implementation\
+              \ assumes a 7 day week, that the first day-of-month\n has the value\
+              \ 1, that first day-of-year has the value 1, and that the\n first of\
+              \ the month and year always exists."
+          - name: resolveProlepticMonth
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: void
+                full: void
+          - name: resolveYAA
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveYAD
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveYD
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveYMAA
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveYMAD
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveYMD
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: resolveYearOfEra
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: Map
+                full: java.util.Map<java.time.temporal.TemporalField, java.lang.Long>
+            - name: arg1
+              type:
+                basic: ResolverStyle
+                full: java.time.format.ResolverStyle
+            return:
+              type:
+                basic: ChronoLocalDate
+                full: java.time.chrono.ChronoLocalDate
+          - name: toString
+            modifiers:
+            - public
+            return:
+              type:
+                basic: String
+                full: java.lang.String
+          - name: writeExternal
+            modifiers:
+            - package
+            parameters:
+            - name: arg0
+              type:
+                basic: DataOutput
+                full: java.io.DataOutput
+            return:
+              type:
+                basic: void
+                full: void
+          - name: writeReplace
+            modifiers:
+            - package
+            return:
+              type:
+                basic: Object
+                full: java.lang.Object
+          staticMethods:
+          - name: getAvailableChronologies
+            modifiers:
+            - package
+            - static
+            return:
+              type:
+                basic: Set
+                full: java.util.Set<java.time.chrono.Chronology>
+          - name: initCache
+            modifiers:
+            - private
+            - static
+            return:
+              type:
+                basic: boolean
+                full: boolean
+          - name: of
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+          - name: of0
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+          - name: ofLocale
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Locale
+                full: java.util.Locale
+            return:
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+          - name: readExternal
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: DataInput
+                full: java.io.DataInput
+            return:
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+          - name: registerChrono
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+            return:
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+          - name: registerChrono
+            modifiers:
+            - package
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology
+            - name: arg1
+              type:
+                basic: String
+                full: java.lang.String
+            return:
+              type:
+                basic: Chronology
+                full: java.time.chrono.Chronology

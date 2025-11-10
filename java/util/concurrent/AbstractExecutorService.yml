@@ -1,0 +1,266 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      java.util.concurrent:
+        AbstractExecutorService:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "Provides default implementations of ExecutorService\n execution\
+            \ methods. This class implements the submit,\n invokeAny and invokeAll\
+            \ methods using a\n RunnableFuture returned by newTaskFor, which defaults\n\
+            \ to the FutureTask class provided in this package.  For example,\n the\
+            \ implementation of submit(Runnable) creates an\n associated RunnableFuture\
+            \ that is executed and\n returned. Subclasses may override the newTaskFor\
+            \ methods\n to return RunnableFuture implementations other than\n FutureTask.\n\
+            \n Extension example. Here is a sketch of a class\n that customizes ThreadPoolExecutor\
+            \ to use\n a CustomTask class instead of the default FutureTask:\n  <code>\n\
+            \ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {\n\
+            \n   static class CustomTask<V> implements RunnableFuture<V> { ... }\n\
+            \n   protected <V> RunnableFuture<V> newTaskFor(Callable<V> c) {\n   \
+            \    return new CustomTask<V>(c);\n   }\n   protected <V> RunnableFuture<V>\
+            \ newTaskFor(Runnable r, V v) {\n       return new CustomTask<V>(r, v);\n\
+            \   }\n   // ... add constructors, etc.\n }</code>"
+          staticFields:
+            $assertionsDisabled:
+              name: $assertionsDisabled
+              modifiers:
+              - package
+              - static
+              type:
+                basic: boolean
+                full: boolean
+          constructors:
+          - modifiers:
+            - public
+            notes: Constructor for subclasses to call.
+          methods:
+          - name: doInvokeAny
+            modifiers:
+            - private
+            parameters:
+            - name: arg0
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+            - name: arg1
+              type:
+                basic: boolean
+                full: boolean
+            - name: arg2
+              type:
+                basic: long
+                full: long
+            return:
+              type:
+                basic: T
+                full: T
+          - name: invokeAll
+            modifiers:
+            - public
+            parameters:
+            - name: tasks
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.util.concurrent.Future<T>>
+              notes: "a list of Futures representing the tasks, in the same\n    \
+                \     sequential order as produced by the iterator for the\n     \
+                \    given task list, each of which has completed"
+            notes: 'Description copied from interface: ExecutorService'
+          - name: invokeAll
+            modifiers:
+            - public
+            parameters:
+            - name: tasks
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: List
+                full: java.util.List<java.util.concurrent.Future<T>>
+              notes: "a list of Futures representing the tasks, in the same\n    \
+                \     sequential order as produced by the iterator for the\n     \
+                \    given task list. If the operation did not time out,\n       \
+                \  each task will have completed. If it did time out, some\n     \
+                \    of these tasks will not have completed."
+            notes: 'Description copied from interface: ExecutorService'
+          - name: invokeAny
+            modifiers:
+            - public
+            parameters:
+            - name: tasks
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the result returned by one of the tasks
+            notes: 'Description copied from interface: ExecutorService'
+          - name: invokeAny
+            modifiers:
+            - public
+            parameters:
+            - name: tasks
+              type:
+                basic: Collection
+                full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
+            - name: timeout
+              type:
+                basic: long
+                full: long
+              notes: the maximum time to wait
+            - name: unit
+              type:
+                basic: TimeUnit
+                full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
+            return:
+              type:
+                basic: T
+                full: T
+              notes: the result returned by one of the tasks
+            notes: 'Description copied from interface: ExecutorService'
+          - name: newTaskFor
+            modifiers:
+            - protected
+            parameters:
+            - name: runnable
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the runnable task being wrapped
+            - name: value
+              type:
+                basic: T
+                full: T
+              notes: the default value for the returned future
+            return:
+              type:
+                basic: RunnableFuture
+                full: java.util.concurrent.RunnableFuture<T>
+              notes: "a RunnableFuture which, when run, will run the\n underlying\
+                \ runnable and which, as a Future, will yield\n the given value as\
+                \ its result and provide for cancellation of\n the underlying task"
+            notes: "Returns a RunnableFuture for the given runnable and default\n\
+              \ value."
+          - name: newTaskFor
+            modifiers:
+            - protected
+            parameters:
+            - name: callable
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable<T>
+              notes: the callable task being wrapped
+            return:
+              type:
+                basic: RunnableFuture
+                full: java.util.concurrent.RunnableFuture<T>
+              notes: "a RunnableFuture which, when run, will call the\n underlying\
+                \ callable and which, as a Future, will yield\n the callable's result\
+                \ as its result and provide for\n cancellation of the underlying task"
+            notes: Returns a RunnableFuture for the given callable task.
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the task to submit
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future<?>
+              notes: a Future representing pending completion of the task
+            notes: 'Description copied from interface: ExecutorService'
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Runnable
+                full: java.lang.Runnable
+              notes: the task to submit
+            - name: result
+              type:
+                basic: T
+                full: T
+              notes: the result to return
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future<T>
+              notes: a Future representing pending completion of the task
+            notes: 'Description copied from interface: ExecutorService'
+          - name: submit
+            modifiers:
+            - public
+            parameters:
+            - name: task
+              type:
+                basic: Callable
+                full: java.util.concurrent.Callable<T>
+              notes: the task to submit
+            return:
+              type:
+                basic: Future
+                full: java.util.concurrent.Future<T>
+              notes: a Future representing pending completion of the task
+            notes: 'Description copied from interface: ExecutorService'
+          staticMethods:
+          - name: cancelAll
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.concurrent.Future<T>>
+            return:
+              type:
+                basic: void
+                full: void
+          - name: cancelAll
+            modifiers:
+            - private
+            - static
+            parameters:
+            - name: arg0
+              type:
+                basic: ArrayList
+                full: java.util.ArrayList<java.util.concurrent.Future<T>>
+            - name: arg1
+              type:
+                basic: int
+                full: int
+            return:
+              type:
+                basic: void
+                full: void

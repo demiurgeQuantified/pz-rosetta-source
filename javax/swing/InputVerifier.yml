@@ -1,0 +1,136 @@
+version: '1.1'
+languages:
+  java:
+    packages:
+      javax.swing:
+        InputVerifier:
+          extends: java.lang.Object
+          modifiers:
+          - public
+          - abstract
+          notes: "This class provides the validation mechanism for Swing components.\
+            \ GUIs often\n need to ensure that the components are in a valid state\
+            \ before allowing the\n user to navigate the input focus. To do this,\
+            \ clients create a subclass of\n InputVerifier and, using JComponent's\n\
+            \ setInputVerifier method, attach an instance of their subclass to\n the\
+            \ JComponent which is the source of the focus transfer operation.\n The\
+            \ InputVerifier also provides the possibility to validate against\n the\
+            \ target of the focus transfer which may reject the focus.\n Before focus\
+            \ is transferred from the source Swing component to the target\n Swing\
+            \ component, the input verifier's\n shouldYieldFocus(source, target) method\
+            \ is called. Focus is\n transferred only if that method returns\n true.\n\
+            \ \n The following example has two text fields, with the first one expecting\n\
+            \ the string \"pass\" to be entered by the user. If either that string\
+            \ is entered\n in the first text field or the second text field contains\
+            \ \"accept\" string,\n then the user can advance focus to the second text\
+            \ field by clicking in it or\n by pressing TAB.\n However, if another\
+            \ string is entered in the first text field and the second\n text field\
+            \ does not contain \"accept\", then the user will be unable to\n transfer\
+            \ focus to the second text field.\n\n \n import java.awt.*;\n import javax.swing.*;\n\
+            \n // This program demonstrates the use of the Swing InputVerifier class.\n\
+            \ // It creates two text fields; the first of the text fields expects\
+            \ the\n // string \"pass\" as input, and will allow focus to advance to\
+            \ the second text\n // field if either that string is typed in by the\
+            \ user or the second\n // field contains \"accept\" string.\n\n public\
+            \ class VerifierTest extends JFrame {\n\n     public VerifierTest() {\n\
+            \         JTextField field1 = new JTextField(\"Type \\\"pass\\\" here\"\
+            );\n         JTextField field2 = new JTextField(\"or \\\"accept\\\" here\"\
+            );\n         getContentPane().add(field1, BorderLayout.NORTH);\n     \
+            \    getContentPane().add(field2, BorderLayout.SOUTH);\n\n         field1.setInputVerifier(new\
+            \ InputVerifier() {\n             public boolean verify(JComponent input)\
+            \ {\n                return \"pass\".equals(((JTextField) input).getText());\n\
+            \             }\n\n             public boolean verifyTarget(JComponent\
+            \ input) {\n                 return \"accept\".equals(((JTextField) input).getText());\n\
+            \             }\n\n             public boolean shouldYieldFocus(JComponent\
+            \ source,\n                                                          JComponent\
+            \ target) {\n                 return verify(source) || verifyTarget(target);\n\
+            \             }\n         });\n\n         pack();\n         setVisible(true);\n\
+            \     }\n\n     public static void main(String[] args) {\n         SwingUtilities.invokeLater(VerifierTest::new);\n\
+            \     }\n }"
+          constructors:
+          - modifiers:
+            - protected
+            notes: Constructor for subclasses to call.
+          methods:
+          - name: shouldYieldFocus
+            modifiers:
+            - public
+            parameters:
+            - name: input
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: the JComponent to verify
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true when valid, false when invalid
+            notes: "Calls verify(input) to ensure that the input is valid.\n This\
+              \ method can have side effects. In particular, this method\n is called\
+              \ when the user attempts to advance focus out of the\n argument component\
+              \ into another Swing component in this window.\n If this method returns\
+              \ true, then the focus is transferred\n normally; if it returns false,\
+              \ then the focus remains in\n the argument component."
+          - name: shouldYieldFocus
+            modifiers:
+            - public
+            parameters:
+            - name: source
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: the source JComponent of the focus transfer
+            - name: target
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: the target JComponent of the focus transfer
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true when valid, false when invalid
+            notes: "Is called by Swing if this InputVerifier is assigned to the\n\
+              \ source Swing component to check whether the requested focus\n transfer\
+              \ from the source to target is allowed.\n This method can have side\
+              \ effects.\n If this method returns true, then the focus is transferred\n\
+              \ normally; if it returns false, then the focus remains in\n the first\
+              \ argument component."
+          - name: verify
+            modifiers:
+            - public
+            - abstract
+            parameters:
+            - name: input
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: the JComponent to verify
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true when valid, false when invalid
+            notes: "Checks whether the JComponent's input is valid. This method should\n\
+              \ have no side effects. It returns a boolean indicating the status\n\
+              \ of the argument's input."
+          - name: verifyTarget
+            modifiers:
+            - public
+            parameters:
+            - name: target
+              type:
+                basic: JComponent
+                full: javax.swing.JComponent
+              notes: the target JComponent to verify
+            return:
+              type:
+                basic: boolean
+                full: boolean
+              notes: true when valid, false when invalid
+            notes: "Checks whether the target JComponent that will be receiving the\
+              \ focus\n is ready to accept it. This method should be over-ridden only\
+              \ if it is\n necessary to validate the target of the focus transfer.\n\
+              \ This method should have no side effects. It returns a boolean\n indicating\
+              \ the status of the argument's input."
