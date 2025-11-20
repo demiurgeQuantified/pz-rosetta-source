@@ -8,6 +8,60 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A watch service that watches registered objects for changes and\n\
+            \ events. For example a file manager may use a watch service to monitor\
+            \ a\n directory for changes so that it can update its display of the list\
+            \ of files\n when files are created or deleted.\n\n  A Watchable object\
+            \ is registered with a watch service by invoking\n its register method,\
+            \ returning a WatchKey\n to represent the registration. When an event\
+            \ for an object is detected the\n key is signalled, and if not currently\
+            \ signalled, it is queued to\n the watch service so that it can be retrieved\
+            \ by consumers that invoke the\n poll or take methods to retrieve keys\n\
+            \ and process events. Once the events have been processed the consumer\n\
+            \ invokes the key's reset method to reset the key which\n allows the key\
+            \ to be signalled and re-queued with further events.\n\n  Registration\
+            \ with a watch service is cancelled by invoking the key's\n cancel method.\
+            \ A key that is queued at the time that\n it is cancelled remains in the\
+            \ queue until it is retrieved. Depending on the\n object, a key may be\
+            \ cancelled automatically. For example, suppose a\n directory is watched\
+            \ and the watch service detects that it has been deleted\n or its file\
+            \ system is no longer accessible. When a key is cancelled in this\n manner\
+            \ it is signalled and queued, if not currently signalled. To ensure\n\
+            \ that the consumer is notified the return value from the reset\n method\
+            \ indicates if the key is valid.\n\n  A watch service is safe for use\
+            \ by multiple concurrent consumers. To\n ensure that only one consumer\
+            \ processes the events for a particular object at\n any time then care\
+            \ should be taken to ensure that the key's reset\n method is only invoked\
+            \ after its events have been processed. The close method may be invoked\
+            \ at any time to close the service causing\n any threads waiting to retrieve\
+            \ keys, to throw \n ClosedWatchServiceException.\n\n  File systems may\
+            \ report events faster than they can be retrieved or\n processed and an\
+            \ implementation may impose an unspecified limit on the number\n of events\
+            \ that it may accumulate. Where an implementation knowingly\n discards\
+            \ events then it arranges for the key's pollEvents method to return an\
+            \ element with an event type of OVERFLOW. This event can be used by the\n\
+            \ consumer as a trigger to re-examine the state of the object.\n\n  When\
+            \ an event is reported to indicate that a file in a watched directory\n\
+            \ has been modified then there is no guarantee that the program (or programs)\n\
+            \ that have modified the file have completed. Care should be taken to\
+            \ coordinate\n access with other programs that may be updating the file.\n\
+            \ The FileChannel class defines methods\n to lock regions of a file against\
+            \ access by other programs.\n\n Platform dependencies\n\n  The implementation\
+            \ that observes events from the file system is intended\n to map directly\
+            \ on to the native file event notification facility where\n available,\
+            \ or to use a primitive mechanism, such as polling, when a native\n facility\
+            \ is not available. Consequently, many of the details on how events\n\
+            \ are detected, their timeliness, and whether their ordering is preserved\
+            \ are\n highly implementation specific. For example, when a file in a\
+            \ watched\n directory is modified then it may result in a single ENTRY_MODIFY\
+            \ event in some\n implementations but several events in other implementations.\
+            \ Short-lived\n files (meaning files that are deleted very quickly after\
+            \ they are created)\n may not be detected by primitive implementations\
+            \ that periodically poll the\n file system to detect changes.\n\n  If\
+            \ a watched file is not located on a local storage device then it is\n\
+            \ implementation specific if changes to the file can be detected. In particular,\n\
+            \ it is not required that changes to files carried out on remote systems\
+            \ be\n detected."
           methods:
           - name: close
             modifiers:
@@ -17,6 +71,13 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes this watch service.\n\n  If a thread is currently blocked\
+              \ in the take or poll methods waiting for a key to be queued then\n\
+              \ it immediately receives a ClosedWatchServiceException. Any\n valid\
+              \ keys associated with this watch service are invalidated.\n\n  After\
+              \ a watch service is closed, any further attempt to invoke\n operations\
+              \ upon it will throw ClosedWatchServiceException.\n If this watch service\
+              \ is already closed then invoking this method\n has no effect."
           - name: poll
             modifiers:
             - public
@@ -25,23 +86,32 @@ languages:
               type:
                 basic: WatchKey
                 full: java.nio.file.WatchKey
+              notes: the next watch key, or null
+            notes: "Retrieves and removes the next watch key, or null if none are\n\
+              \ present."
           - name: poll
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: how to wait before giving up, in units of unit
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the timeout\n      \
+                \    parameter"
             return:
               type:
                 basic: WatchKey
                 full: java.nio.file.WatchKey
+              notes: the next watch key, or null
+            notes: "Retrieves and removes the next watch key, waiting if necessary\
+              \ up to the\n specified wait time if none are yet present."
           - name: take
             modifiers:
             - public
@@ -50,3 +120,5 @@ languages:
               type:
                 basic: WatchKey
                 full: java.nio.file.WatchKey
+              notes: the next watch key
+            notes: Retrieves and removes next watch key, waiting if none are yet present.

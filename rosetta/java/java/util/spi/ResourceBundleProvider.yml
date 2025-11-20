@@ -8,21 +8,87 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "ResourceBundleProvider is a service provider interface for\n resource\
+            \ bundles. It is used by\n ResourceBundle.getBundle\n factory methods\
+            \ to locate and load the service providers that are deployed as\n modules\
+            \ via ServiceLoader.\n\n Developing resource bundle services\n\n A service\
+            \ for a resource bundle of a given baseName must have\n a fully-qualified\
+            \ class name of the form:\n \n <package of baseName> + \".spi.\" + <simple\
+            \ name of baseName> + \"Provider\"\n \n\n The service type is in a spi\
+            \ subpackage as it may be packaged in\n a module separate from the resource\
+            \ bundle providers.\n For example, the service for a resource bundle named\n\
+            \ com.example.app.MyResources must be\n com.example.app.spi.MyResourcesProvider:\n\
+            \n \n <code>package com.example.app.spi;\n public interface MyResourcesProvider\
+            \ extends ResourceBundleProvider {\n }\n </code>\n\n Deploying resource\
+            \ bundle service providers\n\n Resource bundles can be deployed in one\
+            \ or more service providers\n in modules.  For example, a provider for\
+            \ a service\n named \"com.example.app.spi.MyResourcesProvider\"\n has\
+            \ the following implementation class:\n\n \n <code>import com.example.app.spi.MyResourcesProvider;\n\
+            \ class MyResourcesProviderImpl extends AbstractResourceBundleProvider\n\
+            \     implements MyResourcesProvider\n {\n     public MyResourcesProviderImpl()\
+            \ {\n         super(\"java.properties\");\n     }\n     // this provider\
+            \ maps the resource bundle to per-language package\n     protected String\
+            \ toBundleName(String baseName, Locale locale) {\n         return \"p.\"\
+            \ + locale.getLanguage() + \".\" + baseName;\n     }\n\n     public ResourceBundle\
+            \ getBundle(String baseName, Locale locale) {\n         // this module\
+            \ only provides bundles in French\n         if (locale.equals(Locale.FRENCH))\
+            \ {\n              return super.getBundle(baseName, locale);\n       \
+            \  }\n         // otherwise return null\n         return null;\n     }\n\
+            \ }</code>\n\n This example provides \"com.example.app.MyResources\"\n\
+            \ resource bundle of the French locale.  Traditionally resource bundles\
+            \ of\n all locales are packaged in the same package as the resource bundle\
+            \ base name.\n When deploying resource bundles in more than one modules\
+            \ and two modules\n containing a package of the same name, split package,\n\
+            \ is not supported, resource bundles in each module can be packaged in\n\
+            \ a different package as shown in this example where this provider packages\n\
+            \ the resource bundles in per-language package, i.e. com.example.app.fr\n\
+            \ for French locale.\n\n  A provider can provide more than one services,\
+            \ each of which is a service\n for a resource bundle of a different base\
+            \ name.\n\n AbstractResourceBundleProvider\n provides the basic implementation\
+            \ for ResourceBundleProvider\n and a subclass can override the toBundleName\n\
+            \ method to return a provider-specific location of the resource to be\
+            \ loaded,\n for example, per-language package.\n A provider can override\
+            \ ResourceBundleProvider.getBundle\n method for example to only search\
+            \ the known supported locales or\n return resource bundles in other formats\
+            \ such as XML.\n\n The module declaration of this provider module specifies\
+            \ the following\n directive:\n \n     provides com.example.app.spi.MyResourcesProvider\
+            \ with com.example.impl.MyResourcesProviderImpl;\n \n\n Obtaining resource\
+            \ bundles from providers\n\n The module declaration of the consumer module\
+            \ that calls one of the\n ResourceBundle.getBundle factory methods to\
+            \ obtain a resource\n bundle from service providers must specify the following\
+            \ directive:\n \n     uses com.example.app.spi.MyResourcesProvider;\n\
+            \ \n\n ResourceBundle.getBundle(\"com.example.app.MyResource\", locale)\n\
+            \ locates and loads the providers for com.example.app.spi.MyResourcesProvider\n\
+            \ service and then invokes ResourceBundleProvider.getBundle(\"com.example.app.MyResource\"\
+            , locale) to\n find the resource bundle of the given base name and locale.\n\
+            \ If the consumer module is a resource bundle service provider for\n com.example.app.spi.MyResourcesProvider,\
+            \ ResourceBundle.getBundle\n will locate resource bundles only from service\
+            \ providers.\n Otherwise, ResourceBundle.getBundle may continue the search\
+            \ of\n the resource bundle in other modules and class path per the specification\n\
+            \ of the ResourceBundle.getBundle method being called."
           methods:
           - name: getBundle
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: baseName
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "the base bundle name of the resource bundle, a fully\n     \
+                \   qualified class name"
+            - name: locale
               type:
                 basic: Locale
                 full: java.util.Locale
+              notes: the locale for which the resource bundle should be loaded
             return:
               type:
                 basic: ResourceBundle
                 full: java.util.ResourceBundle
+              notes: "the ResourceBundle created for the given parameters, or null\
+                \ if no\n         ResourceBundle for the given parameters is found"
+            notes: "Returns a ResourceBundle for the given bundle name and locale.\n\
+              \ This method returns null if there is no ResourceBundle\n found for\
+              \ the given parameters."

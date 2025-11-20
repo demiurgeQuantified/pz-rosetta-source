@@ -8,20 +8,39 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A CharSequence is a readable sequence of char values. This\n interface\
+            \ provides uniform, read-only access to many different kinds of\n char\
+            \ sequences.\n A char value represents a character in the Basic\n Multilingual\
+            \ Plane (BMP) or a surrogate. Refer to Unicode Character Representation\
+            \ for details.\n\n  This interface does not refine the general contracts\
+            \ of the equals and hashCode methods. The result of testing two objects\n\
+            \ that implement CharSequence for equality is therefore, in general, undefined.\n\
+            \ Each object may be implemented by a different class, and there\n is\
+            \ no guarantee that each class will be capable of testing its instances\n\
+            \ for equality with those of the other.  It is therefore inappropriate\
+            \ to use\n arbitrary CharSequence instances as elements in a set or as\
+            \ keys in\n a map."
           methods:
           - name: charAt
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the index of the char value to be returned
             return:
               type:
                 basic: char
                 full: char
+              notes: the specified char value
+            notes: "Returns the char value at the specified index.  An index ranges\
+              \ from zero\n to length() - 1.  The first char value of the sequence\
+              \ is at\n index zero, the next at index one, and so on, as for array\n\
+              \ indexing.\n\n If the char value specified by the index is a\n surrogate,\
+              \ the surrogate\n value is returned."
           - name: chars
             modifiers:
             - public
@@ -29,6 +48,14 @@ languages:
               type:
                 basic: IntStream
                 full: java.util.stream.IntStream
+              notes: an IntStream of char values from this sequence
+            notes: "Returns a stream of int zero-extending the char values\n from\
+              \ this sequence.  Any char which maps to a surrogate code\n point is\
+              \ passed through uninterpreted.\n\n The stream binds to this sequence\
+              \ when the terminal stream operation\n commences (specifically, for\
+              \ mutable sequences the spliterator for the\n stream is late-binding).\n\
+              \ If the sequence is modified during that operation then the result\
+              \ is\n undefined."
           - name: codePoints
             modifiers:
             - public
@@ -36,6 +63,17 @@ languages:
               type:
                 basic: IntStream
                 full: java.util.stream.IntStream
+              notes: an IntStream of Unicode code points from this sequence
+            notes: "Returns a stream of code point values from this sequence.  Any\
+              \ surrogate\n pairs encountered in the sequence are combined as if by\
+              \ Character.toCodePoint and the result is passed\n to the stream. Any\
+              \ other code units, including ordinary BMP characters,\n unpaired surrogates,\
+              \ and undefined code units, are zero-extended to\n int values which\
+              \ are then passed to the stream.\n\n The stream binds to this sequence\
+              \ when the terminal stream operation\n commences (specifically, for\
+              \ mutable sequences the spliterator for the\n stream is late-binding).\n\
+              \ If the sequence is modified during that operation then the result\
+              \ is\n undefined."
           - name: isEmpty
             modifiers:
             - public
@@ -43,6 +81,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if length() is 0, otherwise\n false"
+            notes: Returns true if this character sequence is empty.
           - name: lambda$chars$0
             modifiers:
             - private
@@ -65,23 +105,34 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of chars in this sequence
+            notes: "Returns the length of this character sequence.  The length is\
+              \ the number\n of 16-bit chars in the sequence."
           - name: subSequence
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: start
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the start index, inclusive
+            - name: end
               type:
                 basic: int
                 full: int
+              notes: the end index, exclusive
             return:
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
+              notes: the specified subsequence
+            notes: "Returns a CharSequence that is a subsequence of this sequence.\n\
+              \ The subsequence starts with the char value at the specified index\
+              \ and\n ends with the char value at index end - 1.  The length\n (in\
+              \ chars) of the\n returned sequence is end - start, so if start == end\n\
+              \ then an empty sequence is returned."
           - name: toString
             modifiers:
             - public
@@ -96,15 +147,33 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: cs1
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
-            - name: arg1
+              notes: the first CharSequence
+            - name: cs2
               type:
                 basic: CharSequence
                 full: java.lang.CharSequence
+              notes: the second CharSequence
             return:
               type:
                 basic: int
                 full: int
+              notes: "the value 0 if the two CharSequence are equal;\n          a\
+                \ negative integer if the first CharSequence\n          is lexicographically\
+                \ less than the second; or a\n          positive integer if the first\
+                \ CharSequence is\n          lexicographically greater than the second."
+            notes: "Compares two CharSequence instances lexicographically. Returns\
+              \ a\n negative value, zero, or a positive value if the first sequence\
+              \ is lexicographically\n less than, equal to, or greater than the second,\
+              \ respectively.\n\n \n The lexicographical ordering of CharSequence\
+              \ is defined as follows.\n Consider a CharSequence cs of length len\
+              \ to be a\n sequence of char values, cs[0] to cs[len-1]. Suppose k\n\
+              \ is the lowest index at which the corresponding char values from each\
+              \ sequence\n differ. The lexicographic ordering of the sequences is\
+              \ determined by a numeric\n comparison of the char values cs1[k] with\
+              \ cs2[k]. If there is\n no such index k, the shorter sequence is considered\
+              \ lexicographically\n less than the other. If the sequences have the\
+              \ same length, the sequences are\n considered lexicographically equal."

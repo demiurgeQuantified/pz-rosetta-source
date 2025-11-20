@@ -8,69 +8,110 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "The interface for objects which can produce the image data for Images.\n\
+            \ Each image contains an ImageProducer which is used to reconstruct\n\
+            \ the image whenever it is needed, for example, when a new size of the\n\
+            \ Image is scaled, or when the width or height of the Image is being\n\
+            \ requested."
           methods:
           - name: addConsumer
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: ic
               type:
                 basic: ImageConsumer
                 full: java.awt.image.ImageConsumer
+              notes: the specified ImageConsumer
             return:
               type:
                 basic: void
                 full: void
+            notes: "Registers an ImageConsumer with the\n ImageProducer for access\
+              \ to the image data\n during a later reconstruction of the Image.\n\
+              \ The ImageProducer may, at its discretion,\n start delivering the image\
+              \ data to the consumer\n using the ImageConsumer interface immediately,\n\
+              \ or when the next available image reconstruction is triggered\n by\
+              \ a call to the startProduction method."
           - name: isConsumer
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: ic
               type:
                 basic: ImageConsumer
                 full: java.awt.image.ImageConsumer
+              notes: the specified ImageConsumer
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified\n         ImageConsumer is registered\
+                \ with\n         this ImageProducer;\n         false otherwise."
+            notes: "Determines if a specified ImageConsumer\n object is currently\
+              \ registered with this\n ImageProducer as one of its consumers."
           - name: removeConsumer
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: ic
               type:
                 basic: ImageConsumer
                 full: java.awt.image.ImageConsumer
+              notes: the specified ImageConsumer
             return:
               type:
                 basic: void
                 full: void
+            notes: "Removes the specified ImageConsumer object\n from the list of\
+              \ consumers currently registered to\n receive image data.  It is not\
+              \ considered an error\n to remove a consumer that is not currently registered.\n\
+              \ The ImageProducer should stop sending data\n to this consumer as soon\
+              \ as is feasible."
           - name: requestTopDownLeftRightResend
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: ic
               type:
                 basic: ImageConsumer
                 full: java.awt.image.ImageConsumer
+              notes: the specified ImageConsumer
             return:
               type:
                 basic: void
                 full: void
+            notes: "Requests, on behalf of the ImageConsumer,\n that the ImageProducer\
+              \ attempt to resend\n the image data one more time in TOPDOWNLEFTRIGHT\
+              \ order\n so that higher quality conversion algorithms which\n depend\
+              \ on receiving pixels in order can be used to\n produce a better output\
+              \ version of the image.  The\n ImageProducer is free to\n ignore this\
+              \ call if it cannot resend the data in that\n order.  If the data can\
+              \ be resent, the\n ImageProducer should respond by executing\n the following\
+              \ minimum set of ImageConsumer\n method calls:\n <code>\n  ic.setHints(TOPDOWNLEFTRIGHT\
+              \ | < otherhints >);\n  ic.setPixels(...);      // As many times as\
+              \ needed\n  ic.imageComplete();\n </code>"
           - name: startProduction
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: ic
               type:
                 basic: ImageConsumer
                 full: java.awt.image.ImageConsumer
+              notes: the specified ImageConsumer
             return:
               type:
                 basic: void
                 full: void
+            notes: "Registers the specified ImageConsumer object\n as a consumer and\
+              \ starts an immediate reconstruction of\n the image data which will\
+              \ then be delivered to this\n consumer and any other consumer which\
+              \ might have already\n been registered with the producer.  This method\
+              \ differs\n from the addConsumer method in that a reproduction of\n\
+              \ the image data should be triggered as soon as possible."

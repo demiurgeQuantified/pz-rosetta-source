@@ -8,6 +8,34 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A token representing the registration of a watchable object\n with\
+            \ a WatchService.\n\n  A watch key is created when a watchable object\
+            \ is registered with a watch\n service. The key remains valid until:\n\
+            \ \n    It is cancelled, explicitly, by invoking its cancel\n     method,\
+            \ or\n    Cancelled implicitly, because the object is no longer accessible,\n\
+            \     or \n    By closing the watch service. \n \n\n  A watch key has\
+            \ a state. When initially created the key is said to be\n ready. When\
+            \ an event is detected then the key is signalled\n and queued so that\
+            \ it can be retrieved by invoking the watch service's poll or take methods.\
+            \ Once\n signalled, a key remains in this state until its reset method\n\
+            \ is invoked to return the key to the ready state. Events detected while\
+            \ the\n key is in the signalled state are queued but do not cause the\
+            \ key to be\n re-queued for retrieval from the watch service. Events are\
+            \ retrieved by\n invoking the key's pollEvents method. This method\n retrieves\
+            \ and removes all events accumulated for the object. When initially\n\
+            \ created, a watch key has no pending events. Typically events are retrieved\n\
+            \ when the key is in the signalled state leading to the following idiom:\n\
+            \n \n     for (;;) {\n         // retrieve key\n         WatchKey key\
+            \ = watcher.take();\n\n         // process events\n         for (WatchEvent<?>\
+            \ event: key.pollEvents()) {\n             :\n         }\n\n         //\
+            \ reset the key\n         boolean valid = key.reset();\n         if (!valid)\
+            \ {\n             // object no longer registered\n         }\n     }\n\
+            \ \n\n  Watch keys are safe for use by multiple concurrent threads. Where\
+            \ there\n are several threads retrieving signalled keys from a watch service\
+            \ then care\n should be taken to ensure that the reset method is only\
+            \ invoked after\n the events for the object have been processed. This\
+            \ ensures that one thread\n is processing the events for an object at\
+            \ any time."
           methods:
           - name: cancel
             modifiers:
@@ -17,6 +45,14 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Cancels the registration with the watch service. Upon return the\
+              \ watch key\n will be invalid. If the watch key is enqueued, waiting\
+              \ to be retrieved\n from the watch service, then it will remain in the\
+              \ queue until it is\n removed. Pending events, if any, remain pending\
+              \ and may be retrieved by\n invoking the pollEvents method after the\
+              \ key is\n cancelled.\n\n  If this watch key has already been cancelled\
+              \ then invoking this\n method has no effect.  Once cancelled, a watch\
+              \ key remains forever invalid."
           - name: isValid
             modifiers:
             - public
@@ -25,6 +61,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, this watch key is valid
+            notes: "Tells whether or not this watch key is valid.\n\n  A watch key\
+              \ is valid upon creation and remains until it is cancelled,\n or its\
+              \ watch service is closed."
           - name: pollEvents
             modifiers:
             - public
@@ -33,6 +73,10 @@ languages:
               type:
                 basic: List
                 full: java.util.List<java.nio.file.WatchEvent<?>>
+              notes: the list of the events retrieved; may be empty
+            notes: "Retrieves and removes all pending events for this watch key, returning\n\
+              \ a List of the events that were retrieved.\n\n  Note that this method\
+              \ does not wait if there are no events pending."
           - name: reset
             modifiers:
             - public
@@ -41,6 +85,16 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the watch key is valid and has been reset, and\n   \
+                \       false if the watch key could not be reset because it is\n\
+                \          no longer valid"
+            notes: "Resets this watch key.\n\n  If this watch key has been cancelled\
+              \ or this watch key is already in\n the ready state then invoking this\
+              \ method has no effect. Otherwise\n if there are pending events for\
+              \ the object then this watch key is\n immediately re-queued to the watch\
+              \ service. If there are no pending\n events then the watch key is put\
+              \ into the ready state and will remain in\n that state until an event\
+              \ is detected or the watch key is cancelled."
           - name: watchable
             modifiers:
             - public
@@ -49,3 +103,14 @@ languages:
               type:
                 basic: Watchable
                 full: java.nio.file.Watchable
+              notes: the object for which this watch key was created
+            notes: "Returns the object for which this watch key was created. This\
+              \ method will\n continue to return the object even after the key is\
+              \ cancelled.\n\n  As the WatchService is intended to map directly on\
+              \ to the\n native file event notification facility (where available)\
+              \ then many of\n details on how registered objects are watched is highly\
+              \ implementation\n specific. When watching a directory for changes for\
+              \ example, and the\n directory is moved or renamed in the file system,\
+              \ there is no guarantee\n that the watch key will be cancelled and so\
+              \ the object returned by this\n method may no longer be a valid path\
+              \ to the directory."

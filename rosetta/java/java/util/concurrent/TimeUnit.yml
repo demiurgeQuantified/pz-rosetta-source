@@ -8,6 +8,23 @@ languages:
           modifiers:
           - public
           - final
+          notes: "A TimeUnit represents time durations at a given unit of\n granularity\
+            \ and provides utility methods to convert across units,\n and to perform\
+            \ timing and delay operations in these units.  A\n TimeUnit does not maintain\
+            \ time information, but only\n helps organize and use time representations\
+            \ that may be maintained\n separately across various contexts.  A nanosecond\
+            \ is defined as one\n thousandth of a microsecond, a microsecond as one\
+            \ thousandth of a\n millisecond, a millisecond as one thousandth of a\
+            \ second, a minute\n as sixty seconds, an hour as sixty minutes, and a\
+            \ day as twenty four\n hours.\n\n A TimeUnit is mainly used to inform\
+            \ time-based methods\n how a given timing parameter should be interpreted.\
+            \ For example,\n the following code will timeout in 50 milliseconds if\
+            \ the lock is not available:\n\n  <code>\n Lock lock = ...;\n if (lock.tryLock(50L,\
+            \ TimeUnit.MILLISECONDS)) ...</code>\n\n while this code will timeout\
+            \ in 50 seconds:\n  <code>\n Lock lock = ...;\n if (lock.tryLock(50L,\
+            \ TimeUnit.SECONDS)) ...</code>\n\n Note however, that there is no guarantee\
+            \ that a particular timeout\n implementation will be able to notice the\
+            \ passage of time at the\n same granularity as the given TimeUnit."
           fields:
             maxMicros:
               name: maxMicros
@@ -82,6 +99,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing twenty four hours.
             DAY_SCALE:
               name: DAY_SCALE
               modifiers:
@@ -98,6 +116,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing sixty minutes.
             HOUR_SCALE:
               name: HOUR_SCALE
               modifiers:
@@ -114,6 +133,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing one thousandth of a millisecond.
             MICRO_SCALE:
               name: MICRO_SCALE
               modifiers:
@@ -130,6 +150,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing one thousandth of a second.
             MILLI_SCALE:
               name: MILLI_SCALE
               modifiers:
@@ -146,6 +167,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing sixty seconds.
             MINUTE_SCALE:
               name: MINUTE_SCALE
               modifiers:
@@ -162,6 +184,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing one thousandth of a microsecond.
             NANO_SCALE:
               name: NANO_SCALE
               modifiers:
@@ -178,6 +201,7 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: Time unit representing one second.
             SECOND_SCALE:
               name: SECOND_SCALE
               modifiers:
@@ -199,30 +223,50 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: sourceDuration
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the time duration in the given sourceUnit
+            - name: sourceUnit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the unit of the sourceDuration argument
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration in this unit,\n or Long.MIN_VALUE if\
+                \ conversion would negatively overflow,\n or Long.MAX_VALUE if it\
+                \ would positively overflow."
+            notes: "Converts the given time duration in the given unit to this unit.\n\
+              \ Conversions from finer to coarser granularities truncate, so\n lose\
+              \ precision. For example, converting 999 milliseconds\n to seconds results\
+              \ in 0. Conversions from coarser to\n finer granularities with arguments\
+              \ that would numerically\n overflow saturate to Long.MIN_VALUE if negative\
+              \ or\n Long.MAX_VALUE if positive.\n\n For example, to convert 10 minutes\
+              \ to milliseconds, use:\n TimeUnit.MILLISECONDS.convert(10L, TimeUnit.MINUTES)"
           - name: convert
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the time duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration in this unit,\n or Long.MIN_VALUE if\
+                \ conversion would negatively overflow,\n or Long.MAX_VALUE if it\
+                \ would positively overflow."
+            notes: "Converts the given time duration to this unit.\n\n For any TimeUnit\
+              \ unit,\n unit.convert(Duration.ofNanos(n))\n is equivalent to\n unit.convert(n,\
+              \ NANOSECONDS), and\n unit.convert(Duration.of(n, unit.toChronoUnit()))\n\
+              \ is equivalent to n (in the absence of overflow)."
           - name: excessNanos
             modifiers:
             - private
@@ -243,46 +287,67 @@ languages:
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
+              notes: "the minimum time to sleep. If less than\n or equal to zero,\
+                \ do not sleep at all."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Performs a Thread.sleep using\n this time unit.\n This is a convenience\
+              \ method that converts time arguments into the\n form required by the\
+              \ Thread.sleep method."
           - name: timedJoin
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: thread
               type:
                 basic: Thread
                 full: java.lang.Thread
-            - name: arg1
+              notes: the thread to wait for
+            - name: timeout
               type:
                 basic: long
                 full: long
+              notes: "the maximum time to wait. If less than\n or equal to zero, do\
+                \ not wait at all."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Performs a timed Thread.join\n using this time unit.\n This is\
+              \ a convenience method that converts time arguments into the\n form\
+              \ required by the Thread.join method."
           - name: timedWait
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the object to wait on
+            - name: timeout
               type:
                 basic: long
                 full: long
+              notes: "the maximum time to wait. If less than\n or equal to zero, do\
+                \ not wait at all."
             return:
               type:
                 basic: void
                 full: void
+            notes: "Performs a timed Object.wait\n using this time unit.\n This is\
+              \ a convenience method that converts timeout arguments\n into the form\
+              \ required by the Object.wait method.\n\n For example, you could implement\
+              \ a blocking poll method\n (see BlockingQueue.poll)\n using:\n\n  <code>\n\
+              \ public E poll(long timeout, TimeUnit unit)\n     throws InterruptedException\
+              \ {\n   synchronized (lock) {\n     while (isEmpty()) {\n       unit.timedWait(lock,\
+              \ timeout);\n       ...\n     }\n   }\n }</code>"
           - name: toChronoUnit
             modifiers:
             - public
@@ -290,90 +355,125 @@ languages:
               type:
                 basic: ChronoUnit
                 full: java.time.temporal.ChronoUnit
+              notes: the converted equivalent ChronoUnit
+            notes: Converts this TimeUnit to the equivalent ChronoUnit.
           - name: toDays
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: the converted duration
+            notes: "Equivalent to\n DAYS.convert(duration, this)."
           - name: toHours
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration,\n or Long.MIN_VALUE if conversion would\
+                \ negatively overflow,\n or Long.MAX_VALUE if it would positively\
+                \ overflow."
+            notes: "Equivalent to\n HOURS.convert(duration, this)."
           - name: toMicros
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration,\n or Long.MIN_VALUE if conversion would\
+                \ negatively overflow,\n or Long.MAX_VALUE if it would positively\
+                \ overflow."
+            notes: "Equivalent to\n MICROSECONDS.convert(duration, this)."
           - name: toMillis
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration,\n or Long.MIN_VALUE if conversion would\
+                \ negatively overflow,\n or Long.MAX_VALUE if it would positively\
+                \ overflow."
+            notes: "Equivalent to\n MILLISECONDS.convert(duration, this)."
           - name: toMinutes
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration,\n or Long.MIN_VALUE if conversion would\
+                \ negatively overflow,\n or Long.MAX_VALUE if it would positively\
+                \ overflow."
+            notes: "Equivalent to\n MINUTES.convert(duration, this)."
           - name: toNanos
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration,\n or Long.MIN_VALUE if conversion would\
+                \ negatively overflow,\n or Long.MAX_VALUE if it would positively\
+                \ overflow."
+            notes: "Equivalent to\n NANOSECONDS.convert(duration, this)."
           - name: toSeconds
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: duration
               type:
                 basic: long
                 full: long
+              notes: the duration
             return:
               type:
                 basic: long
                 full: long
+              notes: "the converted duration,\n or Long.MIN_VALUE if conversion would\
+                \ negatively overflow,\n or Long.MAX_VALUE if it would positively\
+                \ overflow."
+            notes: "Equivalent to\n SECONDS.convert(duration, this)."
           staticMethods:
           - name: $values
             modifiers:
@@ -409,14 +509,17 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: chronoUnit
               type:
                 basic: ChronoUnit
                 full: java.time.temporal.ChronoUnit
+              notes: the ChronoUnit to convert
             return:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the converted equivalent TimeUnit
+            notes: Converts a ChronoUnit to the equivalent TimeUnit.
           - name: valueOf
             modifiers:
             - public
@@ -438,3 +541,9 @@ languages:
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit[]
+              notes: an array containing the constants of this enum class, in the
+                order they are declared
+            notes: 'Returns an array containing the constants of this enum class,
+              in
+
+              the order they are declared.'

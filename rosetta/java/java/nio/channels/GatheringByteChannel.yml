@@ -8,38 +8,82 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A channel that can write bytes from a sequence of buffers.\n\n \
+            \ A gathering write operation writes, in a single invocation, a\n sequence\
+            \ of bytes from one or more of a given sequence of buffers.\n Gathering\
+            \ writes are often useful when implementing network protocols or\n file\
+            \ formats that, for example, group data into segments consisting of one\n\
+            \ or more fixed-length headers followed by a variable-length body.  Similar\n\
+            \ scattering read operations are defined in the ScatteringByteChannel\
+            \ interface."
           methods:
           - name: write
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: srcs
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer[]
-            - name: arg1
+              notes: The buffers from which bytes are to be retrieved
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "The offset within the buffer array of the first buffer from\n\
+                \         which bytes are to be retrieved; must be non-negative and\
+                \ no\n         larger than srcs.length"
+            - name: length
               type:
                 basic: int
                 full: int
+              notes: "The maximum number of buffers to be accessed; must be\n    \
+                \     non-negative and no larger than\n         srcs.length - offset"
             return:
               type:
                 basic: long
                 full: long
+              notes: The number of bytes written, possibly zero
+            notes: "Writes a sequence of bytes to this channel from a subsequence\
+              \ of the\n given buffers.\n\n  An attempt is made to write up to r bytes\
+              \ to this channel,\n where r is the total number of bytes remaining\
+              \ in the specified\n subsequence of the given buffer array, that is,\n\
+              \n \n srcs[offset].remaining()\n     + srcs[offset+1].remaining()\n\
+              \     + ... + srcs[offset+length-1].remaining()\n\n at the moment that\
+              \ this method is invoked.\n\n  Suppose that a byte sequence of length\
+              \ n is written, where\n 0 <= n <= r.\n Up to the first srcs[offset].remaining()\
+              \ bytes of this sequence\n are written from buffer srcs[offset], up\
+              \ to the next\n srcs[offset+1].remaining() bytes are written from buffer\n\
+              \ srcs[offset+1], and so forth, until the entire byte sequence is\n\
+              \ written.  As many bytes as possible are written from each buffer,\
+              \ hence\n the final position of each updated buffer, except the last\
+              \ updated\n buffer, is guaranteed to be equal to that buffer's limit.\n\
+              \n  Unless otherwise specified, a write operation will return only after\n\
+              \ writing all of the r requested bytes.  Some types of channels,\n depending\
+              \ upon their state, may write only some of the bytes or possibly\n none\
+              \ at all.  A socket channel in non-blocking mode, for example, cannot\n\
+              \ write any more bytes than are free in the socket's output buffer.\n\
+              \n  This method may be invoked at any time.  If another thread has\n\
+              \ already initiated a write operation upon this channel, however, then\
+              \ an\n invocation of this method will block until the first operation\
+              \ is\n complete."
           - name: write
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: srcs
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer[]
+              notes: The buffers from which bytes are to be retrieved
             return:
               type:
                 basic: long
                 full: long
+              notes: The number of bytes written, possibly zero
+            notes: "Writes a sequence of bytes to this channel from the given buffers.\n\
+              \n  An invocation of this method of the form c.write(srcs)\n behaves\
+              \ in exactly the same manner as the invocation\n\n \n c.write(srcs,\
+              \ 0, srcs.length);"

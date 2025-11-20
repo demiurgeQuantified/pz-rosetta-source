@@ -8,32 +8,42 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A nominal descriptor for a\n MethodHandle constant."
           methods:
           - name: asType
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: type
               type:
                 basic: MethodTypeDesc
                 full: java.lang.constant.MethodTypeDesc
+              notes: a MethodHandleDesc describing the new method type
             return:
               type:
                 basic: MethodHandleDesc
                 full: java.lang.constant.MethodHandleDesc
+              notes: a MethodHandleDesc for the adapted method handle
+            notes: "Returns a MethodHandleDesc that describes this method handle\n\
+              \ adapted to a different type, as if by MethodHandle.asType(MethodType)."
           - name: equals
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the other object
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: whether this descriptor is equal to the other object
+            notes: "Compares the specified object with this descriptor for equality.\
+              \  Returns\n true if and only if the specified object is also a\n MethodHandleDesc,\
+              \ and both encode the same nominal description\n of a method handle."
           - name: invocationType
             modifiers:
             - public
@@ -42,32 +52,58 @@ languages:
               type:
                 basic: MethodTypeDesc
                 full: java.lang.constant.MethodTypeDesc
+              notes: a MethodHandleDesc describing the method handle type
+            notes: "Returns a MethodTypeDesc describing the invocation type of the\n\
+              \ method handle described by this nominal descriptor.  The invocation\
+              \ type\n describes the full set of stack values that are consumed by\
+              \ the invocation\n (including the receiver, if any)."
           staticMethods:
           - name: of
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: kind
               type:
                 basic: DirectMethodHandleDesc.Kind
                 full: java.lang.constant.DirectMethodHandleDesc$Kind
-            - name: arg1
+              notes: The kind of method handle to be described
+            - name: owner
               type:
                 basic: ClassDesc
                 full: java.lang.constant.ClassDesc
-            - name: arg2
+              notes: "a ClassDesc describing the class containing the\n          \
+                \    method, constructor, or field"
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg3
+              notes: "the unqualified name of the method or field (ignored if\n  \
+                \           kind is CONSTRUCTOR)"
+            - name: lookupDescriptor
               type:
                 basic: String
                 full: java.lang.String
+              notes: "a method descriptor string the lookup type,\n              \
+                \           if the request is for a method invocation, or\n      \
+                \                   describing the invocation type, if the request\
+                \ is\n                         for a field or constructor"
             return:
               type:
                 basic: DirectMethodHandleDesc
                 full: java.lang.constant.DirectMethodHandleDesc
+              notes: the MethodHandleDesc
+            notes: "Creates a MethodHandleDesc corresponding to an invocation of a\n\
+              \ declared method, invocation of a constructor, or access to a field.\n\
+              \n The lookup descriptor string has the same format as for the various\n\
+              \ variants of CONSTANT_MethodHandle_info and for the lookup\n methods\
+              \ on MethodHandles.Lookup.  For a method or constructor\n invocation,\
+              \ it is interpreted as a method type descriptor; for field\n access,\
+              \ it is interpreted as a field descriptor.  If kind is\n CONSTRUCTOR,\
+              \ the name parameter is ignored and the return\n type of the lookup\
+              \ descriptor must be void.  If kind\n corresponds to a virtual method\
+              \ invocation, the lookup type includes the\n method parameters but not\
+              \ the receiver type."
           - name: ofConstructor
             modifiers:
             - public
@@ -90,48 +126,72 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: kind
               type:
                 basic: DirectMethodHandleDesc.Kind
                 full: java.lang.constant.DirectMethodHandleDesc$Kind
-            - name: arg1
+              notes: "the kind of the method handle to be described; must be one of\
+                \ GETTER,\n             SETTER, STATIC_GETTER, or STATIC_SETTER"
+            - name: owner
               type:
                 basic: ClassDesc
                 full: java.lang.constant.ClassDesc
-            - name: arg2
+              notes: a ClassDesc describing the class containing the field
+            - name: fieldName
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg3
+              notes: the unqualified name of the field
+            - name: fieldType
               type:
                 basic: ClassDesc
                 full: java.lang.constant.ClassDesc
+              notes: a ClassDesc describing the type of the field
             return:
               type:
                 basic: DirectMethodHandleDesc
                 full: java.lang.constant.DirectMethodHandleDesc
+              notes: the MethodHandleDesc
+            notes: "Creates a MethodHandleDesc corresponding to a method handle\n\
+              \ that accesses a field."
           - name: ofMethod
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: kind
               type:
                 basic: DirectMethodHandleDesc.Kind
                 full: java.lang.constant.DirectMethodHandleDesc$Kind
-            - name: arg1
+              notes: "The kind of method handle to be described; must be one of\n\
+                \             SPECIAL, VIRTUAL, STATIC, INTERFACE_SPECIAL,\n     \
+                \        INTERFACE_VIRTUAL, INTERFACE_STATIC, CONSTRUCTOR"
+            - name: owner
               type:
                 basic: ClassDesc
                 full: java.lang.constant.ClassDesc
-            - name: arg2
+              notes: "a ClassDesc describing the class containing the\n          \
+                \    method or constructor"
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg3
+              notes: "the unqualified name of the method (ignored if kind\n      \
+                \       is CONSTRUCTOR)"
+            - name: lookupMethodType
               type:
                 basic: MethodTypeDesc
                 full: java.lang.constant.MethodTypeDesc
+              notes: a MethodTypeDesc describing the lookup type
             return:
               type:
                 basic: DirectMethodHandleDesc
                 full: java.lang.constant.DirectMethodHandleDesc
+              notes: the MethodHandleDesc
+            notes: "Creates a MethodHandleDesc corresponding to an invocation of a\n\
+              \ declared method or constructor.\n\n The lookup descriptor string has\
+              \ the same format as for the lookup\n methods on MethodHandles.Lookup.\
+              \  If kind is\n CONSTRUCTOR, the name is ignored and the return type\
+              \ of the lookup\n type must be void.  If kind corresponds to a virtual\
+              \ method\n invocation, the lookup type includes the method parameters\
+              \ but not the\n receiver type."

@@ -8,41 +8,85 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "InputMethodRequests defines the requests that a text editing component\n\
+            \ has to handle in order to work with input methods. The component\n can\
+            \ implement this interface itself or use a separate object that\n implements\
+            \ it. The object implementing this interface must be returned\n from the\
+            \ component's getInputMethodRequests method.\n\n \n The text editing component\
+            \ also has to provide an input method event\n listener.\n\n \n The interface\
+            \ is designed to support one of two input user interfaces:\n \n on-the-spot\
+            \ input, where the composed text is displayed as part\n     of the text\
+            \ component's text body.\n below-the-spot input, where the composed text\
+            \ is displayed in\n     a separate composition window just below the insertion\
+            \ point where\n     the text will be inserted when it is committed. Note\
+            \ that, if text is\n     selected within the component's text body, this\
+            \ text will be replaced by\n     the committed text upon commitment; therefore\
+            \ it is not considered part\n     of the context that the text is input\
+            \ into."
           methods:
           - name: cancelLatestCommittedText
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: attributes
               type:
                 basic: AttributedCharacterIterator.Attribute
                 full: java.text.AttributedCharacterIterator$Attribute[]
+              notes: "a list of attributes that the input method is\n interested in"
             return:
               type:
                 basic: AttributedCharacterIterator
                 full: java.text.AttributedCharacterIterator
+              notes: "the latest committed text, or null when the \"Undo Commit\"\n\
+                \ feature is not supported"
+            notes: "Gets the latest committed text from the text editing component\
+              \ and\n removes it from the component's text body.\n This is used for\
+              \ the \"Undo Commit\" feature in some input methods, where\n the committed\
+              \ text reverts to its previous composed state. The composed\n text will\
+              \ be sent to the component using an InputMethodEvent.\n\n \n Generally,\
+              \ this feature should only be supported immediately after the\n text\
+              \ was committed, not after the user performed other operations on the\n\
+              \ text. When the feature is not supported, return null.\n\n \n The input\
+              \ method may provide a list of attributes that it is\n interested in.\
+              \ In that case, information about other attributes that\n the implementor\
+              \ may have need not be made accessible through the\n iterator. If the\
+              \ list is null, all available attribute information\n should be made\
+              \ accessible."
           - name: getCommittedText
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index of the first character
+            - name: endIndex
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the index of the character following the last character
+            - name: attributes
               type:
                 basic: AttributedCharacterIterator.Attribute
                 full: java.text.AttributedCharacterIterator$Attribute[]
+              notes: "a list of attributes that the input method is\n interested in"
             return:
               type:
                 basic: AttributedCharacterIterator
                 full: java.text.AttributedCharacterIterator
+              notes: an iterator providing access to the text and its attributes
+            notes: "Gets an iterator providing access to the entire text and attributes\n\
+              \ contained in the text editing component except for uncommitted\n text.\
+              \ Uncommitted (composed) text should be ignored for index\n calculations\
+              \ and should not be made accessible through the iterator.\n\n \n The\
+              \ input method may provide a list of attributes that it is\n interested\
+              \ in. In that case, information about other attributes that\n the implementor\
+              \ may have need not be made accessible through the\n iterator. If the\
+              \ list is null, all available attribute information\n should be made\
+              \ accessible."
           - name: getCommittedTextLength
             modifiers:
             - public
@@ -51,6 +95,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the length of the text except for uncommitted text
+            notes: "Gets the length of the entire text contained in the text\n editing\
+              \ component except for uncommitted (composed) text."
           - name: getInsertPositionOffset
             modifiers:
             - public
@@ -59,46 +106,100 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the offset of the insert position
+            notes: "Gets the offset of the insert position in the committed text contained\n\
+              \ in the text editing component. This is the offset at which characters\n\
+              \ entered through an input method are inserted. This information is\
+              \ used\n by an input method, for example, to examine the text surrounding\
+              \ the\n insert position."
           - name: getLocationOffset
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the absolute x coordinate on screen
+            - name: y
               type:
                 basic: int
                 full: int
+              notes: the absolute y coordinate on screen
             return:
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: a text hit info describing the offset in the composed text.
+            notes: "Gets the offset within the composed text for the specified absolute\
+              \ x\n and y coordinates on the screen. This information is used, for\
+              \ example\n to handle mouse clicks and the mouse cursor. The offset\
+              \ is relative to\n the composed text, so offset 0 indicates the beginning\
+              \ of the composed\n text.\n\n \n Return null if the location is outside\
+              \ the area occupied by the composed\n text."
           - name: getSelectedText
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: attributes
               type:
                 basic: AttributedCharacterIterator.Attribute
                 full: java.text.AttributedCharacterIterator$Attribute[]
+              notes: "a list of attributes that the input method is\n interested in"
             return:
               type:
                 basic: AttributedCharacterIterator
                 full: java.text.AttributedCharacterIterator
+              notes: the currently selected text
+            notes: "Gets the currently selected text from the text editing component.\n\
+              \ This may be used for a variety of purposes.\n One of them is the \"\
+              Reconvert\" feature in some input methods.\n In this case, the input\
+              \ method will typically send an input method event\n to replace the\
+              \ selected text with composed text. Depending on the input\n method's\
+              \ capabilities, this may be the original composed text for the\n selected\
+              \ text, the latest composed text entered anywhere in the text, or\n\
+              \ a version of the text that's converted back from the selected text.\n\
+              \n \n The input method may provide a list of attributes that it is\n\
+              \ interested in. In that case, information about other attributes that\n\
+              \ the implementor may have need not be made accessible through the\n\
+              \ iterator. If the list is null, all available attribute information\n\
+              \ should be made accessible."
           - name: getTextLocation
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: TextHitInfo
                 full: java.awt.font.TextHitInfo
+              notes: "the offset within the composed text, if there is composed\n\
+                \ text; null otherwise"
             return:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: a rectangle representing the screen location of the offset
+            notes: "Gets the location of a specified offset in the current composed\
+              \ text,\n or of the selection in committed text.\n This information\
+              \ is, for example, used to position the candidate window\n near the\
+              \ composed text, or a composition window near the location\n where committed\
+              \ text will be inserted.\n\n \n If the component has composed text (because\
+              \ the most recent\n InputMethodEvent sent to it contained composed text),\
+              \ then the offset is\n relative to the composed text - offset 0 indicates\
+              \ the first character\n in the composed text. The location returned\
+              \ should be for this character.\n\n \n If the component doesn't have\
+              \ composed text, the offset should be ignored,\n and the location returned\
+              \ should reflect the beginning (in line\n direction) of the highlight\
+              \ in the last line containing selected text.\n For example, for horizontal\
+              \ left-to-right text (such as English), the\n location to the left of\
+              \ the left-most character on the last line\n containing selected text\
+              \ is returned. For vertical top-to-bottom text,\n with lines proceeding\
+              \ from right to left, the location to the top of the\n left-most line\
+              \ containing selected text is returned.\n\n \n The location is represented\
+              \ as a 0-thickness caret, that is, it has 0\n width if the text is drawn\
+              \ horizontally, and 0 height if the text is\n drawn vertically. Other\
+              \ text orientations need to be mapped to\n horizontal or vertical orientation.\
+              \ The rectangle uses absolute screen\n coordinates."

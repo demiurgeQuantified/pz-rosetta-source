@@ -8,20 +8,186 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "Filter classes, array lengths, and graph metrics during deserialization.\n\
+            \n Warning: Deserialization of untrusted data is inherently dangerous\n\
+            \ and should be avoided. Untrusted data should be carefully validated\
+            \ according to the\n \"Serialization and Deserialization\" section of\
+            \ the\n Secure Coding Guidelines for Java SE.\n Serialization Filtering\
+            \ describes best\n practices for defensive use of serial filters.\n \n\
+            \n To protect against deserialization vulnerabilities, application developers\n\
+            \ need a clear description of the objects that can be deserialized\n by\
+            \ each component or library. For each context and use case, developers\
+            \ should\n construct and apply an appropriate filter.\n\n Deserialization\
+            \ Filtering Factory and Filters\n The parts of deserialization filtering\
+            \ are the filters, composite filters, and filter factory.\n Each filter\
+            \ performs checks on classes and resource limits to determine the status\
+            \ as\n rejected, allowed, or undecided.\n Filters can be composed of other\
+            \ filters and merge or combine their results.\n The filter factory is\
+            \ responsible for establishing and updating the filter\n for each ObjectInputStream.\n\
+            \n For simple cases, a static JVM-wide filter can be set for the entire\
+            \ application,\n without setting a filter factory.\n The JVM-wide filter\
+            \ can be set either with a system property on the command line or by\n\
+            \ calling Config.setSerialFilter.\n No custom filter factory needs to\
+            \ be specified, defaulting to the builtin filter factory.\n The builtin\
+            \ filter factory provides the static JVM-wide filter\n for each ObjectInputStream.\n\
+            \n For example, a filter that allows example classes, allows classes in\
+            \ the\n java.base module, and rejects all other classes can be set:\n\n\
+            \ <code>As a command line property:\n     % java -Djdk.serialFilter=\"\
+            example.*;java.base/*;!*\" ...</code>\n\n <code>Or programmatically:\n\
+            \     var filter = ObjectInputFilter.Config.createFilter(\"example.*;java.base/*;!*\"\
+            )\n     ObjectInputFilter.Config.setSerialFilter(filter);</code>\n\n In\
+            \ an application with multiple execution contexts, the application can\
+            \ provide a\n filter factory to\n protect individual contexts by providing\
+            \ a custom filter for each. When the stream\n is constructed, the filter\
+            \ factory is called to identify the execution context from the available\n\
+            \ information, including the current thread-local state, hierarchy of\
+            \ callers, library, module,\n and class loader. At that point, the filter\
+            \ factory policy for creating or selecting filters\n can choose a specific\
+            \ filter or composition of filters based on the context.\n The JVM-wide\
+            \ deserialization filter factory ensures that a context-specific deserialization\n\
+            \ filter can be set on every ObjectInputStream and every object read from\
+            \ the\n stream can be checked.\n\n Invoking the Filter Factory\n The JVM-wide\
+            \ filter factory is a function invoked when each ObjectInputStream is\n\
+            \ constructed and when the\n stream-specific filter is set.\n The parameters\
+            \ are the current filter and a requested filter and it\n returns the filter\
+            \ to be used for the stream. When invoked from the\n ObjectInputStream\
+            \ constructors,\n the first parameter is null and the second parameter\
+            \ is the\n static JVM-wide filter.\n When invoked from ObjectInputStream.setObjectInputFilter,\n\
+            \ the first parameter is the filter currently set on the stream (which\
+            \ was set in the constructor),\n and the second parameter is the filter\
+            \ given to ObjectInputStream.setObjectInputFilter.\n The current and new\
+            \ filter may each be null and the factory may return null.\n Note that\
+            \ the filter factory implementation can also use any contextual information\n\
+            \ at its disposal, for example, extracted from the application thread\
+            \ context, or its call stack,\n to compose and combine a new filter. It\
+            \ is not restricted to only use its two parameters.\n\n The active deserialization\
+            \ filter factory is either:\n \n The application specific filter factory\
+            \ set via ObjectInputFilter.Config.setSerialFilterFactory(BinaryOperator)\n\
+            \     or the system property jdk.serialFilterFactory or\n     the security\
+            \ property jdk.serialFilterFactory.\n Otherwise, a builtin deserialization\
+            \ filter factory\n     provides the static JVM-wide filter when invoked\
+            \ from the\n     ObjectInputStream constructors\n     and replaces the\
+            \ static filter when invoked from\n     ObjectInputStream.setObjectInputFilter(ObjectInputFilter).\n\
+            \     See getSerialFilterFactory.\n \n\n Filters\n Filters can be created\
+            \ from a pattern string,\n or based on a predicate of a class to\n allow\
+            \ or\n reject classes.\n\n The filter's checkInput(FilterInfo) method\
+            \ is invoked\n zero or more times while reading objects.\n The method\
+            \ is called to validate classes, the length of each array,\n the number\
+            \ of objects being read from the stream, the depth of the graph,\n and\
+            \ the total number of bytes read from the stream.\n\n Composite filters\
+            \ combine or check the results of other filters.\n The merge(filter, anotherFilter)\n\
+            \ filter combines the status value of two filters.\n The rejectUndecidedClass(filter)\n\
+            \ checks the result of a filter for classes when the status is UNDECIDED.\n\
+            \ In many cases any class not ALLOWED by the filter should be REJECTED.\n\
+            \ \n A deserialization filter determines whether the arguments are allowed\
+            \ or rejected and\n should return the appropriate status: ALLOWED or REJECTED.\n\
+            \ If the filter cannot determine the status it should return UNDECIDED.\n\
+            \ Filters should be designed for the specific use case and expected types.\n\
+            \ A filter designed for a particular use may be passed a class outside\n\
+            \ of the scope of the filter. If the purpose of the filter is to reject\
+            \ classes\n then it can reject a candidate class that matches and report\
+            \ UNDECIDED for others.\n A filter may be called with class equals null,\
+            \ arrayLength equal -1,\n the depth, number of references, and stream\
+            \ size and return a status\n that reflects only one or only some of the\
+            \ values.\n This allows a filter to be specific about the choice it is\
+            \ reporting and\n to use other filters without forcing either allowed\
+            \ or rejected status.\n\n Filter Model Examples\n For simple applications,\
+            \ a single predefined filter listing allowed or rejected\n classes may\
+            \ be sufficient to manage the risk of deserializing unexpected classes.\n\
+            \ For an application composed from multiple modules or libraries, the\
+            \ structure\n of the application can be used to identify the classes to\
+            \ be allowed or rejected\n by each ObjectInputStream in each context of\
+            \ the application.\n The deserialization filter factory is invoked when\
+            \ each stream is constructed and\n can examine the thread or program to\
+            \ determine a context-specific filter to be applied.\n Some possible examples:\n\
+            \ \n     Thread-local state can hold the filter to be applied or composed\n\
+            \         with a stream-specific filter.\n         Filters could be pushed\
+            \ and popped from a virtual stack of filters\n         maintained by the\
+            \ application or libraries.\n     The filter factory can identify the\
+            \ caller of the deserialization method\n         and use module or library\
+            \ context to select a filter or compose an appropriate\n         context-specific\
+            \ filter.\n         A mechanism could identify a callee with restricted\
+            \ or unrestricted\n         access to serialized classes and choose a\
+            \ filter accordingly.\n \n\n Example to filter every deserialization in\
+            \ a thread\n\n This class shows how an application provided filter factory\
+            \ can combine filters\n to check every deserialization operation that\
+            \ takes place in a thread.\n It defines a thread-local variable to hold\
+            \ the thread-specific filter, and constructs a filter factory\n that composes\
+            \ that filter with the static JVM-wide filter and the stream-specific\
+            \ filter.\n The doWithSerialFilter method does the setup of the thread-specific\
+            \ filter\n and invokes the application provided Runnable.\n\n <code>\n\
+            \ public static final class FilterInThread implements BinaryOperator<ObjectInputFilter>\
+            \ {\n\n     private final ThreadLocal<ObjectInputFilter> filterThreadLocal\
+            \ = new ThreadLocal<>();\n\n     // Construct a FilterInThread deserialization\
+            \ filter factory.\n     public FilterInThread() {}\n\n     // Returns\
+            \ a composite filter of the static JVM-wide filter, a thread-specific\
+            \ filter,\n     // and the stream-specific filter.\n     public ObjectInputFilter\
+            \ apply(ObjectInputFilter curr, ObjectInputFilter next) {\n         if\
+            \ (curr == null) {\n             // Called from the OIS constructor or\
+            \ perhaps OIS.setObjectInputFilter with no current filter\n          \
+            \   var filter = filterThreadLocal.get();\n             if (filter !=\
+            \ null) {\n                 // Wrap the filter to reject UNDECIDED results\n\
+            \                 filter = ObjectInputFilter.rejectUndecidedClass(filter);\n\
+            \             }\n             if (next != null) {\n                 //\
+            \ Merge the next filter with the thread filter, if any\n             \
+            \    // Initially this is the static JVM-wide filter passed from the OIS\
+            \ constructor\n                 // Wrap the filter to reject UNDECIDED\
+            \ results\n                 filter = ObjectInputFilter.merge(next, filter);\n\
+            \                 filter = ObjectInputFilter.rejectUndecidedClass(filter);\n\
+            \             }\n             return filter;\n         } else {\n    \
+            \         // Called from OIS.setObjectInputFilter with a current filter\
+            \ and a stream-specific filter.\n             // The curr filter already\
+            \ incorporates the thread filter and static JVM-wide filter\n        \
+            \     // and rejection of undecided classes\n             // If there\
+            \ is a stream-specific filter wrap it and a filter to recheck for undecided\n\
+            \             if (next != null) {\n                 next = ObjectInputFilter.merge(next,\
+            \ curr);\n                 next = ObjectInputFilter.rejectUndecidedClass(next);\n\
+            \                 return next;\n             }\n             return curr;\n\
+            \         }\n     }\n\n     // Applies the filter to the thread and invokes\
+            \ the runnable.\n     public void doWithSerialFilter(ObjectInputFilter\
+            \ filter, Runnable runnable) {\n         var prevFilter = filterThreadLocal.get();\n\
+            \         try {\n             filterThreadLocal.set(filter);\n       \
+            \      runnable.run();\n         } finally {\n             filterThreadLocal.set(prevFilter);\n\
+            \         }\n     }\n }\n </code>\n Using the Filter Factory\n To use\
+            \ FilterInThread utility create an instance and configure it as the\n\
+            \ JVM-wide filter factory.  The doWithSerialFilter method is invoked with\
+            \ a\n filter allowing the example application and core classes:\n <code>\n\
+            \        // Create a FilterInThread filter factory and set\n        var\
+            \ filterInThread = new FilterInThread();\n        ObjectInputFilter.Config.setSerialFilterFactory(filterInThread);\n\
+            \n        // Create a filter to allow example.* classes and reject all\
+            \ others\n        var filter = ObjectInputFilter.Config.createFilter(\"\
+            example.*;java.base/*;!*\");\n        filterInThread.doWithSerialFilter(filter,\
+            \ () -> {\n              byte[] bytes = ...;\n              var o = deserializeObject(bytes);\n\
+            \        });\n </code>\n \n Unless otherwise noted, passing a null argument\
+            \ to a\n method in this interface and its nested classes will cause a\n\
+            \ NullPointerException to be thrown."
           methods:
           - name: checkInput
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: filterInfo
               type:
                 basic: ObjectInputFilter.FilterInfo
                 full: java.io.ObjectInputFilter$FilterInfo
+              notes: "provides information about the current object being deserialized,\n\
+                \             if any, and the status of the ObjectInputStream"
             return:
               type:
                 basic: ObjectInputFilter.Status
                 full: java.io.ObjectInputFilter$Status
+              notes: "Status.ALLOWED if accepted,\n          Status.REJECTED if rejected,\n\
+                \          Status.UNDECIDED if undecided."
+            notes: "Check the class, array length, number of object references, depth,\n\
+              \ stream size, and other available filtering information.\n Implementations\
+              \ of this method check the contents of the object graph being created\n\
+              \ during deserialization. The filter returns Status.ALLOWED,\n Status.REJECTED,\
+              \ or Status.UNDECIDED.\n\n If filterInfo.serialClass() is non-null,\
+              \ there is a class to be checked.\n If serialClass() is null, there\
+              \ is no class and the info contains\n only metrics related to the depth\
+              \ of the graph being deserialized, the number of\n references, and the\
+              \ size of the stream read."
           staticMethods:
           - name: allowFilter
             modifiers:
@@ -45,18 +211,31 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: filter
               type:
                 basic: ObjectInputFilter
                 full: java.io.ObjectInputFilter
-            - name: arg1
+              notes: a filter
+            - name: anotherFilter
               type:
                 basic: ObjectInputFilter
                 full: java.io.ObjectInputFilter
+              notes: a filter to be merged with the filter, may be null
             return:
               type:
                 basic: ObjectInputFilter
                 full: java.io.ObjectInputFilter
+              notes: an ObjectInputFilter that merges the status of the filter and
+                another filter
+            notes: "Returns a filter that merges the status of a filter and another\
+              \ filter.\n If another filter is null, the filter is returned.\n Otherwise,\
+              \ a filter is returned to merge the pair of non-null filters.\n\n The\
+              \ filter returned implements the checkInput(FilterInfo) method\n as\
+              \ follows:\n \n     Invoke filter on the FilterInfo to get its status;\n\
+              \     Return REJECTED if the status is REJECTED;\n     Invoke anotherFilter\
+              \ to get the otherStatus;\n     Return REJECTED if the otherStatus is\
+              \ REJECTED;\n     Return ALLOWED, if either status or otherStatus\n\
+              \          is ALLOWED, \n     Otherwise, return UNDECIDED"
           - name: rejectFilter
             modifiers:
             - public
@@ -79,11 +258,24 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: filter
               type:
                 basic: ObjectInputFilter
                 full: java.io.ObjectInputFilter
+              notes: a filter
             return:
               type:
                 basic: ObjectInputFilter
                 full: java.io.ObjectInputFilter
+              notes: "an ObjectInputFilter that maps an ObjectInputFilter.Status.UNDECIDED\n\
+                \      status to ObjectInputFilter.Status.REJECTED for classes, otherwise\
+                \ returns the\n      filter status"
+            notes: "Returns a filter that invokes a given filter and maps UNDECIDED\
+              \ to REJECTED\n for classes, with some special cases, and otherwise\
+              \ returns the status.\n If the class is not a primitive class and not\
+              \ an array, the status returned is REJECTED.\n If the class is a primitive\
+              \ class or an array class additional checks are performed;\n see the\
+              \ list below for details.\n\n Object deserialization accepts a class\
+              \ if the filter returns UNDECIDED.\n Adding a filter to reject undecided\
+              \ results for classes that have not been\n either allowed or rejected\
+              \ can prevent classes from slipping through the filter."

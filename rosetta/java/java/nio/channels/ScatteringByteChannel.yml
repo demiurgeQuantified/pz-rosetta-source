@@ -8,38 +8,78 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A channel that can read bytes into a sequence of buffers.\n\n  A\
+            \ scattering read operation reads, in a single invocation, a\n sequence\
+            \ of bytes into one or more of a given sequence of buffers.\n Scattering\
+            \ reads are often useful when implementing network protocols or\n file\
+            \ formats that, for example, group data into segments consisting of one\n\
+            \ or more fixed-length headers followed by a variable-length body.  Similar\n\
+            \ gathering write operations are defined in the GatheringByteChannel interface."
           methods:
           - name: read
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: dsts
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer[]
-            - name: arg1
+              notes: The buffers into which bytes are to be transferred
+            - name: offset
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "The offset within the buffer array of the first buffer into\n\
+                \         which bytes are to be transferred; must be non-negative\
+                \ and no\n         larger than dsts.length"
+            - name: length
               type:
                 basic: int
                 full: int
+              notes: "The maximum number of buffers to be accessed; must be\n    \
+                \     non-negative and no larger than\n         dsts.length - offset"
             return:
               type:
                 basic: long
                 full: long
+              notes: "The number of bytes read, possibly zero,\n         or -1 if\
+                \ the channel has reached end-of-stream"
+            notes: "Reads a sequence of bytes from this channel into a subsequence\
+              \ of the\n given buffers.\n\n  An invocation of this method attempts\
+              \ to read up to r bytes\n from this channel, where r is the total number\
+              \ of bytes remaining\n the specified subsequence of the given buffer\
+              \ array, that is,\n\n \n dsts[offset].remaining()\n     + dsts[offset+1].remaining()\n\
+              \     + ... + dsts[offset+length-1].remaining()\n\n at the moment that\
+              \ this method is invoked.\n\n  Suppose that a byte sequence of length\
+              \ n is read, where\n 0 <= n <= r.\n Up to the first dsts[offset].remaining()\
+              \ bytes of this sequence\n are transferred into buffer dsts[offset],\
+              \ up to the next\n dsts[offset+1].remaining() bytes are transferred\
+              \ into buffer\n dsts[offset+1], and so forth, until the entire byte\
+              \ sequence\n is transferred into the given buffers.  As many bytes as\
+              \ possible are\n transferred into each buffer, hence the final position\
+              \ of each updated\n buffer, except the last updated buffer, is guaranteed\
+              \ to be equal to\n that buffer's limit.\n\n  This method may be invoked\
+              \ at any time.  If another thread has\n already initiated a read operation\
+              \ upon this channel, however, then an\n invocation of this method will\
+              \ block until the first operation is\n complete."
           - name: read
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: dsts
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer[]
+              notes: The buffers into which bytes are to be transferred
             return:
               type:
                 basic: long
                 full: long
+              notes: "The number of bytes read, possibly zero,\n         or -1 if\
+                \ the channel has reached end-of-stream"
+            notes: "Reads a sequence of bytes from this channel into the given buffers.\n\
+              \n  An invocation of this method of the form c.read(dsts)\n behaves\
+              \ in exactly the same manner as the invocation\n\n \n c.read(dsts, 0,\
+              \ dsts.length);"

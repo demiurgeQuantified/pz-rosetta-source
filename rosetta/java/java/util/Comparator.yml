@@ -8,37 +8,109 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A comparison function, which imposes a total ordering on\n some\
+            \ collection of objects.  Comparators can be passed to a sort\n method\
+            \ (such as Collections.sort or Arrays.sort) to allow precise control over\
+            \ the sort order.\n Comparators can also be used to control the order\
+            \ of certain data\n structures (such as sorted sets or\n sorted maps),\
+            \ or to provide an ordering for\n collections of objects that don't have\
+            \ a natural ordering.\n\n The ordering imposed by a comparator c on a\
+            \ set of elements\n S is said to be consistent with equals if and only\
+            \ if\n c.compare(e1, e2)==0 has the same boolean value as\n e1.equals(e2)\
+            \ for every e1 and e2 in\n S.\n\n Caution should be exercised when using\
+            \ a comparator capable of imposing an\n ordering inconsistent with equals\
+            \ to order a sorted set (or sorted map).\n Suppose a sorted set (or sorted\
+            \ map) with an explicit comparator c\n is used with elements (or keys)\
+            \ drawn from a set S.  If the\n ordering imposed by c on S is inconsistent\
+            \ with equals,\n the sorted set (or sorted map) will behave \"strangely.\"\
+            \  In particular the\n sorted set (or sorted map) will violate the general\
+            \ contract for set (or\n map), which is defined in terms of equals.\n\n\
+            \ For example, suppose one adds two elements a and b such that\n (a.equals(b)\
+            \ && c.compare(a, b) != 0)\n to an empty TreeSet with comparator c.\n\
+            \ The second add operation will return\n true (and the size of the tree\
+            \ set will increase) because a and\n b are not equivalent from the tree\
+            \ set's perspective, even though\n this is contrary to the specification\
+            \ of the\n Set.add method.\n\n Note: It is generally a good idea for comparators\
+            \ to also implement\n java.io.Serializable, as they may be used as ordering\
+            \ methods in\n serializable data structures (like TreeSet, TreeMap). \
+            \ In\n order for the data structure to serialize successfully, the comparator\
+            \ (if\n provided) must implement Serializable.\n\n For the mathematically\
+            \ inclined, the relation that defines the\n imposed ordering that a given\
+            \ comparator c imposes on a\n given set of objects S is:\n       {(x,\
+            \ y) such that c.compare(x, y) <= 0}.\n  The quotient for this total order\
+            \ is:\n       {(x, y) such that c.compare(x, y) == 0}.\n \n\n It follows\
+            \ immediately from the contract for compare that the\n quotient is an\
+            \ equivalence relation on S, and that the\n imposed ordering is a total\
+            \ order on S.  When we say that\n the ordering imposed by c on S is consistent\
+            \ with\n equals, we mean that the quotient for the ordering is the equivalence\n\
+            \ relation defined by the objects' equals(Object) method(s):\n     {(x,\
+            \ y) such that x.equals(y)}. \n\n In other words, when the imposed ordering\
+            \ is consistent with\n equals, the equivalence classes defined by the\
+            \ equivalence relation\n of the equals method and the equivalence classes\
+            \ defined by\n the quotient of the compare method are the same.\n\n Unlike\
+            \ Comparable, a comparator may optionally permit\n comparison of null\
+            \ arguments, while maintaining the requirements for\n an equivalence relation.\n\
+            \n This interface is a member of the\n \n Java Collections Framework."
           methods:
           - name: compare
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: o1
               type:
                 basic: T
                 full: T
-            - name: arg1
+              notes: the first object to be compared.
+            - name: o2
               type:
                 basic: T
                 full: T
+              notes: the second object to be compared.
             return:
               type:
                 basic: int
                 full: int
+              notes: "a negative integer, zero, or a positive integer as the\n   \
+                \      first argument is less than, equal to, or greater than the\n\
+                \         second."
+            notes: "Compares its two arguments for order.  Returns a negative integer,\n\
+              \ zero, or a positive integer as the first argument is less than, equal\n\
+              \ to, or greater than the second.\n\n The implementor must ensure that\
+              \ signum(compare(x, y)) == -signum(compare(y, x)) for\n all x and y.\
+              \  (This implies that \n compare(x, y) must throw an exception if and\
+              \ only if \n compare(y, x) throws an exception.)\n\n The implementor\
+              \ must also ensure that the relation is transitive:\n ((compare(x, y)>0)\
+              \ && (compare(y, z)>0)) implies\n compare(x, z)>0.\n\n Finally, the\
+              \ implementor must ensure that compare(x,\n y)==0 implies that signum(compare(x,\n\
+              \ z))==signum(compare(y, z)) for all z."
           - name: equals
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the reference object with which to compare.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true only if the specified object is also\n          a comparator\
+                \ and it imposes the same ordering as this\n          comparator."
+            notes: "Indicates whether some other object is &quot;equal to&quot;\n\
+              \ this comparator.  This method must obey the general contract of\n\
+              \ Object.equals(Object).  Additionally, this method can\n return true\
+              \ only if the specified object is also\n a comparator and it imposes\
+              \ the same ordering as this\n comparator.  Thus, comp1.equals(comp2)\
+              \ implies that\n signum(comp1.compare(o1,\n o2))==signum(comp2.compare(o1,\
+              \ o2)) for every object reference\n o1 and o2.\n\n Note that it is always\
+              \ safe not to override\n Object.equals(Object).  However, overriding\
+              \ this method may,\n in some cases, improve performance by allowing\
+              \ programs to determine\n that two distinct comparators impose the same\
+              \ order."
           - name: lambda$thenComparing$36697e65$1
             modifiers:
             - private
@@ -66,82 +138,121 @@ languages:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a comparator that imposes the reverse ordering of this\n   \
+                \      comparator."
+            notes: "Returns a comparator that imposes the reverse ordering of this\n\
+              \ comparator."
           - name: thenComparing
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super T>
+              notes: "the other comparator to be used when this comparator\n     \
+                \    compares two objects that are equal."
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a lexicographic-order comparator composed of this and then the\n\
+                \         other comparator"
+            notes: "Returns a lexicographic-order comparator with another comparator.\n\
+              \ If this Comparator considers two elements equal, i.e.\n compare(a,\
+              \ b) == 0, other is used to determine the order.\n\n The returned comparator\
+              \ is serializable if the specified comparator\n is also serializable."
           - name: thenComparing
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: Function
                 full: java.util.function.Function<? super T, ? extends U>
-            - name: arg1
+              notes: the function used to extract the sort key
+            - name: keyComparator
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super U>
+              notes: the Comparator used to compare the sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a lexicographic-order comparator composed of this comparator\n\
+                \         and then comparing on the key extracted by the keyExtractor\
+                \ function"
+            notes: "Returns a lexicographic-order comparator with a function that\n\
+              \ extracts a key to be compared with the given Comparator."
           - name: thenComparing
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: Function
                 full: java.util.function.Function<? super T, ? extends U>
+              notes: the function used to extract the Comparable sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a lexicographic-order comparator composed of this and then the\n\
+                \         Comparable sort key."
+            notes: "Returns a lexicographic-order comparator with a function that\n\
+              \ extracts a Comparable sort key."
           - name: thenComparingDouble
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: ToDoubleFunction
                 full: java.util.function.ToDoubleFunction<? super T>
+              notes: the function used to extract the double sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a lexicographic-order comparator composed of this and then the\n\
+                \         double sort key"
+            notes: "Returns a lexicographic-order comparator with a function that\n\
+              \ extracts a double sort key."
           - name: thenComparingInt
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: ToIntFunction
                 full: java.util.function.ToIntFunction<? super T>
+              notes: the function used to extract the integer sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a lexicographic-order comparator composed of this and then the\n\
+                \         int sort key"
+            notes: "Returns a lexicographic-order comparator with a function that\n\
+              \ extracts an int sort key."
           - name: thenComparingLong
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: ToLongFunction
                 full: java.util.function.ToLongFunction<? super T>
+              notes: the function used to extract the long sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a lexicographic-order comparator composed of this and then the\n\
+                \         long sort key"
+            notes: "Returns a lexicographic-order comparator with a function that\n\
+              \ extracts a long sort key."
           staticMethods:
           - name: $deserializeLambda$
             modifiers:
@@ -161,70 +272,102 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: Function
                 full: java.util.function.Function<? super T, ? extends U>
-            - name: arg1
+              notes: the function used to extract the sort key
+            - name: keyComparator
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super U>
+              notes: the Comparator used to compare the sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a comparator that compares by an extracted key using the\n \
+                \        specified Comparator"
+            notes: "Accepts a function that extracts a sort key from a type T, and\n\
+              \ returns a Comparator<T> that compares by that sort key using\n the\
+              \ specified Comparator.\n\n The returned comparator is serializable\
+              \ if the specified function\n and comparator are both serializable."
           - name: comparing
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: Function
                 full: java.util.function.Function<? super T, ? extends U>
+              notes: the function used to extract the Comparable sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: a comparator that compares by an extracted key
+            notes: "Accepts a function that extracts a Comparable sort key from a\
+              \ type T, and returns a \n Comparator<T> that compares by that sort\
+              \ key.\n\n The returned comparator is serializable if the specified\
+              \ function\n is also serializable."
           - name: comparingDouble
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: ToDoubleFunction
                 full: java.util.function.ToDoubleFunction<? super T>
+              notes: the function used to extract the double sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: a comparator that compares by an extracted key
+            notes: "Accepts a function that extracts a double sort key from a type\n\
+              \ T, and returns a Comparator<T> that compares by that\n sort key.\n\
+              \n The returned comparator is serializable if the specified function\n\
+              \ is also serializable."
           - name: comparingInt
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: ToIntFunction
                 full: java.util.function.ToIntFunction<? super T>
+              notes: the function used to extract the integer sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: a comparator that compares by an extracted key
+            notes: "Accepts a function that extracts an int sort key from a type\n\
+              \ T, and returns a Comparator<T> that compares by that\n sort key.\n\
+              \n The returned comparator is serializable if the specified function\n\
+              \ is also serializable."
           - name: comparingLong
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: keyExtractor
               type:
                 basic: ToLongFunction
                 full: java.util.function.ToLongFunction<? super T>
+              notes: the function used to extract the long sort key
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: a comparator that compares by an extracted key
+            notes: "Accepts a function that extracts a long sort key from a type\n\
+              \ T, and returns a Comparator<T> that compares by that\n sort key.\n\
+              \n The returned comparator is serializable if the specified function\
+              \ is\n also serializable."
           - name: lambda$comparing$77a9974f$1
             modifiers:
             - private
@@ -342,32 +485,56 @@ languages:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a comparator that imposes the natural ordering on \n       \
+                \  Comparable objects."
+            notes: "Returns a comparator that compares Comparable objects in natural\n\
+              \ order.\n\n The returned comparator is serializable and throws NullPointerException\
+              \ when comparing null."
           - name: nullsFirst
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: comparator
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super T>
+              notes: a Comparator for comparing non-null values
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a comparator that considers null to be less than\n         non-null,\
+                \ and compares non-null objects with the supplied\n         Comparator."
+            notes: "Returns a null-friendly comparator that considers null to be\n\
+              \ less than non-null. When both are null, they are considered\n equal.\
+              \ If both are non-null, the specified Comparator is used\n to determine\
+              \ the order. If the specified comparator is null,\n then the returned\
+              \ comparator considers all non-null values to be equal.\n\n The returned\
+              \ comparator is serializable if the specified comparator\n is serializable."
           - name: nullsLast
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: comparator
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super T>
+              notes: a Comparator for comparing non-null values
             return:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a comparator that considers null to be greater than\n      \
+                \   non-null, and compares non-null objects with the supplied\n  \
+                \       Comparator."
+            notes: "Returns a null-friendly comparator that considers null to be\n\
+              \ greater than non-null. When both are null, they are considered\n equal.\
+              \ If both are non-null, the specified Comparator is used\n to determine\
+              \ the order. If the specified comparator is null,\n then the returned\
+              \ comparator considers all non-null values to be equal.\n\n The returned\
+              \ comparator is serializable if the specified comparator\n is serializable."
           - name: reverseOrder
             modifiers:
             - public
@@ -376,3 +543,8 @@ languages:
               type:
                 basic: Comparator
                 full: java.util.Comparator<T>
+              notes: "a comparator that imposes the reverse of the natural\n     \
+                \    ordering on Comparable objects."
+            notes: "Returns a comparator that imposes the reverse of the natural\n\
+              \ ordering.\n\n The returned comparator is serializable and throws NullPointerException\
+              \ when comparing null."

@@ -8,37 +8,65 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "WritableRenderedImage is a common interface for objects which\n\
+            \ contain or can produce image data in the form of Rasters and\n which\
+            \ can be modified and/or written over.  The image\n data may be stored/produced\
+            \ as a single tile or a regular array\n of tiles.\n \n WritableRenderedImage\
+            \ provides notification to other interested\n objects when a tile is checked\
+            \ out for writing (via the\n getWritableTile method) and when the last\
+            \ writer of a particular\n tile relinquishes its access (via a call to\
+            \ releaseWritableTile).\n Additionally, it allows any caller to determine\
+            \ whether any tiles\n are currently checked out (via hasTileWriters),\
+            \ and to obtain a\n list of such tiles (via getWritableTileIndices, in\
+            \ the form of a Vector\n of Point objects).\n \n Objects wishing to be\
+            \ notified of changes in tile writability must\n implement the TileObserver\
+            \ interface, and are added by a\n call to addTileObserver.  Multiple calls\
+            \ to\n addTileObserver for the same object will result in multiple\n notifications.\
+            \  An existing observer may reduce its notifications\n by calling removeTileObserver;\
+            \ if the observer had no\n notifications the operation is a no-op.\n \n\
+            \ It is necessary for a WritableRenderedImage to ensure that\n notifications\
+            \ occur only when the first writer acquires a tile and\n the last writer\
+            \ releases it."
           methods:
           - name: addTileObserver
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: to
               type:
                 basic: TileObserver
                 full: java.awt.image.TileObserver
+              notes: the specified TileObserver
             return:
               type:
                 basic: void
                 full: void
+            notes: "Adds an observer.  If the observer is already present,\n it will\
+              \ receive multiple notifications."
           - name: getWritableTile
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tileX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the X index of the tile.
+            - name: tileY
               type:
                 basic: int
                 full: int
+              notes: the Y index of the tile.
             return:
               type:
                 basic: WritableRaster
                 full: java.awt.image.WritableRaster
+              notes: a writable tile.
+            notes: "Checks out a tile for writing.\n\n The WritableRenderedImage is\
+              \ responsible for notifying all\n of its TileObservers when a tile goes\
+              \ from having\n no writers to having one writer."
           - name: getWritableTileIndices
             modifiers:
             - public
@@ -47,6 +75,10 @@ languages:
               type:
                 basic: Point
                 full: java.awt.Point[]
+              notes: "an array containing the locations of tiles that are\n      \
+                \   checked out for writing."
+            notes: "Returns an array of Point objects indicating which tiles\n are\
+              \ checked out for writing.  Returns null if none are\n checked out."
           - name: hasTileWriters
             modifiers:
             - public
@@ -55,63 +87,88 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if any tiles are checked out for\n         writing; false\
+                \ otherwise."
+            notes: "Returns whether any tile is checked out for writing.\n Semantically\
+              \ equivalent to (getWritableTileIndices() != null)."
           - name: isTileWritable
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tileX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the X index of the tile.
+            - name: tileY
               type:
                 basic: int
                 full: int
+              notes: the Y index of the tile.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if specified tile is checked out\n         for writing;\
+                \ false otherwise."
+            notes: Returns whether a tile is currently checked out for writing.
           - name: releaseWritableTile
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tileX
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the X index of the tile.
+            - name: tileY
               type:
                 basic: int
                 full: int
+              notes: the Y index of the tile.
             return:
               type:
                 basic: void
                 full: void
+            notes: "Relinquishes the right to write to a tile.  If the caller\n continues\
+              \ to write to the tile, the results are undefined.\n Calls to this method\
+              \ should only appear in matching pairs\n with calls to getWritableTile;\
+              \ any other use will lead\n to undefined results.\n\n The WritableRenderedImage\
+              \ is responsible for notifying all of\n its TileObservers when a tile\
+              \ goes from having one writer\n to having no writers."
           - name: removeTileObserver
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: to
               type:
                 basic: TileObserver
                 full: java.awt.image.TileObserver
+              notes: the specified TileObserver
             return:
               type:
                 basic: void
                 full: void
+            notes: "Removes an observer.  If the observer was not registered,\n nothing\
+              \ happens.  If the observer was registered for multiple\n notifications,\
+              \ it will now be registered for one fewer."
           - name: setData
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: r
               type:
                 basic: Raster
                 full: java.awt.image.Raster
+              notes: the specified Raster
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets a rect of the image to the contents of the Raster r, which\
+              \ is\n assumed to be in the same coordinate space as the WritableRenderedImage.\n\
+              \ The operation is clipped to the bounds of the WritableRenderedImage."

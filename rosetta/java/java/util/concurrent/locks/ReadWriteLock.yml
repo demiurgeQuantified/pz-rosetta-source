@@ -8,6 +8,62 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A ReadWriteLock maintains a pair of associated locks, one for read-only\
+            \ operations and one for writing.\n The read lock may be held simultaneously\n\
+            \ by multiple reader threads, so long as there are no writers.\n The write\
+            \ lock is exclusive.\n\n All ReadWriteLock implementations must guarantee\
+            \ that\n the memory synchronization effects of writeLock operations\n\
+            \ (as specified in the Lock interface) also hold with respect\n to the\
+            \ associated readLock. That is, a thread successfully\n acquiring the\
+            \ read lock will see all updates made upon previous\n release of the write\
+            \ lock.\n\n A read-write lock allows for a greater level of concurrency\
+            \ in\n accessing shared data than that permitted by a mutual exclusion\
+            \ lock.\n It exploits the fact that while only a single thread at a time\
+            \ (a\n writer thread) can modify the shared data, in many cases any\n\
+            \ number of threads can concurrently read the data (hence reader\n threads).\n\
+            \ In theory, the increase in concurrency permitted by the use of a read-write\n\
+            \ lock will lead to performance improvements over the use of a mutual\n\
+            \ exclusion lock. In practice this increase in concurrency will only be\
+            \ fully\n realized on a multi-processor, and then only if the access patterns\
+            \ for\n the shared data are suitable.\n\n Whether or not a read-write\
+            \ lock will improve performance over the use\n of a mutual exclusion lock\
+            \ depends on the frequency that the data is\n read compared to being modified,\
+            \ the duration of the read and write\n operations, and the contention\
+            \ for the data - that is, the number of\n threads that will try to read\
+            \ or write the data at the same time.\n For example, a collection that\
+            \ is initially populated with data and\n thereafter infrequently modified,\
+            \ while being frequently searched\n (such as a directory of some kind)\
+            \ is an ideal candidate for the use of\n a read-write lock. However, if\
+            \ updates become frequent then the data\n spends most of its time being\
+            \ exclusively locked and there is little, if any\n increase in concurrency.\
+            \ Further, if the read operations are too short\n the overhead of the\
+            \ read-write lock implementation (which is inherently\n more complex than\
+            \ a mutual exclusion lock) can dominate the execution\n cost, particularly\
+            \ as many read-write lock implementations still serialize\n all threads\
+            \ through a small section of code. Ultimately, only profiling\n and measurement\
+            \ will establish whether the use of a read-write lock is\n suitable for\
+            \ your application.\n\n Although the basic operation of a read-write lock\
+            \ is straight-forward,\n there are many policy decisions that an implementation\
+            \ must make, which\n may affect the effectiveness of the read-write lock\
+            \ in a given application.\n Examples of these policies include:\n \n Determining\
+            \ whether to grant the read lock or the write lock, when\n both readers\
+            \ and writers are waiting, at the time that a writer releases\n the write\
+            \ lock. Writer preference is common, as writes are expected to be\n short\
+            \ and infrequent. Reader preference is less common as it can lead to\n\
+            \ lengthy delays for a write if the readers are frequent and long-lived\
+            \ as\n expected. Fair, or &quot;in-order&quot; implementations are also\
+            \ possible.\n\n Determining whether readers that request the read lock\
+            \ while a\n reader is active and a writer is waiting, are granted the\
+            \ read lock.\n Preference to the reader can delay the writer indefinitely,\
+            \ while\n preference to the writer can reduce the potential for concurrency.\n\
+            \n Determining whether the locks are reentrant: can a thread with the\n\
+            \ write lock reacquire it? Can it acquire a read lock while holding the\n\
+            \ write lock? Is the read lock itself reentrant?\n\n Can the write lock\
+            \ be downgraded to a read lock without allowing\n an intervening writer?\
+            \ Can a read lock be upgraded to a write lock,\n in preference to other\
+            \ waiting readers or writers?\n\n \n You should consider all of these\
+            \ things when evaluating the suitability\n of a given implementation for\
+            \ your application."
           methods:
           - name: readLock
             modifiers:
@@ -17,6 +73,8 @@ languages:
               type:
                 basic: Lock
                 full: java.util.concurrent.locks.Lock
+              notes: the lock used for reading
+            notes: Returns the lock used for reading.
           - name: writeLock
             modifiers:
             - public
@@ -25,3 +83,5 @@ languages:
               type:
                 basic: Lock
                 full: java.util.concurrent.locks.Lock
+              notes: the lock used for writing
+            notes: Returns the lock used for writing.

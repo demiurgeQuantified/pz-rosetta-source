@@ -8,6 +8,50 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A symbolic reference obtained by cracking a direct method handle\n\
+            \ into its constituent symbolic parts.\n To crack a direct method handle,\
+            \ call Lookup.revealDirect.\n Direct Method Handles\n A direct method\
+            \ handle represents a method, constructor, or field without\n any intervening\
+            \ argument bindings or other transformations.\n The method, constructor,\
+            \ or field referred to by a direct method handle is called\n its underlying\
+            \ member.\n Direct method handles may be obtained in any of these ways:\n\
+            \ \n By executing an ldc instruction on a CONSTANT_MethodHandle constant.\n\
+            \     (See the Java Virtual Machine Specification, sections 4.4.8 and\
+            \ 5.4.3.)\n By calling one of the Lookup Factory Methods,\n     such as\
+            \ Lookup.findVirtual,\n     to resolve a symbolic reference into a method\
+            \ handle.\n     A symbolic reference consists of a class, name string,\
+            \ and type.\n By calling the factory method Lookup.unreflect\n     or\
+            \ Lookup.unreflectSpecial\n     to convert a Method into a method handle.\n\
+            \ By calling the factory method Lookup.unreflectConstructor\n     to convert\
+            \ a Constructor into a method handle.\n By calling the factory method\
+            \ Lookup.unreflectGetter\n     or Lookup.unreflectSetter\n     to convert\
+            \ a Field into a method handle.\n \n\n Restrictions on Cracking\n Given\
+            \ a suitable Lookup object, it is possible to crack any direct method\
+            \ handle\n to recover a symbolic reference for the underlying method,\
+            \ constructor, or field.\n Cracking must be done via a Lookup object equivalent\
+            \ to that which created\n the target method handle, or which has enough\
+            \ access permissions to recreate\n an equivalent method handle.\n \n If\
+            \ the underlying method is caller sensitive,\n the direct method handle\
+            \ will have been \"bound\" to a particular caller class, the\n lookup\
+            \ class\n of the lookup object used to create it.\n Cracking this method\
+            \ handle with a different lookup class will fail\n even if the underlying\
+            \ method is public (like Class.forName).\n \n The requirement of lookup\
+            \ object matching provides a \"fast fail\" behavior\n for programs which\
+            \ may otherwise trust erroneous revelation of a method\n handle with symbolic\
+            \ information (or caller binding) from an unexpected scope.\n Use MethodHandles.reflectAs(java.lang.Class<T>,\
+            \ java.lang.invoke.MethodHandle) to override this limitation.\n\n Reference\
+            \ kinds\n The Lookup Factory Methods\n correspond to all major use cases\
+            \ for methods, constructors, and fields.\n These use cases may be distinguished\
+            \ using small integers as follows:\n \n reference kinds\n \n reference\
+            \ kinddescriptive namescopememberbehavior\n \n \n \n     1REF_getFieldclass\n\
+            \     FT f;(T) this.f;\n \n \n     2REF_getStaticclass or interface\n\
+            \     staticFT f;(T) C.f;\n \n \n     3REF_putFieldclass\n     FT f;this.f\
+            \ = x;\n \n \n     4REF_putStaticclass\n     staticFT f;C.f = arg;\n \n\
+            \ \n     5REF_invokeVirtualclass\n     T m(A*);(T) this.m(arg*);\n \n\
+            \ \n     6REF_invokeStaticclass or interface\n     staticT m(A*);(T) C.m(arg*);\n\
+            \ \n \n     7REF_invokeSpecialclass or interface\n     T m(A*);(T) super.m(arg*);\n\
+            \ \n \n     8REF_newInvokeSpecialclass\n     C(A*);new C(arg*);\n \n \n\
+            \     9REF_invokeInterfaceinterface\n     T m(A*);(T) this.m(arg*);"
           staticFields:
             REF_getField:
               name: REF_getField
@@ -17,6 +61,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_getStatic:
               name: REF_getStatic
               modifiers:
@@ -25,6 +71,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_invokeInterface:
               name: REF_invokeInterface
               modifiers:
@@ -33,6 +81,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_invokeSpecial:
               name: REF_invokeSpecial
               modifiers:
@@ -41,6 +91,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_invokeStatic:
               name: REF_invokeStatic
               modifiers:
@@ -49,6 +101,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_invokeVirtual:
               name: REF_invokeVirtual
               modifiers:
@@ -57,6 +111,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_newInvokeSpecial:
               name: REF_newInvokeSpecial
               modifiers:
@@ -65,6 +121,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_putField:
               name: REF_putField
               modifiers:
@@ -73,6 +131,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
             REF_putStatic:
               name: REF_putStatic
               modifiers:
@@ -81,6 +141,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "A direct method handle reference kind,\n as defined in the table\
+                \ above."
           methods:
           - name: getDeclaringClass
             modifiers:
@@ -90,6 +152,9 @@ languages:
               type:
                 basic: Class
                 full: java.lang.Class<?>
+              notes: the declaring class of the underlying member
+            notes: Returns the class in which the cracked method handle's underlying
+              member was defined.
           - name: getMethodType
             modifiers:
             - public
@@ -98,6 +163,19 @@ languages:
               type:
                 basic: MethodType
                 full: java.lang.invoke.MethodType
+              notes: the type of the underlying member, expressed as a method type
+            notes: "Returns the nominal type of the cracked symbolic reference, expressed\
+              \ as a method type.\n If the reference is to a constructor, the return\
+              \ type will be void.\n If it is to a non-static method, the method type\
+              \ will not mention the this parameter.\n If it is to a field and the\
+              \ requested access is to read the field,\n the method type will have\
+              \ no parameters and return the field type.\n If it is to a field and\
+              \ the requested access is to write the field,\n the method type will\
+              \ have one parameter of the field type and return void.\n \n Note that\
+              \ original direct method handle may include a leading this parameter,\n\
+              \ or (in the case of a constructor) will replace the void return type\n\
+              \ with the constructed class.\n The nominal type does not include any\
+              \ this parameter,\n and (in the case of a constructor) will return void."
           - name: getModifiers
             modifiers:
             - public
@@ -106,6 +184,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the Java language modifiers for underlying member,\n       \
+                \  or -1 if the member cannot be accessed"
+            notes: Returns the access modifiers of the underlying member.
           - name: getName
             modifiers:
             - public
@@ -114,6 +195,10 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: the simple name of the underlying member
+            notes: "Returns the name of the cracked method handle's underlying member.\n\
+              \ This is \"<init>\" if the underlying member was a constructor,\n else\
+              \ it is a simple method name or field name."
           - name: getReferenceKind
             modifiers:
             - public
@@ -122,6 +207,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the integer code for the kind of reference used to access the
+                underlying member
+            notes: "Returns the reference kind of the cracked method handle, which\
+              \ in turn\n determines whether the method handle's underlying member\
+              \ was a constructor, method, or field.\n See the table above for definitions."
           - name: isVarArgs
             modifiers:
             - public
@@ -129,6 +219,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if and only if the underlying member was declared with variable
+                arity.
+            notes: "Determines if the underlying member was a variable arity method\
+              \ or constructor.\n Such members are represented by method handles that\
+              \ are varargs collectors."
           - name: reflectAs
             modifiers:
             - public
@@ -152,14 +247,20 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: referenceKind
               type:
                 basic: int
                 full: int
+              notes: an integer code for a kind of reference used to access a class
+                member
             return:
               type:
                 basic: String
                 full: java.lang.String
+              notes: a mixed-case string such as "getField"
+            notes: "Returns the descriptive name of the given reference kind,\n as\
+              \ defined in the table above.\n The conventional prefix \"REF_\" is\
+              \ omitted."
           - name: toString
             modifiers:
             - public

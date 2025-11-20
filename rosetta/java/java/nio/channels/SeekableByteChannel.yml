@@ -8,6 +8,19 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A byte channel that maintains a current position and allows the\n\
+            \ position to be changed.\n\n  A seekable byte channel is connected to\
+            \ an entity, typically a file,\n that contains a variable-length sequence\
+            \ of bytes that can be read and\n written. The current position can be\
+            \ queried and\n modified. The channel also provides access to\n the current\
+            \ size of the entity to which the channel is connected. The\n size increases\
+            \ when bytes are written beyond its current size; the size\n decreases\
+            \ when it is truncated.\n\n  The position and truncate methods\n which\
+            \ do not otherwise have a value to return are specified to return the\n\
+            \ channel upon which they are invoked. This allows method invocations\
+            \ to be\n chained. Implementations of this interface should specialize\
+            \ the return type\n so that method invocations on the implementation class\
+            \ can be chained."
           methods:
           - name: position
             modifiers:
@@ -17,32 +30,58 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: "This channel's position,\n          a non-negative integer counting\
+                \ the number of bytes\n          from the beginning of the entity\
+                \ to the current position"
+            notes: Returns this channel's position.
           - name: position
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: newPosition
               type:
                 basic: long
                 full: long
+              notes: "The new position, a non-negative integer counting\n        \
+                \ the number of bytes from the beginning of the entity"
             return:
               type:
                 basic: SeekableByteChannel
                 full: java.nio.channels.SeekableByteChannel
+              notes: This channel
+            notes: "Sets this channel's position.\n\n  Setting the position to a value\
+              \ that is greater than the current size\n is legal but does not change\
+              \ the size of the entity.  A later attempt to\n read bytes at such a\
+              \ position will immediately return an end-of-file\n indication.  A later\
+              \ attempt to write bytes at such a position will cause\n the entity\
+              \ to grow to accommodate the new bytes; the values of any bytes\n between\
+              \ the previous end-of-file and the newly-written bytes are\n unspecified.\n\
+              \n  Setting the channel's position is not recommended when connected\
+              \ to\n an entity, typically a file, that is opened with the APPEND option.\
+              \ When opened for\n append, the position is first advanced to the end\
+              \ before writing."
           - name: read
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: dst
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The buffer into which bytes are to be transferred
             return:
               type:
                 basic: int
                 full: int
+              notes: "The number of bytes read, possibly zero, or -1 if the\n    \
+                \      channel has reached end-of-stream"
+            notes: "Reads a sequence of bytes from this channel into the given buffer.\n\
+              \n  Bytes are read starting at this channel's current position, and\n\
+              \ then the position is updated with the number of bytes actually read.\n\
+              \ Otherwise this method behaves exactly as specified in the ReadableByteChannel\
+              \ interface."
           - name: size
             modifiers:
             - public
@@ -51,29 +90,52 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: The current size, measured in bytes
+            notes: Returns the current size of entity to which this channel is connected.
           - name: truncate
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: size
               type:
                 basic: long
                 full: long
+              notes: The new size, a non-negative byte count
             return:
               type:
                 basic: SeekableByteChannel
                 full: java.nio.channels.SeekableByteChannel
+              notes: This channel
+            notes: "Truncates the entity, to which this channel is connected, to the\
+              \ given\n size.\n\n  If the given size is less than the current size\
+              \ then the entity is\n truncated, discarding any bytes beyond the new\
+              \ end. If the given size is\n greater than or equal to the current size\
+              \ then the entity is not modified.\n In either case, if the current\
+              \ position is greater than the given size\n then it is set to that size.\n\
+              \n  An implementation of this interface may prohibit truncation when\n\
+              \ connected to an entity, typically a file, opened with the APPEND option."
           - name: write
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: src
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The buffer from which bytes are to be retrieved
             return:
               type:
                 basic: int
                 full: int
+              notes: The number of bytes written, possibly zero
+            notes: "Writes a sequence of bytes to this channel from the given buffer.\n\
+              \n  Bytes are written starting at this channel's current position, unless\n\
+              \ the channel is connected to an entity such as a file that is opened\
+              \ with\n the APPEND option, in\n which case the position is first advanced\
+              \ to the end. The entity to which\n the channel is connected is grown,\
+              \ if necessary, to accommodate the\n written bytes, and then the position\
+              \ is updated with the number of bytes\n actually written. Otherwise\
+              \ this method behaves exactly as specified by\n the WritableByteChannel\
+              \ interface."

@@ -8,17 +8,49 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A channel that can read bytes.\n\n  Only one read operation upon\
+            \ a readable channel may be in progress at\n any given time.  If one thread\
+            \ initiates a read operation upon a channel\n then any other thread that\
+            \ attempts to initiate another read operation will\n block until the first\
+            \ operation is complete.  Whether or not other kinds of\n I/O operations\
+            \ may proceed concurrently with a read operation depends upon\n the type\
+            \ of the channel."
           methods:
           - name: read
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: dst
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The buffer into which bytes are to be transferred
             return:
               type:
                 basic: int
                 full: int
+              notes: "The number of bytes read, possibly zero, or -1 if the\n    \
+                \      channel has reached end-of-stream"
+            notes: "Reads a sequence of bytes from this channel into the given buffer.\n\
+              \n  An attempt is made to read up to r bytes from the channel,\n where\
+              \ r is the number of bytes remaining in the buffer, that is,\n dst.remaining(),\
+              \ at the moment this method is invoked.\n\n  Suppose that a byte sequence\
+              \ of length n is read, where\n 0 <= n <= r.\n This byte sequence will\
+              \ be transferred into the buffer so that the first\n byte in the sequence\
+              \ is at index p and the last byte is at index\n p + n - 1,\n where p\
+              \ is the buffer's position at the moment this method is\n invoked. \
+              \ Upon return the buffer's position will be equal to\n p + n; its limit\
+              \ will not have changed.\n\n  A read operation might not fill the buffer,\
+              \ and in fact it might not\n read any bytes at all.  Whether or not\
+              \ it does so depends upon the\n nature and state of the channel.  A\
+              \ socket channel in non-blocking mode,\n for example, cannot read any\
+              \ more bytes than are immediately available\n from the socket's input\
+              \ buffer; similarly, a file channel cannot read\n any more bytes than\
+              \ remain in the file.  It is guaranteed, however, that\n if a channel\
+              \ is in blocking mode and there is at least one byte\n remaining in\
+              \ the buffer then this method will block until at least one\n byte is\
+              \ read.\n\n  This method may be invoked at any time.  If another thread\
+              \ has\n already initiated a read operation upon this channel, however,\
+              \ then an\n invocation of this method will block until the first operation\
+              \ is\n complete."

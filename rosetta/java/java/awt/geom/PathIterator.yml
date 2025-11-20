@@ -8,6 +8,26 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "The PathIterator interface provides the mechanism\n for objects\
+            \ that implement the Shape\n interface to return the geometry of their\
+            \ boundary by allowing\n a caller to retrieve the path of that boundary\
+            \ a segment at a\n time.  This interface allows these objects to retrieve\
+            \ the path of\n their boundary a segment at a time by using 1st through\
+            \ 3rd order\n B&eacute;zier curves, which are lines and quadratic or cubic\n\
+            \ B&eacute;zier splines.\n \n Multiple subpaths can be expressed by using\
+            \ a \"MOVETO\" segment to\n create a discontinuity in the geometry to\
+            \ move from the end of\n one subpath to the beginning of the next.\n \n\
+            \ Each subpath can be closed manually by ending the last segment in\n\
+            \ the subpath on the same coordinate as the beginning \"MOVETO\" segment\n\
+            \ for that subpath or by using a \"CLOSE\" segment to append a line\n\
+            \ segment from the last point back to the first.\n Be aware that manually\
+            \ closing an outline as opposed to using a\n \"CLOSE\" segment to close\
+            \ the path might result in different line\n style decorations being used\
+            \ at the end points of the subpath.\n For example, the BasicStroke object\n\
+            \ uses a line \"JOIN\" decoration to connect the first and last points\n\
+            \ if a \"CLOSE\" segment is encountered, whereas simply ending the path\n\
+            \ on the same coordinate as the beginning coordinate results in line\n\
+            \ \"CAP\" decorations being used at the ends."
           staticFields:
             SEG_CLOSE:
               name: SEG_CLOSE
@@ -17,6 +37,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The segment type constant that specifies that\n the preceding\
+                \ subpath should be closed by appending a line segment\n back to the\
+                \ point corresponding to the most recent SEG_MOVETO."
             SEG_CUBICTO:
               name: SEG_CUBICTO
               modifiers:
@@ -25,6 +48,19 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The segment type constant for the set of 3 points that specify\n\
+                \ a cubic parametric curve to be drawn from the most recently\n specified\
+                \ point.\n The curve is interpolated by solving the parametric control\n\
+                \ equation in the range (t=[0..1]) using\n the most recently specified\
+                \ (current) point (CP),\n the first control point (P1),\n the second\
+                \ control point (P2),\n and the final interpolated control point (P3).\n\
+                \ The parametric control equation for this curve is:\n \n        \
+                \  P(t) = B(3,0)*CP + B(3,1)*P1 + B(3,2)*P2 + B(3,3)*P3\n        \
+                \  0 <= t <= 1\n\n        B(n,m) = mth coefficient of nth degree Bernstein\
+                \ polynomial\n               = C(n,m) * t^(m) * (1 - t)^(n-m)\n  \
+                \      C(n,m) = Combinations of n things, taken m at a time\n    \
+                \           = n! / (m! * (n-m)!)\n \n This form of curve is commonly\
+                \ known as a B\xE9zier curve."
             SEG_LINETO:
               name: SEG_LINETO
               modifiers:
@@ -33,6 +69,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The segment type constant for a point that specifies the\n end\
+                \ point of a line to be drawn from the most recently\n specified point."
             SEG_MOVETO:
               name: SEG_MOVETO
               modifiers:
@@ -41,6 +79,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The segment type constant for a point that specifies the\n starting\
+                \ location for a new subpath."
             SEG_QUADTO:
               name: SEG_QUADTO
               modifiers:
@@ -49,6 +89,17 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The segment type constant for the pair of points that specify\n\
+                \ a quadratic parametric curve to be drawn from the most recently\n\
+                \ specified point.\n The curve is interpolated by solving the parametric\
+                \ control\n equation in the range (t=[0..1]) using\n the most recently\
+                \ specified (current) point (CP),\n the first control point (P1),\n\
+                \ and the final interpolated control point (P2).\n The parametric\
+                \ control equation for this curve is:\n \n          P(t) = B(2,0)*CP\
+                \ + B(2,1)*P1 + B(2,2)*P2\n          0 <= t <= 1\n\n        B(n,m)\
+                \ = mth coefficient of nth degree Bernstein polynomial\n         \
+                \      = C(n,m) * t^(m) * (1 - t)^(n-m)\n        C(n,m) = Combinations\
+                \ of n things, taken m at a time\n               = n! / (m! * (n-m)!)"
             WIND_EVEN_ODD:
               name: WIND_EVEN_ODD
               modifiers:
@@ -57,6 +108,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The winding rule constant for specifying an even-odd rule\n\
+                \ for determining the interior of a path.\n The even-odd rule specifies\
+                \ that a point lies inside the\n path if a ray drawn in any direction\
+                \ from that point to\n infinity is crossed by path segments an odd\
+                \ number of times."
             WIND_NON_ZERO:
               name: WIND_NON_ZERO
               modifiers:
@@ -65,33 +121,59 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The winding rule constant for specifying a non-zero rule\n for\
+                \ determining the interior of a path.\n The non-zero rule specifies\
+                \ that a point lies inside the\n path if a ray drawn in any direction\
+                \ from that point to\n infinity is crossed by path segments a different\
+                \ number\n of times in the counter-clockwise direction than the\n\
+                \ clockwise direction."
           methods:
           - name: currentSegment
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: coords
               type:
                 basic: float
                 full: float[]
+              notes: "an array that holds the data returned from\n this method"
             return:
               type:
                 basic: int
                 full: int
+              notes: the path-segment type of the current path segment.
+            notes: "Returns the coordinates and type of the current path segment in\n\
+              \ the iteration.\n The return value is the path-segment type:\n SEG_MOVETO,\
+              \ SEG_LINETO, SEG_QUADTO, SEG_CUBICTO, or SEG_CLOSE.\n A float array\
+              \ of length 6 must be passed in and can be used to\n store the coordinates\
+              \ of the point(s).\n Each point is stored as a pair of float x,y coordinates.\n\
+              \ SEG_MOVETO and SEG_LINETO types returns one point,\n SEG_QUADTO returns\
+              \ two points,\n SEG_CUBICTO returns 3 points\n and SEG_CLOSE does not\
+              \ return any points."
           - name: currentSegment
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: coords
               type:
                 basic: double
                 full: double[]
+              notes: "an array that holds the data returned from\n this method"
             return:
               type:
                 basic: int
                 full: int
+              notes: the path-segment type of the current path segment.
+            notes: "Returns the coordinates and type of the current path segment in\n\
+              \ the iteration.\n The return value is the path-segment type:\n SEG_MOVETO,\
+              \ SEG_LINETO, SEG_QUADTO, SEG_CUBICTO, or SEG_CLOSE.\n A double array\
+              \ of length 6 must be passed in and can be used to\n store the coordinates\
+              \ of the point(s).\n Each point is stored as a pair of double x,y coordinates.\n\
+              \ SEG_MOVETO and SEG_LINETO types returns one point,\n SEG_QUADTO returns\
+              \ two points,\n SEG_CUBICTO returns 3 points\n and SEG_CLOSE does not\
+              \ return any points."
           - name: getWindingRule
             modifiers:
             - public
@@ -100,6 +182,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the winding rule.
+            notes: "Returns the winding rule for determining the interior of the\n\
+              \ path."
           - name: isDone
             modifiers:
             - public
@@ -108,6 +193,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if all the segments have\n been read; false otherwise."
+            notes: Tests if the iteration is complete.
           - name: next
             modifiers:
             - public
@@ -116,3 +203,6 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Moves the iterator to the next segment of the path forwards\n\
+              \ along the primary direction of traversal as long as there are\n more\
+              \ points in that direction."

@@ -8,6 +8,53 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A channel that supports asynchronous I/O operations. Asynchronous\
+            \ I/O\n operations will usually take one of two forms:\n\n \n <a href=\"\
+            ../../util/concurrent/Future.html\" title=\"interface in java.util.concurrent\"\
+            ><code>Future</code></a><V> <em>operation</em>(<em>...</em>)\n void <em>operation</em>(<em>...</em>\
+            \ A attachment, <a href=\"CompletionHandler.html\" title=\"interface in\
+            \ java.nio.channels\"><code>CompletionHandler</code></a><V,? super A>\
+            \ handler)\n \n\n where operation is the name of the I/O operation (read\
+            \ or write for\n example), V is the result type of the I/O operation,\
+            \ and A is\n the type of an object attached to the I/O operation to provide\
+            \ context when\n consuming the result. The attachment is important for\
+            \ cases where a\n state-less CompletionHandler is used to consume the\
+            \ result\n of many I/O operations.\n\n  In the first form, the methods\
+            \ defined by the Future\n interface may be used to check if the operation\
+            \ has completed, wait for its\n completion, and to retrieve the result.\
+            \ In the second form, a CompletionHandler is invoked to consume the result\
+            \ of the I/O operation when\n it completes or fails.\n\n  A channel that\
+            \ implements this interface is asynchronously\n closeable: If an I/O operation\
+            \ is outstanding on the channel and the\n channel's close method is invoked,\
+            \ then the I/O operation\n fails with the exception AsynchronousCloseException.\n\
+            \n  Asynchronous channels are safe for use by multiple concurrent threads.\n\
+            \ Some channel implementations may support concurrent reading and writing,\
+            \ but\n may not allow more than one read and one write operation to be\
+            \ outstanding at\n any given time.\n\n Cancellation\n\n  The Future interface\
+            \ defines the cancel\n method to cancel execution. This causes all threads\
+            \ waiting on the result of\n the I/O operation to throw CancellationException.\n\
+            \ Whether the underlying I/O operation can be cancelled is highly implementation\n\
+            \ specific and therefore not specified. Where cancellation leaves the\
+            \ channel,\n or the entity to which it is connected, in an inconsistent\
+            \ state, then the\n channel is put into an implementation specific error\
+            \ state that\n prevents further attempts to initiate I/O operations that\
+            \ are similar\n to the operation that was cancelled. For example, if a\
+            \ read operation is\n cancelled but the implementation cannot guarantee\
+            \ that bytes have not been\n read from the channel then it puts the channel\
+            \ into an error state; further\n attempts to initiate a read operation\
+            \ cause an unspecified runtime\n exception to be thrown. Similarly, if\
+            \ a write operation is cancelled but the\n implementation cannot guarantee\
+            \ that bytes have not been written to the\n channel then subsequent attempts\
+            \ to initiate a write will fail with\n an unspecified runtime exception.\n\
+            \n  Where the cancel method is invoked with the \n mayInterruptIfRunning\
+            \ parameter set to true then the I/O operation\n may be interrupted by\
+            \ closing the channel. In that case all threads waiting\n on the result\
+            \ of the I/O operation throw CancellationException and\n any other I/O\
+            \ operations outstanding on the channel complete with the\n exception\
+            \ AsynchronousCloseException.\n\n  Where the cancel method is invoked\
+            \ to cancel read or write\n operations then it is recommended that all\
+            \ buffers used in the I/O operations\n be discarded or care taken to ensure\
+            \ that the buffers are not accessed while\n the channel remains open."
           methods:
           - name: close
             modifiers:
@@ -17,3 +64,9 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes this channel.\n\n  Any outstanding asynchronous operations\
+              \ upon this channel will\n complete with the exception AsynchronousCloseException.\
+              \ After a\n channel is closed, further attempts to initiate asynchronous\
+              \ I/O\n operations complete immediately with cause ClosedChannelException.\n\
+              \n   This method otherwise behaves exactly as specified by the Channel\
+              \ interface."

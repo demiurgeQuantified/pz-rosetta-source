@@ -8,20 +8,49 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A finder of modules. A ModuleFinder is used to find modules during\n\
+            \ resolution or\n service binding.\n\n  A ModuleFinder can only find one\
+            \ module with a given name. A\n ModuleFinder that finds modules in a sequence\
+            \ of directories, for\n example, will locate the first occurrence of a\
+            \ module of a given name and\n will ignore other modules of that name\
+            \ that appear in directories later in\n the sequence. \n\n  Example usage:\
+            \ \n\n <code>\n     Path dir1, dir2, dir3;\n\n     ModuleFinder finder\
+            \ = ModuleFinder.of(dir1, dir2, dir3);\n\n     Optional<ModuleReference>\
+            \ omref = finder.find(\"jdk.foo\");\n     omref.ifPresent(mref -> ...\
+            \ );\n\n </code>\n\n  The find and findAll methods\n defined here can\
+            \ fail for several reasons. These include I/O errors, errors\n detected\
+            \ parsing a module descriptor (module-info.class), or in the\n case of\
+            \ ModuleFinder returned by ModuleFinder.of, that\n two or more modules\
+            \ with the same name are found in a directory.\n When an error is detected\
+            \ then these methods throw FindException with an appropriate cause.\n\
+            \ The behavior of a ModuleFinder after a FindException is\n thrown is\
+            \ undefined. For example, invoking find after an exception\n is thrown\
+            \ may or may not scan the same modules that lead to the exception.\n It\
+            \ is recommended that a module finder be discarded after an exception\
+            \ is\n thrown. \n\n  A ModuleFinder is not required to be thread safe."
           methods:
           - name: find
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the module to find
             return:
               type:
                 basic: Optional
                 full: java.util.Optional<java.lang.module.ModuleReference>
+              notes: "A reference to a module with the given name or an empty\n  \
+                \       Optional if not found"
+            notes: "Finds a reference to a module of a given name.\n\n  A ModuleFinder\
+              \ provides a consistent view of the\n modules that it locates. If find\
+              \ is invoked several times to\n locate the same module (by name) then\
+              \ it will return the same result\n each time. If a module is located\
+              \ then it is guaranteed to be a member\n of the set of modules returned\
+              \ by the findAll\n method."
           - name: findAll
             modifiers:
             - public
@@ -30,6 +59,13 @@ languages:
               type:
                 basic: Set
                 full: java.util.Set<java.lang.module.ModuleReference>
+              notes: The set of all module references that this finder locates
+            notes: "Returns the set of all module references that this finder can\
+              \ locate.\n\n  A ModuleFinder provides a consistent view of the modules\n\
+              \ that it locates. If findAll is invoked several times\n then it will\
+              \ return the same (equals) result each time. For each \n ModuleReference\
+              \ element in the returned set then it is guaranteed that\n find will\
+              \ locate the ModuleReference if invoked\n to find that module."
           staticMethods:
           - name: compose
             modifiers:
@@ -65,3 +101,10 @@ languages:
               type:
                 basic: ModuleFinder
                 full: java.lang.module.ModuleFinder
+              notes: A ModuleFinder that locates the system modules
+            notes: "Returns a module finder that locates the system modules. The\n\
+              \ system modules are the modules in the Java run-time image.\n The module\
+              \ finder will always find java.base.\n\n  If there is a security manager\
+              \ set then its checkPermission method is\n invoked to check that the\
+              \ caller has been granted\n RuntimePermission(\"accessSystemModules\"\
+              )\n to access the system modules."

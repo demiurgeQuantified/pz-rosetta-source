@@ -8,20 +8,62 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A Future represents the result of an asynchronous\n computation.\
+            \  Methods are provided to check if the computation is\n complete, to\
+            \ wait for its completion, and to retrieve the result of\n the computation.\
+            \  The result can only be retrieved using method\n get when the computation\
+            \ has completed, blocking if\n necessary until it is ready.  Cancellation\
+            \ is performed by the\n cancel method.  Additional methods are provided\
+            \ to\n determine if the task completed normally or was cancelled. Once\
+            \ a\n computation has completed, the computation cannot be cancelled.\n\
+            \ If you would like to use a Future for the sake\n of cancellability but\
+            \ not provide a usable result, you can\n declare types of the form Future<?>\
+            \ and\n return null as a result of the underlying task.\n\n Sample Usage\
+            \ (Note that the following classes are all\n made-up.)\n\n  <code>\n interface\
+            \ ArchiveSearcher { String search(String target); }\n class App {\n  \
+            \ ExecutorService executor = ...;\n   ArchiveSearcher searcher = ...;\n\
+            \   void showSearch(String target) throws InterruptedException {\n   \
+            \  Callable<String> task = () -> searcher.search(target);\n     Future<String>\
+            \ future = executor.submit(task);\n     displayOtherThings(); // do other\
+            \ things while searching\n     try {\n       displayText(future.get());\
+            \ // use future\n     } catch (ExecutionException ex) { cleanup(); return;\
+            \ }\n   }\n }</code>\n\n The FutureTask class is an implementation of\
+            \ Future that\n implements Runnable, and so may be executed by an Executor.\n\
+            \ For example, the above construction with submit could be replaced by:\n\
+            \  <code>\n FutureTask<String> future = new FutureTask<>(task);\n executor.execute(future);</code>\n\
+            \n Memory consistency effects: Actions taken by the asynchronous computation\n\
+            \  happen-before\n actions following the corresponding Future.get() in\
+            \ another thread."
           methods:
           - name: cancel
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: mayInterruptIfRunning
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the thread\n executing this task should be interrupted\
+                \ (if the thread is\n known to the implementation); otherwise, in-progress\
+                \ tasks are\n allowed to complete"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "false if the task could not be cancelled,\n typically because\
+                \ it has already completed; true\n otherwise. If two or more threads\
+                \ cause a task to be cancelled,\n then at least one of them returns\
+                \ true. Implementations\n may provide stronger guarantees."
+            notes: "Attempts to cancel execution of this task.  This method has no\n\
+              \ effect if the task is already completed or cancelled, or could\n not\
+              \ be cancelled for some other reason.  Otherwise, if this\n task has\
+              \ not started when cancel is called, this task\n should never run. \
+              \ If the task has already started, then the\n mayInterruptIfRunning\
+              \ parameter determines whether the\n thread executing this task (when\
+              \ known by the implementation)\n is interrupted in an attempt to stop\
+              \ the task.\n\n The return value from this method does not necessarily\n\
+              \ indicate whether the task is now cancelled; use isCancelled()."
           - name: get
             modifiers:
             - public
@@ -30,23 +72,31 @@ languages:
               type:
                 basic: V
                 full: V
+              notes: the computed result
+            notes: "Waits if necessary for the computation to complete, and then\n\
+              \ retrieves its result."
           - name: get
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the maximum time to wait
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
             return:
               type:
                 basic: V
                 full: V
+              notes: the computed result
+            notes: "Waits if necessary for at most the given time for the computation\n\
+              \ to complete, and then retrieves its result, if available."
           - name: isCancelled
             modifiers:
             - public
@@ -55,6 +105,9 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this task was cancelled before it completed
+            notes: "Returns true if this task was cancelled before it completed\n\
+              \ normally."
           - name: isDone
             modifiers:
             - public
@@ -63,3 +116,7 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this task completed
+            notes: "Returns true if this task completed.\n\n Completion may be due\
+              \ to normal termination, an exception, or\n cancellation -- in all of\
+              \ these cases, this method will return\n true."

@@ -17,6 +17,9 @@ languages:
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the current instant from this source, not null
+            notes: "Gets the current instant of the source.\n \n This returns an instant\
+              \ representing the current instant as defined by the source."
           - name: millis
             modifiers:
             - public
@@ -24,49 +27,87 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: "the current millisecond instant from this source, measured from\n\
+                \  the Java epoch of 1970-01-01T00:00Z (UTC), not null"
+            notes: "Gets the current millisecond instant of the source.\n \n This\
+              \ returns the millisecond-based instant, measured from 1970-01-01T00:00Z\
+              \ (UTC).\n This is equivalent to the definition of System.currentTimeMillis().\n\
+              \ \n Most applications should avoid this method and use Instant to represent\n\
+              \ an instant on the time-line rather than a raw millisecond value.\n\
+              \ This method is provided to allow the use of the source in high performance\
+              \ use cases\n where the creation of an object would be unacceptable."
           - name: withZone
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: zone
               type:
                 basic: ZoneId
                 full: java.time.ZoneId
+              notes: the time-zone to use, not null
             return:
               type:
                 basic: Clock
                 full: java.time.Clock
+              notes: a clock based on this source with the specified time-zone, not
+                null
+            notes: "Returns a clock with the specified time-zone.\n \n This returns\
+              \ a Clock, which is an extension of this interface\n that combines this\
+              \ source and the specified time-zone.\n \n The returned implementation\
+              \ is immutable, thread-safe and Serializable\n providing that this source\
+              \ is."
           staticMethods:
           - name: fixed
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: fixedInstant
               type:
                 basic: Instant
                 full: java.time.Instant
+              notes: the instant to use, not null
             return:
               type:
                 basic: InstantSource
                 full: java.time.InstantSource
+              notes: a source that always returns the same instant, not null
+            notes: "Obtains a source that always returns the same instant.\n \n This\
+              \ source simply returns the specified instant.\n As such, it is not\
+              \ a source that represents the current instant.\n The main use case\
+              \ for this is in testing, where the fixed source ensures\n tests are\
+              \ not dependent on the current source.\n \n The returned implementation\
+              \ is immutable, thread-safe and Serializable."
           - name: offset
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: baseSource
               type:
                 basic: InstantSource
                 full: java.time.InstantSource
-            - name: arg1
+              notes: the base source to add the duration to, not null
+            - name: offsetDuration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the duration to add, not null
             return:
               type:
                 basic: InstantSource
                 full: java.time.InstantSource
+              notes: a source based on the base source with the duration added, not
+                null
+            notes: "Obtains a source that returns instants from the specified source\
+              \ with the\n specified duration added.\n \n This source wraps another\
+              \ source, returning instants that are later by the\n specified duration.\
+              \ If the duration is negative, the instants will be\n earlier than the\
+              \ current date and time.\n The main use case for this is to simulate\
+              \ running in the future or in the past.\n \n A duration of zero would\
+              \ have no offsetting effect.\n Passing zero will return the underlying\
+              \ source.\n \n The returned implementation is immutable, thread-safe\
+              \ and Serializable\n providing that the base source is."
           - name: system
             modifiers:
             - public
@@ -75,20 +116,46 @@ languages:
               type:
                 basic: InstantSource
                 full: java.time.InstantSource
+              notes: a source that uses the best available system clock, not null
+            notes: "Obtains a source that returns the current instant using the best\
+              \ available\n system clock.\n \n This source is based on the best available\
+              \ system clock. This may use\n System.currentTimeMillis(), or a higher\
+              \ resolution system clock if\n one is available.\n \n The returned implementation\
+              \ is immutable, thread-safe and\n Serializable."
           - name: tick
             modifiers:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: baseSource
               type:
                 basic: InstantSource
                 full: java.time.InstantSource
-            - name: arg1
+              notes: the base source to base the ticking source on, not null
+            - name: tickDuration
               type:
                 basic: Duration
                 full: java.time.Duration
+              notes: the duration of each visible tick, not negative, not null
             return:
               type:
                 basic: InstantSource
                 full: java.time.InstantSource
+              notes: a source that ticks in whole units of the duration, not null
+            notes: "Obtains a source that returns instants from the specified source\
+              \ truncated to\n the nearest occurrence of the specified duration.\n\
+              \ \n This source will only tick as per the specified duration. Thus,\
+              \ if the\n duration is half a second, the source will return instants\
+              \ truncated to the\n half second.\n \n The tick duration must be positive.\
+              \ If it has a part smaller than a whole\n millisecond, then the whole\
+              \ duration must divide into one second without\n leaving a remainder.\
+              \ All normal tick durations will match these criteria,\n including any\
+              \ multiple of hours, minutes, seconds and milliseconds, and\n sensible\
+              \ nanosecond durations, such as 20ns, 250,000ns and 500,000ns.\n \n\
+              \ A duration of zero or one nanosecond would have no truncation effect.\
+              \ Passing\n one of these will return the underlying source.\n \n Implementations\
+              \ may use a caching strategy for performance reasons. As such,\n it\
+              \ is possible that the start of the requested duration observed via\
+              \ this\n source will be later than that observed directly via the underlying\
+              \ source.\n \n The returned implementation is immutable, thread-safe\
+              \ and\n Serializable providing that the base source is."

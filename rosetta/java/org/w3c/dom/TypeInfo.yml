@@ -17,6 +17,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "If the document's schema is an XML Schema [XML Schema Part 1]\n\
+                \ , this constant represents the derivation by \n extension.\n   The\
+                \ reference type definition is derived by extension from the\n other\
+                \ type definition if the other type definition can be reached\n recursively\
+                \ following the {base type definition} property from the\n reference\
+                \ type definition, and at least one of the derivation methods involved\
+                \ is an extension."
             DERIVATION_LIST:
               name: DERIVATION_LIST
               modifiers:
@@ -25,6 +32,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "If the document's schema is an XML Schema [XML Schema Part 1]\n\
+                \ , this constant represents the list.\n  The reference type definition\
+                \ is derived by list from the other\n type definition if there exists\
+                \ two type definitions T1 and T2 such\n as the reference type definition\
+                \ is derived from T1 by\n DERIVATION_RESTRICTION or\n DERIVATION_EXTENSION,\
+                \ T2 is derived from the other type\n definition by DERIVATION_RESTRICTION,\
+                \ T1 has {variety} list, and T2 is the {item type definition}. Note\
+                \ that T1 could be the same as\n the reference type definition, and\
+                \ T2 could be the same as the other\n type definition."
             DERIVATION_RESTRICTION:
               name: DERIVATION_RESTRICTION
               modifiers:
@@ -33,6 +49,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "If the document's schema is an XML Schema [XML Schema Part 1]\n\
+                \ , this constant represents the derivation by \n restriction if complex\
+                \ types are involved, or a \n restriction if simple types are involved.\n\
+                \   The reference type definition is derived by restriction from the\n\
+                \ other type definition if the other type definition is the same as\
+                \ the\n reference type definition, or if the other type definition\
+                \ can be\n reached recursively following the {base type definition}\
+                \ property\n from the reference type definition, and all the derivation\
+                \ methods involved are restriction."
             DERIVATION_UNION:
               name: DERIVATION_UNION
               modifiers:
@@ -41,6 +66,16 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "If the document's schema is an XML Schema [XML Schema Part 1]\n\
+                \ , this constant represents the \n union if simple types are involved.\n\
+                \  The reference type definition is derived by union from the other\n\
+                \ type definition if there exists two type definitions T1 and T2 such\n\
+                \ as the reference type definition is derived from T1 by\n DERIVATION_RESTRICTION\
+                \ or\n DERIVATION_EXTENSION, T2 is derived from the other type\n definition\
+                \ by DERIVATION_RESTRICTION, T1 has {variety} union, and one of the\
+                \ {member type definitions} is T2. Note that T1 could be\n the same\
+                \ as the reference type definition, and T2 could be the same\n as\
+                \ the other type definition."
           methods:
           - name: getTypeName
             modifiers:
@@ -50,6 +85,8 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "The name of a type declared for the associated element or attribute,\n\
+              \ or null if unknown."
           - name: getTypeNamespace
             modifiers:
             - public
@@ -58,24 +95,45 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "The namespace of the type declared for the associated element\
+              \ or\n attribute or null if the element does not have\n declaration\
+              \ or if no namespace information is available."
           - name: isDerivedFrom
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: typeNamespaceArg
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: the namespace of the other type definition.
+            - name: typeNameArg
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: the name of the other type definition.
+            - name: derivationMethod
               type:
                 basic: int
                 full: int
+              notes: "the type of derivation and conditions applied\n   between two\
+                \ types, as described in the list of constants provided\n   in this\
+                \ interface."
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "If the document's schema is a DTD or no schema is associated\n\
+                \   with the document, this method will always return false\n   .\
+                \  If the document's schema is an XML Schema, the method will return\n\
+                \   true if the reference type definition is derived from\n   the\
+                \ other type definition according to the derivation parameter. If\n\
+                \   the value of the parameter is 0 (no bit is set to\n   1 for the\
+                \ derivationMethod parameter),\n   the method will return true if\
+                \ the other type\n   definition can be reached by recursing any combination\
+                \ of {base\n   type definition}, {item type definition}, or {member\
+                \ type\n   definitions} from the reference type definition."
+            notes: "This method returns if there is a derivation between the reference\n\
+              \ type definition, i.e. the TypeInfo on which the method\n is being\
+              \ called, and the other type definition, i.e. the one passed\n as parameters."

@@ -8,6 +8,10 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "The interface for objects expressing interest in image data through\n\
+            \ the ImageProducer interfaces.  When a consumer is added to an image\n\
+            \ producer, the producer delivers all of the data about the image\n using\
+            \ the method calls defined in this interface."
           staticFields:
             COMPLETESCANLINES:
               name: COMPLETESCANLINES
@@ -17,6 +21,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The pixels will be delivered in (multiples of) complete scanlines\n\
+                \ at a time."
             IMAGEABORTED:
               name: IMAGEABORTED
               modifiers:
@@ -25,6 +31,7 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The image creation process was deliberately aborted.
             IMAGEERROR:
               name: IMAGEERROR
               modifiers:
@@ -33,6 +40,7 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: An error was encountered while producing the image.
             RANDOMPIXELORDER:
               name: RANDOMPIXELORDER
               modifiers:
@@ -41,6 +49,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The pixels will be delivered in a random order.  This tells\
+                \ the\n ImageConsumer not to use any optimizations that depend on\
+                \ the\n order of pixel delivery, which should be the default assumption\n\
+                \ in the absence of any call to the setHints method."
             SINGLEFRAME:
               name: SINGLEFRAME
               modifiers:
@@ -49,6 +61,14 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The image contain a single static image.  The pixels will be\
+                \ defined\n in calls to the setPixels methods and then the imageComplete\
+                \ method\n will be called with the STATICIMAGEDONE flag after which\
+                \ no more\n image data will be delivered.  An example of an image\
+                \ type which\n would not meet these criteria would be the output of\
+                \ a video feed,\n or the representation of a 3D rendering being manipulated\n\
+                \ by the user.  The end of each frame in those types of images will\n\
+                \ be indicated by calling imageComplete with the SINGLEFRAMEDONE flag."
             SINGLEFRAMEDONE:
               name: SINGLEFRAMEDONE
               modifiers:
@@ -57,6 +77,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "One frame of the image is complete but there are more frames\n\
+                \ to be delivered."
             SINGLEPASS:
               name: SINGLEPASS
               modifiers:
@@ -65,6 +87,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The pixels will be delivered in a single pass.  Each pixel will\n\
+                \ appear in only one call to any of the setPixels methods.  An\n example\
+                \ of an image format which does not meet this criterion\n is a progressive\
+                \ JPEG image which defines pixels in multiple\n passes, each more\
+                \ refined than the previous."
             STATICIMAGEDONE:
               name: STATICIMAGEDONE
               modifiers:
@@ -73,6 +100,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "The image is complete and there are no more pixels or frames\n\
+                \ to be delivered."
             TOPDOWNLEFTRIGHT:
               name: TOPDOWNLEFTRIGHT
               modifiers:
@@ -81,155 +110,230 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: The pixels will be delivered in top-down, left-to-right order.
           methods:
           - name: imageComplete
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: status
               type:
                 basic: int
                 full: int
+              notes: the status of image loading
             return:
               type:
                 basic: void
                 full: void
+            notes: "The imageComplete method is called when the ImageProducer is\n\
+              \ finished delivering all of the pixels that the source image\n contains,\
+              \ or when a single frame of a multi-frame animation has\n been completed,\
+              \ or when an error in loading or producing the\n image has occurred.\
+              \  The ImageConsumer should remove itself from the\n list of consumers\
+              \ registered with the ImageProducer at this time,\n unless it is interested\
+              \ in successive frames."
           - name: setColorModel
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: model
               type:
                 basic: ColorModel
                 full: java.awt.image.ColorModel
+              notes: the specified ColorModel
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the ColorModel object used for the majority of\n the pixels\
+              \ reported using the setPixels method\n calls.  Note that each set of\
+              \ pixels delivered using setPixels\n contains its own ColorModel object,\
+              \ so no assumption should\n be made that this model will be the only\
+              \ one used in delivering\n pixel values.  A notable case where multiple\
+              \ ColorModel objects\n may be seen is a filtered image when for each\
+              \ set of pixels\n that it filters, the filter\n determines  whether\
+              \ the\n pixels can be sent on untouched, using the original ColorModel,\n\
+              \ or whether the pixels should be modified (filtered) and passed\n on\
+              \ using a ColorModel more convenient for the filtering process."
           - name: setDimensions
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: width
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the width of the source image
+            - name: height
               type:
                 basic: int
                 full: int
+              notes: the height of the source image
             return:
               type:
                 basic: void
                 full: void
+            notes: "The dimensions of the source image are reported using the\n setDimensions\
+              \ method call."
           - name: setHints
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: hintflags
               type:
                 basic: int
                 full: int
+              notes: "a set of hints that the ImageConsumer uses to\n        process\
+                \ the pixels"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Sets the hints that the ImageConsumer uses to process the\n pixels\
+              \ delivered by the ImageProducer.\n The ImageProducer can deliver the\
+              \ pixels in any order, but\n the ImageConsumer may be able to scale\
+              \ or convert the pixels\n to the destination ColorModel more efficiently\
+              \ or with higher\n quality if it knows some information about how the\
+              \ pixels will\n be delivered up front.  The setHints method should be\
+              \ called\n before any calls to any of the setPixels methods with a bit\
+              \ mask\n of hints about the manner in which the pixels will be delivered.\n\
+              \ If the ImageProducer does not follow the guidelines for the\n indicated\
+              \ hint, the results are undefined."
           - name: setPixels
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the X coordinate of the upper-left corner of the\n        area\
+                \ of pixels to be set"
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the Y coordinate of the upper-left corner of the\n        area\
+                \ of pixels to be set"
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the width of the area of pixels
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the height of the area of pixels
+            - name: model
               type:
                 basic: ColorModel
                 full: java.awt.image.ColorModel
-            - name: arg5
+              notes: the specified ColorModel
+            - name: pixels
               type:
                 basic: byte
                 full: byte[]
-            - name: arg6
+              notes: the array of pixels
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg7
+              notes: the offset into the pixels array
+            - name: scansize
               type:
                 basic: int
                 full: int
+              notes: "the distance from one row of pixels to the next in\n the pixels\
+                \ array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "Delivers the pixels of the image with one or more calls\n to this\
+              \ method.  Each call specifies the location and\n size of the rectangle\
+              \ of source pixels that are contained in\n the array of pixels.  The\
+              \ specified ColorModel object should\n be used to convert the pixels\
+              \ into their corresponding color\n and alpha components.  Pixel (m,n)\
+              \ is stored in the pixels array\n at index (n * scansize + m + off).\
+              \  The pixels delivered using\n this method are all stored as bytes."
           - name: setPixels
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: "the X coordinate of the upper-left corner of the\n        area\
+                \ of pixels to be set"
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the Y coordinate of the upper-left corner of the\n        area\
+                \ of pixels to be set"
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the width of the area of pixels
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the height of the area of pixels
+            - name: model
               type:
                 basic: ColorModel
                 full: java.awt.image.ColorModel
-            - name: arg5
+              notes: the specified ColorModel
+            - name: pixels
               type:
                 basic: int
                 full: int[]
-            - name: arg6
+              notes: the array of pixels
+            - name: off
               type:
                 basic: int
                 full: int
-            - name: arg7
+              notes: the offset into the pixels array
+            - name: scansize
               type:
                 basic: int
                 full: int
+              notes: "the distance from one row of pixels to the next in\n the pixels\
+                \ array"
             return:
               type:
                 basic: void
                 full: void
+            notes: "The pixels of the image are delivered using one or more calls\n\
+              \ to the setPixels method.  Each call specifies the location and\n size\
+              \ of the rectangle of source pixels that are contained in\n the array\
+              \ of pixels.  The specified ColorModel object should\n be used to convert\
+              \ the pixels into their corresponding color\n and alpha components.\
+              \  Pixel (m,n) is stored in the pixels array\n at index (n * scansize\
+              \ + m + off).  The pixels delivered using\n this method are all stored\
+              \ as ints.\n this method are all stored as ints."
           - name: setProperties
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: props
               type:
                 basic: Hashtable
                 full: java.util.Hashtable<?, ?>
+              notes: "the list of properties to be associated with this\n        image"
             return:
               type:
                 basic: void
                 full: void
+            notes: Sets the extensible list of properties associated with this image.

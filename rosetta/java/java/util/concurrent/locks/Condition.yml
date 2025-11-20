@@ -8,6 +8,86 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "Condition factors out the Object monitor\n methods (wait, notify\n\
+            \ and notifyAll) into distinct objects to\n give the effect of having\
+            \ multiple wait-sets per object, by\n combining them with the use of arbitrary\
+            \ Lock implementations.\n Where a Lock replaces the use of synchronized\
+            \ methods\n and statements, a Condition replaces the use of the Object\n\
+            \ monitor methods.\n\n Conditions (also known as condition queues or\n\
+            \ condition variables) provide a means for one thread to\n suspend execution\
+            \ (to &quot;wait&quot;) until notified by another\n thread that some state\
+            \ condition may now be true.  Because access\n to this shared state information\
+            \ occurs in different threads, it\n must be protected, so a lock of some\
+            \ form is associated with the\n condition. The key property that waiting\
+            \ for a condition provides\n is that it atomically releases the associated\
+            \ lock and\n suspends the current thread, just like Object.wait.\n\n A\
+            \ Condition instance is intrinsically bound to a lock.\n To obtain a Condition\
+            \ instance for a particular Lock\n instance use its newCondition() method.\n\
+            \n As an example, suppose we have a bounded buffer which supports\n put\
+            \ and take methods.  If a\n take is attempted on an empty buffer, then\
+            \ the thread will block\n until an item becomes available; if a put is\
+            \ attempted on a\n full buffer, then the thread will block until a space\
+            \ becomes available.\n We would like to keep waiting put threads and take\n\
+            \ threads in separate wait-sets so that we can use the optimization of\n\
+            \ only notifying a single thread at a time when items or spaces become\n\
+            \ available in the buffer. This can be achieved using two\n Condition\
+            \ instances.\n \n class BoundedBuffer<E> {\n   <b>final Lock lock = new\
+            \ ReentrantLock();</b>\n   final Condition notFull  = <b>lock.newCondition();\
+            \ </b>\n   final Condition notEmpty = <b>lock.newCondition(); </b>\n\n\
+            \   final Object[] items = new Object[100];\n   int putptr, takeptr, count;\n\
+            \n   public void put(E x) throws InterruptedException {\n     <b>lock.lock();\n\
+            \     try {</b>\n       while (count == items.length)\n         <b>notFull.await();</b>\n\
+            \       items[putptr] = x;\n       if (++putptr == items.length) putptr\
+            \ = 0;\n       ++count;\n       <b>notEmpty.signal();</b>\n     <b>} finally\
+            \ {\n       lock.unlock();\n     }</b>\n   }\n\n   public E take() throws\
+            \ InterruptedException {\n     <b>lock.lock();\n     try {</b>\n     \
+            \  while (count == 0)\n         <b>notEmpty.await();</b>\n       E x =\
+            \ (E) items[takeptr];\n       if (++takeptr == items.length) takeptr =\
+            \ 0;\n       --count;\n       <b>notFull.signal();</b>\n       return\
+            \ x;\n     <b>} finally {\n       lock.unlock();\n     }</b>\n   }\n }\n\
+            \ \n\n (The ArrayBlockingQueue class provides\n this functionality, so\
+            \ there is no reason to implement this\n sample usage class.)\n\n A Condition\
+            \ implementation can provide behavior and semantics\n that is\n different\
+            \ from that of the Object monitor methods, such as\n guaranteed ordering\
+            \ for notifications, or not requiring a lock to be held\n when performing\
+            \ notifications.\n If an implementation provides such specialized semantics\
+            \ then the\n implementation must document those semantics.\n\n Note that\
+            \ Condition instances are just normal objects and can\n themselves be\
+            \ used as the target in a synchronized statement,\n and can have their\
+            \ own monitor wait and\n notify methods invoked.\n Acquiring the monitor\
+            \ lock of a Condition instance, or using its\n monitor methods, has no\
+            \ specified relationship with acquiring the\n Lock associated with that\
+            \ Condition or the use of its\n waiting and signalling methods.\n It is\
+            \ recommended that to avoid confusion you never use Condition\n instances\
+            \ in this way, except perhaps within their own implementation.\n\n Except\
+            \ where noted, passing a null value for any parameter\n will result in\
+            \ a NullPointerException being thrown.\n\n Implementation Considerations\n\
+            \n When waiting upon a Condition, a &quot;spurious\n wakeup&quot; is permitted\
+            \ to occur, in\n general, as a concession to the underlying platform semantics.\n\
+            \ This has little practical impact on most application programs as a\n\
+            \ Condition should always be waited upon in a loop, testing\n the state\
+            \ predicate that is being waited for.  An implementation is\n free to\
+            \ remove the possibility of spurious wakeups but it is\n recommended that\
+            \ applications programmers always assume that they can\n occur and so\
+            \ always wait in a loop.\n\n The three forms of condition waiting\n (interruptible,\
+            \ non-interruptible, and timed) may differ in their ease of\n implementation\
+            \ on some platforms and in their performance characteristics.\n In particular,\
+            \ it may be difficult to provide these features and maintain\n specific\
+            \ semantics such as ordering guarantees.\n Further, the ability to interrupt\
+            \ the actual suspension of the thread may\n not always be feasible to\
+            \ implement on all platforms.\n\n Consequently, an implementation is not\
+            \ required to define exactly the\n same guarantees or semantics for all\
+            \ three forms of waiting, nor is it\n required to support interruption\
+            \ of the actual suspension of the thread.\n\n An implementation is required\
+            \ to\n clearly document the semantics and guarantees provided by each\
+            \ of the\n waiting methods, and when an implementation does support interruption\
+            \ of\n thread suspension then it must obey the interruption semantics\
+            \ as defined\n in this interface.\n\n As interruption generally implies\
+            \ cancellation, and checks for\n interruption are often infrequent, an\
+            \ implementation can favor responding\n to an interrupt over normal method\
+            \ return. This is true even if it can be\n shown that the interrupt occurred\
+            \ after another action that may have\n unblocked the thread. An implementation\
+            \ should document this behavior."
           methods:
           - name: await
             modifiers:
@@ -17,36 +97,122 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Causes the current thread to wait until it is signalled or\n interrupted.\n\
+              \n The lock associated with this Condition is atomically\n released\
+              \ and the current thread becomes disabled for thread scheduling\n purposes\
+              \ and lies dormant until one of four things happens:\n \n Some other\
+              \ thread invokes the signal() method for this\n Condition and the current\
+              \ thread happens to be chosen as the\n thread to be awakened; or\n Some\
+              \ other thread invokes the signalAll() method for this\n Condition;\
+              \ or\n Some other thread interrupts the\n current thread, and interruption\
+              \ of thread suspension is supported; or\n A &quot;spurious wakeup&quot;\
+              \ occurs.\n \n\n In all cases, before this method can return the current\
+              \ thread must\n re-acquire the lock associated with this condition.\
+              \ When the\n thread returns it is guaranteed to hold this lock.\n\n\
+              \ If the current thread:\n \n has its interrupted status set on entry\
+              \ to this method; or\n is interrupted while waiting\n and interruption\
+              \ of thread suspension is supported,\n \n then InterruptedException\
+              \ is thrown and the current thread's\n interrupted status is cleared.\
+              \ It is not specified, in the first\n case, whether or not the test\
+              \ for interruption occurs before the lock\n is released.\n\n Implementation\
+              \ Considerations\n\n The current thread is assumed to hold the lock\
+              \ associated with this\n Condition when this method is called.\n It\
+              \ is up to the implementation to determine if this is\n the case and\
+              \ if not, how to respond. Typically, an exception will be\n thrown (such\
+              \ as IllegalMonitorStateException) and the\n implementation must document\
+              \ that fact.\n\n An implementation can favor responding to an interrupt\
+              \ over normal\n method return in response to a signal. In that case\
+              \ the implementation\n must ensure that the signal is redirected to\
+              \ another waiting thread, if\n there is one."
           - name: await
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: time
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the maximum time to wait
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the time unit of the time argument
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "false if the waiting time detectably elapsed\n         before\
+                \ return from the method, else true"
+            notes: "Causes the current thread to wait until it is signalled or interrupted,\n\
+              \ or the specified waiting time elapses. This method is behaviorally\n\
+              \ equivalent to:\n  <code>awaitNanos(unit.toNanos(time)) > 0</code>"
           - name: awaitNanos
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: nanosTimeout
               type:
                 basic: long
                 full: long
+              notes: the maximum time to wait, in nanoseconds
             return:
               type:
                 basic: long
                 full: long
+              notes: "an estimate of the nanosTimeout value minus\n         the time\
+                \ spent waiting upon return from this method.\n         A positive\
+                \ value may be used as the argument to a\n         subsequent call\
+                \ to this method to finish waiting out\n         the desired time.\
+                \  A value less than or equal to zero\n         indicates that no\
+                \ time remains."
+            notes: "Causes the current thread to wait until it is signalled or interrupted,\n\
+              \ or the specified waiting time elapses.\n\n The lock associated with\
+              \ this condition is atomically\n released and the current thread becomes\
+              \ disabled for thread scheduling\n purposes and lies dormant until one\
+              \ of five things happens:\n \n Some other thread invokes the signal()\
+              \ method for this\n Condition and the current thread happens to be chosen\
+              \ as the\n thread to be awakened; or\n Some other thread invokes the\
+              \ signalAll() method for this\n Condition; or\n Some other thread interrupts\
+              \ the\n current thread, and interruption of thread suspension is supported;\
+              \ or\n The specified waiting time elapses; or\n A &quot;spurious wakeup&quot;\
+              \ occurs.\n \n\n In all cases, before this method can return the current\
+              \ thread must\n re-acquire the lock associated with this condition.\
+              \ When the\n thread returns it is guaranteed to hold this lock.\n\n\
+              \ If the current thread:\n \n has its interrupted status set on entry\
+              \ to this method; or\n is interrupted while waiting\n and interruption\
+              \ of thread suspension is supported,\n \n then InterruptedException\
+              \ is thrown and the current thread's\n interrupted status is cleared.\
+              \ It is not specified, in the first\n case, whether or not the test\
+              \ for interruption occurs before the lock\n is released.\n\n The method\
+              \ returns an estimate of the number of nanoseconds\n remaining to wait\
+              \ given the supplied nanosTimeout\n value upon return, or a value less\
+              \ than or equal to zero if it\n timed out. This value can be used to\
+              \ determine whether and how\n long to re-wait in cases where the wait\
+              \ returns but an awaited\n condition still does not hold. Typical uses\
+              \ of this method take\n the following form:\n\n  <code>\n boolean aMethod(long\
+              \ timeout, TimeUnit unit)\n     throws InterruptedException {\n   long\
+              \ nanosRemaining = unit.toNanos(timeout);\n   lock.lock();\n   try {\n\
+              \     while (!conditionBeingWaitedFor()) {\n       if (nanosRemaining\
+              \ <= 0L)\n         return false;\n       nanosRemaining = theCondition.awaitNanos(nanosRemaining);\n\
+              \     }\n     // ...\n     return true;\n   } finally {\n     lock.unlock();\n\
+              \   }\n }</code>\n\n Design note: This method requires a nanosecond\
+              \ argument so\n as to avoid truncation errors in reporting remaining\
+              \ times.\n Such precision loss would make it difficult for programmers\
+              \ to\n ensure that total waiting times are not systematically shorter\n\
+              \ than specified when re-waits occur.\n\n Implementation Considerations\n\
+              \n The current thread is assumed to hold the lock associated with this\n\
+              \ Condition when this method is called.\n It is up to the implementation\
+              \ to determine if this is\n the case and if not, how to respond. Typically,\
+              \ an exception will be\n thrown (such as IllegalMonitorStateException)\
+              \ and the\n implementation must document that fact.\n\n An implementation\
+              \ can favor responding to an interrupt over normal\n method return in\
+              \ response to a signal, or over indicating the elapse\n of the specified\
+              \ waiting time. In either case the implementation\n must ensure that\
+              \ the signal is redirected to another waiting thread, if\n there is\
+              \ one."
           - name: awaitUninterruptibly
             modifiers:
             - public
@@ -55,19 +221,77 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Causes the current thread to wait until it is signalled.\n\n The\
+              \ lock associated with this condition is atomically\n released and the\
+              \ current thread becomes disabled for thread scheduling\n purposes and\
+              \ lies dormant until one of three things happens:\n \n Some other thread\
+              \ invokes the signal() method for this\n Condition and the current thread\
+              \ happens to be chosen as the\n thread to be awakened; or\n Some other\
+              \ thread invokes the signalAll() method for this\n Condition; or\n A\
+              \ &quot;spurious wakeup&quot; occurs.\n \n\n In all cases, before this\
+              \ method can return the current thread must\n re-acquire the lock associated\
+              \ with this condition. When the\n thread returns it is guaranteed to\
+              \ hold this lock.\n\n If the current thread's interrupted status is\
+              \ set when it enters\n this method, or it is interrupted\n while waiting,\
+              \ it will continue to wait until signalled. When it finally\n returns\
+              \ from this method its interrupted status will still\n be set.\n\n Implementation\
+              \ Considerations\n\n The current thread is assumed to hold the lock\
+              \ associated with this\n Condition when this method is called.\n It\
+              \ is up to the implementation to determine if this is\n the case and\
+              \ if not, how to respond. Typically, an exception will be\n thrown (such\
+              \ as IllegalMonitorStateException) and the\n implementation must document\
+              \ that fact."
           - name: awaitUntil
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: deadline
               type:
                 basic: Date
                 full: java.util.Date
+              notes: the absolute time to wait until
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "false if the deadline has elapsed upon return, else\n      \
+                \   true"
+            notes: "Causes the current thread to wait until it is signalled or interrupted,\n\
+              \ or the specified deadline elapses.\n\n The lock associated with this\
+              \ condition is atomically\n released and the current thread becomes\
+              \ disabled for thread scheduling\n purposes and lies dormant until one\
+              \ of five things happens:\n \n Some other thread invokes the signal()\
+              \ method for this\n Condition and the current thread happens to be chosen\
+              \ as the\n thread to be awakened; or\n Some other thread invokes the\
+              \ signalAll() method for this\n Condition; or\n Some other thread interrupts\
+              \ the\n current thread, and interruption of thread suspension is supported;\
+              \ or\n The specified deadline elapses; or\n A &quot;spurious wakeup&quot;\
+              \ occurs.\n \n\n In all cases, before this method can return the current\
+              \ thread must\n re-acquire the lock associated with this condition.\
+              \ When the\n thread returns it is guaranteed to hold this lock.\n\n\
+              \ If the current thread:\n \n has its interrupted status set on entry\
+              \ to this method; or\n is interrupted while waiting\n and interruption\
+              \ of thread suspension is supported,\n \n then InterruptedException\
+              \ is thrown and the current thread's\n interrupted status is cleared.\
+              \ It is not specified, in the first\n case, whether or not the test\
+              \ for interruption occurs before the lock\n is released.\n\n The return\
+              \ value indicates whether the deadline has elapsed,\n which can be used\
+              \ as follows:\n  <code>\n boolean aMethod(Date deadline)\n     throws\
+              \ InterruptedException {\n   boolean stillWaiting = true;\n   lock.lock();\n\
+              \   try {\n     while (!conditionBeingWaitedFor()) {\n       if (!stillWaiting)\n\
+              \         return false;\n       stillWaiting = theCondition.awaitUntil(deadline);\n\
+              \     }\n     // ...\n     return true;\n   } finally {\n     lock.unlock();\n\
+              \   }\n }</code>\n\n Implementation Considerations\n\n The current thread\
+              \ is assumed to hold the lock associated with this\n Condition when\
+              \ this method is called.\n It is up to the implementation to determine\
+              \ if this is\n the case and if not, how to respond. Typically, an exception\
+              \ will be\n thrown (such as IllegalMonitorStateException) and the\n\
+              \ implementation must document that fact.\n\n An implementation can\
+              \ favor responding to an interrupt over normal\n method return in response\
+              \ to a signal, or over indicating the passing\n of the specified deadline.\
+              \ In either case the implementation\n must ensure that the signal is\
+              \ redirected to another waiting thread, if\n there is one."
           - name: signal
             modifiers:
             - public
@@ -76,6 +300,14 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Wakes up one waiting thread.\n\n If any threads are waiting on\
+              \ this condition then one\n is selected for waking up. That thread must\
+              \ then re-acquire the\n lock before returning from await.\n\n Implementation\
+              \ Considerations\n\n An implementation may (and typically does) require\
+              \ that the\n current thread hold the lock associated with this \n Condition\
+              \ when this method is called. Implementations must\n document this precondition\
+              \ and any actions taken if the lock is\n not held. Typically, an exception\
+              \ such as IllegalMonitorStateException will be thrown."
           - name: signalAll
             modifiers:
             - public
@@ -84,3 +316,11 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Wakes up all waiting threads.\n\n If any threads are waiting on\
+              \ this condition then they are\n all woken up. Each thread must re-acquire\
+              \ the lock before it can\n return from await.\n\n Implementation Considerations\n\
+              \n An implementation may (and typically does) require that the\n current\
+              \ thread hold the lock associated with this \n Condition when this method\
+              \ is called. Implementations must\n document this precondition and any\
+              \ actions taken if the lock is\n not held. Typically, an exception such\
+              \ as IllegalMonitorStateException will be thrown."

@@ -8,6 +8,57 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "An object to iterate over the entries in a directory. A directory\
+            \ stream\n allows for the convenient use of the for-each construct to\
+            \ iterate over a\n directory.\n\n   While DirectoryStream extends Iterable,\
+            \ it is not a\n general-purpose Iterable as it supports only a single\
+            \ \n Iterator; invoking the iterator method to obtain a second\n or subsequent\
+            \ iterator throws IllegalStateException. \n\n  An important property of\
+            \ the directory stream's Iterator is that\n its hasNext method is guaranteed\
+            \ to read-ahead by\n at least one element. If hasNext method returns true,\
+            \ and is\n followed by a call to the next method, it is guaranteed that\
+            \ the\n next method will not throw an exception due to an I/O error, or\n\
+            \ because the stream has been closed. The Iterator does\n not support\
+            \ the remove operation.\n\n  A DirectoryStream is opened upon creation\
+            \ and is closed by\n invoking the close method. Closing a directory stream\
+            \ releases any\n resources associated with the stream. Failure to close\
+            \ the stream may result\n in a resource leak. The try-with-resources statement\
+            \ provides a useful\n construct to ensure that the stream is closed:\n\
+            \ \n   Path dir = ...\n   try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir))\
+            \ {\n       for (Path entry: stream) {\n           ...\n       }\n   }\n\
+            \ \n\n  Once a directory stream is closed, then further access to the\
+            \ directory,\n using the Iterator, behaves as if the end of stream has\
+            \ been reached.\n Due to read-ahead, the Iterator may return one or more\
+            \ elements\n after the directory stream has been closed. Once these buffered\
+            \ elements\n have been read, then subsequent calls to the hasNext method\
+            \ returns\n false, and subsequent calls to the next method will throw\n\
+            \ NoSuchElementException.\n\n  A directory stream is not required to be\
+            \ asynchronously closeable.\n If a thread is blocked on the directory\
+            \ stream's iterator reading from the\n directory, and another thread invokes\
+            \ the close method, then the\n second thread may block until the read\
+            \ operation is complete.\n\n  If an I/O error is encountered when accessing\
+            \ the directory then it\n causes the Iterator's hasNext or next methods\
+            \ to\n throw DirectoryIteratorException with the IOException as the\n\
+            \ cause. As stated above, the hasNext method is guaranteed to\n read-ahead\
+            \ by at least one element. This means that if hasNext method\n returns\
+            \ true, and is followed by a call to the next method,\n then it is guaranteed\
+            \ that the next method will not fail with a\n DirectoryIteratorException.\n\
+            \n  The elements returned by the iterator are in no specific order. Some\
+            \ file\n systems maintain special links to the directory itself and the\
+            \ directory's\n parent directory. Entries representing these links are\
+            \ not returned by the\n iterator.\n\n  The iterator is weakly consistent.\
+            \ It is thread safe but does not\n freeze the directory while iterating,\
+            \ so it may (or may not) reflect updates\n to the directory that occur\
+            \ after the DirectoryStream is created.\n\n  Usage Examples:\n Suppose\
+            \ we want a list of the source files in a directory. This example uses\n\
+            \ both the for-each and try-with-resources constructs.\n \n   List<Path>\
+            \ listSourceFiles(Path dir) throws IOException {\n       List<Path> result\
+            \ = new ArrayList<>();\n       try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir,\
+            \ \"*.{c,h,cpp,hpp,java}\")) {\n           for (Path entry: stream) {\n\
+            \               result.add(entry);\n           }\n       } catch (DirectoryIteratorException\
+            \ ex) {\n           // I/O error encountered during the iteration, the\
+            \ cause is an IOException\n           throw ex.getCause();\n       }\n\
+            \       return result;\n   }"
           methods:
           - name: iterator
             modifiers:
@@ -17,3 +68,5 @@ languages:
               type:
                 basic: Iterator
                 full: java.util.Iterator<T>
+              notes: the iterator associated with this DirectoryStream
+            notes: Returns the iterator associated with this DirectoryStream.

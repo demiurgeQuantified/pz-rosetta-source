@@ -8,71 +8,115 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "This interface describes single-input/single-output\n operations\
+            \ performed on BufferedImage objects.\n It is implemented by AffineTransformOp,\n\
+            \ ConvolveOp, ColorConvertOp, RescaleOp,\n and LookupOp.  These objects\
+            \ can be passed into\n a BufferedImageFilter to operate on a\n BufferedImage\
+            \ in the\n ImageProducer-ImageFilter-ImageConsumer paradigm.\n \n Classes\
+            \ that implement this\n interface must specify whether or not they allow\
+            \ in-place filtering--\n filter operations where the source object is\
+            \ equal to the destination\n object.\n \n This interface cannot be used\
+            \ to describe more sophisticated operations\n such as those that take\
+            \ multiple sources. Note that this restriction also\n means that the values\
+            \ of the destination pixels prior to the operation are\n not used as input\
+            \ to the filter operation."
           methods:
           - name: createCompatibleDestImage
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: src
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
-            - name: arg1
+              notes: The BufferedImage to be filtered
+            - name: destCM
               type:
                 basic: ColorModel
                 full: java.awt.image.ColorModel
+              notes: "ColorModel of the destination.  If null,\n the ColorModel of\
+                \ the source is used."
             return:
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
+              notes: The zeroed destination image.
+            notes: "Creates a zeroed destination image with the correct size and number\
+              \ of\n bands.\n An IllegalArgumentException may be thrown if the source\n\
+              \ image is incompatible with the types of images allowed\n by the class\
+              \ implementing this filter."
           - name: filter
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: src
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
-            - name: arg1
+              notes: The BufferedImage to be filtered
+            - name: dest
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
+              notes: The BufferedImage in which to store the results$
             return:
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
+              notes: The filtered BufferedImage.
+            notes: "Performs a single-input/single-output operation on a\n BufferedImage.\n\
+              \ If the color models for the two images do not match, a color\n conversion\
+              \ into the destination color model is performed.\n If the destination\
+              \ image is null,\n a BufferedImage with an appropriate ColorModel\n\
+              \ is created.\n \n An IllegalArgumentException may be thrown if the\
+              \ source\n and/or destination image is incompatible with the types of\
+              \ images       $\n allowed by the class implementing this filter."
           - name: getBounds2D
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: src
               type:
                 basic: BufferedImage
                 full: java.awt.image.BufferedImage
+              notes: The BufferedImage to be filtered
             return:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "The Rectangle2D representing the destination\n image's bounding\
+                \ box."
+            notes: "Returns the bounding box of the filtered destination image.\n\
+              \ An IllegalArgumentException may be thrown if the source\n image is\
+              \ incompatible with the types of images allowed\n by the class implementing\
+              \ this filter."
           - name: getPoint2D
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: srcPt
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
-            - name: arg1
+              notes: "the Point2D that represents the point in\n the source image"
+            - name: dstPt
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: The Point2D in which to store the result
             return:
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: "The Point2D in the destination image that\n corresponds to the\
+                \ specified point in the source image."
+            notes: "Returns the location of the corresponding destination point given\
+              \ a\n point in the source image.  If dstPt is specified, it\n is used\
+              \ to hold the return value."
           - name: getRenderingHints
             modifiers:
             - public
@@ -81,3 +125,6 @@ languages:
               type:
                 basic: RenderingHints
                 full: java.awt.RenderingHints
+              notes: "The RenderingHints object for this\n BufferedImageOp.  Returns\n\
+                \ null if no hints have been set."
+            notes: Returns the rendering hints for this operation.

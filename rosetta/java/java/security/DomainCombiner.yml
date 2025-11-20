@@ -8,21 +8,73 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A DomainCombiner provides a means to dynamically\n update the ProtectionDomains\
+            \ associated with the current\n AccessControlContext.\n\n  A DomainCombiner\
+            \ is passed as a parameter to the\n appropriate constructor for AccessControlContext.\n\
+            \ The newly constructed context is then passed to the\n AccessController.doPrivileged(...,\
+            \ context) method\n to bind the provided context (and associated DomainCombiner)\n\
+            \ with the current execution Thread.  Subsequent calls to\n AccessController.getContext\
+            \ or\n AccessController.checkPermission\n cause the DomainCombiner.combine\
+            \ to get invoked.\n\n  The combine method takes two arguments.  The first\
+            \ argument represents\n an array of ProtectionDomains from the current\
+            \ execution Thread,\n since the most recent call to AccessController.doPrivileged.\n\
+            \ If no call to doPrivileged was made, then the first argument will contain\n\
+            \ all the ProtectionDomains from the current execution Thread.\n The second\
+            \ argument represents an array of inherited ProtectionDomains,\n which\
+            \ may be null.  ProtectionDomains may be inherited\n from a parent Thread,\
+            \ or from a privileged context.  If no call to\n doPrivileged was made,\
+            \ then the second argument will contain the\n ProtectionDomains inherited\
+            \ from the parent Thread.  If one or more calls\n to doPrivileged were\
+            \ made, and the most recent call was to\n doPrivileged(action, context),\
+            \ then the second argument will contain the\n ProtectionDomains from the\
+            \ privileged context.  If the most recent call\n was to doPrivileged(action),\
+            \ then there is no privileged context,\n and the second argument will\
+            \ be null.\n\n  The combine method investigates the two input arrays\n\
+            \ of ProtectionDomains and returns a single array containing the updated\n\
+            \ ProtectionDomains.  In the simplest case, the combine\n method merges\
+            \ the two stacks into one.  In more complex cases,\n the combine method\
+            \ returns a modified\n stack of ProtectionDomains.  The modification may\
+            \ have added new\n ProtectionDomains, removed certain ProtectionDomains,\
+            \ or simply\n updated existing ProtectionDomains.  Re-ordering and other\
+            \ optimizations\n to the ProtectionDomains are also permitted.  Typically\
+            \ the\n combine method bases its updates on the information\n encapsulated\
+            \ in the DomainCombiner.\n\n  After the AccessController.getContext method\n\
+            \ receives the combined stack of ProtectionDomains back from\n the DomainCombiner,\
+            \ it returns a new\n AccessControlContext that has both the combined ProtectionDomains\n\
+            \ as well as the DomainCombiner."
+          deprecated: true
           methods:
           - name: combine
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: currentDomains
               type:
                 basic: ProtectionDomain
                 full: java.security.ProtectionDomain[]
-            - name: arg1
+              notes: "the ProtectionDomains associated with the\n          current\
+                \ execution Thread, up to the most recent\n          privileged ProtectionDomain.\n\
+                \          The ProtectionDomains are listed in order of execution,\n\
+                \          with the most recently executing ProtectionDomain\n   \
+                \       residing at the beginning of the array. This parameter may\n\
+                \          be null if the current execution Thread\n          has\
+                \ no associated ProtectionDomains."
+            - name: assignedDomains
               type:
                 basic: ProtectionDomain
                 full: java.security.ProtectionDomain[]
+              notes: "an array of inherited ProtectionDomains.\n          ProtectionDomains\
+                \ may be inherited from a parent Thread,\n          or from a privileged\
+                \ AccessControlContext.\n          This parameter may be null\n  \
+                \        if there are no inherited ProtectionDomains."
             return:
               type:
                 basic: ProtectionDomain
                 full: java.security.ProtectionDomain[]
+              notes: "a new array consisting of the updated ProtectionDomains,\n \
+                \         or null."
+            notes: "Modify or update the provided ProtectionDomains.\n ProtectionDomains\
+              \ may be added to or removed from the given\n ProtectionDomains.  The\
+              \ ProtectionDomains may be re-ordered.\n Individual ProtectionDomains\
+              \ may be modified (with a new\n set of Permissions, for example)."

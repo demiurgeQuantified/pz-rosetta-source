@@ -8,6 +8,85 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A sequence of elements supporting sequential and parallel aggregate\n\
+            \ operations.  The following example illustrates an aggregate operation\
+            \ using\n Stream and IntStream:\n\n <code>\n     int sum = widgets.stream()\n\
+            \                      .filter(w -> w.getColor() == RED)\n           \
+            \           .mapToInt(w -> w.getWeight())\n                      .sum();\n\
+            \ </code>\n\n In this example, widgets is a Collection<Widget>.  We create\n\
+            \ a stream of Widget objects via Collection.stream(),\n filter it to produce\
+            \ a stream containing only the red widgets, and then\n transform it into\
+            \ a stream of int values representing the weight of\n each red widget.\
+            \ Then this stream is summed to produce a total weight.\n\n In addition\
+            \ to Stream, which is a stream of object references,\n there are primitive\
+            \ specializations for IntStream, LongStream,\n and DoubleStream, all of\
+            \ which are referred to as \"streams\" and\n conform to the characteristics\
+            \ and restrictions described here.\n\n To perform a computation, stream\n\
+            \ operations are composed into a\n stream pipeline.  A stream pipeline\
+            \ consists of a source (which\n might be an array, a collection, a generator\
+            \ function, an I/O channel,\n etc), zero or more intermediate operations\
+            \ (which transform a\n stream into another stream, such as filter(Predicate)),\
+            \ and a\n terminal operation (which produces a result or side-effect,\
+            \ such\n as count() or forEach(Consumer)).\n Streams are lazy; computation\
+            \ on the source data is only performed when the\n terminal operation is\
+            \ initiated, and source elements are consumed only\n as needed.\n\n A\
+            \ stream implementation is permitted significant latitude in optimizing\n\
+            \ the computation of the result.  For example, a stream implementation\
+            \ is free\n to elide operations (or entire stages) from a stream pipeline\
+            \ -- and\n therefore elide invocation of behavioral parameters -- if it\
+            \ can prove that\n it would not affect the result of the computation.\
+            \  This means that\n side-effects of behavioral parameters may not always\
+            \ be executed and should\n not be relied upon, unless otherwise specified\
+            \ (such as by the terminal\n operations forEach and forEachOrdered). (For\
+            \ a specific\n example of such an optimization, see the API note documented\
+            \ on the\n count() operation.  For more detail, see the\n side-effects\
+            \ section of the\n stream package documentation.)\n\n Collections and\
+            \ streams, while bearing some superficial similarities,\n have different\
+            \ goals.  Collections are primarily concerned with the efficient\n management\
+            \ of, and access to, their elements.  By contrast, streams do not\n provide\
+            \ a means to directly access or manipulate their elements, and are\n instead\
+            \ concerned with declaratively describing their source and the\n computational\
+            \ operations which will be performed in aggregate on that source.\n However,\
+            \ if the provided stream operations do not offer the desired\n functionality,\
+            \ the BaseStream.iterator() and BaseStream.spliterator() operations\n\
+            \ can be used to perform a controlled traversal.\n\n A stream pipeline,\
+            \ like the \"widgets\" example above, can be viewed as\n a query on the\
+            \ stream source.  Unless the source was explicitly\n designed for concurrent\
+            \ modification (such as a ConcurrentHashMap),\n unpredictable or erroneous\
+            \ behavior may result from modifying the stream\n source while it is being\
+            \ queried.\n\n Most stream operations accept parameters that describe\
+            \ user-specified\n behavior, such as the lambda expression w -> w.getWeight()\
+            \ passed to\n mapToInt in the example above.  To preserve correct behavior,\n\
+            \ these behavioral parameters:\n \n must be non-interfering\n (they do\
+            \ not modify the stream source); and\n in most cases must be stateless\n\
+            \ (their result should not depend on any state that might change during\
+            \ execution\n of the stream pipeline).\n \n\n Such parameters are always\
+            \ instances of a\n functional interface such\n as Function, and are often\
+            \ lambda expressions or\n method references.  Unless otherwise specified\
+            \ these parameters must be\n non-null.\n\n A stream should be operated\
+            \ on (invoking an intermediate or terminal stream\n operation) only once.\
+            \  This rules out, for example, \"forked\" streams, where\n the same source\
+            \ feeds two or more pipelines, or multiple traversals of the\n same stream.\
+            \  A stream implementation may throw IllegalStateException\n if it detects\
+            \ that the stream is being reused. However, since some stream\n operations\
+            \ may return their receiver rather than a new stream object, it may\n\
+            \ not be possible to detect reuse in all cases.\n\n Streams have a BaseStream.close()\
+            \ method and implement AutoCloseable.\n Operating on a stream after it\
+            \ has been closed will throw IllegalStateException.\n Most stream instances\
+            \ do not actually need to be closed after use, as they\n are backed by\
+            \ collections, arrays, or generating functions, which require no\n special\
+            \ resource management. Generally, only streams whose source is an IO channel,\n\
+            \ such as those returned by Files.lines(Path), will require closing. If\
+            \ a\n stream does require closing, it must be opened as a resource within\
+            \ a try-with-resources\n statement or similar control structure to ensure\
+            \ that it is closed promptly after its\n operations have completed.\n\n\
+            \ Stream pipelines may execute either sequentially or in\n parallel. \
+            \ This\n execution mode is a property of the stream.  Streams are created\n\
+            \ with an initial choice of sequential or parallel execution.  (For example,\n\
+            \ Collection.stream() creates a sequential stream,\n and Collection.parallelStream()\
+            \ creates\n a parallel one.)  This choice of execution mode may be modified\
+            \ by the\n BaseStream.sequential() or BaseStream.parallel() methods, and\
+            \ may be queried with\n the BaseStream.isParallel() method."
           methods:
           - name: allMatch
             modifiers:

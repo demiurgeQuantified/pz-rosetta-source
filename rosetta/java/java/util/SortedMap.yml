@@ -8,6 +8,58 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A Map that further provides a total ordering on its keys.\n The\
+            \ map is ordered according to the natural\n ordering of its keys, or by\
+            \ a Comparator typically\n provided at sorted map creation time.  This\
+            \ order is reflected when\n iterating over the sorted map's collection\
+            \ views (returned by the\n entrySet, keySet and values methods).\n Several\
+            \ additional operations are provided to take advantage of the\n ordering.\
+            \  (This interface is the map analogue of SortedSet.)\n\n All keys inserted\
+            \ into a sorted map must implement the Comparable\n interface (or be accepted\
+            \ by the specified comparator).  Furthermore, all\n such keys must be\
+            \ mutually comparable: k1.compareTo(k2) (or\n comparator.compare(k1, k2))\
+            \ must not throw a\n ClassCastException for any keys k1 and k2 in\n the\
+            \ sorted map.  Attempts to violate this restriction will cause the\n offending\
+            \ method or constructor invocation to throw a\n ClassCastException.\n\n\
+            \ Note that the ordering maintained by a sorted map (whether or not an\n\
+            \ explicit comparator is provided) must be consistent with equals if\n\
+            \ the sorted map is to correctly implement the Map interface.  (See\n\
+            \ the Comparable interface or Comparator interface for a\n precise definition\
+            \ of consistent with equals.)  This is so because\n the Map interface\
+            \ is defined in terms of the equals\n operation, but a sorted map performs\
+            \ all key comparisons using its\n compareTo (or compare) method, so two\
+            \ keys that are\n deemed equal by this method are, from the standpoint\
+            \ of the sorted map,\n equal.  The behavior of a tree map is well-defined\
+            \ even if its\n ordering is inconsistent with equals; it just fails to\
+            \ obey the general\n contract of the Map interface.\n\n All general-purpose\
+            \ sorted map implementation classes should provide four\n \"standard\"\
+            \ constructors. It is not possible to enforce this recommendation\n though\
+            \ as required constructors cannot be specified by interfaces. The\n expected\
+            \ \"standard\" constructors for all sorted map implementations are:\n\
+            \ \n   A void (no arguments) constructor, which creates an empty sorted\
+            \ map\n   sorted according to the natural ordering of its keys.\n   A\
+            \ constructor with a single argument of type Comparator, which\n   creates\
+            \ an empty sorted map sorted according to the specified comparator.\n\
+            \   A constructor with a single argument of type Map, which creates\n\
+            \   a new map with the same key-value mappings as its argument, sorted\n\
+            \   according to the keys' natural ordering.\n   A constructor with a\
+            \ single argument of type SortedMap, which\n   creates a new sorted map\
+            \ with the same key-value mappings and the same\n   ordering as the input\
+            \ sorted map.\n \n\n Note: several methods return submaps with restricted\
+            \ key\n ranges. Such ranges are half-open, that is, they include their\
+            \ low\n endpoint but not their high endpoint (where applicable).  If you\
+            \ need a\n closed range (which includes both endpoints), and the key type\n\
+            \ allows for calculation of the successor of a given key, merely request\n\
+            \ the subrange from lowEndpoint to\n successor(highEndpoint).  For example,\
+            \ suppose that m\n is a map whose keys are strings.  The following idiom\
+            \ obtains a view\n containing all of the key-value mappings in m whose\
+            \ keys are\n between low and high, inclusive:\n   SortedMap<String, V>\
+            \ sub = m.subMap(low, high+\"\\0\");\n\n A similar technique can be used\
+            \ to generate an open range\n (which contains neither endpoint).  The\
+            \ following idiom obtains a\n view containing all of the key-value mappings\
+            \ in m whose keys\n are between low and high, exclusive:\n   SortedMap<String,\
+            \ V> sub = m.subMap(low+\"\\0\", high);\n\n This interface is a member\
+            \ of the\n \n Java Collections Framework."
           methods:
           - name: comparator
             modifiers:
@@ -17,6 +69,11 @@ languages:
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super K>
+              notes: "the comparator used to order the keys in this map,\n       \
+                \  or null if this map uses the natural ordering\n         of its\
+                \ keys"
+            notes: "Returns the comparator used to order the keys in this map, or\n\
+              \ null if this map uses the natural ordering of its keys."
           - name: entrySet
             modifiers:
             - public
@@ -33,19 +90,30 @@ languages:
               type:
                 basic: K
                 full: K
+              notes: the first (lowest) key currently in this map
+            notes: Returns the first (lowest) key currently in this map.
           - name: headMap
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: toKey
               type:
                 basic: K
                 full: K
+              notes: high endpoint (exclusive) of the keys in the returned map
             return:
               type:
                 basic: SortedMap
                 full: java.util.SortedMap<K, V>
+              notes: "a view of the portion of this map whose keys are strictly\n\
+                \         less than toKey"
+            notes: "Returns a view of the portion of this map whose keys are\n strictly\
+              \ less than toKey.  The returned map is backed\n by this map, so changes\
+              \ in the returned map are reflected in\n this map, and vice-versa. \
+              \ The returned map supports all\n optional map operations that this\
+              \ map supports.\n\n The returned map will throw an IllegalArgumentException\n\
+              \ on an attempt to insert a key outside its range."
           - name: keySet
             modifiers:
             - public
@@ -54,6 +122,17 @@ languages:
               type:
                 basic: Set
                 full: java.util.Set<K>
+              notes: "a set view of the keys contained in this map, sorted in\n  \
+                \       ascending order"
+            notes: "Returns a Set view of the keys contained in this map.\n The set's\
+              \ iterator returns the keys in ascending order.\n The set is backed\
+              \ by the map, so changes to the map are\n reflected in the set, and\
+              \ vice-versa.  If the map is modified\n while an iteration over the\
+              \ set is in progress (except through\n the iterator's own remove operation),\
+              \ the results of\n the iteration are undefined.  The set supports element\
+              \ removal,\n which removes the corresponding mapping from the map, via\
+              \ the\n Iterator.remove, Set.remove,\n removeAll, retainAll, and clear\n\
+              \ operations.  It does not support the add or addAll\n operations."
           - name: lastKey
             modifiers:
             - public
@@ -62,36 +141,59 @@ languages:
               type:
                 basic: K
                 full: K
+              notes: the last (highest) key currently in this map
+            notes: Returns the last (highest) key currently in this map.
           - name: subMap
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: fromKey
               type:
                 basic: K
                 full: K
-            - name: arg1
+              notes: low endpoint (inclusive) of the keys in the returned map
+            - name: toKey
               type:
                 basic: K
                 full: K
+              notes: high endpoint (exclusive) of the keys in the returned map
             return:
               type:
                 basic: SortedMap
                 full: java.util.SortedMap<K, V>
+              notes: "a view of the portion of this map whose keys range from\n  \
+                \       fromKey, inclusive, to toKey, exclusive"
+            notes: "Returns a view of the portion of this map whose keys range from\n\
+              \ fromKey, inclusive, to toKey, exclusive.  (If\n fromKey and toKey\
+              \ are equal, the returned map\n is empty.)  The returned map is backed\
+              \ by this map, so changes\n in the returned map are reflected in this\
+              \ map, and vice-versa.\n The returned map supports all optional map\
+              \ operations that this\n map supports.\n\n The returned map will throw\
+              \ an IllegalArgumentException\n on an attempt to insert a key outside\
+              \ its range."
           - name: tailMap
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: fromKey
               type:
                 basic: K
                 full: K
+              notes: low endpoint (inclusive) of the keys in the returned map
             return:
               type:
                 basic: SortedMap
                 full: java.util.SortedMap<K, V>
+              notes: "a view of the portion of this map whose keys are greater\n \
+                \        than or equal to fromKey"
+            notes: "Returns a view of the portion of this map whose keys are\n greater\
+              \ than or equal to fromKey.  The returned map is\n backed by this map,\
+              \ so changes in the returned map are\n reflected in this map, and vice-versa.\
+              \  The returned map\n supports all optional map operations that this\
+              \ map supports.\n\n The returned map will throw an IllegalArgumentException\n\
+              \ on an attempt to insert a key outside its range."
           - name: values
             modifiers:
             - public
@@ -100,3 +202,15 @@ languages:
               type:
                 basic: Collection
                 full: java.util.Collection<V>
+              notes: "a collection view of the values contained in this map,\n   \
+                \      sorted in ascending key order"
+            notes: "Returns a Collection view of the values contained in this map.\n\
+              \ The collection's iterator returns the values in ascending order\n\
+              \ of the corresponding keys.\n The collection is backed by the map,\
+              \ so changes to the map are\n reflected in the collection, and vice-versa.\
+              \  If the map is\n modified while an iteration over the collection is\
+              \ in progress\n (except through the iterator's own remove operation),\n\
+              \ the results of the iteration are undefined.  The collection\n supports\
+              \ element removal, which removes the corresponding\n mapping from the\
+              \ map, via the Iterator.remove,\n Collection.remove, removeAll,\n retainAll\
+              \ and clear operations.  It does not\n support the add or addAll operations."

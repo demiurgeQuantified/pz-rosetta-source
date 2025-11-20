@@ -8,6 +8,36 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "This interface defines a protocol for bidirectional iteration over\
+            \ text.\n The iterator iterates over a bounded sequence of characters.\
+            \  Characters\n are indexed with values beginning with the value returned\
+            \ by getBeginIndex() and\n continuing through the value returned by getEndIndex()-1.\n\
+            \ \n Iterators maintain a current character index, whose valid range is\
+            \ from\n getBeginIndex() to getEndIndex(); the value getEndIndex() is\
+            \ included to allow\n handling of zero-length text ranges and for historical\
+            \ reasons.\n The current index can be retrieved by calling getIndex()\
+            \ and set directly\n by calling setIndex(), first(), and last().\n \n\
+            \ The methods previous() and next() are used for iteration. They return\
+            \ DONE if\n they would move outside the range from getBeginIndex() to\
+            \ getEndIndex() -1,\n signaling that the iterator has reached the end\
+            \ of the sequence. DONE is\n also returned by other methods to indicate\
+            \ that the current index is\n outside this range.\n\n Examples:\n\n Traverse\
+            \ the text from start to finish\n <code>\n public void traverseForward(CharacterIterator\
+            \ iter) {\n     for(char c = iter.first(); c != CharacterIterator.DONE;\
+            \ c = iter.next()) {\n         processChar(c);\n     }\n }\n </code>\n\
+            \n Traverse the text backwards, from end to start\n <code>\n public void\
+            \ traverseBackward(CharacterIterator iter) {\n     for(char c = iter.last();\
+            \ c != CharacterIterator.DONE; c = iter.previous()) {\n         processChar(c);\n\
+            \     }\n }\n </code>\n\n Traverse both forward and backward from a given\
+            \ position in the text.\n Calls to notBoundary() in this example represents\
+            \ some\n additional stopping criteria.\n <code>\n public void traverseOut(CharacterIterator\
+            \ iter, int pos) {\n     for (char c = iter.setIndex(pos);\n         \
+            \     c != CharacterIterator.DONE && notBoundary(c);\n              c\
+            \ = iter.next()) {\n     }\n     int end = iter.getIndex();\n     for\
+            \ (char c = iter.setIndex(pos);\n             c != CharacterIterator.DONE\
+            \ && notBoundary(c);\n             c = iter.previous()) {\n     }\n  \
+            \   int start = iter.getIndex();\n     processSection(start, end);\n }\n\
+            \ </code>"
           staticFields:
             DONE:
               name: DONE
@@ -17,6 +47,10 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: "Constant that is returned when the iterator has reached either\
+                \ the end\n or the beginning of the text. The value is '\\\\uFFFF',\
+                \ the \"not a\n character\" value which should not occur in any valid\
+                \ Unicode string."
           methods:
           - name: clone
             modifiers:
@@ -26,6 +60,8 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: A copy of this
+            notes: Create a copy of this iterator
           - name: current
             modifiers:
             - public
@@ -34,6 +70,9 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: "the character at the current position or DONE if the current\n\
+                \ position is off the end of the text."
+            notes: Gets the character at the current position (as returned by getIndex()).
           - name: first
             modifiers:
             - public
@@ -42,6 +81,9 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: the first character in the text, or DONE if the text is empty
+            notes: "Sets the position to getBeginIndex() and returns the character\
+              \ at that\n position."
           - name: getBeginIndex
             modifiers:
             - public
@@ -50,6 +92,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the index at which the text begins.
+            notes: Returns the start index of the text.
           - name: getEndIndex
             modifiers:
             - public
@@ -58,6 +102,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the index after the last character in the text
+            notes: "Returns the end index of the text.  This index is the index of\
+              \ the first\n character following the end of the text."
           - name: getIndex
             modifiers:
             - public
@@ -66,6 +113,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the current index.
+            notes: Returns the current index.
           - name: last
             modifiers:
             - public
@@ -74,6 +123,9 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: the last character in the text, or DONE if the text is empty
+            notes: "Sets the position to getEndIndex()-1 (getEndIndex() if the text\
+              \ is empty)\n and returns the character at that position."
           - name: next
             modifiers:
             - public
@@ -82,6 +134,12 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: "the character at the new position or DONE if the new\n position\
+                \ is off the end of the text range."
+            notes: "Increments the iterator's index by one and returns the character\n\
+              \ at the new index.  If the resulting index is greater or equal\n to\
+              \ getEndIndex(), the current index is reset to getEndIndex() and\n a\
+              \ value of DONE is returned."
           - name: previous
             modifiers:
             - public
@@ -90,16 +148,28 @@ languages:
               type:
                 basic: char
                 full: char
+              notes: "the character at the new position or DONE if the current\n position\
+                \ is equal to getBeginIndex()."
+            notes: "Decrements the iterator's index by one and returns the character\n\
+              \ at the new index. If the current index is getBeginIndex(), the index\n\
+              \ remains at getBeginIndex() and a value of DONE is returned."
           - name: setIndex
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: position
               type:
                 basic: int
                 full: int
+              notes: "the position within the text.  Valid values range from\n getBeginIndex()\
+                \ to getEndIndex().  An IllegalArgumentException is thrown\n if an\
+                \ invalid value is supplied."
             return:
               type:
                 basic: char
                 full: char
+              notes: the character at the specified position or DONE if the specified
+                position is equal to getEndIndex()
+            notes: "Sets the position to the specified position in the text and returns\
+              \ that\n character."

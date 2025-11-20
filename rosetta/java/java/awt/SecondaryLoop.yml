@@ -8,6 +8,34 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A helper interface to run the nested event loop.\n \n Objects that\
+            \ implement this interface are created with the\n EventQueue.createSecondaryLoop()\
+            \ method. The interface\n provides two methods, enter() and exit(),\n\
+            \ which can be used to start and stop the event loop.\n \n When the enter()\
+            \ method is called, the current\n thread is blocked until the loop is\
+            \ terminated by the\n exit() method. Also, a new event loop is started\n\
+            \ on the event dispatch thread, which may or may not be\n the current\
+            \ thread. The loop can be terminated on any\n thread by calling its exit()\
+            \ method. After the\n loop is terminated, the SecondaryLoop object can\n\
+            \ be reused to run a new nested event loop.\n \n A typical use case of\
+            \ applying this interface is AWT\n and Swing modal dialogs. When a modal\
+            \ dialog is shown on\n the event dispatch thread, it enters a new secondary\
+            \ loop.\n Later, when the dialog is hidden or disposed, it exits\n the\
+            \ loop, and the thread continues its execution.\n \n The following example\
+            \ illustrates a simple use case of\n secondary loops:\n\n \n   SecondaryLoop\
+            \ loop;\n\n   JButton jButton = new JButton(\"Button\");\n   jButton.addActionListener(new\
+            \ ActionListener() {\n       <code>@Override</code>\n       public void\
+            \ actionPerformed(ActionEvent e) {\n           Toolkit tk = Toolkit.getDefaultToolkit();\n\
+            \           EventQueue eq = tk.getSystemEventQueue();\n           loop\
+            \ = eq.createSecondaryLoop();\n\n           // Spawn a new thread to do\
+            \ the work\n           Thread worker = new WorkerThread();\n         \
+            \  worker.start();\n\n           // Enter the loop to block the current\
+            \ event\n           // handler, but leave UI responsive\n           if\
+            \ (!loop.enter()) {\n               // Report an error\n           }\n\
+            \       }\n   });\n\n   class WorkerThread extends Thread {\n       <code>@Override</code>\n\
+            \       public void run() {\n           // Perform calculations\n    \
+            \       doSomethingUseful();\n\n           // Exit the loop\n        \
+            \   loop.exit();\n       }\n   }"
           methods:
           - name: enter
             modifiers:
@@ -17,6 +45,21 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true after termination of the secondary loop,\n         if the\
+                \ secondary loop was started by this call,\n         false otherwise"
+            notes: "Blocks the execution of the current thread and enters a new\n\
+              \ secondary event loop on the event dispatch thread.\n \n This method\
+              \ can be called by any thread including the event\n dispatch thread.\
+              \ This thread will be blocked until the exit() method is called or the\
+              \ loop is terminated. A new\n secondary loop will be created on the\
+              \ event dispatch thread\n for dispatching events in either case.\n \n\
+              \ This method can only start one new event loop at a time per\n object.\
+              \ If a secondary event loop has already been started\n by this object\
+              \ and is currently still running, this method\n returns false to indicate\
+              \ that it was not successful\n in starting a new event loop. Otherwise,\
+              \ this method blocks\n the calling thread and later returns true when\
+              \ the\n new event loop is terminated. At such time, this object can\n\
+              \ again be used to start another new event loop."
           - name: exit
             modifiers:
             - public
@@ -25,3 +68,15 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this loop was previously started and\n         has not\
+                \ yet been finished with the exit() method,\n         false otherwise"
+            notes: "Unblocks the execution of the thread blocked by the enter() method\
+              \ and exits the secondary loop.\n \n This method resumes the thread\
+              \ that called the enter()\n method and exits the secondary loop that\
+              \ was created when\n the enter() method was invoked.\n \n Note that\
+              \ if any other secondary loop is started while this\n loop is running,\
+              \ the blocked thread will not resume execution\n until the nested loop\
+              \ is terminated.\n \n If this secondary loop has not been started with\
+              \ the enter() method, or this secondary loop has already finished\n\
+              \ with the exit() method, this method returns \n false, otherwise true\
+              \ is returned."

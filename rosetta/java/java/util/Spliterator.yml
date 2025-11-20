@@ -17,6 +17,23 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that the element source may\
+                \ be safely\n concurrently modified (allowing additions, replacements,\
+                \ and/or removals)\n by multiple threads without external synchronization.\
+                \ If so, the\n Spliterator is expected to have a documented policy\
+                \ concerning the impact\n of modifications during traversal.\n\n A\
+                \ top-level Spliterator should not report both CONCURRENT and\n SIZED,\
+                \ since the finite size, if known, may change if the source\n is concurrently\
+                \ modified during traversal. Such a Spliterator is\n inconsistent\
+                \ and no guarantees can be made about any computation using\n that\
+                \ Spliterator. Sub-spliterators may report SIZED if the\n sub-split\
+                \ size is known and additions or removals to the source are not\n\
+                \ reflected when traversing.\n\n A top-level Spliterator should not\
+                \ report both CONCURRENT and\n IMMUTABLE, since they are mutually\
+                \ exclusive. Such a Spliterator\n is inconsistent and no guarantees\
+                \ can be made about any computation using\n that Spliterator. Sub-spliterators\
+                \ may report IMMUTABLE if\n additions or removals to the source are\
+                \ not reflected when traversing."
             DISTINCT:
               name: DISTINCT
               modifiers:
@@ -25,6 +42,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that, for each pair of\n encountered\
+                \ elements x, y, !x.equals(y). This\n applies for example, to a Spliterator\
+                \ based on a Set."
             IMMUTABLE:
               name: IMMUTABLE
               modifiers:
@@ -33,6 +53,12 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that the element source cannot\
+                \ be\n structurally modified; that is, elements cannot be added, replaced,\
+                \ or\n removed, so such changes cannot occur during traversal. A Spliterator\n\
+                \ that does not report IMMUTABLE or CONCURRENT is expected\n to have\
+                \ a documented policy (for example throwing\n ConcurrentModificationException)\
+                \ concerning structural\n interference detected during traversal."
             NONNULL:
               name: NONNULL
               modifiers:
@@ -41,6 +67,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that the source guarantees that\n\
+                \ encountered elements will not be null. (This applies,\n for example,\
+                \ to most concurrent collections, queues, and maps.)"
             ORDERED:
               name: ORDERED
               modifiers:
@@ -49,6 +78,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that an encounter order is defined\
+                \ for\n elements. If so, this Spliterator guarantees that method\n\
+                \ trySplit() splits a strict prefix of elements, that method\n tryAdvance(java.util.function.Consumer<?\
+                \ super T>) steps by one element in prefix order, and that\n forEachRemaining(java.util.function.Consumer<?\
+                \ super T>) performs actions in encounter order.\n\n A Collection\
+                \ has an encounter order if the corresponding\n Collection.iterator()\
+                \ documents an order. If so, the encounter\n order is the same as\
+                \ the documented order. Otherwise, a collection does\n not have an\
+                \ encounter order."
             SIZED:
               name: SIZED
               modifiers:
@@ -57,6 +95,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that the value returned from\n\
+                \ estimateSize() prior to traversal or splitting represents a\n finite\
+                \ size that, in the absence of structural source modification,\n represents\
+                \ an exact count of the number of elements that would be\n encountered\
+                \ by a complete traversal."
             SORTED:
               name: SORTED
               modifiers:
@@ -65,6 +108,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that encounter order follows\
+                \ a defined\n sort order. If so, method getComparator() returns the\
+                \ associated\n Comparator, or null if all elements are Comparable\
+                \ and\n are sorted by their natural ordering.\n\n A Spliterator that\
+                \ reports SORTED must also report\n ORDERED."
             SUBSIZED:
               name: SUBSIZED
               modifiers:
@@ -73,6 +121,12 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "Characteristic value signifying that all Spliterators resulting\
+                \ from\n trySplit() will be both SIZED and SUBSIZED.\n (This means\
+                \ that all child Spliterators, whether direct or indirect, will\n\
+                \ be SIZED.)\n\n A Spliterator that does not report SIZED as required\
+                \ by\n SUBSIZED is inconsistent and no guarantees can be made about\
+                \ any\n computation using that Spliterator."
           methods:
           - name: characteristics
             modifiers:
@@ -82,6 +136,15 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a representation of characteristics
+            notes: "Returns a set of characteristics of this Spliterator and its\n\
+              \ elements. The result is represented as ORed values from ORDERED, DISTINCT,\
+              \ SORTED, SIZED,\n NONNULL, IMMUTABLE, CONCURRENT,\n SUBSIZED.  Repeated\
+              \ calls to characteristics() on\n a given spliterator, prior to or in-between\
+              \ calls to trySplit,\n should always return the same result.\n\n If\
+              \ a Spliterator reports an inconsistent set of\n characteristics (either\
+              \ those returned from a single invocation\n or across multiple invocations),\
+              \ no guarantees can be made\n about any computation using this Spliterator."
           - name: estimateSize
             modifiers:
             - public
@@ -90,18 +153,37 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: "the estimated size, or Long.MAX_VALUE if infinite,\n       \
+                \  unknown, or too expensive to compute."
+            notes: "Returns an estimate of the number of elements that would be\n\
+              \ encountered by a forEachRemaining(java.util.function.Consumer<? super\
+              \ T>) traversal, or returns Long.MAX_VALUE if infinite, unknown, or\
+              \ too expensive to compute.\n\n If this Spliterator is SIZED and has\
+              \ not yet been partially\n traversed or split, or this Spliterator is\
+              \ SUBSIZED and has\n not yet been partially traversed, this estimate\
+              \ must be an accurate\n count of elements that would be encountered\
+              \ by a complete traversal.\n Otherwise, this estimate may be arbitrarily\
+              \ inaccurate, but must decrease\n as specified across invocations of\
+              \ trySplit()."
           - name: forEachRemaining
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: Consumer
                 full: java.util.function.Consumer<? super T>
+              notes: The action
             return:
               type:
                 basic: void
                 full: void
+            notes: "Performs the given action for each remaining element, sequentially\
+              \ in\n the current thread, until all elements have been processed or\
+              \ the action\n throws an exception.  If this Spliterator is ORDERED,\
+              \ actions\n are performed in encounter order.  Exceptions thrown by\
+              \ the action\n are relayed to the caller.\n \n Subsequent behavior of\
+              \ a spliterator is unspecified if the action throws\n an exception."
           - name: getComparator
             modifiers:
             - public
@@ -109,6 +191,11 @@ languages:
               type:
                 basic: Comparator
                 full: java.util.Comparator<? super T>
+              notes: "a Comparator, or null if the elements are sorted in the\n natural\
+                \ order."
+            notes: "If this Spliterator's source is SORTED by a Comparator,\n returns\
+              \ that Comparator. If the source is SORTED in\n natural order, returns\
+              \ null.  Otherwise,\n if the source is not SORTED, throws IllegalStateException."
           - name: getExactSizeIfKnown
             modifiers:
             - public
@@ -116,31 +203,48 @@ languages:
               type:
                 basic: long
                 full: long
+              notes: the exact size, if known, else -1.
+            notes: "Convenience method that returns estimateSize() if this\n Spliterator\
+              \ is SIZED, else -1."
           - name: hasCharacteristics
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: characteristics
               type:
                 basic: int
                 full: int
+              notes: the characteristics to check for
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if all the specified characteristics are present,\n else\
+                \ false"
+            notes: Returns true if this Spliterator's characteristics() contain all
+              of the given characteristics.
           - name: tryAdvance
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: action
               type:
                 basic: Consumer
                 full: java.util.function.Consumer<? super T>
+              notes: The action
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "false if no remaining elements existed\n upon entry to this\
+                \ method, else true."
+            notes: "If a remaining element exists, performs the given action on it,\n\
+              \ returning true; else returns false.  If this\n Spliterator is ORDERED\
+              \ the action is performed on the\n next element in encounter order.\
+              \  Exceptions thrown by the\n action are relayed to the caller.\n \n\
+              \ Subsequent behavior of a spliterator is unspecified if the action\
+              \ throws\n an exception."
           - name: trySplit
             modifiers:
             - public
@@ -149,3 +253,19 @@ languages:
               type:
                 basic: Spliterator
                 full: java.util.Spliterator<T>
+              notes: "a Spliterator covering some portion of the\n elements, or null\
+                \ if this spliterator cannot be split"
+            notes: "If this spliterator can be partitioned, returns a Spliterator\n\
+              \ covering elements, that will, upon return from this method, not\n\
+              \ be covered by this Spliterator.\n\n If this Spliterator is ORDERED,\
+              \ the returned Spliterator\n must cover a strict prefix of the elements.\n\
+              \n Unless this Spliterator covers an infinite number of elements,\n\
+              \ repeated calls to trySplit() must eventually return null.\n Upon non-null\
+              \ return:\n \n the value reported for estimateSize() before splitting,\n\
+              \ must, after splitting, be greater than or equal to estimateSize()\n\
+              \ for this and the returned Spliterator; and\n if this Spliterator is\
+              \ SUBSIZED, then estimateSize()\n for this spliterator before splitting\
+              \ must be equal to the sum of\n estimateSize() for this and the returned\
+              \ Spliterator after\n splitting.\n \n\n This method may return null\
+              \ for any reason,\n including emptiness, inability to split after traversal\
+              \ has\n commenced, data structure constraints, and efficiency\n considerations."

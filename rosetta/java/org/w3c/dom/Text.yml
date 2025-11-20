@@ -8,6 +8,28 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "The Text interface inherits from CharacterData\n and represents\
+            \ the textual content (termed character data in XML) of an Element or\
+            \ Attr. If there is no\n markup inside an element's content, the text\
+            \ is contained in a single\n object implementing the Text interface that\
+            \ is the only\n child of the element. If there is markup, it is parsed\
+            \ into the\n information items (elements, comments, etc.) and Text nodes\n\
+            \ that form the list of children of the element.\n When a document is\
+            \ first made available via the DOM, there is only one\n Text node for\
+            \ each block of text. Users may create adjacent\n Text nodes that represent\
+            \ the contents of a given element\n without any intervening markup, but\
+            \ should be aware that there is no way\n to represent the separations\
+            \ between these nodes in XML or HTML, so they\n will not (in general)\
+            \ persist between DOM editing sessions. The\n Node.normalize() method\
+            \ merges any such adjacent\n Text objects into a single node for each\
+            \ block of text.\n  No lexical check is done on the content of a Text\
+            \ node\n and, depending on its position in the document, some characters\
+            \ must be\n escaped during serialization using character references; e.g.\
+            \ the\n characters \"<&\" if the textual content is part of an element\
+            \ or of\n an attribute, the character sequence \"]]>\" when part of an\
+            \ element,\n the quotation mark character \" or the apostrophe character\
+            \ ' when part of\n an attribute.\n See also the Document Object Model\
+            \ (DOM) Level 3 Core Specification."
           methods:
           - name: getWholeText
             modifiers:
@@ -17,6 +39,18 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "Returns all text of Text nodes logically-adjacent text\n nodes\
+              \ to this node, concatenated in document order.\n For instance, in the\
+              \ example below wholeText on the\n Text node that contains \"bar\" returns\
+              \ \"barfoo\", while on\n the Text node that contains \"foo\" it returns\
+              \ \"barfoo\".\n\n \n                     +-----+\n                 \
+              \    | <p> |\n                     +-----+\n                       /\\\
+              \n                      /  \\\n               /-----\\    +-------+\n\
+              \               | bar |    | &ent; |\n               \\-----/    +-------+\n\
+              \                              |\n                              |\n\
+              \                           /-----\\\n                           | foo\
+              \ |\n                           \\-----/\n \n Figure: barTextNode.wholeText\
+              \ value is \"barfoo\""
           - name: isElementContentWhitespace
             modifiers:
             - public
@@ -25,29 +59,71 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+            notes: "Returns whether this text node contains \n element content whitespace,\
+              \ often abusively called \"ignorable whitespace\". The text node is\n\
+              \ determined to contain whitespace in element content during the load\n\
+              \ of the document or if validation occurs while using\n Document.normalizeDocument()."
           - name: replaceWholeText
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: content
               type:
                 basic: String
                 full: java.lang.String
+              notes: The content of the replacing Text node.
             return:
               type:
                 basic: Text
                 full: org.w3c.dom.Text
+              notes: The Text node created with the specified content.
+            notes: "Replaces the text of the current node and all logically-adjacent\
+              \ text\n nodes with the specified text. All logically-adjacent text\
+              \ nodes are\n removed including the current node unless it was the recipient\
+              \ of the\n replacement text.\n This method returns the node which received\
+              \ the replacement text.\n The returned node is:\n \n null, when the\
+              \ replacement text is\n the empty string;\n \n the current node, except\
+              \ when the current node is\n read-only;\n \n  a new Text node of the\
+              \ same type (\n Text or CDATASection) as the current node\n inserted\
+              \ at the location of the replacement.\n \n \n For instance, in the above\
+              \ example calling\n replaceWholeText on the Text node that\n contains\
+              \ \"bar\" with \"yo\" in argument results in the following:\n\n \n \
+              \                    +-----+\n                     | <p> |\n       \
+              \              +-----+\n                        |\n                \
+              \        |\n                     /-----\\\n                     | yo\
+              \  |\n                     \\-----/\n \n Figure: barTextNode.replaceWholeText(\"\
+              yo\") modifies the\n textual content of barTextNode with \"yo\"\n\n\
+              \ Where the nodes to be removed are read-only descendants of an\n EntityReference,\
+              \ the EntityReference must\n be removed instead of the read-only nodes.\
+              \ If any\n EntityReference to be removed has descendants that are\n\
+              \ not EntityReference, Text, or\n CDATASection nodes, the replaceWholeText\n\
+              \ method must fail before performing any modification of the document,\n\
+              \ raising a DOMException with the code\n NO_MODIFICATION_ALLOWED_ERR.\n\
+              \ For instance, in the example below calling\n replaceWholeText on the\
+              \ Text node that\n contains \"bar\" fails, because the EntityReference\
+              \ node\n \"ent\" contains an Element node which cannot be removed."
           - name: splitText
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: offset
               type:
                 basic: int
                 full: int
+              notes: "The 16-bit unit offset at which to split, starting from\n  \
+                \ 0."
             return:
               type:
                 basic: Text
                 full: org.w3c.dom.Text
+              notes: The new node, of the same type as this node.
+            notes: "Breaks this node into two nodes at the specified offset,\n keeping\
+              \ both in the tree as siblings. After being split, this node\n will\
+              \ contain all the content up to the offset point. A\n new node of the\
+              \ same type, which contains all the content at and\n after the offset\
+              \ point, is returned. If the original\n node had a parent node, the\
+              \ new node is inserted as the next sibling\n of the original node. When\
+              \ the offset is equal to the\n length of this node, the new node has\
+              \ no data."

@@ -8,6 +8,8 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "An asynchronous update interface for receiving notifications about\n\
+            \ Image information as the Image is constructed."
           staticFields:
             ABORT:
               name: ABORT
@@ -17,6 +19,13 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n an image which was being tracked asynchronously was aborted\
+                \ before\n production was complete.  No more information will become\
+                \ available\n without further action to trigger another image production\
+                \ sequence.\n If the ERROR flag was not also set in this image update,\
+                \ then\n accessing any of the data in the image will restart the production\n\
+                \ again, probably from the beginning."
             ALLBITS:
               name: ALLBITS
               modifiers:
@@ -25,6 +34,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n a static image which was previously drawn is now complete\
+                \ and can\n be drawn again in its final form.  The x, y, width, and\
+                \ height\n arguments to the imageUpdate callback method should be\
+                \ ignored."
             ERROR:
               name: ERROR
               modifiers:
@@ -33,6 +47,12 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n an image which was being tracked asynchronously has encountered\n\
+                \ an error.  No further information will become available and\n drawing\
+                \ the image will fail.\n As a convenience, the ABORT flag will be\
+                \ indicated at the same\n time to indicate that the image production\
+                \ was aborted."
             FRAMEBITS:
               name: FRAMEBITS
               modifiers:
@@ -41,6 +61,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n another complete frame of a multi-frame image which was previously\n\
+                \ drawn is now available to be drawn again.  The x, y, width, and\
+                \ height\n arguments to the imageUpdate callback method should be\
+                \ ignored."
             HEIGHT:
               name: HEIGHT
               modifiers:
@@ -49,6 +74,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n the height of the base image is now available and can be\
+                \ taken\n from the height argument to the imageUpdate callback method."
             PROPERTIES:
               name: PROPERTIES
               modifiers:
@@ -57,6 +85,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n the properties of the image are now available."
             SOMEBITS:
               name: SOMEBITS
               modifiers:
@@ -65,6 +95,11 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n more pixels needed for drawing a scaled variation of the\
+                \ image\n are available.  The bounding box of the new pixels can be\
+                \ taken\n from the x, y, width, and height arguments to the imageUpdate\n\
+                \ callback method."
             WIDTH:
               name: WIDTH
               modifiers:
@@ -73,37 +108,67 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "This flag in the infoflags argument to imageUpdate indicates\
+                \ that\n the width of the base image is now available and can be taken\n\
+                \ from the width argument to the imageUpdate callback method."
           methods:
           - name: imageUpdate
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: img
               type:
                 basic: Image
                 full: java.awt.Image
-            - name: arg1
+              notes: the image being observed.
+            - name: infoflags
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: "the bitwise inclusive OR of the following\n               flags:\
+                \  WIDTH, HEIGHT,\n               PROPERTIES, SOMEBITS,\n        \
+                \       FRAMEBITS, ALLBITS,\n               ERROR, ABORT."
+            - name: x
               type:
                 basic: int
                 full: int
-            - name: arg3
+              notes: the x coordinate.
+            - name: y
               type:
                 basic: int
                 full: int
-            - name: arg4
+              notes: the y coordinate.
+            - name: width
               type:
                 basic: int
                 full: int
-            - name: arg5
+              notes: the width.
+            - name: height
               type:
                 basic: int
                 full: int
+              notes: the height.
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "false if the infoflags indicate that the\n            image\
+                \ is completely loaded; true otherwise."
+            notes: "This method is called when information about an image which was\n\
+              \ previously requested using an asynchronous interface becomes\n available.\
+              \  Asynchronous interfaces are method calls such as\n getWidth(ImageObserver)\
+              \ and drawImage(img, x, y, ImageObserver)\n which take an ImageObserver\
+              \ object as an argument.  Those methods\n register the caller as interested\
+              \ either in information about\n the overall image itself (in the case\
+              \ of getWidth(ImageObserver))\n or about an output version of an image\
+              \ (in the case of the\n drawImage(img, x, y, [w, h,] ImageObserver)\
+              \ call).\n\n This method\n should return true if further updates are\
+              \ needed or false if the\n required information has been acquired. \
+              \ The image which was being\n tracked is passed in using the img argument.\
+              \  Various constants\n are combined to form the infoflags argument which\
+              \ indicates what\n information about the image is now available.  The\
+              \ interpretation\n of the x, y, width, and height arguments depends\
+              \ on the contents\n of the infoflags argument.\n \n The infoflags argument\
+              \ should be the bitwise inclusive\n OR of the following flags: WIDTH,\n\
+              \ HEIGHT, PROPERTIES, SOMEBITS,\n FRAMEBITS, ALLBITS, ERROR,\n ABORT."

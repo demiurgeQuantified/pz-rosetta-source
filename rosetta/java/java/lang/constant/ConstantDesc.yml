@@ -8,17 +8,49 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A nominal descriptor for a loadable\n constant value, as defined\
+            \ in JVMS 4.4. Such a descriptor can be resolved via\n resolveConstantDesc(MethodHandles.Lookup)\
+            \ to yield the\n constant value itself.\n\n Class names in a nominal descriptor,\
+            \ like class names in the constant pool\n of a classfile, must be interpreted\
+            \ with respect to a particular class\n loader, which is not part of the\
+            \ nominal descriptor.\n\n Static constants that are expressible natively\
+            \ in the constant pool (String,\n Integer, Long, Float, and Double) implement\n\
+            \ ConstantDesc, and serve as nominal descriptors for themselves.\n Native\
+            \ linkable constants (Class, MethodType, and\n MethodHandle) have counterpart\
+            \ ConstantDesc types:\n ClassDesc, MethodTypeDesc, and MethodHandleDesc.\n\
+            \ Other constants are represented by subtypes of DynamicConstantDesc.\n\
+            \n APIs that perform generation or parsing of bytecode are encouraged\
+            \ to use\n ConstantDesc to describe the operand of an ldc instruction\n\
+            \ (including dynamic constants), the static bootstrap arguments of\n dynamic\
+            \ constants and invokedynamic instructions, and other\n bytecodes or classfile\
+            \ structures that make use of the constant pool.\n\n Constants describing\
+            \ various common constants (such as ClassDesc\n instances for platform\
+            \ types) can be found in ConstantDescs.\n\n Implementations of ConstantDesc\
+            \ should be immutable\n and their behavior should not rely on object identity.\n\
+            \n Non-platform classes should not implement ConstantDesc directly.\n\
+            \ Instead, they should extend DynamicConstantDesc (as Enum.EnumDesc\n\
+            \ and VarHandle.VarHandleDesc do.)\n\n Nominal descriptors should be compared\
+            \ using the\n Object.equals(Object) method. There is no guarantee that\
+            \ any\n particular entity will always be represented by the same descriptor\
+            \ instance."
           methods:
           - name: resolveConstantDesc
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: lookup
               type:
                 basic: MethodHandles.Lookup
                 full: java.lang.invoke.MethodHandles$Lookup
+              notes: "The MethodHandles.Lookup to provide name resolution\n      \
+                \         and access control context"
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the resolved constant value
+            notes: "Resolves this descriptor reflectively, emulating the resolution\
+              \ behavior\n of JVMS 5.4.3 and the access control behavior of JVMS 5.4.4.\
+              \  The resolution\n and access control context is provided by the MethodHandles.Lookup\n\
+              \ parameter.  No caching of the resulting value is performed."

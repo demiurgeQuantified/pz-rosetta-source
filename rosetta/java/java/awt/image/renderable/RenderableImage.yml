@@ -8,6 +8,21 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A RenderableImage is a common interface for rendering-independent\n\
+            \ images (a notion which subsumes resolution independence).  That is,\n\
+            \ images which are described and have operations applied to them\n independent\
+            \ of any specific rendering of the image.  For example, a\n RenderableImage\
+            \ can be rotated and cropped in\n resolution-independent terms.  Then,\
+            \ it can be rendered for various\n specific contexts, such as a draft\
+            \ preview, a high-quality screen\n display, or a printer, each in an optimal\
+            \ fashion.\n\n  A RenderedImage is returned from a RenderableImage via\
+            \ the\n createRendering() method, which takes a RenderContext.  The\n\
+            \ RenderContext specifies how the RenderedImage should be\n constructed.\
+            \  Note that it is not possible to extract pixels\n directly from a RenderableImage.\n\
+            \n  The createDefaultRendering() and createScaledRendering() methods are\n\
+            \ convenience methods that construct an appropriate RenderContext\n internally.\
+            \  All of the rendering methods may return a reference to a\n previously\
+            \ produced rendering."
           staticFields:
             HINTS_OBSERVED:
               name: HINTS_OBSERVED
@@ -17,6 +32,11 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+              notes: "String constant that can be used to identify a property on\n\
+                \ a RenderedImage obtained via the createRendering or\n createScaledRendering\
+                \ methods.  If such a property exists,\n the value of the property\
+                \ will be a RenderingHints object\n specifying which hints were observed\
+                \ in creating the rendering."
           methods:
           - name: createDefaultRendering
             modifiers:
@@ -26,40 +46,72 @@ languages:
               type:
                 basic: RenderedImage
                 full: java.awt.image.RenderedImage
+              notes: a RenderedImage containing the rendered data.
+            notes: "Returns a RenderedImage instance of this image with a default\n\
+              \ width and height in pixels.  The RenderContext is built\n automatically\
+              \ with an appropriate usr2dev transform and an area\n of interest of\
+              \ the full image.  The rendering hints are\n empty.  createDefaultRendering\
+              \ may make use of a stored\n rendering for speed."
           - name: createRendering
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: renderContext
               type:
                 basic: RenderContext
                 full: java.awt.image.renderable.RenderContext
+              notes: the RenderContext to use to produce the rendering.
             return:
               type:
                 basic: RenderedImage
                 full: java.awt.image.RenderedImage
+              notes: a RenderedImage containing the rendered data.
+            notes: "Creates a RenderedImage that represented a rendering of this image\n\
+              \ using a given RenderContext.  This is the most general way to obtain\
+              \ a\n rendering of a RenderableImage.\n\n  The created RenderedImage\
+              \ may have a property identified\n by the String HINTS_OBSERVED to indicate\
+              \ which RenderingHints\n (from the RenderContext) were used to create\
+              \ the image.\n In addition any RenderedImages\n that are obtained via\
+              \ the getSources() method on the created\n RenderedImage may have such\
+              \ a property."
           - name: createScaledRendering
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: w
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the width of rendered image in pixels, or 0.
+            - name: h
               type:
                 basic: int
                 full: int
-            - name: arg2
+              notes: the height of rendered image in pixels, or 0.
+            - name: hints
               type:
                 basic: RenderingHints
                 full: java.awt.RenderingHints
+              notes: a RenderingHints object containing hints.
             return:
               type:
                 basic: RenderedImage
                 full: java.awt.image.RenderedImage
+              notes: a RenderedImage containing the rendered data.
+            notes: "Creates a RenderedImage instance of this image with width w, and\n\
+              \ height h in pixels.  The RenderContext is built automatically\n with\
+              \ an appropriate usr2dev transform and an area of interest\n of the\
+              \ full image.  All the rendering hints come from hints\n passed in.\n\
+              \n  If w == 0, it will be taken to equal\n Math.round(h*(getWidth()/getHeight())).\n\
+              \ Similarly, if h == 0, it will be taken to equal\n Math.round(w*(getHeight()/getWidth())).\
+              \  One of\n w or h must be non-zero or else an IllegalArgumentException\n\
+              \ will be thrown.\n\n  The created RenderedImage may have a property\
+              \ identified\n by the String HINTS_OBSERVED to indicate which RenderingHints\n\
+              \ were used to create the image.  In addition any RenderedImages\n that\
+              \ are obtained via the getSources() method on the created\n RenderedImage\
+              \ may have such a property."
           - name: getHeight
             modifiers:
             - public
@@ -68,6 +120,9 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the height of the image in user coordinates.
+            notes: "Gets the height in user coordinate space.  By convention, the\n\
+              \ usual height of a RenderedImage is equal to 1.0F."
           - name: getMinX
             modifiers:
             - public
@@ -76,6 +131,10 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: "the minimum X coordinate of the rendering-independent image\n\
+                \ data."
+            notes: Gets the minimum X coordinate of the rendering-independent image
+              data.
           - name: getMinY
             modifiers:
             - public
@@ -84,19 +143,28 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: "the minimum Y coordinate of the rendering-independent image\n\
+                \ data."
+            notes: Gets the minimum Y coordinate of the rendering-independent image
+              data.
           - name: getProperty
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: the name of the property to get, as a String.
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "a reference to the property Object, or the value\n         java.awt.Image.UndefinedProperty."
+            notes: "Gets a property from the property set of this image.\n If the\
+              \ property name is not recognized, java.awt.Image.UndefinedProperty\n\
+              \ will be returned."
           - name: getPropertyNames
             modifiers:
             - public
@@ -105,6 +173,8 @@ languages:
               type:
                 basic: String
                 full: java.lang.String[]
+              notes: a list of property names.
+            notes: Returns a list of names recognized by getProperty.
           - name: getSources
             modifiers:
             - public
@@ -113,6 +183,11 @@ languages:
               type:
                 basic: Vector
                 full: java.util.Vector<java.awt.image.renderable.RenderableImage>
+              notes: a (possibly empty) Vector of RenderableImages, or null.
+            notes: "Returns a vector of RenderableImages that are the sources of\n\
+              \ image data for this RenderableImage. Note that this method may\n return\
+              \ an empty vector, to indicate that the image has no sources,\n or null,\
+              \ to indicate that no information is available."
           - name: getWidth
             modifiers:
             - public
@@ -121,6 +196,10 @@ languages:
               type:
                 basic: float
                 full: float
+              notes: the width of the image in user coordinates.
+            notes: "Gets the width in user coordinate space.  By convention, the\n\
+              \ usual width of a RenderableImage is equal to the image's aspect\n\
+              \ ratio (width divided by height)."
           - name: isDynamic
             modifiers:
             - public
@@ -129,3 +208,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if successive renderings with the\n         same arguments\
+                \ might produce different results;\n         false otherwise."
+            notes: "Returns true if successive renderings (that is, calls to\n createRendering()\
+              \ or createScaledRendering()) with the same arguments\n may produce\
+              \ different results.  This method may be used to\n determine whether\
+              \ an existing rendering may be cached and\n reused.  It is always safe\
+              \ to return true."

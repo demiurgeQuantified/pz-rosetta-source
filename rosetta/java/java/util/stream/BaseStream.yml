@@ -8,6 +8,16 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "Base interface for streams, which are sequences of elements supporting\n\
+            \ sequential and parallel aggregate operations.  The following example\n\
+            \ illustrates an aggregate operation using the stream types Stream\n and\
+            \ IntStream, computing the sum of the weights of the red widgets:\n\n\
+            \ <code>\n     int sum = widgets.stream()\n                      .filter(w\
+            \ -> w.getColor() == RED)\n                      .mapToInt(w -> w.getWeight())\n\
+            \                      .sum();\n </code>\n\n See the class documentation\
+            \ for Stream and the package documentation\n for java.util.stream for\
+            \ additional\n specification of streams, stream operations, stream pipelines,\
+            \ and\n parallelism, which governs the behavior of all stream types."
           methods:
           - name: close
             modifiers:
@@ -17,6 +27,8 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes this stream, causing all close handlers for this stream\
+              \ pipeline\n to be called."
           - name: isParallel
             modifiers:
             - public
@@ -25,6 +37,11 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this stream would execute in parallel if executed
+            notes: "Returns whether this stream, if a terminal operation were to be\
+              \ executed,\n would execute in parallel.  Calling this method after\
+              \ invoking an\n terminal stream operation method may yield unpredictable\
+              \ results."
           - name: iterator
             modifiers:
             - public
@@ -33,19 +50,34 @@ languages:
               type:
                 basic: Iterator
                 full: java.util.Iterator<T>
+              notes: the element iterator for this stream
+            notes: "Returns an iterator for the elements of this stream.\n\n This\
+              \ is a terminal\n operation."
           - name: onClose
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: closeHandler
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: A task to execute when the stream is closed
             return:
               type:
                 basic: S
                 full: S
+              notes: a stream with a handler that is run if the stream is closed
+            notes: "Returns an equivalent stream with an additional close handler.\
+              \  Close\n handlers are run when the close() method\n is called on the\
+              \ stream, and are executed in the order they were\n added.  All close\
+              \ handlers are run, even if earlier close handlers throw\n exceptions.\
+              \  If any close handler throws an exception, the first\n exception thrown\
+              \ will be relayed to the caller of close(), with\n any remaining exceptions\
+              \ added to that exception as suppressed exceptions\n (unless one of\
+              \ the remaining exceptions is the same exception as the\n first exception,\
+              \ since an exception cannot suppress itself.)  May\n return itself.\n\
+              \n This is an intermediate\n operation."
           - name: parallel
             modifiers:
             - public
@@ -54,6 +86,11 @@ languages:
               type:
                 basic: S
                 full: S
+              notes: a parallel stream
+            notes: "Returns an equivalent stream that is parallel.  May return\n itself,\
+              \ either because the stream was already parallel, or because\n the underlying\
+              \ stream state was modified to be parallel.\n\n This is an intermediate\n\
+              \ operation."
           - name: sequential
             modifiers:
             - public
@@ -62,6 +99,11 @@ languages:
               type:
                 basic: S
                 full: S
+              notes: a sequential stream
+            notes: "Returns an equivalent stream that is sequential.  May return\n\
+              \ itself, either because the stream was already sequential, or because\n\
+              \ the underlying stream state was modified to be sequential.\n\n This\
+              \ is an intermediate\n operation."
           - name: spliterator
             modifiers:
             - public
@@ -70,6 +112,14 @@ languages:
               type:
                 basic: Spliterator
                 full: java.util.Spliterator<T>
+              notes: the element spliterator for this stream
+            notes: "Returns a spliterator for the elements of this stream.\n\n This\
+              \ is a terminal\n operation.\n\n \n The returned spliterator should\
+              \ report the set of characteristics derived\n from the stream pipeline\
+              \ (namely the characteristics derived from the\n stream source spliterator\
+              \ and the intermediate operations).\n Implementations may report a sub-set\
+              \ of those characteristics.  For\n example, it may be too expensive\
+              \ to compute the entire set for some or\n all possible stream pipelines."
           - name: unordered
             modifiers:
             - public
@@ -78,3 +128,8 @@ languages:
               type:
                 basic: S
                 full: S
+              notes: an unordered stream
+            notes: "Returns an equivalent stream that is\n unordered.  May return\n\
+              \ itself, either because the stream was already unordered, or because\n\
+              \ the underlying stream state was modified to be unordered.\n\n This\
+              \ is an intermediate\n operation."

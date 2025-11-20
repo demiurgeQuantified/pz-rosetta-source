@@ -8,17 +8,44 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A channel that can write bytes.\n\n  Only one write operation upon\
+            \ a writable channel may be in progress at\n any given time.  If one thread\
+            \ initiates a write operation upon a channel\n then any other thread that\
+            \ attempts to initiate another write operation will\n block until the\
+            \ first operation is complete.  Whether or not other kinds of\n I/O operations\
+            \ may proceed concurrently with a write operation depends upon\n the type\
+            \ of the channel."
           methods:
           - name: write
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: src
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The buffer from which bytes are to be retrieved
             return:
               type:
                 basic: int
                 full: int
+              notes: The number of bytes written, possibly zero
+            notes: "Writes a sequence of bytes to this channel from the given buffer.\n\
+              \n  An attempt is made to write up to r bytes to the channel,\n where\
+              \ r is the number of bytes remaining in the buffer, that is,\n src.remaining(),\
+              \ at the moment this method is invoked.\n\n  Suppose that a byte sequence\
+              \ of length n is written, where\n 0 <= n <= r.\n This byte sequence\
+              \ will be transferred from the buffer starting at index\n p, where p\
+              \ is the buffer's position at the moment this\n method is invoked; the\
+              \ index of the last byte written will be\n p + n - 1.\n Upon return\
+              \ the buffer's position will be equal to\n p + n; its limit will not\
+              \ have changed.\n\n  Unless otherwise specified, a write operation will\
+              \ return only after\n writing all of the r requested bytes.  Some types\
+              \ of channels,\n depending upon their state, may write only some of\
+              \ the bytes or possibly\n none at all.  A socket channel in non-blocking\
+              \ mode, for example, cannot\n write any more bytes than are free in\
+              \ the socket's output buffer.\n\n  This method may be invoked at any\
+              \ time.  If another thread has\n already initiated a write operation\
+              \ upon this channel, however, then an\n invocation of this method will\
+              \ block until the first operation is\n complete."

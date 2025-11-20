@@ -8,75 +8,145 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "The Shape interface provides definitions for objects\n that represent\
+            \ some form of geometric shape.  The Shape\n is described by a PathIterator\
+            \ object, which can express the\n outline of the Shape as well as a rule\
+            \ for determining\n how the outline divides the 2D plane into interior\
+            \ and exterior\n points.  Each Shape object provides callbacks to get\
+            \ the\n bounding box of the geometry, determine whether points or\n rectangles\
+            \ lie partly or entirely within the interior\n of the Shape, and retrieve\
+            \ a PathIterator\n object that describes the trajectory path of the Shape\n\
+            \ outline.\n \n Definition of insideness:\n A point is considered to lie\
+            \ inside a\n Shape if and only if:\n \n  it lies completely\n inside the\
+            \ Shape boundary or\n \n it lies exactly on the Shape boundary and the\n\
+            \ space immediately adjacent to the\n point in the increasing X direction\
+            \ is\n entirely inside the boundary or\n \n it lies exactly on a horizontal\
+            \ boundary segment and the\n space immediately adjacent to the point in\
+            \ the\n increasing Y direction is inside the boundary.\n \n The contains\
+            \ and intersects methods\n consider the interior of a Shape to be the\
+            \ area it\n encloses as if it were filled.  This means that these methods\n\
+            \ consider\n unclosed shapes to be implicitly closed for the purpose of\n\
+            \ determining if a shape contains or intersects a rectangle or if a\n\
+            \ shape contains a point."
           methods:
           - name: contains
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: the specified X coordinate to be tested
+            - name: y
               type:
                 basic: double
                 full: double
+              notes: the specified Y coordinate to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified coordinates are inside\n         the Shape\
+                \ boundary; false\n         otherwise."
+            notes: "Tests if the specified coordinates are inside the boundary of\
+              \ the\n Shape, as described by the\n \n definition of insideness."
           - name: contains
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: p
               type:
                 basic: Point2D
                 full: java.awt.geom.Point2D
+              notes: the specified Point2D to be tested
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the specified Point2D is\n          inside the boundary\
+                \ of the Shape;\n          false otherwise."
+            notes: "Tests if a specified Point2D is inside the boundary\n of the Shape,\
+              \ as described by the\n \n definition of insideness."
           - name: contains
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the X coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: y
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: "the Y coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: w
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the width of the specified rectangular area
+            - name: h
               type:
                 basic: double
                 full: double
+              notes: the height of the specified rectangular area
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the interior of the Shape\n          entirely contains\
+                \ the specified rectangular area;\n          false otherwise or, if\
+                \ the Shape\n          contains the rectangular area and the\n   \
+                \       intersects method returns true\n          and the containment\
+                \ calculations would be too expensive to\n          perform."
+            notes: "Tests if the interior of the Shape entirely contains\n the specified\
+              \ rectangular area.  All coordinates that lie inside\n the rectangular\
+              \ area must lie within the Shape for the\n entire rectangular area to\
+              \ be considered contained within the\n Shape.\n \n The Shape.contains()\
+              \ method allows a Shape\n implementation to conservatively return false\
+              \ when:\n \n \n the intersect method returns true and\n \n the calculations\
+              \ to determine whether or not the\n Shape entirely contains the rectangular\
+              \ area are\n prohibitively expensive.\n \n This means that for some\
+              \ Shapes this method might\n return false even though the Shape contains\n\
+              \ the rectangular area.\n The Area class performs\n more accurate geometric\
+              \ computations than most\n Shape objects and therefore can be used if\
+              \ a more precise\n answer is required."
           - name: contains
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: r
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: The specified Rectangle2D
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the interior of the Shape\n          entirely contains\
+                \ the Rectangle2D;\n          false otherwise or, if the Shape\n \
+                \         contains the Rectangle2D and the\n          intersects method\
+                \ returns true\n          and the containment calculations would be\
+                \ too expensive to\n          perform."
+            notes: "Tests if the interior of the Shape entirely contains the\n specified\
+              \ Rectangle2D.\n The Shape.contains() method allows a Shape\n implementation\
+              \ to conservatively return false when:\n \n \n the intersect method\
+              \ returns true and\n \n the calculations to determine whether or not\
+              \ the\n Shape entirely contains the Rectangle2D\n are prohibitively\
+              \ expensive.\n \n This means that for some Shapes this method might\n\
+              \ return false even though the Shape contains\n the Rectangle2D.\n The\
+              \ Area class performs\n more accurate geometric computations than most\n\
+              \ Shape objects and therefore can be used if a more precise\n answer\
+              \ is required."
           - name: getBounds
             modifiers:
             - public
@@ -85,6 +155,27 @@ languages:
               type:
                 basic: Rectangle
                 full: java.awt.Rectangle
+              notes: "an integer Rectangle that completely encloses\n            \
+                \     the Shape."
+            notes: "Returns an integer Rectangle that completely encloses the\n Shape.\
+              \  Note that there is no guarantee that the\n returned Rectangle is\
+              \ the smallest bounding box that\n encloses the Shape, only that the\
+              \ Shape\n lies entirely within the indicated  Rectangle.  The\n returned\
+              \ Rectangle might also fail to completely\n enclose the Shape if the\
+              \ Shape overflows\n the limited range of the integer data type.  The\n\
+              \ getBounds2D method generally returns a\n tighter bounding box due\
+              \ to its greater flexibility in\n representation.\n\n \n Note that the\n\
+              \ \n definition of insideness can lead to situations where points\n\
+              \ on the defining outline of the shape may not be considered\n contained\
+              \ in the returned bounds object, but only in cases\n where those points\
+              \ are also not considered contained in the original\n shape.\n \n \n\
+              \ If a point is inside the shape according to the\n contains(point)\
+              \ method, then\n it must be inside the returned Rectangle bounds object\n\
+              \ according to the contains(point)\n method of the bounds. Specifically:\n\
+              \ \n \n  shape.contains(x,y) requires bounds.contains(x,y)\n \n \n If\
+              \ a point is not inside the shape, then it might\n still be contained\
+              \ in the bounds object:\n \n \n  bounds.contains(x,y) does not imply\
+              \ shape.contains(x,y)"
           - name: getBounds2D
             modifiers:
             - public
@@ -93,71 +184,172 @@ languages:
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: "an instance of Rectangle2D that is a\n                 high-precision\
+                \ bounding box of the Shape."
+            notes: "Returns a high precision and more accurate bounding box of\n the\
+              \ Shape than the getBounds method.\n Note that there is no guarantee\
+              \ that the returned\n Rectangle2D is the smallest bounding box that\
+              \ encloses\n the Shape, only that the Shape lies\n entirely within the\
+              \ indicated Rectangle2D.  The\n bounding box returned by this method\
+              \ is usually tighter than that\n returned by the getBounds method and\
+              \ never fails due\n to overflow problems since the return value can\
+              \ be an instance of\n the Rectangle2D that uses double precision values\
+              \ to\n store the dimensions.\n\n \n Note that the\n \n definition of\
+              \ insideness can lead to situations where points\n on the defining outline\
+              \ of the shape may not be considered\n contained in the returned bounds\
+              \ object, but only in cases\n where those points are also not considered\
+              \ contained in the original\n shape.\n \n \n If a point is inside the\
+              \ shape according to the\n contains(point) method, then it must\n be\
+              \ inside the returned Rectangle2D bounds object according\n to the contains(point)\
+              \ method of the\n bounds. Specifically:\n \n \n  shape.contains(p) requires\
+              \ bounds.contains(p)\n \n \n If a point is not inside the shape, then\
+              \ it might\n still be contained in the bounds object:\n \n \n  bounds.contains(p)\
+              \ does not imply shape.contains(p)"
           - name: getPathIterator
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: at
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
+              notes: "an optional AffineTransform to be applied to the\n         \
+                \ coordinates as they are returned in the iteration, or\n        \
+                \  null if untransformed coordinates are desired"
             return:
               type:
                 basic: PathIterator
                 full: java.awt.geom.PathIterator
+              notes: "a new PathIterator object, which independently\n          traverses\
+                \ the geometry of the Shape."
+            notes: "Returns an iterator object that iterates along the\n Shape boundary\
+              \ and provides access to the geometry of the\n Shape outline.  If an\
+              \ optional AffineTransform\n is specified, the coordinates returned\
+              \ in the iteration are\n transformed accordingly.\n \n Each call to\
+              \ this method returns a fresh PathIterator\n object that traverses the\
+              \ geometry of the Shape object\n independently from any other PathIterator\
+              \ objects in use\n at the same time.\n \n It is recommended, but not\
+              \ guaranteed, that objects\n implementing the Shape interface isolate\
+              \ iterations\n that are in process from any changes that might occur\
+              \ to the original\n object's geometry during such iterations."
           - name: getPathIterator
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: at
               type:
                 basic: AffineTransform
                 full: java.awt.geom.AffineTransform
-            - name: arg1
+              notes: "an optional AffineTransform to be applied to the\n         \
+                \ coordinates as they are returned in the iteration, or\n        \
+                \  null if untransformed coordinates are desired"
+            - name: flatness
               type:
                 basic: double
                 full: double
+              notes: "the maximum distance that the line segments used to\n      \
+                \    approximate the curved segments are allowed to deviate\n    \
+                \      from any point on the original curve"
             return:
               type:
                 basic: PathIterator
                 full: java.awt.geom.PathIterator
+              notes: "a new PathIterator that independently traverses\n         a\
+                \ flattened view of the geometry of the  Shape."
+            notes: "Returns an iterator object that iterates along the Shape\n boundary\
+              \ and provides access to a flattened view of the\n Shape outline geometry.\n\
+              \ \n Only SEG_MOVETO, SEG_LINETO, and SEG_CLOSE point types are\n returned\
+              \ by the iterator.\n \n If an optional AffineTransform is specified,\n\
+              \ the coordinates returned in the iteration are transformed\n accordingly.\n\
+              \ \n The amount of subdivision of the curved segments is controlled\n\
+              \ by the flatness parameter, which specifies the\n maximum distance\
+              \ that any point on the unflattened transformed\n curve can deviate\
+              \ from the returned flattened path segments.\n Note that a limit on\
+              \ the accuracy of the flattened path might be\n silently imposed, causing\
+              \ very small flattening parameters to be\n treated as larger values.\
+              \  This limit, if there is one, is\n defined by the particular implementation\
+              \ that is used.\n \n Each call to this method returns a fresh PathIterator\n\
+              \ object that traverses the Shape object geometry\n independently from\
+              \ any other PathIterator objects in use at\n the same time.\n \n It\
+              \ is recommended, but not guaranteed, that objects\n implementing the\
+              \ Shape interface isolate iterations\n that are in process from any\
+              \ changes that might occur to the original\n object's geometry during\
+              \ such iterations."
           - name: intersects
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: x
               type:
                 basic: double
                 full: double
-            - name: arg1
+              notes: "the X coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: y
               type:
                 basic: double
                 full: double
-            - name: arg2
+              notes: "the Y coordinate of the upper-left corner\n          of the\
+                \ specified rectangular area"
+            - name: w
               type:
                 basic: double
                 full: double
-            - name: arg3
+              notes: the width of the specified rectangular area
+            - name: h
               type:
                 basic: double
                 full: double
+              notes: the height of the specified rectangular area
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the interior of the Shape and\n          the interior\
+                \ of the rectangular area intersect, or are\n          both highly\
+                \ likely to intersect and intersection calculations\n          would\
+                \ be too expensive to perform; false otherwise."
+            notes: "Tests if the interior of the Shape intersects the\n interior of\
+              \ a specified rectangular area.\n The rectangular area is considered\
+              \ to intersect the Shape\n if any point is contained in both the interior\
+              \ of the\n Shape and the specified rectangular area.\n \n The Shape.intersects()\
+              \ method allows a Shape\n implementation to conservatively return true\
+              \ when:\n \n \n there is a high probability that the rectangular area\
+              \ and the\n Shape intersect, but\n \n the calculations to accurately\
+              \ determine this intersection\n are prohibitively expensive.\n \n This\
+              \ means that for some Shapes this method might\n return true even though\
+              \ the rectangular area does not\n intersect the Shape.\n The Area class\
+              \ performs\n more accurate computations of geometric intersection than\
+              \ most\n Shape objects and therefore can be used if a more precise\n\
+              \ answer is required."
           - name: intersects
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: r
               type:
                 basic: Rectangle2D
                 full: java.awt.geom.Rectangle2D
+              notes: the specified Rectangle2D
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the interior of the Shape and\n          the interior\
+                \ of the specified Rectangle2D\n          intersect, or are both highly\
+                \ likely to intersect and intersection\n          calculations would\
+                \ be too expensive to perform; false\n          otherwise."
+            notes: "Tests if the interior of the Shape intersects the\n interior of\
+              \ a specified Rectangle2D.\n The Shape.intersects() method allows a\
+              \ Shape\n implementation to conservatively return true when:\n \n \n\
+              \ there is a high probability that the Rectangle2D and the\n Shape intersect,\
+              \ but\n \n the calculations to accurately determine this intersection\n\
+              \ are prohibitively expensive.\n \n This means that for some Shapes\
+              \ this method might\n return true even though the Rectangle2D does not\n\
+              \ intersect the Shape.\n The Area class performs\n more accurate computations\
+              \ of geometric intersection than most\n Shape objects and therefore\
+              \ can be used if a more precise\n answer is required."

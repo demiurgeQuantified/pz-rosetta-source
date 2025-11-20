@@ -8,20 +8,71 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "An object that may be used to locate a file in a file system. It\
+            \ will\n typically represent a system dependent file path.\n\n  A Path\
+            \ represents a path that is hierarchical and composed of a\n sequence\
+            \ of directory and file name elements separated by a special separator\n\
+            \ or delimiter. A root component, that identifies a file system\n hierarchy,\
+            \ may also be present. The name element that is farthest\n from the root\
+            \ of the directory hierarchy is the name of a file or directory.\n The\
+            \ other name elements are directory names. A Path can represent a\n root,\
+            \ a root and a sequence of names, or simply one or more name elements.\n\
+            \ A Path is considered to be an empty path if it consists\n solely of\
+            \ one name element that is empty. Accessing a file using an\n empty path\
+            \ is equivalent to accessing the default directory of the\n file system.\
+            \ Path defines the getFileName,\n getParent, getRoot, and subpath methods\
+            \ to access the path components or a subsequence of its name\n elements.\n\
+            \n  In addition to accessing the components of a path, a Path also\n defines\
+            \ the resolve and resolveSibling methods to combine paths. The relativize\n\
+            \ method that can be used to construct a relative path between two paths.\n\
+            \ Paths can be compared, and tested against each other using\n the startsWith\
+            \ and endsWith methods.\n\n  This interface extends Watchable interface\
+            \ so that a directory\n located by a path can be registered with a WatchService\
+            \ and entries in the directory watched. \n\n  WARNING: This interface\
+            \ is only intended to be implemented by\n those developing custom file\
+            \ system implementations. Methods may be added to\n this interface in\
+            \ future releases. \n\n Accessing Files\n  Paths may be used with the\
+            \ Files class to operate on files,\n directories, and other types of files.\
+            \ For example, suppose we want a BufferedReader to read text from a file\
+            \ \"access.log\". The\n file is located in a directory \"logs\" relative\
+            \ to the current working\n directory and is UTF-8 encoded.\n \n     Path\
+            \ path = FileSystems.getDefault().getPath(\"logs\", \"access.log\");\n\
+            \     BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);\n\
+            \ \n\n Interoperability\n  Paths associated with the default provider\
+            \ are generally interoperable\n with the java.io.File class. Paths created\
+            \ by other\n providers are unlikely to be interoperable with the abstract\
+            \ path names\n represented by java.io.File. The toPath\n method may be\
+            \ used to obtain a Path from the abstract path name\n represented by a\
+            \ java.io.File object. The resulting Path can\n be used to operate on\
+            \ the same file as the java.io.File object. In\n addition, the toFile\
+            \ method is useful to construct a \n File from the String representation\
+            \ of a Path.\n\n Concurrency\n  Implementations of this interface are\
+            \ immutable and safe for use by\n multiple concurrent threads."
           methods:
           - name: compareTo
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path compared to this path.
             return:
               type:
                 basic: int
                 full: int
+              notes: "zero if the argument is equal to this path, a\n          value\
+                \ less than zero if this path is lexicographically less than\n   \
+                \       the argument, or a value greater than zero if this path is\n\
+                \          lexicographically greater than the argument"
+            notes: "Compares two abstract paths lexicographically. The ordering defined\
+              \ by\n this method is provider specific, and in the case of the default\n\
+              \ provider, platform specific. This method does not access the file\
+              \ system\n and neither file is required to exist.\n\n  This method may\
+              \ not be used to compare paths that are associated\n with different\
+              \ file system providers."
           - name: compareTo
             modifiers:
             - public
@@ -39,39 +90,77 @@ languages:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the given path
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this path ends with the given path; otherwise\n    \
+                \      false"
+            notes: "Tests if this path ends with the given path.\n\n  If the given\
+              \ path has N elements, and no root component,\n and this path has N\
+              \ or more elements, then this path ends with\n the given path if the\
+              \ last N elements of each path, starting at\n the element farthest from\
+              \ the root, are equal.\n\n  If the given path has a root component then\
+              \ this path ends with the\n given path if the root component of this\
+              \ path ends with the root\n component of the given path, and the corresponding\
+              \ elements of both paths\n are equal. Whether or not the root component\
+              \ of this path ends with the\n root component of the given path is file\
+              \ system specific. If this path\n does not have a root component and\
+              \ the given path has a root component\n then this path does not end\
+              \ with the given path.\n\n  If the given path is associated with a different\
+              \ FileSystem\n to this path then false is returned."
           - name: endsWith
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: String
                 full: java.lang.String
+              notes: the given path string
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this path ends with the given path; otherwise\n    \
+                \      false"
+            notes: "Tests if this path ends with a Path, constructed by converting\n\
+              \ the given path string, in exactly the manner specified by the endsWith(Path)\
+              \ method. On UNIX for example, the path\n \"foo/bar\" ends with \"foo/bar\"\
+              \ and \"bar\". It does\n not end with \"r\" or \"/bar\". Note that trailing\
+              \ separators\n are not taken into account, and so invoking this method\
+              \ on the \n Path\"foo/bar\" with the String \"bar/\" returns\n true."
           - name: equals
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to which this object is to be compared
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if, and only if, the given object is a Path\n         \
+                \ that is identical to this Path"
+            notes: "Tests this path for equality with the given object.\n\n  If the\
+              \ given object is not a Path, or is a Path associated with a\n different\
+              \ FileSystem, then this method returns false.\n\n  Whether or not two\
+              \ path are equal depends on the file system\n implementation. In some\
+              \ cases the paths are compared without regard\n to case, and others\
+              \ are case sensitive. This method does not access the\n file system\
+              \ and the file is not required to exist. Where required, the\n isSameFile\
+              \ method may be used to check if two\n paths locate the same file.\n\
+              \n  This method satisfies the general contract of the Object.equals\
+              \ method."
           - name: getFileName
             modifiers:
             - public
@@ -80,6 +169,11 @@ languages:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: "a path representing the name of the file or directory, or\n\
+                \          null if this path has zero elements"
+            notes: "Returns the name of the file or directory denoted by this path\
+              \ as a\n Path object. The file name is the farthest element from\n the\
+              \ root in the directory hierarchy."
           - name: getFileSystem
             modifiers:
             - public
@@ -88,19 +182,27 @@ languages:
               type:
                 basic: FileSystem
                 full: java.nio.file.FileSystem
+              notes: the file system that created this object
+            notes: Returns the file system that created this object.
           - name: getName
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: index
               type:
                 basic: int
                 full: int
+              notes: the index of the element
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the name element
+            notes: "Returns a name element of this path as a Path object.\n\n  The\
+              \ index parameter is the index of the name element to return.\n The\
+              \ element that is closest to the root in the directory hierarchy\n has\
+              \ index 0. The element that is farthest from the root\n has index count-1."
           - name: getNameCount
             modifiers:
             - public
@@ -109,6 +211,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: "the number of elements in the path, or 0 if this path\n    \
+                \      only represents a root component"
+            notes: Returns the number of name elements in the path.
           - name: getParent
             modifiers:
             - public
@@ -117,6 +222,20 @@ languages:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: a path representing the path's parent
+            notes: "Returns the parent path, or null if this path does not\n have\
+              \ a parent.\n\n  The parent of this path object consists of this path's\
+              \ root\n component, if any, and each element in the path except for\
+              \ the\n farthest from the root in the directory hierarchy. This method\n\
+              \ does not access the file system; the path or its parent may not exist.\n\
+              \ Furthermore, this method does not eliminate special names such as\
+              \ \".\"\n and \"..\" that may be used in some implementations. On UNIX\
+              \ for example,\n the parent of \"/a/b/c\" is \"/a/b\", and the parent\
+              \ of\n \"x/y/.\" is \"x/y\". This method may be used with the normalize\
+              \ method, to eliminate redundant names, for cases where\n shell-like\
+              \ navigation is required.\n\n  If this path has more than one element,\
+              \ and no root component, then\n this method is equivalent to evaluating\
+              \ the expression:\n \n subpath(0, getNameCount()-1);"
           - name: getRoot
             modifiers:
             - public
@@ -125,6 +244,10 @@ languages:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: "a path representing the root component of this path,\n     \
+                \     or null"
+            notes: "Returns the root component of this path as a Path object,\n or\
+              \ null if this path does not have a root component."
           - name: hashCode
             modifiers:
             - public
@@ -133,6 +256,10 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the hash-code value for this path
+            notes: "Computes a hash code for this path.\n\n  The hash code is based\
+              \ upon the components of the path, and\n satisfies the general contract\
+              \ of the Object.hashCode method."
           - name: isAbsolute
             modifiers:
             - public
@@ -141,6 +268,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if, and only if, this path is absolute
+            notes: "Tells whether or not this path is absolute.\n\n  An absolute path\
+              \ is complete in that it doesn't need to be combined\n with other path\
+              \ information in order to locate a file."
           - name: iterator
             modifiers:
             - public
@@ -148,6 +279,13 @@ languages:
               type:
                 basic: Iterator
                 full: java.util.Iterator<java.nio.file.Path>
+              notes: an iterator over the name elements of this path.
+            notes: "Returns an iterator over the name elements of this path.\n\n \
+              \ The first element returned by the iterator represents the name\n element\
+              \ that is closest to the root in the directory hierarchy, the\n second\
+              \ element is the next closest, and so on. The last element returned\n\
+              \ is the name of the file or directory denoted by this path. The root\
+              \ component, if present, is not returned by the iterator."
           - name: normalize
             modifiers:
             - public
@@ -156,6 +294,24 @@ languages:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: "the resulting path or this path if it does not contain\n   \
+                \       redundant name elements; an empty path is returned if this\
+                \ path\n          does not have a root component and all name elements\
+                \ are redundant"
+            notes: "Returns a path that is this path with redundant name elements\
+              \ eliminated.\n\n  The precise definition of this method is implementation\
+              \ dependent but\n in general it derives from this path, a path that\
+              \ does not contain\n redundant name elements. In many file systems,\
+              \ the \".\"\n and \"..\" are special names used to indicate the current\
+              \ directory\n and parent directory. In such file systems all occurrences\
+              \ of \".\"\n are considered redundant. If a \"..\" is preceded by a\n\
+              \ non-\"..\" name then both names are considered redundant (the\n process\
+              \ to identify such names is repeated until it is no longer\n applicable).\n\
+              \n  This method does not access the file system; the path may not locate\n\
+              \ a file that exists. Eliminating \"..\" and a preceding name from a\n\
+              \ path may result in the path that locates a different file than the\
+              \ original\n path. This can arise when the preceding name is a symbolic\
+              \ link."
           - name: register
             modifiers:
             - public
@@ -198,105 +354,196 @@ languages:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to relativize against this path
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: "the resulting relative path, or an empty path if both paths\
+                \ are\n          equal"
+            notes: "Constructs a relative path between this path and a given path.\n\
+              \n  Relativization is the inverse of resolution.\n This method attempts\
+              \ to construct a relative path\n that when resolved against this path,\
+              \ yields a\n path that locates the same file as the given path. For\
+              \ example, on UNIX,\n if this path is \"/a/b\" and the given path is\
+              \ \"/a/b/c/d\"\n then the resulting relative path would be \"c/d\".\
+              \ Where this\n path and the given path do not have a root component,\n\
+              \ then a relative path can be constructed. A relative path cannot be\n\
+              \ constructed if only one of the paths have a root component. Where\
+              \ both\n paths have a root component then it is implementation dependent\
+              \ if a\n relative path can be constructed. If this path and the given\
+              \ path are\n equal then an empty path is returned.\n\n  For any two\
+              \ normalized paths p and\n q, where q does not have a root component,\n\
+              \ \n   p.relativize(p\n   .resolve(q)).equals(q)\n \n\n  When symbolic\
+              \ links are supported, then whether the resulting path,\n when resolved\
+              \ against this path, yields a path that can be used to locate\n the\
+              \ same file as other is implementation\n dependent. For example, if\
+              \ this path is  \"/a/b\" and the given\n path is \"/a/x\" then the resulting\
+              \ relative path may be \n \"../x\". If \"b\" is a symbolic link then\
+              \ is implementation\n dependent if \"a/b/../x\" would locate the same\
+              \ file as \"/a/x\"."
           - name: resolve
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to resolve against this path
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the resulting path
+            notes: "Resolve the given path against this path.\n\n  If the other parameter\
+              \ is an absolute\n path then this method trivially returns other. If\
+              \ other\n is an empty path then this method trivially returns this path.\n\
+              \ Otherwise this method considers this path to be a directory and resolves\n\
+              \ the given path against this path. In the simplest case, the given\
+              \ path\n does not have a root component, in which case this method\n\
+              \ joins the given path to this path and returns a resulting path\n that\
+              \ ends with the given path. Where the given path has\n a root component\
+              \ then resolution is highly implementation dependent and\n therefore\
+              \ unspecified."
           - name: resolve
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: String
                 full: java.lang.String
+              notes: the path string to resolve against this path
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the resulting path
+            notes: "Converts a given path string to a Path and resolves it against\n\
+              \ this Path in exactly the manner specified by the resolve method. For\
+              \ example, suppose that the name\n separator is \"/\" and a path represents\
+              \ \"foo/bar\", then\n invoking this method with the path string \"gus\"\
+              \ will result in\n the Path \"foo/bar/gus\"."
           - name: resolveSibling
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the path to resolve against this path's parent
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the resulting path
+            notes: "Resolves the given path against this path's parent\n path. This\
+              \ is useful where a file name needs to be replaced with\n another file\
+              \ name. For example, suppose that the name separator is\n \"/\" and\
+              \ a path represents \"dir1/dir2/foo\", then invoking\n this method with\
+              \ the Path \"bar\" will result in the \n Path \"dir1/dir2/bar\". If\
+              \ this path does not have a parent path,\n or other is absolute, then\
+              \ this method\n returns other. If other is an empty path then this method\n\
+              \ returns this path's parent, or where this path doesn't have a parent,\
+              \ the\n empty path."
           - name: resolveSibling
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: String
                 full: java.lang.String
+              notes: the path string to resolve against this path's parent
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the resulting path
+            notes: "Converts a given path string to a Path and resolves it against\n\
+              \ this path's parent path in exactly the manner\n specified by the resolveSibling\
+              \ method."
           - name: startsWith
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the given path
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this path starts with the given path; otherwise\n  \
+                \        false"
+            notes: "Tests if this path starts with the given path.\n\n  This path\
+              \ starts with the given path if this path's root\n component starts\
+              \ with the root component of the given path,\n and this path starts\
+              \ with the same name elements as the given path.\n If the given path\
+              \ has more name elements than this path then false\n is returned.\n\n\
+              \  Whether or not the root component of this path starts with the root\n\
+              \ component of the given path is file system specific. If this path\
+              \ does\n not have a root component and the given path has a root component\
+              \ then\n this path does not start with the given path.\n\n  If the given\
+              \ path is associated with a different FileSystem\n to this path then\
+              \ false is returned."
           - name: startsWith
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: other
               type:
                 basic: String
                 full: java.lang.String
+              notes: the given path string
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this path starts with the given path; otherwise\n  \
+                \        false"
+            notes: "Tests if this path starts with a Path, constructed by converting\n\
+              \ the given path string, in exactly the manner specified by the startsWith(Path)\
+              \ method. On UNIX for example, the path\n \"foo/bar\" starts with \"\
+              foo\" and \"foo/bar\". It\n does not start with \"f\" or \"fo\"."
           - name: subpath
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: beginIndex
               type:
                 basic: int
                 full: int
-            - name: arg1
+              notes: the index of the first element, inclusive
+            - name: endIndex
               type:
                 basic: int
                 full: int
+              notes: the index of the last element, exclusive
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: "a new Path object that is a subsequence of the name\n      \
+                \    elements in this Path"
+            notes: "Returns a relative Path that is a subsequence of the name\n elements\
+              \ of this path.\n\n  The beginIndex and endIndex parameters specify\
+              \ the\n subsequence of name elements. The name that is closest to the\
+              \ root\n in the directory hierarchy has index 0. The name that is\n\
+              \ farthest from the root has index count-1. The returned Path object\
+              \ has the name elements\n that begin at beginIndex and extend to the\
+              \ element at index \n endIndex-1."
           - name: toAbsolutePath
             modifiers:
             - public
@@ -305,6 +552,13 @@ languages:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: a Path object representing the absolute path
+            notes: "Returns a Path object representing the absolute path of this\n\
+              \ path.\n\n  If this path is already absolute then this\n method simply\
+              \ returns this path. Otherwise, this method resolves the path\n in an\
+              \ implementation dependent manner, typically by resolving the path\n\
+              \ against a file system default directory. Depending on the implementation,\n\
+              \ this method may throw an I/O error if the file system is not accessible."
           - name: toFile
             modifiers:
             - public
@@ -312,6 +566,13 @@ languages:
               type:
                 basic: File
                 full: java.io.File
+              notes: a File object representing this path
+            notes: "Returns a File object representing this path. Where this \n Path\
+              \ is associated with the default provider, then this method is\n equivalent\
+              \ to returning a File object constructed with the\n String representation\
+              \ of this path.\n\n  If this path was created by invoking the File toPath\
+              \ method then there is no guarantee that the \n File object returned\
+              \ by this method is equal to the\n original File."
           - name: toRealPath
             modifiers:
             - public
@@ -341,6 +602,32 @@ languages:
               type:
                 basic: URI
                 full: java.net.URI
+              notes: the URI representing this path
+            notes: "Returns a URI to represent this path.\n\n  This method constructs\
+              \ an absolute URI with a scheme equal to the URI scheme that identifies\
+              \ the\n provider. The exact form of the scheme specific part is highly\
+              \ provider\n dependent.\n\n  In the case of the default provider, the\
+              \ URI is hierarchical with\n a path component that is absolute. The\
+              \ query and\n fragment components are undefined. Whether the authority\
+              \ component is\n defined or not is implementation dependent. There is\
+              \ no guarantee that\n the URI may be used to construct a java.io.File.\n\
+              \ In particular, if this path represents a Universal Naming Convention\
+              \ (UNC)\n path, then the UNC server name may be encoded in the authority\
+              \ component\n of the resulting URI. In the case of the default provider,\
+              \ and the file\n exists, and it can be determined that the file is a\
+              \ directory, then the\n resulting URI will end with a slash.\n\n  The\
+              \ default provider provides a similar round-trip guarantee\n to the\
+              \ File class. For a given Path p it\n is guaranteed that\n \n Path.of(p.toUri()).equals(p\n\
+              \ .toAbsolutePath())\n \n so long as the original Path, the URI, and\
+              \ the new \n Path are all created in (possibly different invocations\
+              \ of) the same\n Java virtual machine. Whether other providers make\
+              \ any guarantees is\n provider specific and therefore unspecified.\n\
+              \n  When a file system is constructed to access the contents of a file\n\
+              \ as a file system then it is highly implementation specific if the\
+              \ returned\n URI represents the given path in the file system or it\
+              \ represents a\n compound URI that encodes the URI of the enclosing\
+              \ file system.\n A format for compound URIs is not defined in this release;\
+              \ such a scheme\n may be added in a future release."
           staticMethods:
           - name: of
             modifiers:
@@ -364,11 +651,28 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: uri
               type:
                 basic: URI
                 full: java.net.URI
+              notes: the URI to convert
             return:
               type:
                 basic: Path
                 full: java.nio.file.Path
+              notes: the resulting Path
+            notes: "Returns a Path by converting a URI.\n\n  This method iterates\
+              \ over the installed providers to locate the provider that is identified\
+              \ by the\n URI scheme of the given URI. URI schemes are\n compared without\
+              \ regard to case. If the provider is found then its getPath method is\
+              \ invoked to convert the\n URI.\n\n  In the case of the default provider,\
+              \ identified by the URI scheme\n \"file\", the given URI has a non-empty\
+              \ path component, and undefined query\n and fragment components. Whether\
+              \ the authority component may be present\n is platform specific. The\
+              \ returned Path is associated with the\n default file system.\n\n  The\
+              \ default provider provides a similar round-trip guarantee\n to the\
+              \ File class. For a given Path p it\n is guaranteed that\n \n Path.of(p.toUri()).equals(\n\
+              \ p.toAbsolutePath())\n \n so long as the original Path, the URI, and\
+              \ the new \n Path are all created in (possibly different invocations\
+              \ of) the same\n Java virtual machine. Whether other providers make\
+              \ any guarantees is\n provider specific and therefore unspecified."

@@ -8,127 +8,248 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A Queue that additionally supports operations that wait for\n the\
+            \ queue to become non-empty when retrieving an element, and wait\n for\
+            \ space to become available in the queue when storing an element.\n\n\
+            \ BlockingQueue methods come in four forms, with different ways\n of handling\
+            \ operations that cannot be satisfied immediately, but may be\n satisfied\
+            \ at some point in the future:\n one throws an exception, the second returns\
+            \ a special value (either\n null or false, depending on the operation),\
+            \ the third\n blocks the current thread indefinitely until the operation\
+            \ can succeed,\n and the fourth blocks for only a given maximum time limit\
+            \ before giving\n up.  These methods are summarized in the following table:\n\
+            \n \n Summary of BlockingQueue methods\n  \n    \n    Throws exception\n\
+            \    Special value\n    Blocks\n    Times out\n  \n  \n    Insert\n  \
+            \  add(e)\n    offer(e)\n    put(e)\n    offer(e, time, unit)\n  \n  \n\
+            \    Remove\n    remove()\n    poll()\n    take()\n    poll(time, unit)\n\
+            \  \n  \n    Examine\n    element()\n    peek()\n    not applicable\n\
+            \    not applicable\n  \n \n\n A BlockingQueue does not accept null elements.\n\
+            \ Implementations throw NullPointerException on attempts\n to add, put\
+            \ or offer a null.  A\n null is used as a sentinel value to indicate failure\
+            \ of\n poll operations.\n\n A BlockingQueue may be capacity bounded. At\
+            \ any given\n time it may have a remainingCapacity beyond which no\n additional\
+            \ elements can be put without blocking.\n A BlockingQueue without any\
+            \ intrinsic capacity constraints always\n reports a remaining capacity\
+            \ of Integer.MAX_VALUE.\n\n BlockingQueue implementations are designed\
+            \ to be used\n primarily for producer-consumer queues, but additionally\
+            \ support\n the Collection interface.  So, for example, it is\n possible\
+            \ to remove an arbitrary element from a queue using\n remove(x). However,\
+            \ such operations are in general\n not performed very efficiently, and\
+            \ are intended for only\n occasional use, such as when a queued message\
+            \ is cancelled.\n\n BlockingQueue implementations are thread-safe.  All\n\
+            \ queuing methods achieve their effects atomically using internal\n locks\
+            \ or other forms of concurrency control. However, the\n bulk Collection\
+            \ operations addAll,\n containsAll, retainAll and removeAll are\n not\
+            \ necessarily performed atomically unless specified\n otherwise in an\
+            \ implementation. So it is possible, for example, for\n addAll(c) to fail\
+            \ (throwing an exception) after adding\n only some of the elements in\
+            \ c.\n\n A BlockingQueue does not intrinsically support\n any kind of\
+            \ &quot;close&quot; or &quot;shutdown&quot; operation to\n indicate that\
+            \ no more items will be added.  The needs and usage of\n such features\
+            \ tend to be implementation-dependent. For example, a\n common tactic\
+            \ is for producers to insert special\n end-of-stream or poison objects,\
+            \ that are\n interpreted accordingly when taken by consumers.\n\n \n Usage\
+            \ example, based on a typical producer-consumer scenario.\n Note that\
+            \ a BlockingQueue can safely be used with multiple\n producers and multiple\
+            \ consumers.\n  <code>\n class Producer implements Runnable {\n   private\
+            \ final BlockingQueue queue;\n   Producer(BlockingQueue q) { queue = q;\
+            \ }\n   public void run() {\n     try {\n       while (true) { queue.put(produce());\
+            \ }\n     } catch (InterruptedException ex) { ... handle ...}\n   }\n\
+            \   Object produce() { ... }\n }\n\n class Consumer implements Runnable\
+            \ {\n   private final BlockingQueue queue;\n   Consumer(BlockingQueue\
+            \ q) { queue = q; }\n   public void run() {\n     try {\n       while\
+            \ (true) { consume(queue.take()); }\n     } catch (InterruptedException\
+            \ ex) { ... handle ...}\n   }\n   void consume(Object x) { ... }\n }\n\
+            \n class Setup {\n   void main() {\n     BlockingQueue q = new SomeQueueImplementation();\n\
+            \     Producer p = new Producer(q);\n     Consumer c1 = new Consumer(q);\n\
+            \     Consumer c2 = new Consumer(q);\n     new Thread(p).start();\n  \
+            \   new Thread(c1).start();\n     new Thread(c2).start();\n   }\n }</code>\n\
+            \n Memory consistency effects: As with other concurrent\n collections,\
+            \ actions in a thread prior to placing an object into a\n BlockingQueue\n\
+            \ happen-before\n actions subsequent to the access or removal of that\
+            \ element from\n the BlockingQueue in another thread.\n\n This interface\
+            \ is a member of the\n \n Java Collections Framework."
           methods:
           - name: add
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true (as specified by Collection.add(E))
+            notes: "Inserts the specified element into this queue if it is possible\
+              \ to do\n so immediately without violating capacity restrictions, returning\n\
+              \ true upon success and throwing an\n IllegalStateException if no space\
+              \ is currently available.\n When using a capacity-restricted queue,\
+              \ it is generally preferable to\n use offer."
           - name: contains
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: object to be checked for containment in this queue
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this queue contains the specified element
+            notes: "Returns true if this queue contains the specified element.\n More\
+              \ formally, returns true if and only if this queue contains\n at least\
+              \ one element e such that o.equals(e)."
           - name: drainTo
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: Collection
                 full: java.util.Collection<? super E>
+              notes: the collection to transfer elements into
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of elements transferred
+            notes: "Removes all available elements from this queue and adds them\n\
+              \ to the given collection.  This operation may be more\n efficient than\
+              \ repeatedly polling this queue.  A failure\n encountered while attempting\
+              \ to add elements to\n collection c may result in elements being in\
+              \ neither,\n either or both collections when the associated exception\
+              \ is\n thrown.  Attempts to drain a queue to itself result in\n IllegalArgumentException.\
+              \ Further, the behavior of\n this operation is undefined if the specified\
+              \ collection is\n modified while the operation is in progress."
           - name: drainTo
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: c
               type:
                 basic: Collection
                 full: java.util.Collection<? super E>
-            - name: arg1
+              notes: the collection to transfer elements into
+            - name: maxElements
               type:
                 basic: int
                 full: int
+              notes: the maximum number of elements to transfer
             return:
               type:
                 basic: int
                 full: int
+              notes: the number of elements transferred
+            notes: "Removes at most the given number of available elements from\n\
+              \ this queue and adds them to the given collection.  A failure\n encountered\
+              \ while attempting to add elements to\n collection c may result in elements\
+              \ being in neither,\n either or both collections when the associated\
+              \ exception is\n thrown.  Attempts to drain a queue to itself result\
+              \ in\n IllegalArgumentException. Further, the behavior of\n this operation\
+              \ is undefined if the specified collection is\n modified while the operation\
+              \ is in progress."
           - name: offer
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the element was added to this queue, else\n        \
+                \ false"
+            notes: "Inserts the specified element into this queue if it is possible\
+              \ to do\n so immediately without violating capacity restrictions, returning\n\
+              \ true upon success and false if no space is currently\n available.\
+              \  When using a capacity-restricted queue, this method is\n generally\
+              \ preferable to add(E), which can fail to insert an\n element only by\
+              \ throwing an exception."
           - name: offer
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
-            - name: arg1
+              notes: the element to add
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg2
+              notes: "how long to wait before giving up, in units of\n        unit"
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if successful, or false if\n         the specified waiting\
+                \ time elapses before space is available"
+            notes: "Inserts the specified element into this queue, waiting up to the\n\
+              \ specified wait time if necessary for space to become available."
           - name: poll
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: "how long to wait before giving up, in units of\n        unit"
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: "a TimeUnit determining how to interpret the\n        timeout\
+                \ parameter"
             return:
               type:
                 basic: E
                 full: E
+              notes: "the head of this queue, or null if the\n         specified waiting\
+                \ time elapses before an element is available"
+            notes: "Retrieves and removes the head of this queue, waiting up to the\n\
+              \ specified wait time if necessary for an element to become available."
           - name: put
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: e
               type:
                 basic: E
                 full: E
+              notes: the element to add
             return:
               type:
                 basic: void
                 full: void
+            notes: "Inserts the specified element into this queue, waiting if necessary\n\
+              \ for space to become available."
           - name: remainingCapacity
             modifiers:
             - public
@@ -137,19 +258,34 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the remaining capacity
+            notes: "Returns the number of additional elements that this queue can\
+              \ ideally\n (in the absence of memory or resource constraints) accept\
+              \ without\n blocking, or Integer.MAX_VALUE if there is no intrinsic\n\
+              \ limit.\n\n Note that you cannot always tell if an attempt to insert\n\
+              \ an element will succeed by inspecting remainingCapacity\n because\
+              \ it may be the case that another thread is about to\n insert or remove\
+              \ an element."
           - name: remove
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: o
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: element to be removed from this queue, if present
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this queue changed as a result of the call
+            notes: "Removes a single instance of the specified element from this queue,\n\
+              \ if it is present.  More formally, removes an element e such\n that\
+              \ o.equals(e), if this queue contains one or more such\n elements.\n\
+              \ Returns true if this queue contained the specified element\n (or equivalently,\
+              \ if this queue changed as a result of the call)."
           - name: take
             modifiers:
             - public
@@ -158,3 +294,6 @@ languages:
               type:
                 basic: E
                 full: E
+              notes: the head of this queue
+            notes: "Retrieves and removes the head of this queue, waiting if necessary\n\
+              \ until an element becomes available."

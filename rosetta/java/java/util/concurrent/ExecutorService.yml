@@ -8,92 +8,189 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "An Executor that provides methods to manage termination and\n methods\
+            \ that can produce a Future for tracking progress of\n one or more asynchronous\
+            \ tasks.\n\n An ExecutorService can be shut down, which will cause\n it\
+            \ to reject new tasks.  Two different methods are provided for\n shutting\
+            \ down an ExecutorService. The shutdown()\n method will allow previously\
+            \ submitted tasks to execute before\n terminating, while the shutdownNow()\
+            \ method prevents waiting\n tasks from starting and attempts to stop currently\
+            \ executing tasks.\n Upon termination, an executor has no tasks actively\
+            \ executing, no\n tasks awaiting execution, and no new tasks can be submitted.\
+            \  An\n unused ExecutorService should be shut down to allow\n reclamation\
+            \ of its resources.\n\n Method submit extends base method Executor.execute(Runnable)\
+            \ by creating and returning a Future\n that can be used to cancel execution\
+            \ and/or wait for completion.\n Methods invokeAny and invokeAll perform\
+            \ the most\n commonly useful forms of bulk execution, executing a collection\
+            \ of\n tasks and then waiting for at least one, or all, to\n complete.\
+            \ (Class ExecutorCompletionService can be used to\n write customized variants\
+            \ of these methods.)\n\n The Executors class provides factory methods\
+            \ for the\n executor services provided in this package.\n\n Usage Examples\n\
+            \n Here is a sketch of a network service in which threads in a thread\n\
+            \ pool service incoming requests. It uses the preconfigured Executors.newFixedThreadPool(int)\
+            \ factory method:\n\n  <code>\n class NetworkService implements Runnable\
+            \ {\n   private final ServerSocket serverSocket;\n   private final ExecutorService\
+            \ pool;\n\n   public NetworkService(int port, int poolSize)\n       throws\
+            \ IOException {\n     serverSocket = new ServerSocket(port);\n     pool\
+            \ = Executors.newFixedThreadPool(poolSize);\n   }\n\n   public void run()\
+            \ { // run the service\n     try {\n       for (;;) {\n         pool.execute(new\
+            \ Handler(serverSocket.accept()));\n       }\n     } catch (IOException\
+            \ ex) {\n       pool.shutdown();\n     }\n   }\n }\n\n class Handler implements\
+            \ Runnable {\n   private final Socket socket;\n   Handler(Socket socket)\
+            \ { this.socket = socket; }\n   public void run() {\n     // read and\
+            \ service request on socket\n   }\n }</code>\n\n The following method\
+            \ shuts down an ExecutorService in two phases,\n first by calling shutdown\
+            \ to reject incoming tasks, and then\n calling shutdownNow, if necessary,\
+            \ to cancel any lingering tasks:\n\n  <code>\n void shutdownAndAwaitTermination(ExecutorService\
+            \ pool) {\n   pool.shutdown(); // Disable new tasks from being submitted\n\
+            \   try {\n     // Wait a while for existing tasks to terminate\n    \
+            \ if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {\n       pool.shutdownNow();\
+            \ // Cancel currently executing tasks\n       // Wait a while for tasks\
+            \ to respond to being cancelled\n       if (!pool.awaitTermination(60,\
+            \ TimeUnit.SECONDS))\n           System.err.println(\"Pool did not terminate\"\
+            );\n     }\n   } catch (InterruptedException ex) {\n     // (Re-)Cancel\
+            \ if current thread also interrupted\n     pool.shutdownNow();\n     //\
+            \ Preserve interrupt status\n     Thread.currentThread().interrupt();\n\
+            \   }\n }</code>\n\n Memory consistency effects: Actions in a thread prior\
+            \ to the\n submission of a Runnable or Callable task to an\n ExecutorService\n\
+            \ happen-before\n any actions taken by that task, which in turn happen-before\
+            \ the\n result is retrieved via Future.get()."
           methods:
           - name: awaitTermination
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg1
+              notes: the maximum time to wait
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this executor terminated and\n         false if the\
+                \ timeout elapsed before termination"
+            notes: "Blocks until all tasks have completed execution after a shutdown\n\
+              \ request, or the timeout occurs, or the current thread is\n interrupted,\
+              \ whichever happens first."
           - name: invokeAll
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tasks
               type:
                 basic: Collection
                 full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
             return:
               type:
                 basic: List
                 full: java.util.List<java.util.concurrent.Future<T>>
+              notes: "a list of Futures representing the tasks, in the same\n    \
+                \     sequential order as produced by the iterator for the\n     \
+                \    given task list, each of which has completed"
+            notes: "Executes the given tasks, returning a list of Futures holding\n\
+              \ their status and results when all complete.\n Future.isDone() is true\
+              \ for each\n element of the returned list.\n Note that a completed task\
+              \ could have\n terminated either normally or by throwing an exception.\n\
+              \ The results of this method are undefined if the given\n collection\
+              \ is modified while this operation is in progress."
           - name: invokeAll
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tasks
               type:
                 basic: Collection
                 full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
-            - name: arg1
+              notes: the collection of tasks
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg2
+              notes: the maximum time to wait
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
             return:
               type:
                 basic: List
                 full: java.util.List<java.util.concurrent.Future<T>>
+              notes: "a list of Futures representing the tasks, in the same\n    \
+                \     sequential order as produced by the iterator for the\n     \
+                \    given task list. If the operation did not time out,\n       \
+                \  each task will have completed. If it did time out, some\n     \
+                \    of these tasks will not have completed."
+            notes: "Executes the given tasks, returning a list of Futures holding\n\
+              \ their status and results\n when all complete or the timeout expires,\
+              \ whichever happens first.\n Future.isDone() is true for each\n element\
+              \ of the returned list.\n Upon return, tasks that have not completed\
+              \ are cancelled.\n Note that a completed task could have\n terminated\
+              \ either normally or by throwing an exception.\n The results of this\
+              \ method are undefined if the given\n collection is modified while this\
+              \ operation is in progress."
           - name: invokeAny
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tasks
               type:
                 basic: Collection
                 full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
+              notes: the collection of tasks
             return:
               type:
                 basic: T
                 full: T
+              notes: the result returned by one of the tasks
+            notes: "Executes the given tasks, returning the result\n of one that has\
+              \ completed successfully (i.e., without throwing\n an exception), if\
+              \ any do. Upon normal or exceptional return,\n tasks that have not completed\
+              \ are cancelled.\n The results of this method are undefined if the given\n\
+              \ collection is modified while this operation is in progress."
           - name: invokeAny
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tasks
               type:
                 basic: Collection
                 full: java.util.Collection<? extends java.util.concurrent.Callable<T>>
-            - name: arg1
+              notes: the collection of tasks
+            - name: timeout
               type:
                 basic: long
                 full: long
-            - name: arg2
+              notes: the maximum time to wait
+            - name: unit
               type:
                 basic: TimeUnit
                 full: java.util.concurrent.TimeUnit
+              notes: the time unit of the timeout argument
             return:
               type:
                 basic: T
                 full: T
+              notes: the result returned by one of the tasks
+            notes: "Executes the given tasks, returning the result\n of one that has\
+              \ completed successfully (i.e., without throwing\n an exception), if\
+              \ any do before the given timeout elapses.\n Upon normal or exceptional\
+              \ return, tasks that have not\n completed are cancelled.\n The results\
+              \ of this method are undefined if the given\n collection is modified\
+              \ while this operation is in progress."
           - name: isShutdown
             modifiers:
             - public
@@ -102,6 +199,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this executor has been shut down
+            notes: Returns true if this executor has been shut down.
           - name: isTerminated
             modifiers:
             - public
@@ -110,6 +209,10 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if all tasks have completed following shut down
+            notes: "Returns true if all tasks have completed following shut down.\n\
+              \ Note that isTerminated is never true unless\n either shutdown or shutdownNow\
+              \ was called first."
           - name: shutdown
             modifiers:
             - public
@@ -118,6 +221,11 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Initiates an orderly shutdown in which previously submitted\n\
+              \ tasks are executed, but no new tasks will be accepted.\n Invocation\
+              \ has no additional effect if already shut down.\n\n This method does\
+              \ not wait for previously submitted tasks to\n complete execution. \
+              \ Use awaitTermination\n to do that."
           - name: shutdownNow
             modifiers:
             - public
@@ -126,46 +234,76 @@ languages:
               type:
                 basic: List
                 full: java.util.List<java.lang.Runnable>
+              notes: list of tasks that never commenced execution
+            notes: "Attempts to stop all actively executing tasks, halts the\n processing\
+              \ of waiting tasks, and returns a list of the tasks\n that were awaiting\
+              \ execution.\n\n This method does not wait for actively executing tasks\
+              \ to\n terminate.  Use awaitTermination to\n do that.\n\n There are\
+              \ no guarantees beyond best-effort attempts to stop\n processing actively\
+              \ executing tasks.  For example, typical\n implementations will cancel\
+              \ via Thread.interrupt(), so any\n task that fails to respond to interrupts\
+              \ may never terminate."
           - name: submit
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: task
               type:
                 basic: Callable
                 full: java.util.concurrent.Callable<T>
+              notes: the task to submit
             return:
               type:
                 basic: Future
                 full: java.util.concurrent.Future<T>
+              notes: a Future representing pending completion of the task
+            notes: "Submits a value-returning task for execution and returns a\n Future\
+              \ representing the pending results of the task. The\n Future's get method\
+              \ will return the task's result upon\n successful completion.\n\n \n\
+              \ If you would like to immediately block waiting\n for a task, you can\
+              \ use constructions of the form\n result = exec.submit(aCallable).get();\n\
+              \n Note: The Executors class includes a set of methods\n that can convert\
+              \ some other common closure-like objects,\n for example, PrivilegedAction\
+              \ to\n Callable form so they can be submitted."
           - name: submit
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: task
               type:
                 basic: Runnable
                 full: java.lang.Runnable
-            - name: arg1
+              notes: the task to submit
+            - name: result
               type:
                 basic: T
                 full: T
+              notes: the result to return
             return:
               type:
                 basic: Future
                 full: java.util.concurrent.Future<T>
+              notes: a Future representing pending completion of the task
+            notes: "Submits a Runnable task for execution and returns a Future\n representing\
+              \ that task. The Future's get method will\n return the given result\
+              \ upon successful completion."
           - name: submit
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: task
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: the task to submit
             return:
               type:
                 basic: Future
                 full: java.util.concurrent.Future<?>
+              notes: a Future representing pending completion of the task
+            notes: "Submits a Runnable task for execution and returns a Future\n representing\
+              \ that task. The Future's get method will\n return null upon successful\
+              \ completion."

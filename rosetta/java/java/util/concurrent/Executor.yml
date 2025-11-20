@@ -8,17 +8,56 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "An object that executes submitted Runnable tasks. This\n interface\
+            \ provides a way of decoupling task submission from the\n mechanics of\
+            \ how each task will be run, including details of thread\n use, scheduling,\
+            \ etc.  An Executor is normally used\n instead of explicitly creating\
+            \ threads. For example, rather than\n invoking new Thread(new RunnableTask()).start()\
+            \ for each\n of a set of tasks, you might use:\n\n  <code>\n Executor\
+            \ executor = anExecutor();\n executor.execute(new RunnableTask1());\n\
+            \ executor.execute(new RunnableTask2());\n ...</code>\n\n However, the\
+            \ Executor interface does not strictly require\n that execution be asynchronous.\
+            \ In the simplest case, an executor\n can run the submitted task immediately\
+            \ in the caller's thread:\n\n  <code>\n class DirectExecutor implements\
+            \ Executor {\n   public void execute(Runnable r) {\n     r.run();\n  \
+            \ }\n }</code>\n\n More typically, tasks are executed in some thread other\
+            \ than the\n caller's thread.  The executor below spawns a new thread\
+            \ for each\n task.\n\n  <code>\n class ThreadPerTaskExecutor implements\
+            \ Executor {\n   public void execute(Runnable r) {\n     new Thread(r).start();\n\
+            \   }\n }</code>\n\n Many Executor implementations impose some sort of\n\
+            \ limitation on how and when tasks are scheduled.  The executor below\n\
+            \ serializes the submission of tasks to a second executor,\n illustrating\
+            \ a composite executor.\n\n  <code>\n class SerialExecutor implements\
+            \ Executor {\n   final Queue<Runnable> tasks = new ArrayDeque<>();\n \
+            \  final Executor executor;\n   Runnable active;\n\n   SerialExecutor(Executor\
+            \ executor) {\n     this.executor = executor;\n   }\n\n   public synchronized\
+            \ void execute(Runnable r) {\n     tasks.add(() -> {\n       try {\n \
+            \        r.run();\n       } finally {\n         scheduleNext();\n    \
+            \   }\n     });\n     if (active == null) {\n       scheduleNext();\n\
+            \     }\n   }\n\n   protected synchronized void scheduleNext() {\n   \
+            \  if ((active = tasks.poll()) != null) {\n       executor.execute(active);\n\
+            \     }\n   }\n }</code>\n\n The Executor implementations provided in\
+            \ this package\n implement ExecutorService, which is a more extensive\n\
+            \ interface.  The ThreadPoolExecutor class provides an\n extensible thread\
+            \ pool implementation. The Executors class\n provides convenient factory\
+            \ methods for these Executors.\n\n Memory consistency effects: Actions\
+            \ in a thread prior to\n submitting a Runnable object to an Executor\n\
+            \ happen-before\n its execution begins, perhaps in another thread."
           methods:
           - name: execute
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: command
               type:
                 basic: Runnable
                 full: java.lang.Runnable
+              notes: the runnable task
             return:
               type:
                 basic: void
                 full: void
+            notes: "Executes the given command at some time in the future.  The command\n\
+              \ may execute in a new thread, in a pooled thread, or in the calling\n\
+              \ thread, at the discretion of the Executor implementation."

@@ -8,76 +8,149 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "The Document interface represents the entire HTML or XML\n document.\
+            \ Conceptually, it is the root of the document tree, and provides\n the\
+            \ primary access to the document's data.\n Since elements, text nodes,\
+            \ comments, processing instructions, etc.\n cannot exist outside the context\
+            \ of a Document, the\n Document interface also contains the factory methods\
+            \ needed\n to create these objects. The Node objects created have a\n\
+            \ ownerDocument attribute which associates them with the\n Document within\
+            \ whose context they were created.\n See also the Document Object Model\
+            \ (DOM) Level 3 Core Specification."
           methods:
           - name: adoptNode
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: source
               type:
                 basic: Node
                 full: org.w3c.dom.Node
+              notes: The node to move into this document.
             return:
               type:
                 basic: Node
                 full: org.w3c.dom.Node
+              notes: "The adopted node, or null if this operation\n   fails, such\
+                \ as when the source node comes from a different\n   implementation."
+            notes: "Attempts to adopt a node from another document to this document.\
+              \ If\n supported, it changes the ownerDocument of the source\n node,\
+              \ its children, as well as the attached attribute nodes if there\n are\
+              \ any. If the source node has a parent it is first removed from the\n\
+              \ child list of its parent. This effectively allows moving a subtree\n\
+              \ from one document to another (unlike importNode() which\n create a\
+              \ copy of the source node instead of moving it). When it\n fails, applications\
+              \ should use Document.importNode()\n instead. Note that if the adopted\
+              \ node is already part of this\n document (i.e. the source and target\
+              \ document are the same), this\n method still has the effect of removing\
+              \ the source node from the\n child list of its parent, if any. The following\
+              \ list describes the\n specifics for each type of node.\n \n ATTRIBUTE_NODE\n\
+              \ The\n ownerElement attribute is set to null and\n the specified flag\
+              \ is set to true on the\n adopted Attr. The descendants of the source\n\
+              \ Attr are recursively adopted.\n DOCUMENT_FRAGMENT_NODE\n The\n descendants\
+              \ of the source node are recursively adopted.\n DOCUMENT_NODE\n \n Document\
+              \ nodes cannot be adopted.\n DOCUMENT_TYPE_NODE\n \n DocumentType nodes\
+              \ cannot be adopted.\n ELEMENT_NODE\n Specified attribute nodes of the\
+              \ source element are adopted. Default attributes\n are discarded, though\
+              \ if the document being adopted into defines\n default attributes for\
+              \ this element name, those are assigned. The\n descendants of the source\
+              \ element are recursively adopted.\n ENTITY_NODE\n \n Entity nodes cannot\
+              \ be adopted.\n ENTITY_REFERENCE_NODE\n Only\n the EntityReference node\
+              \ itself is adopted, the\n descendants are discarded, since the source\
+              \ and destination documents\n might have defined the entity differently.\
+              \ If the document being\n imported into provides a definition for this\
+              \ entity name, its value\n is assigned.\n NOTATION_NODE\n Notation nodes\
+              \ cannot be\n adopted.\n PROCESSING_INSTRUCTION_NODE, TEXT_NODE, CDATA_SECTION_NODE,\n\
+              \ COMMENT_NODE\n These nodes can all be adopted. No specifics.\n \n\
+              \ Note:  Since it does not create new nodes unlike the\n Document.importNode()\
+              \ method, this method does not raise\n an INVALID_CHARACTER_ERR exception,\
+              \ and applications\n should use the Document.normalizeDocument() method\
+              \ to\n check if an imported name is not an XML name according to the\
+              \ XML\n version in use."
           - name: createAttribute
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the attribute.
             return:
               type:
                 basic: Attr
                 full: org.w3c.dom.Attr
+              notes: "A new Attr object with the nodeName\n   attribute set to name,\
+                \ and localName,\n   prefix, and namespaceURI set to\n   null. The\
+                \ value of the attribute is the empty string."
+            notes: "Creates an Attr of the given name. Note that the\n Attr instance\
+              \ can then be set on an Element\n using the setAttributeNode method.\n\
+              \ To create an attribute with a qualified name and namespace URI, use\n\
+              \ the createAttributeNS method."
           - name: createAttributeNS
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: namespaceURI
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: The namespace URI of the attribute to create.
+            - name: qualifiedName
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The qualified name of the attribute to\n   instantiate."
             return:
               type:
                 basic: Attr
                 full: org.w3c.dom.Attr
+              notes: "A new Attr object with the following attributes:\n \n Attributes\
+                \ of the Attr object \n \n \n \n   Attribute\n Value\n \n \n \n \n\
+                \ Node.nodeName\n qualifiedName\n \n \n \n   Node.namespaceURI\n namespaceURI\n\
+                \ \n \n \n   Node.prefix\n prefix, extracted from\n   qualifiedName,\
+                \ or null if there is no\n   prefix\n \n \n Node.localName\n local\
+                \ name, extracted from\n   qualifiedName\n \n \n Attr.name\n \n  \
+                \ qualifiedName\n \n \n Node.nodeValue\n the empty\n   string"
+            notes: "Creates an attribute of the given qualified name and namespace\
+              \ URI.\n Per [XML Namespaces]\n , applications must use the value null\
+              \ as the\n namespaceURI parameter for methods if they wish to have\n\
+              \ no namespace."
           - name: createCDATASection
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: data
               type:
                 basic: String
                 full: java.lang.String
+              notes: The data for the CDATASection contents.
             return:
               type:
                 basic: CDATASection
                 full: org.w3c.dom.CDATASection
+              notes: The new CDATASection object.
+            notes: "Creates a CDATASection node whose value is the specified\n string."
           - name: createComment
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: data
               type:
                 basic: String
                 full: java.lang.String
+              notes: The data for the node.
             return:
               type:
                 basic: Comment
                 full: org.w3c.dom.Comment
+              notes: The new Comment object.
+            notes: Creates a Comment node given the specified string.
           - name: createDocumentFragment
             modifiers:
             - public
@@ -86,79 +159,135 @@ languages:
               type:
                 basic: DocumentFragment
                 full: org.w3c.dom.DocumentFragment
+              notes: A new DocumentFragment.
+            notes: Creates an empty DocumentFragment object.
           - name: createElement
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tagName
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The name of the element type to instantiate. For XML,\n   this\
+                \ is case-sensitive, otherwise it depends on the\n   case-sensitivity\
+                \ of the markup language in use. In that case, the\n   name is mapped\
+                \ to the canonical form of that markup by the DOM\n   implementation."
             return:
               type:
                 basic: Element
                 full: org.w3c.dom.Element
+              notes: "A new Element object with the\n   nodeName attribute set to\
+                \ tagName, and\n   localName, prefix, and\n   namespaceURI set to\
+                \ null."
+            notes: "Creates an element of the type specified. Note that the instance\n\
+              \ returned implements the Element interface, so attributes\n can be\
+              \ specified directly on the returned object.\n In addition, if there\
+              \ are known attributes with default values,\n Attr nodes representing\
+              \ them are automatically created\n and attached to the element.\n To\
+              \ create an element with a qualified name and namespace URI, use\n the\
+              \ createElementNS method."
           - name: createElementNS
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: namespaceURI
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: The namespace URI of the element to create.
+            - name: qualifiedName
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The qualified name of the element type to\n   instantiate."
             return:
               type:
                 basic: Element
                 full: org.w3c.dom.Element
+              notes: "A new Element object with the following\n   attributes:\n \n\
+                \ Attributes of the Element object\n \n \n Attribute\n Value\n \n\
+                \ \n \n \n Node.nodeName\n \n   qualifiedName\n \n \n Node.namespaceURI\n\
+                \ \n   namespaceURI\n \n \n Node.prefix\n prefix, extracted\n   from\
+                \ qualifiedName, or null if there is\n   no prefix\n \n \n Node.localName\n\
+                \ local name, extracted from\n   qualifiedName\n \n \n Element.tagName\n\
+                \ \n   qualifiedName"
+            notes: "Creates an element of the given qualified name and namespace URI.\n\
+              \ Per [XML Namespaces]\n , applications must use the value null as the\n\
+              \ namespaceURI parameter for methods if they wish to have no namespace."
           - name: createEntityReference
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The name of the entity to reference.Unlike\n   Document.createElementNS\
+                \ or\n   Document.createAttributeNS, no namespace well-formed\n  \
+                \ checking is done on the entity name. Applications should invoke\n\
+                \   Document.normalizeDocument() with the parameter \"\n   namespaces\"\
+                \ set to true in order to ensure that the\n   entity name is namespace\
+                \ well-formed."
             return:
               type:
                 basic: EntityReference
                 full: org.w3c.dom.EntityReference
+              notes: The new EntityReference object.
+            notes: "Creates an EntityReference object. In addition, if the\n referenced\
+              \ entity is known, the child list of the\n EntityReference node is made\
+              \ the same as that of the\n corresponding Entity node.\n Note: If any\
+              \ descendant of the Entity node has\n an unbound namespace prefix, the\
+              \ corresponding descendant of the\n created EntityReference node is\
+              \ also unbound; (its\n namespaceURI is null). The DOM Level 2 and\n\
+              \ 3 do not support any mechanism to resolve namespace prefixes in this\n\
+              \ case."
           - name: createProcessingInstruction
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: target
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "The target part of the processing instruction.Unlike\n   Document.createElementNS\
+                \ or\n   Document.createAttributeNS, no namespace well-formed\n  \
+                \ checking is done on the target name. Applications should invoke\n\
+                \   Document.normalizeDocument() with the parameter \"\n   namespaces\"\
+                \ set to true in order to ensure that the\n   target name is namespace\
+                \ well-formed."
+            - name: data
               type:
                 basic: String
                 full: java.lang.String
+              notes: The data for the node.
             return:
               type:
                 basic: ProcessingInstruction
                 full: org.w3c.dom.ProcessingInstruction
+              notes: The new ProcessingInstruction object.
+            notes: "Creates a ProcessingInstruction node given the specified\n name\
+              \ and data strings."
           - name: createTextNode
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: data
               type:
                 basic: String
                 full: java.lang.String
+              notes: The data for the node.
             return:
               type:
                 basic: Text
                 full: org.w3c.dom.Text
+              notes: The new Text object.
+            notes: Creates a Text node given the specified string.
           - name: getDoctype
             modifiers:
             - public
@@ -167,6 +296,20 @@ languages:
               type:
                 basic: DocumentType
                 full: org.w3c.dom.DocumentType
+            notes: "The Document Type Declaration (see DocumentType)\n associated\
+              \ with this document. For XML documents without a document\n type declaration\
+              \ this returns null. For HTML documents,\n a DocumentType object may\
+              \ be returned, independently of\n the presence or absence of document\
+              \ type declaration in the HTML\n document.\n This provides direct access\
+              \ to the DocumentType node,\n child node of this Document. This node\
+              \ can be set at\n document creation time and later changed through the\
+              \ use of child\n nodes manipulation methods, such as Node.insertBefore,\n\
+              \ or Node.replaceChild. Note, however, that while some\n implementations\
+              \ may instantiate different types of\n Document objects supporting additional\
+              \ features than the\n \"Core\", such as \"HTML\" [DOM Level 2 HTML]\n\
+              \ , based on the DocumentType specified at creation time,\n changing\
+              \ it afterwards is very unlikely to result in a change of the\n features\
+              \ supported."
           - name: getDocumentElement
             modifiers:
             - public
@@ -175,6 +318,8 @@ languages:
               type:
                 basic: Element
                 full: org.w3c.dom.Element
+            notes: "This is a convenience attribute that allows direct access to the\
+              \ child\n node that is the document element of the document."
           - name: getDocumentURI
             modifiers:
             - public
@@ -183,6 +328,13 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "The location of the document or null if undefined or if\n the\
+              \ Document was created using\n DOMImplementation.createDocument. No\
+              \ lexical checking is\n performed when setting this attribute; this\
+              \ could result in a\n null value returned when using Node.baseURI\n\
+              \ .\n  Beware that when the Document supports the feature\n \"HTML\"\
+              \ [DOM Level 2 HTML]\n , the href attribute of the HTML BASE element\
+              \ takes precedence over\n this attribute when computing Node.baseURI."
           - name: getDomConfig
             modifiers:
             - public
@@ -191,49 +343,73 @@ languages:
               type:
                 basic: DOMConfiguration
                 full: org.w3c.dom.DOMConfiguration
+            notes: "The configuration used when Document.normalizeDocument()\n is\
+              \ invoked."
           - name: getElementById
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: elementId
               type:
                 basic: String
                 full: java.lang.String
+              notes: The unique id value for an element.
             return:
               type:
                 basic: Element
                 full: org.w3c.dom.Element
+              notes: The matching element or null if there is none.
+            notes: "Returns the Element that has an ID attribute with the\n given\
+              \ value. If no such element exists, this returns null\n . If more than\
+              \ one element has an ID attribute with that value, what\n is returned\
+              \ is undefined.\n  The DOM implementation is expected to use the attribute\n\
+              \ Attr.isId to determine if an attribute is of type ID.\n Note: Attributes\
+              \ with the name \"ID\" or \"id\" are not of type\n ID unless so defined."
           - name: getElementsByTagName
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: tagname
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The name of the tag to match on. The special value \"*\"\n \
+                \  matches all tags. For XML, the tagname parameter is\n   case-sensitive,\
+                \ otherwise it depends on the case-sensitivity of the\n   markup language\
+                \ in use."
             return:
               type:
                 basic: NodeList
                 full: org.w3c.dom.NodeList
+              notes: "A new NodeList object containing all the matched\n   Elements."
+            notes: "Returns a NodeList of all the Elements in\n document order with\
+              \ a given tag name and are contained in the\n document."
           - name: getElementsByTagNameNS
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: namespaceURI
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg1
+              notes: "The namespace URI of the elements to match on. The\n   special\
+                \ value \"*\" matches all namespaces."
+            - name: localName
               type:
                 basic: String
                 full: java.lang.String
+              notes: "The local name of the elements to match on. The\n   special\
+                \ value \"*\" matches all local names."
             return:
               type:
                 basic: NodeList
                 full: org.w3c.dom.NodeList
+              notes: "A new NodeList object containing all the matched\n   Elements."
+            notes: "Returns a NodeList of all the Elements with a\n given local name\
+              \ and namespace URI in document order."
           - name: getImplementation
             modifiers:
             - public
@@ -242,6 +418,8 @@ languages:
               type:
                 basic: DOMImplementation
                 full: org.w3c.dom.DOMImplementation
+            notes: "The DOMImplementation object that handles this document. A\n DOM\
+              \ application may use objects from multiple implementations."
           - name: getInputEncoding
             modifiers:
             - public
@@ -250,6 +428,9 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "An attribute specifying the encoding used for this document at\
+              \ the time\n of the parsing. This is null when it is not known, such\n\
+              \ as when the Document was created in memory."
           - name: getStrictErrorChecking
             modifiers:
             - public
@@ -258,6 +439,12 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+            notes: "An attribute specifying whether error checking is enforced or\
+              \ not. When\n set to false, the implementation is free to not test\n\
+              \ every possible error case normally defined on DOM operations, and\
+              \ not\n raise any DOMException on DOM operations or report\n errors\
+              \ while using Document.normalizeDocument(). In case\n of error, the\
+              \ behavior is undefined. This attribute is\n true by default."
           - name: getXmlEncoding
             modifiers:
             - public
@@ -266,6 +453,9 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "An attribute specifying, as part of the XML declaration, the encoding\
+              \ of this document. This is null when\n unspecified or when it is not\
+              \ known, such as when the\n Document was created in memory."
           - name: getXmlStandalone
             modifiers:
             - public
@@ -274,6 +464,13 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+            notes: "An attribute specifying, as part of the XML declaration, whether\
+              \ this document is standalone. This is false when\n unspecified.\n Note:\
+              \  No verification is done on the value when setting\n this attribute.\
+              \ Applications should use\n Document.normalizeDocument() with the \"\
+              validate\"\n parameter to verify if the value matches the validity\n\
+              \ constraint for standalone document declaration as defined in [XML\
+              \ 1.0]."
           - name: getXmlVersion
             modifiers:
             - public
@@ -282,23 +479,107 @@ languages:
               type:
                 basic: String
                 full: java.lang.String
+            notes: "An attribute specifying, as part of the XML declaration, the version\
+              \ number of this document. If there is no declaration and if\n this\
+              \ document supports the \"XML\" feature, the value is\n \"1.0\". If\
+              \ this document does not support the \"XML\"\n feature, the value is\
+              \ always null. Changing this\n attribute will affect methods that check\
+              \ for invalid characters in\n XML names. Application should invoke\n\
+              \ Document.normalizeDocument() in order to check for\n invalid characters\
+              \ in the Nodes that are already part of\n this Document.\n  DOM applications\
+              \ may use the\n DOMImplementation.hasFeature(feature, version) method\n\
+              \ with parameter values \"XMLVersion\" and \"1.0\" (respectively) to\n\
+              \ determine if an implementation supports [XML 1.0]. DOM\n applications\
+              \ may use the same method with parameter values\n \"XMLVersion\" and\
+              \ \"1.1\" (respectively) to determine if an\n implementation supports\
+              \ [XML 1.1]. In both\n cases, in order to support XML, an implementation\
+              \ must also support\n the \"XML\" feature defined in this specification.\
+              \ Document\n  objects supporting a version of the \"XMLVersion\" feature\
+              \ must not\n raise a NOT_SUPPORTED_ERR exception for the same version\n\
+              \ number when using Document.xmlVersion."
           - name: importNode
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: importedNode
               type:
                 basic: Node
                 full: org.w3c.dom.Node
-            - name: arg1
+              notes: The node to import.
+            - name: deep
               type:
                 basic: boolean
                 full: boolean
+              notes: "If true, recursively import the subtree under\n   the specified\
+                \ node; if false, import only the node\n   itself, as explained above.\
+                \ This has no effect on nodes that cannot\n   have any children, and\
+                \ on Attr, and\n   EntityReference nodes."
             return:
               type:
                 basic: Node
                 full: org.w3c.dom.Node
+              notes: The imported node that belongs to this Document.
+            notes: "Imports a node from another document to this document, without\
+              \ altering\n or removing the source node from the original document;\
+              \ this method\n creates a new copy of the source node. The returned\
+              \ node has no\n parent; (parentNode is null).\n For all nodes, importing\
+              \ a node creates a node object owned by the\n importing document, with\
+              \ attribute values identical to the source\n node's nodeName and nodeType,\
+              \ plus the\n attributes related to namespaces (prefix,\n localName,\
+              \ and namespaceURI). As in the\n cloneNode operation, the source node\
+              \ is not altered.\n User data associated to the imported node is not\
+              \ carried over.\n However, if any UserDataHandlers has been specified\n\
+              \ along with the associated data these handlers will be called with\
+              \ the\n appropriate parameters before this method returns.\n Additional\
+              \ information is copied as appropriate to the\n nodeType, attempting\
+              \ to mirror the behavior expected if\n a fragment of XML or HTML source\
+              \ was copied from one document to\n another, recognizing that the two\
+              \ documents may have different DTDs\n in the XML case. The following\
+              \ list describes the specifics for each\n type of node.\n \n ATTRIBUTE_NODE\n\
+              \ The ownerElement attribute\n is set to null and the specified flag\
+              \ is\n set to true on the generated Attr. The\n descendants of the source\
+              \ Attr are recursively imported\n and the resulting nodes reassembled\
+              \ to form the corresponding subtree.\n Note that the deep parameter\
+              \ has no effect on\n Attr nodes; they always carry their children with\
+              \ them\n when imported.\n DOCUMENT_FRAGMENT_NODE\n If the deep option\n\
+              \ was set to true, the descendants of the source\n DocumentFragment\
+              \ are recursively imported and the\n resulting nodes reassembled under\
+              \ the imported\n DocumentFragment to form the corresponding subtree.\n\
+              \ Otherwise, this simply generates an empty\n DocumentFragment.\n DOCUMENT_NODE\n\
+              \ Document\n nodes cannot be imported.\n DOCUMENT_TYPE_NODE\n DocumentType\n\
+              \ nodes cannot be imported.\n ELEMENT_NODE\n Specified attribute nodes\
+              \ of the source element are imported, and the generated\n Attr nodes\
+              \ are attached to the generated\n Element. Default attributes are not\
+              \ copied, though if the document being imported into defines default\n\
+              \ attributes for this element name, those are assigned. If the\n importNode\
+              \ deep parameter was set to\n true, the descendants of the source element\
+              \ are\n recursively imported and the resulting nodes reassembled to\
+              \ form the\n corresponding subtree.\n ENTITY_NODE\n Entity nodes can\
+              \ be\n imported, however in the current release of the DOM the\n DocumentType\
+              \ is readonly. Ability to add these imported\n nodes to a DocumentType\
+              \ will be considered for addition\n to a future release of the DOM.On\
+              \ import, the publicId,\n systemId, and notationName attributes are\n\
+              \ copied. If a deep import is requested, the descendants\n of the the\
+              \ source Entity are recursively imported and\n the resulting nodes reassembled\
+              \ to form the corresponding subtree.\n \n ENTITY_REFERENCE_NODE\n Only\
+              \ the EntityReference itself is\n copied, even if a deep import is requested,\
+              \ since the\n source and destination documents might have defined the\
+              \ entity\n differently. If the document being imported into provides\
+              \ a\n definition for this entity name, its value is assigned.\n NOTATION_NODE\n\
+              \ \n Notation nodes can be imported, however in the current\n release\
+              \ of the DOM the DocumentType is readonly. Ability\n to add these imported\
+              \ nodes to a DocumentType will be\n considered for addition to a future\
+              \ release of the DOM.On import, the\n publicId and systemId attributes\
+              \ are copied.\n Note that the deep parameter has no effect on this type\n\
+              \ of nodes since they cannot have any children.\n \n PROCESSING_INSTRUCTION_NODE\n\
+              \ The imported node copies its\n target and data values from those of\
+              \ the\n source node.Note that the deep parameter has no effect\n on\
+              \ this type of nodes since they cannot have any children.\n TEXT_NODE,\n\
+              \ CDATA_SECTION_NODE, COMMENT_NODE\n These three types of nodes inheriting\n\
+              \ from CharacterData copy their data and\n length attributes from those\
+              \ of the source node.Note\n that the deep parameter has no effect on\
+              \ these types of\n nodes since they cannot have any children."
           - name: normalizeDocument
             modifiers:
             - public
@@ -307,33 +588,88 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "This method acts as if the document was going through a save and\
+              \ load\n cycle, putting the document in a \"normal\" form. As a consequence,\n\
+              \ this method updates the replacement tree of\n EntityReference nodes\
+              \ and normalizes Text\n nodes, as defined in the method Node.normalize().\n\
+              \  Otherwise, the actual result depends on the features being set on\n\
+              \ the Document.domConfig object and governing what\n operations actually\
+              \ take place. Noticeably this method could also\n make the document\
+              \ namespace well-formed according to the algorithm\n described in ,\
+              \ check the character normalization, remove the\n CDATASection nodes,\
+              \ etc. See\n DOMConfiguration for details.\n // Keep in the document\n\
+              \ the information defined // in the XML Information Set (Java example)\n\
+              \ DOMConfiguration docConfig = myDocument.getDomConfig();\n docConfig.setParameter(\"\
+              infoset\", Boolean.TRUE);\n myDocument.normalizeDocument();\n\n Mutation\
+              \ events, when supported, are generated to reflect the\n changes occurring\
+              \ on the document.\n  If errors occur during the invocation of this\
+              \ method, such as an\n attempt to update a read-only node or a Node.nodeName\n\
+              \ contains an invalid character according to the XML version in use,\n\
+              \ errors or warnings (DOMError.SEVERITY_ERROR or\n DOMError.SEVERITY_WARNING)\
+              \ will be reported using the\n DOMErrorHandler object associated with\
+              \ the \"error-handler\n \" parameter. Note this method might also report\
+              \ fatal errors (\n DOMError.SEVERITY_FATAL_ERROR) if an implementation\n\
+              \ cannot recover from an error."
           - name: renameNode
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: n
               type:
                 basic: Node
                 full: org.w3c.dom.Node
-            - name: arg1
+              notes: The node to rename.
+            - name: namespaceURI
               type:
                 basic: String
                 full: java.lang.String
-            - name: arg2
+              notes: The new namespace URI.
+            - name: qualifiedName
               type:
                 basic: String
                 full: java.lang.String
+              notes: The new qualified name.
             return:
               type:
                 basic: Node
                 full: org.w3c.dom.Node
+              notes: "The renamed node. This is either the specified node or the new\n\
+                \   node that was created to replace the specified node."
+            notes: "Rename an existing node of type ELEMENT_NODE or\n ATTRIBUTE_NODE.\n\
+              \ When possible this simply changes the name of the given node,\n otherwise\
+              \ this creates a new node with the specified name and\n replaces the\
+              \ existing node with the new node as described below.\n If simply changing\
+              \ the name of the given node is not possible, the\n following operations\
+              \ are performed: a new node is created, any\n registered event listener\
+              \ is registered on the new node, any user\n data attached to the old\
+              \ node is removed from that node, the old node\n is removed from its\
+              \ parent if it has one, the children are moved to\n the new node, if\
+              \ the renamed node is an Element its\n attributes are moved to the new\
+              \ node, the new node is inserted at the\n position the old node used\
+              \ to have in its parent's child nodes list\n if it has one, the user\
+              \ data that was attached to the old node is\n attached to the new node.\n\
+              \ When the node being renamed is an Element only the\n specified attributes\
+              \ are moved, default attributes originated from\n the DTD are updated\
+              \ according to the new element name. In addition,\n the implementation\
+              \ may update default attributes from other schemas.\n Applications should\
+              \ use Document.normalizeDocument() to\n guarantee these attributes are\
+              \ up-to-date.\n When the node being renamed is an Attr that is\n attached\
+              \ to an Element, the node is first removed from\n the Element attributes\
+              \ map. Then, once renamed, either\n by modifying the existing node or\
+              \ creating a new one as described\n above, it is put back.\n In addition,\n\
+              \ \n  a user data event NODE_RENAMED is fired,\n \n \n when the implementation\
+              \ supports the feature \"MutationNameEvents\",\n each mutation operation\
+              \ involved in this method fires the appropriate\n event, and in the\
+              \ end the event {\n http://www.w3.org/2001/xml-events,\n DOMElementNameChanged}\
+              \ or {\n http://www.w3.org/2001/xml-events,\n DOMAttributeNameChanged}\
+              \ is fired."
           - name: setDocumentURI
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: documentURI
               type:
                 basic: String
                 full: java.lang.String
@@ -341,12 +677,19 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "The location of the document or null if undefined or if\n the\
+              \ Document was created using\n DOMImplementation.createDocument. No\
+              \ lexical checking is\n performed when setting this attribute; this\
+              \ could result in a\n null value returned when using Node.baseURI\n\
+              \ .\n  Beware that when the Document supports the feature\n \"HTML\"\
+              \ [DOM Level 2 HTML]\n , the href attribute of the HTML BASE element\
+              \ takes precedence over\n this attribute when computing Node.baseURI."
           - name: setStrictErrorChecking
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: strictErrorChecking
               type:
                 basic: boolean
                 full: boolean
@@ -354,12 +697,18 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "An attribute specifying whether error checking is enforced or\
+              \ not. When\n set to false, the implementation is free to not test\n\
+              \ every possible error case normally defined on DOM operations, and\
+              \ not\n raise any DOMException on DOM operations or report\n errors\
+              \ while using Document.normalizeDocument(). In case\n of error, the\
+              \ behavior is undefined. This attribute is\n true by default."
           - name: setXmlStandalone
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: xmlStandalone
               type:
                 basic: boolean
                 full: boolean
@@ -367,12 +716,19 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "An attribute specifying, as part of the XML declaration, whether\
+              \ this document is standalone. This is false when\n unspecified.\n Note:\
+              \  No verification is done on the value when setting\n this attribute.\
+              \ Applications should use\n Document.normalizeDocument() with the \"\
+              validate\"\n parameter to verify if the value matches the validity\n\
+              \ constraint for standalone document declaration as defined in [XML\
+              \ 1.0]."
           - name: setXmlVersion
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: xmlVersion
               type:
                 basic: String
                 full: java.lang.String
@@ -380,3 +736,21 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "An attribute specifying, as part of the XML declaration, the version\
+              \ number of this document. If there is no declaration and if\n this\
+              \ document supports the \"XML\" feature, the value is\n \"1.0\". If\
+              \ this document does not support the \"XML\"\n feature, the value is\
+              \ always null. Changing this\n attribute will affect methods that check\
+              \ for invalid characters in\n XML names. Application should invoke\n\
+              \ Document.normalizeDocument() in order to check for\n invalid characters\
+              \ in the Nodes that are already part of\n this Document.\n  DOM applications\
+              \ may use the\n DOMImplementation.hasFeature(feature, version) method\n\
+              \ with parameter values \"XMLVersion\" and \"1.0\" (respectively) to\n\
+              \ determine if an implementation supports [XML 1.0]. DOM\n applications\
+              \ may use the same method with parameter values\n \"XMLVersion\" and\
+              \ \"1.1\" (respectively) to determine if an\n implementation supports\
+              \ [XML 1.1]. In both\n cases, in order to support XML, an implementation\
+              \ must also support\n the \"XML\" feature defined in this specification.\
+              \ Document\n  objects supporting a version of the \"XMLVersion\" feature\
+              \ must not\n raise a NOT_SUPPORTED_ERR exception for the same version\n\
+              \ number when using Document.xmlVersion."

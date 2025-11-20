@@ -8,6 +8,28 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "Provides access to the content of a module.\n\n  A module reader\
+            \ is intended for cases where access to the resources in a\n module is\
+            \ required, regardless of whether the module has been loaded.\n A framework\
+            \ that scans a collection of packaged modules on the file system,\n for\
+            \ example, may use a module reader to access a specific resource in each\n\
+            \ module. A module reader is also intended to be used by ClassLoader\n\
+            \ implementations that load classes and resources from modules. \n\n \
+            \ A resource in a module is identified by an abstract name that is a\n\
+            \ '/'-separated path string. For example, module java.base may\n have\
+            \ a resource \"java/lang/Object.class\" that, by convention, is the\n\
+            \ class file for java.lang.Object. A module reader may treat\n directories\
+            \ in the module content as resources (whether it does or not is\n module\
+            \ reader specific). Where the module content contains a directory\n that\
+            \ can be located as a resource then its name ends with a slash ('/').\
+            \ The\n directory can also be located with a name that drops the trailing\
+            \ slash. \n\n  A ModuleReader is open upon\n creation and is closed by\
+            \ invoking the close method.  Failure\n to close a module reader may result\
+            \ in a resource leak.  The \n try-with-resources statement provides a\
+            \ useful construct to ensure that\n module readers are closed. \n\n  A\
+            \ ModuleReader implementation may require permissions to access\n resources\
+            \ in the module. Consequently the find, open, read, and list methods may\
+            \ throw \n SecurityException if access is denied by the security manager."
           methods:
           - name: close
             modifiers:
@@ -17,19 +39,32 @@ languages:
               type:
                 basic: void
                 full: void
+            notes: "Closes the module reader. Once closed then subsequent calls to\
+              \ locate or\n read a resource will fail by throwing IOException.\n\n\
+              \  A module reader is not required to be asynchronously closeable. If\
+              \ a\n thread is reading a resource and another thread invokes the close\
+              \ method,\n then the second thread may block until the read operation\
+              \ is complete."
           - name: find
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the resource to open for reading
             return:
               type:
                 basic: Optional
                 full: java.util.Optional<java.net.URI>
+              notes: "A URI to the resource; an empty Optional if the resource\n \
+                \        is not found or a URI cannot be constructed to locate the\n\
+                \         resource"
+            notes: "Finds a resource, returning a URI to the resource in the module.\n\
+              \n  If the module reader can determine that the name locates a directory\n\
+              \ then the resulting URI will end with a slash ('/')."
           - name: list
             modifiers:
             - public
@@ -38,39 +73,76 @@ languages:
               type:
                 basic: Stream
                 full: java.util.stream.Stream<java.lang.String>
+              notes: "A stream of elements that are the names of all resources\n \
+                \        in the module"
+            notes: "Lists the contents of the module, returning a stream of elements\
+              \ that\n are the names of all resources in the module. Whether the stream\
+              \ of\n elements includes names corresponding to directories in the module\
+              \ is\n module reader specific.\n\n  In lazy implementations then an\
+              \ IOException may be thrown\n when using the stream to list the module\
+              \ contents. If this occurs then\n the IOException will be wrapped in\
+              \ an UncheckedIOException and thrown from the method that caused the\n\
+              \ access to be attempted. SecurityException may also be thrown\n when\
+              \ using the stream to list the module contents and access is denied\n\
+              \ by the security manager. \n\n  The behavior of the stream when used\
+              \ after the module reader is\n closed is implementation specific and\
+              \ therefore not specified."
           - name: open
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the resource to open for reading
             return:
               type:
                 basic: Optional
                 full: java.util.Optional<java.io.InputStream>
+              notes: "An input stream to read the resource or an empty\n         Optional\
+                \ if not found"
+            notes: "Opens a resource, returning an input stream to read the resource\
+              \ in\n the module.\n\n  The behavior of the input stream when used after\
+              \ the module reader\n is closed is implementation specific and therefore\
+              \ not specified."
           - name: read
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: String
                 full: java.lang.String
+              notes: The name of the resource to read
             return:
               type:
                 basic: Optional
                 full: java.util.Optional<java.nio.ByteBuffer>
+              notes: "A byte buffer containing the contents of the resource or an\n\
+                \         empty Optional if not found"
+            notes: "Reads a resource, returning a byte buffer with the contents of\
+              \ the\n resource.\n\n The element at the returned buffer's position\
+              \ is the first byte of the\n resource, the element at the buffer's limit\
+              \ is the last byte of the\n resource. Once consumed, the release method\n\
+              \ must be invoked. Failure to invoke the release method may result\n\
+              \ in a resource leak."
           - name: release
             modifiers:
             - public
             parameters:
-            - name: arg0
+            - name: bb
               type:
                 basic: ByteBuffer
                 full: java.nio.ByteBuffer
+              notes: The byte buffer to release
             return:
               type:
                 basic: void
                 full: void
+            notes: "Releases a byte buffer. This method should be invoked after consuming\n\
+              \ the contents of the buffer returned by the read method.\n The behavior\
+              \ of this method when invoked to release a buffer that has\n already\
+              \ been released, or the behavior when invoked to release a buffer\n\
+              \ after a ModuleReader is closed is implementation specific and\n therefore\
+              \ not specified."

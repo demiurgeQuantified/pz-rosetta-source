@@ -8,6 +8,16 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A collection of unique attributes.  This is a read-only,\n immutable\
+            \ interface.  An attribute is basically a key and\n a value assigned to\
+            \ the key.  The collection may represent\n something like a style run,\
+            \ a logical style, etc.  These\n are generally used to describe features\
+            \ that will contribute\n to some graphical representation such as a font.\
+            \  The\n set of possible keys is unbounded and can be anything.\n Typically\
+            \ View implementations will respond to attribute\n definitions and render\
+            \ something to represent the attributes.\n \n Attributes can potentially\
+            \ resolve in a hierarchy.  If a\n key doesn't resolve locally, and a resolving\
+            \ parent\n exists, the key will be resolved through the parent."
           staticFields:
             NameAttribute:
               name: NameAttribute
@@ -17,6 +27,7 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "Attribute name used to name the collection of\n attributes."
             ResolveAttribute:
               name: ResolveAttribute
               modifiers:
@@ -25,37 +36,52 @@ languages:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: "Attribute name used to identify the resolving parent\n set of\
+                \ attributes, if one is defined."
           methods:
           - name: containsAttribute
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: name
               type:
                 basic: Object
                 full: java.lang.Object
-            - name: arg1
+              notes: the non-null attribute name
+            - name: value
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the value
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if the set defines the attribute with an\n     equal value,\
+                \ either locally or through its resolving parent"
+            notes: "Returns true if this set defines an attribute with the same\n\
+              \ name and an equal value. If such an attribute is not found locally,\n\
+              \ it is searched through in the resolving parent hierarchy."
           - name: containsAttributes
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: attributes
               type:
                 basic: AttributeSet
                 full: javax.swing.text.AttributeSet
+              notes: the set of attributes to check against
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: "true if this set defines all the attributes with equal\n   \
+                \           values, either locally or through its resolving parent"
+            notes: "Returns true if this set defines all the attributes from the\n\
+              \ given set with equal values. If an attribute is not found locally,\n\
+              \ it is searched through in the resolving parent hierarchy."
           - name: copyAttributes
             modifiers:
             - public
@@ -64,19 +90,28 @@ languages:
               type:
                 basic: AttributeSet
                 full: javax.swing.text.AttributeSet
+              notes: a copy of the attribute set
+            notes: "Returns an attribute set that is guaranteed not\n to change over\
+              \ time."
           - name: getAttribute
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: key
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the non-null key of the attribute binding
             return:
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the value of the attribute, or null if not found
+            notes: "Fetches the value of the given attribute. If the value is not\
+              \ found\n locally, the search is continued upward through the resolving\n\
+              \ parent (if one exists) until the value is either\n found or there\
+              \ are no more parents.  If the value is not found,\n null is returned."
           - name: getAttributeCount
             modifiers:
             - public
@@ -85,6 +120,9 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: the number of attributes >= 0
+            notes: "Returns the number of attributes that are defined locally in this\
+              \ set.\n Attributes that are defined in the parent set are not included."
           - name: getAttributeNames
             modifiers:
             - public
@@ -93,6 +131,13 @@ languages:
               type:
                 basic: Enumeration
                 full: java.util.Enumeration<?>
+              notes: the names
+            notes: "Returns an enumeration over the names of the attributes that are\n\
+              \ defined locally in the set. Names of attributes defined in the\n resolving\
+              \ parent, if any, are not included. The values of the\n Enumeration\
+              \ may be anything and are not constrained to\n a particular Object type.\n\
+              \ \n This method never returns null. For a set with no attributes, it\n\
+              \ returns an empty Enumeration."
           - name: getResolveParent
             modifiers:
             - public
@@ -101,29 +146,38 @@ languages:
               type:
                 basic: AttributeSet
                 full: javax.swing.text.AttributeSet
+              notes: the parent
+            notes: Gets the resolving parent.
           - name: isDefined
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: attrName
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the attribute name
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the attribute has a value specified
+            notes: "Checks whether the named attribute has a value specified in\n\
+              \ the set without resolving through another attribute\n set."
           - name: isEqual
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: attr
               type:
                 basic: AttributeSet
                 full: javax.swing.text.AttributeSet
+              notes: an attribute set
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if the sets are equivalent
+            notes: Determines if the two attribute sets are equivalent.

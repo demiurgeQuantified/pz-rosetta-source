@@ -8,46 +8,79 @@ languages:
           modifiers:
           - public
           - abstract
+          notes: "A date-based amount of time, such as '3 years, 4 months and 5 days'\
+            \ in an\n arbitrary chronology, intended for advanced globalization use\
+            \ cases.\n \n This interface models a date-based amount of time in a calendar\
+            \ system.\n While most calendar systems use years, months and days, some\
+            \ do not.\n Therefore, this interface operates solely in terms of a set\
+            \ of supported\n units that are defined by the Chronology.\n The set of\
+            \ supported units is fixed for a given chronology.\n The amount of a supported\
+            \ unit may be set to zero.\n \n The period is modeled as a directed amount\
+            \ of time, meaning that individual\n parts of the period may be negative."
           methods:
           - name: addTo
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the temporal object to adjust, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: an object of the same type with the adjustment made, not null
+            notes: "Adds this period to the specified temporal object.\n \n This returns\
+              \ a temporal object of the same observable type as the input\n with\
+              \ this period added.\n \n In most cases, it is clearer to reverse the\
+              \ calling pattern by using\n Temporal.plus(TemporalAmount).\n \n   //\
+              \ these two lines are equivalent, but the second approach is recommended\n\
+              \   dateTime = thisPeriod.addTo(dateTime);\n   dateTime = dateTime.plus(thisPeriod);\n\
+              \ \n \n The specified temporal must have the same chronology as this\
+              \ period.\n This returns a temporal with the non-zero supported units\
+              \ added.\n \n This instance is immutable and unaffected by this method\
+              \ call."
           - name: equals
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: obj
               type:
                 basic: Object
                 full: java.lang.Object
+              notes: the object to check, null returns false
             return:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this is equal to the other period
+            notes: "Checks if this period is equal to another period, including the\
+              \ chronology.\n \n Compares this period with another ensuring that the\
+              \ type, each amount and\n the chronology are the same.\n Note that this\
+              \ means that a period of \"15 Months\" is not equal to a period\n of\
+              \ \"1 Year and 3 Months\"."
           - name: get
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: unit
               type:
                 basic: TemporalUnit
                 full: java.time.temporal.TemporalUnit
+              notes: the TemporalUnit for which to return the value
             return:
               type:
                 basic: long
                 full: long
+              notes: the long value of the unit
+            notes: "Gets the value of the requested unit.\n \n The supported units\
+              \ are chronology specific.\n They will typically be YEARS,\n MONTHS\
+              \ and DAYS.\n Requesting an unsupported unit will throw an exception."
           - name: getChronology
             modifiers:
             - public
@@ -56,6 +89,11 @@ languages:
               type:
                 basic: Chronology
                 full: java.time.chrono.Chronology
+              notes: the chronology defining the period, not null
+            notes: "Gets the chronology that defines the meaning of the supported\
+              \ units.\n \n The period is defined by the chronology.\n It controls\
+              \ the supported units and restricts addition/subtraction\n to ChronoLocalDate\
+              \ instances of the same chronology."
           - name: getUnits
             modifiers:
             - public
@@ -64,6 +102,12 @@ languages:
               type:
                 basic: List
                 full: java.util.List<java.time.temporal.TemporalUnit>
+              notes: a list containing the supported units, not null
+            notes: "Gets the set of units supported by this period.\n \n The supported\
+              \ units are chronology specific.\n They will typically be YEARS,\n MONTHS\
+              \ and DAYS.\n They are returned in order from largest to smallest.\n\
+              \ \n This set can be used in conjunction with get(TemporalUnit)\n to\
+              \ access the entire state of the period."
           - name: hashCode
             modifiers:
             - public
@@ -72,6 +116,8 @@ languages:
               type:
                 basic: int
                 full: int
+              notes: a suitable hash code
+            notes: A hash code for this period.
           - name: isNegative
             modifiers:
             - public
@@ -79,6 +125,8 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if any unit of this period is negative
+            notes: Checks if any of the supported units of this period are negative.
           - name: isZero
             modifiers:
             - public
@@ -86,32 +134,50 @@ languages:
               type:
                 basic: boolean
                 full: boolean
+              notes: true if this period is zero-length
+            notes: Checks if all the supported units of this period are zero.
           - name: minus
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: amountToSubtract
               type:
                 basic: TemporalAmount
                 full: java.time.temporal.TemporalAmount
+              notes: the period to subtract, not null
             return:
               type:
                 basic: ChronoPeriod
                 full: java.time.chrono.ChronoPeriod
+              notes: a ChronoPeriod based on this period with the requested period
+                subtracted, not null
+            notes: "Returns a copy of this period with the specified period subtracted.\n\
+              \ \n If the specified amount is a ChronoPeriod then it must have\n the\
+              \ same chronology as this period. Implementations may choose to\n accept\
+              \ or reject other TemporalAmount implementations.\n \n This instance\
+              \ is immutable and unaffected by this method call."
           - name: multipliedBy
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: scalar
               type:
                 basic: int
                 full: int
+              notes: the scalar to multiply by, not null
             return:
               type:
                 basic: ChronoPeriod
                 full: java.time.chrono.ChronoPeriod
+              notes: "a ChronoPeriod based on this period with the amounts multiplied\n\
+                \  by the scalar, not null"
+            notes: "Returns a new instance with each amount in this period in this\
+              \ period\n multiplied by the specified scalar.\n \n This returns a period\
+              \ with each supported unit individually multiplied.\n For example, a\
+              \ period of \"2 years, -3 months and 4 days\" multiplied by\n 3 will\
+              \ return \"6 years, -9 months and 12 days\".\n No normalization is performed."
           - name: negated
             modifiers:
             - public
@@ -119,6 +185,13 @@ languages:
               type:
                 basic: ChronoPeriod
                 full: java.time.chrono.ChronoPeriod
+              notes: a ChronoPeriod based on this period with the amounts negated,
+                not null
+            notes: "Returns a new instance with each amount in this period negated.\n\
+              \ \n This returns a period with each supported unit individually negated.\n\
+              \ For example, a period of \"2 years, -3 months and 4 days\" will be\n\
+              \ negated to \"-2 years, 3 months and -4 days\".\n No normalization\
+              \ is performed."
           - name: normalized
             modifiers:
             - public
@@ -127,32 +200,60 @@ languages:
               type:
                 basic: ChronoPeriod
                 full: java.time.chrono.ChronoPeriod
+              notes: "a ChronoPeriod based on this period with the amounts of each\n\
+                \  unit normalized, not null"
+            notes: "Returns a copy of this period with the amounts of each unit normalized.\n\
+              \ \n The process of normalization is specific to each calendar system.\n\
+              \ For example, in the ISO calendar system, the years and months are\n\
+              \ normalized but the days are not, such that \"15 months\" would be\n\
+              \ normalized to \"1 year and 3 months\".\n \n This instance is immutable\
+              \ and unaffected by this method call."
           - name: plus
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: amountToAdd
               type:
                 basic: TemporalAmount
                 full: java.time.temporal.TemporalAmount
+              notes: the period to add, not null
             return:
               type:
                 basic: ChronoPeriod
                 full: java.time.chrono.ChronoPeriod
+              notes: a ChronoPeriod based on this period with the requested period
+                added, not null
+            notes: "Returns a copy of this period with the specified period added.\n\
+              \ \n If the specified amount is a ChronoPeriod then it must have\n the\
+              \ same chronology as this period. Implementations may choose to\n accept\
+              \ or reject other TemporalAmount implementations.\n \n This instance\
+              \ is immutable and unaffected by this method call."
           - name: subtractFrom
             modifiers:
             - public
             - abstract
             parameters:
-            - name: arg0
+            - name: temporal
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: the temporal object to adjust, not null
             return:
               type:
                 basic: Temporal
                 full: java.time.temporal.Temporal
+              notes: an object of the same type with the adjustment made, not null
+            notes: "Subtracts this period from the specified temporal object.\n \n\
+              \ This returns a temporal object of the same observable type as the\
+              \ input\n with this period subtracted.\n \n In most cases, it is clearer\
+              \ to reverse the calling pattern by using\n Temporal.minus(TemporalAmount).\n\
+              \ \n   // these two lines are equivalent, but the second approach is\
+              \ recommended\n   dateTime = thisPeriod.subtractFrom(dateTime);\n  \
+              \ dateTime = dateTime.minus(thisPeriod);\n \n \n The specified temporal\
+              \ must have the same chronology as this period.\n This returns a temporal\
+              \ with the non-zero supported units subtracted.\n \n This instance is\
+              \ immutable and unaffected by this method call."
           - name: toString
             modifiers:
             - public
@@ -167,15 +268,29 @@ languages:
             - public
             - static
             parameters:
-            - name: arg0
+            - name: startDateInclusive
               type:
                 basic: ChronoLocalDate
                 full: java.time.chrono.ChronoLocalDate
-            - name: arg1
+              notes: the start date, inclusive, specifying the chronology of the calculation,
+                not null
+            - name: endDateExclusive
               type:
                 basic: ChronoLocalDate
                 full: java.time.chrono.ChronoLocalDate
+              notes: the end date, exclusive, in any chronology, not null
             return:
               type:
                 basic: ChronoPeriod
                 full: java.time.chrono.ChronoPeriod
+              notes: the period between this date and the end date, not null
+            notes: "Obtains a ChronoPeriod consisting of amount of time between two\
+              \ dates.\n \n The start date is included, but the end date is not.\n\
+              \ The period is calculated using ChronoLocalDate.until(ChronoLocalDate).\n\
+              \ As such, the calculation is chronology specific.\n \n The chronology\
+              \ of the first date is used.\n The chronology of the second date is\
+              \ ignored, with the date being converted\n to the target chronology\
+              \ system before the calculation starts.\n \n The result of this method\
+              \ can be a negative period if the end is before the start.\n In most\
+              \ cases, the positive/negative sign will be the same in each of the\
+              \ supported fields."
